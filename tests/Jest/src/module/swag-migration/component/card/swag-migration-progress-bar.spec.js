@@ -4,19 +4,14 @@ import swagMigrationProgressBar from 'SwagMigrationAssistant/module/swag-migrati
 Shopware.Component.register('swag-migration-progress-bar', swagMigrationProgressBar);
 
 async function createWrapper(props = {}) {
-    const wrapper = mount(
-        await Shopware.Component.build('swag-migration-progress-bar'),
-        {
-            props,
-            global: {
-                stubs: {
-                    'mt-progress-bar': true,
-                },
+    return mount(await Shopware.Component.build('swag-migration-progress-bar'), {
+        props,
+        global: {
+            stubs: {
+                'mt-progress-bar': true,
             },
         },
-    );
-    await flushPromises();
-    return wrapper;
+    });
 }
 
 describe('module/swag-migration/component/card/swag-migration-progress-bar', () => {
@@ -25,6 +20,7 @@ describe('module/swag-migration/component/card/swag-migration-progress-bar', () 
             value: 50,
             maxValue: 100,
         });
+        await flushPromises();
 
         const rightPoint = wrapper.find('.swag-migration-progress-bar__right-point .swag-migration-progress-bar__bubble');
         expect(rightPoint.classes()).toContain('swag-migration-progress-bar__bubble--disabled');
@@ -35,6 +31,7 @@ describe('module/swag-migration/component/card/swag-migration-progress-bar', () 
             value: 100,
             maxValue: 100,
         });
+        await flushPromises();
 
         const rightPoint = wrapper.find('.swag-migration-progress-bar__right-point .swag-migration-progress-bar__bubble');
         expect(rightPoint.classes()).toContain('swag-migration-progress-bar__bubble--active');

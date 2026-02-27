@@ -12,16 +12,20 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\WriterNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
+use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
+use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
@@ -45,6 +49,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         private readonly LoggingServiceInterface $loggingService,
         private readonly EntityDefinition $dataDefinition,
         private readonly EntityRepository $mappingRepo,
+        private readonly MigrationErrorResolutionService $errorResolutionService,
     ) {
         // write / upsert entities only with this single context,
         // otherwise the migration behaves differently when started in the administration
@@ -100,16 +105,26 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             return 0;
         }
 
+        $convertedValues = array_values($converted);
+        $this->errorResolutionService->applyFixes(
+            $convertedValues,
+            $migrationContext->getConnection()->getId(),
+            $migrationContext->getRunUuid(),
+            $context
+        );
+
         try {
             $currentWriter = $this->writerRegistry->getWriter($dataSet::getEntity());
-            $currentWriter->writeData(\array_values($converted), $this->writeContext);
-        } catch (WriterNotFoundException $writerNotFoundException) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $migrationContext->getRunUuid(),
-                $dataSet::getEntity(),
-                $writerNotFoundException
-            ));
-            $this->loggingService->saveLogging($context);
+            $currentWriter->writeData($convertedValues, $this->writeContext);
+        } catch (MigrationException $writerNotFoundException) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($writerNotFoundException->getMessage())
+                    ->withExceptionTrace($writerNotFoundException->getTrace())
+                    ->withConvertedData([$converted])
+                    ->withEntityName($dataSet::getEntity())
+                    ->build(RunExceptionLog::class)
+            );
 
             foreach ($updateWrittenData as &$data) {
                 $data['written'] = false;
@@ -125,11 +140,12 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 $dataSet::getEntity(),
                 $updateWrittenData,
                 $migrationContext,
-                $context
+                $context,
+                $migrationData
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             // Worst case: something unknown goes wrong (most likely some foreign key constraint that fails)
-            $this->writePerEntity($converted, $dataSet::getEntity(), $updateWrittenData, $migrationContext, $context);
+            $this->writePerEntity($converted, $dataSet::getEntity(), $updateWrittenData, $migrationContext);
         } finally {
             // Update written-Flag of the entity in the data table
             $this->entityWriter->update(
@@ -138,7 +154,6 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 WriteContext::createFromContext($context)
             );
             $this->removeChecksumsOfUnwrittenData($updateWrittenData, $mappingIds, $context);
-            $this->loggingService->saveLogging($context);
         }
 
         // Update written-Flag of the media file in the media file table
@@ -154,6 +169,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
     /**
      * @param array<string, mixed> $converted
      * @param array<string, mixed> $updateWrittenData
+     * @param EntitySearchResult<SwagMigrationDataCollection> $migrationData
      */
     private function handleWriteException(
         WriteException $exception,
@@ -162,6 +178,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         array &$updateWrittenData,
         MigrationContextInterface $migrationContext,
         Context $context,
+        EntitySearchResult $migrationData,
     ): void {
         $writeErrors = $this->extractWriteErrorsWithIndex($exception);
         $currentWriter = $this->writerRegistry->getWriter($entityName);
@@ -178,12 +195,21 @@ class MigrationDataWriter implements MigrationDataWriterInterface
 
             $updateWrittenData[$dataId]['written'] = false;
             $updateWrittenData[$dataId]['writeFailure'] = true;
-            $this->loggingService->addLogEntry(new WriteExceptionRunLog(
-                $migrationContext->getRunUuid(),
-                $entityName,
-                $writeErrors[$index],
-                $dataId
-            ));
+
+            $currentData = $migrationData->firstWhere(function (SwagMigrationDataEntity $item) use ($dataId) {
+                return $item->getId() === $dataId;
+            });
+
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
+                    ->withEntityName($entityName)
+                    ->withConvertedData($entity)
+                    ->withEntityId($entity['id'] ?? null)
+                    ->withSourceData($currentData?->getRaw() ?? [])
+                    ->build(WriteExceptionLog::class)
+            );
 
             ++$index;
         }
@@ -194,8 +220,8 @@ class MigrationDataWriter implements MigrationDataWriterInterface
 
         try {
             $currentWriter->writeData($newData, $this->writeContext);
-        } catch (\Throwable $exception) {
-            $this->writePerEntity($converted, $entityName, $updateWrittenData, $migrationContext, $context);
+        } catch (\Throwable) {
+            $this->writePerEntity($converted, $entityName, $updateWrittenData, $migrationContext);
         }
     }
 
@@ -227,19 +253,21 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         string $entityName,
         array &$updateWrittenData,
         MigrationContextInterface $migrationContext,
-        Context $context,
     ): void {
         foreach ($converted as $dataId => $entity) {
             try {
                 $currentWriter = $this->writerRegistry->getWriter($entityName);
                 $currentWriter->writeData([$entity], $this->writeContext);
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry(new ExceptionRunLog(
-                    $migrationContext->getRunUuid(),
-                    $entityName,
-                    $exception,
-                    $dataId
-                ));
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withExceptionMessage($exception->getMessage())
+                        ->withExceptionTrace($exception->getTrace())
+                        ->withEntityName($entityName)
+                        ->withConvertedData([$entity])
+                        ->withEntityId($entity['id'] ?? null)
+                        ->build(RunExceptionLog::class)
+                );
 
                 $updateWrittenData[$dataId]['written'] = false;
                 $updateWrittenData[$dataId]['writeFailure'] = true;

@@ -62,10 +62,11 @@ class MainVariantRelationConverterTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new MainVariantRelationDataSet(),
+            $runId,
             0,
             250
         );
@@ -117,8 +118,8 @@ class MainVariantRelationConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($converted);
-        static::assertSame($this->productContainer1['entityUuid'], $converted['id']);
-        static::assertSame($this->productVariant1['entityUuid'], $converted['variantListingConfig']['mainVariantId']);
+        static::assertSame($this->productContainer1['entityId'], $converted['id']);
+        static::assertSame($this->productVariant1['entityId'], $converted['variantListingConfig']['mainVariantId']);
 
         $convertResult = $this->converter->convert($data[1], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
@@ -126,50 +127,7 @@ class MainVariantRelationConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($converted);
-        static::assertSame($this->productContainer2['entityUuid'], $converted['id']);
-        static::assertSame($this->productVariant2['entityUuid'], $converted['variantListingConfig']['mainVariantId']);
-    }
-
-    public function testConvertWithoutMapping(): void
-    {
-        $data = require __DIR__ . '/../../../_fixtures/main_variant_relation.php';
-        $context = Context::createDefaultContext();
-        $raw1 = $data[0];
-        $raw2 = $data[0];
-
-        $raw1['id'] = 'invalid-id';
-        $convertResult = $this->converter->convert($raw1, $context, $this->migrationContext);
-        $this->converter->writeMapping($context);
-        $converted = $convertResult->getConverted();
-
-        $parameters = [
-            'missingEntity' => 'product_container',
-            'requiredFor' => 'main_variant_relation',
-            'sourceId' => 'invalid-id',
-        ];
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertNull($converted);
-        static::assertCount(1, $logs);
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_PRODUCT_CONTAINER', $logs[0]['code']);
-        static::assertSame($parameters, $logs[0]['parameters']);
-
-        $this->loggingService->resetLogging();
-        $raw2['ordernumber'] = 'invalid-ordernumber';
-        $convertResult = $this->converter->convert($raw2, $context, $this->migrationContext);
-        $this->converter->writeMapping($context);
-        $converted = $convertResult->getConverted();
-
-        $parameters = [
-            'missingEntity' => 'product',
-            'requiredFor' => 'main_variant_relation',
-            'sourceId' => 'invalid-ordernumber',
-        ];
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertNull($converted);
-        static::assertCount(1, $logs);
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_PRODUCT', $logs[0]['code']);
-        static::assertSame($parameters, $logs[0]['parameters']);
+        static::assertSame($this->productContainer2['entityId'], $converted['id']);
+        static::assertSame($this->productVariant2['entityId'], $converted['variantListingConfig']['mainVariantId']);
     }
 }

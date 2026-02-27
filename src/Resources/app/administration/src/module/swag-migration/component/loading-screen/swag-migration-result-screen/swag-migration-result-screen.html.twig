@@ -1,38 +1,15 @@
 {% block swag_migration_result_screen %}
-    <div>
-
-        {% block swag_migration_result_screen_card %}
-            <mt-card class="swag-migration-result-screen"
-                     position-identifier="swag-migration-result-screen">
-
-                {% block swag_migration_result_screen_content %}
-                    <div class="swag-migration-result-screen__content">
-
-                        {% block swag_migration_result_screen_icon %}
-                            <div class="swag-migration-result-screen__bubble">
-                                <mt-icon class="swag-migration-result-screen__icon"
-                                         name="regular-thumbs-up"
-                                         size="36px"
-                                         decorative />
-                            </div>
-                        {% endblock %}
-
-                        {% block swag_migration_result_screen_title %}
-                            <div class="swag-migration-result-screen__title">
-                                {{ $tc('swag-migration.index.loadingScreenCard.result.title') }}
-                            </div>
-                        {% endblock %}
-                    </div>
-                {% endblock %}
-            </mt-card>
-        {% endblock %}
-
+    <div class="swag-migration-result-screen">
         <mt-card
+            class="swag-migration-result-screen__log-summary"
             position-identifier="swag-migration-result-screen__log-summary"
             :is-loading="!latestRun"
-            :title="$tc('swag-migration.index.loadingScreenCard.result.logSummary')"
+            :title="$tc('swag-migration.index.loadingScreenCard.result.title')"
         >
-            <mt-banner>
+            <mt-banner
+                class="swag-migration-result-screen__log-summary-banner"
+                variant="info"
+            >
                 {{ $tc('swag-migration.index.loadingScreenCard.result.historyHint') }}
             </mt-banner>
 
@@ -41,6 +18,5 @@
                 :migration-run="latestRun"
             />
         </mt-card>
-
     </div>
 {% endblock %}

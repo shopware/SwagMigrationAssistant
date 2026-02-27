@@ -44,19 +44,17 @@ class TaxRuleConverter extends ShopwareConverter
             DefaultEntities::TAX,
             $converted['taxId']
         );
-        if ($taxId === null) {
-            return new ConvertStruct(null, $converted);
+        if ($taxId !== null) {
+            $converted['taxId'] = $taxId;
         }
-        $converted['taxId'] = $taxId;
 
         $countryId = $this->getMappingIdFacade(
             DefaultEntities::COUNTRY,
             $converted['countryId']
         );
-        if ($countryId === null) {
-            return new ConvertStruct(null, $converted);
+        if ($countryId !== null) {
+            $converted['countryId'] = $countryId;
         }
-        $converted['countryId'] = $countryId;
 
         $taxRuleTypeMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -66,12 +64,16 @@ class TaxRuleConverter extends ShopwareConverter
         );
 
         if ($taxRuleTypeMapping) {
-            $taxRuleTypeUuid = $taxRuleTypeMapping['entityUuid'];
+            $taxRuleTypeUuid = $taxRuleTypeMapping['entityId'];
         } else {
             $taxRuleTypeUuid = $this->taxRuleTypeLookup->get(
                 $converted['type']['technicalName'] ?? '',
                 $this->context
             );
+
+            if (!isset($data['type']['id'])) {
+                return new ConvertStruct(null, $data);
+            }
 
             $this->mappingService->createMapping(
                 $this->connectionId,
@@ -85,8 +87,9 @@ class TaxRuleConverter extends ShopwareConverter
 
         // new types can not be created due to write protection on technical name
         if ($taxRuleTypeUuid === null) {
-            return new ConvertStruct(null, $converted);
+            return new ConvertStruct(null, $data);
         }
+
         unset($converted['type']);
         $converted['taxRuleTypeId'] = $taxRuleTypeUuid;
 

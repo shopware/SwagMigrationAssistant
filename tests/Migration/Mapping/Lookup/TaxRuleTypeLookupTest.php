@@ -81,7 +81,7 @@ class TaxRuleTypeLookupTest extends TestCase
 
     private function getTaxRuleTypeLookup(): TaxRuleTypeLookup
     {
-        return $this->getContainer()->get(TaxRuleTypeLookup::class);
+        return static::getContainer()->get(TaxRuleTypeLookup::class);
     }
 
     private function getMockedTaxRuleTypeLookup(): TaxRuleTypeLookup

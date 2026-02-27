@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Order\OrderCollection;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
@@ -26,6 +25,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
@@ -47,10 +47,14 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollectio
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
+use SwagMigrationAssistant\Migration\History\LogGroupingService;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
@@ -118,11 +122,6 @@ class MigrationDataWriterTest extends TestCase
      * @var EntityRepository<CustomerCollection>
      */
     private EntityRepository $customerRepo;
-
-    /**
-     * @var EntityRepository<OrderCollection>
-     */
-    private EntityRepository $orderRepo;
 
     /**
      * @var EntityRepository<CurrencyCollection>
@@ -291,7 +290,8 @@ class MigrationDataWriterTest extends TestCase
             new DummyMediaFileService(),
             $this->loggingService,
             static::getContainer()->get(SwagMigrationDataDefinition::class),
-            $mappingRepo
+            $mappingRepo,
+            static::getContainer()->get(MigrationErrorResolutionService::class)
         );
 
         $migrationContextFactoryMock = $this->createMock(MigrationContextFactory::class);
@@ -307,7 +307,6 @@ class MigrationDataWriterTest extends TestCase
             $this->generalSettingRepo,
             new DummyThemeService($this->themeSalesChannelRepo),
             $this->mappingService,
-            new SwagMigrationDataDefinition(),
             $this->dbConnection,
             new LoggingService($this->loggingRepo, new NullLogger()),
             static::getContainer()->get(TrackingEventClient::class),
@@ -315,6 +314,7 @@ class MigrationDataWriterTest extends TestCase
             $migrationContextFactoryMock,
             $premappingService,
             static::getContainer()->get(RunTransitionService::class),
+            static::getContainer()->get(LogGroupingService::class),
         );
     }
 
@@ -336,12 +336,27 @@ class MigrationDataWriterTest extends TestCase
     public function testHandleWriteException(): void
     {
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $this->runUuid,
             0,
             250
+        );
+
+        $entity = new SwagMigrationDataEntity();
+        $entity->setId('randomId');
+        $entity->setRaw(['name' => 'myProduct']);
+        $collection = new SwagMigrationDataCollection([$entity]);
+
+        $searchResult = new EntitySearchResult(
+            SwagMigrationDataEntity::class,
+            1,
+            $collection,
+            null,
+            new Criteria(),
+            $this->context,
         );
 
         $updateWrittenData = [];
@@ -356,17 +371,18 @@ class MigrationDataWriterTest extends TestCase
             &$updateWrittenData,
             $migrationContext,
             $this->context,
+            $searchResult,
         ]);
 
         $loggingServiceProperty = (new \ReflectionClass(MigrationDataWriter::class))->getProperty('loggingService');
         $loggingServiceProperty->setAccessible(true);
         $loggingService = $loggingServiceProperty->getValue($this->migrationDataWriter);
         static::assertInstanceOf(LoggingServiceInterface::class, $loggingService);
-        $loggingService->saveLogging($this->context);
+        $loggingService->flush();
 
         $log = $this->loggingRepo->search(new Criteria(), $this->context)->getEntities()->first();
         static::assertNotNull($log);
-        static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $log->getCode());
+        static::assertSame(RunExceptionLog::getCode(), $log->getCode());
     }
 
     #[DataProvider('requiredProperties')]
@@ -374,10 +390,11 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new CustomerDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -407,7 +424,7 @@ class MigrationDataWriterTest extends TestCase
 
         static::assertSame(2, $customerTotalAfter - $customerTotalBefore);
         static::assertCount(1, $this->loggingService->getLoggingArray());
-        $this->loggingService->resetLogging();
+        $this->loggingService->reset();
 
         $failureConvertCriteria = new Criteria([$data->getId()]);
         $failureConvertCriteria->addFilter(new EqualsFilter('writeFailure', true));
@@ -428,10 +445,11 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new SalesChannelDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -455,10 +473,11 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new SalesChannelDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -481,10 +500,11 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new CustomerDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -492,15 +512,12 @@ class MigrationDataWriterTest extends TestCase
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
-        $criteria = new Criteria();
-        $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
-
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
-            $this->migrationDataWriter->writeData($migrationContext, $context);
+        $total = 0;
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext, &$total): void {
+            $total = $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $customerTotalAfter = $this->dbConnection->executeQuery('select count(*) from customer')->fetchOne();
 
-        static::assertSame(3, $customerTotalAfter - $customerTotalBefore);
+        static::assertSame(3, $total);
     }
 
     public function testWriteOrderData(): void
@@ -508,10 +525,11 @@ class MigrationDataWriterTest extends TestCase
         $context = Context::createDefaultContext();
         // Add users, who have ordered
         $userMigrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new CustomerDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -519,47 +537,44 @@ class MigrationDataWriterTest extends TestCase
         $this->migrationDataConverter->convert($data, $userMigrationContext, $context);
         $this->clearCacheData();
 
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($userMigrationContext): void {
-            $this->migrationDataWriter->writeData($userMigrationContext, $context);
+        $total = 0;
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($userMigrationContext, &$total): void {
+            $total = $this->migrationDataWriter->writeData($userMigrationContext, $context);
             $this->clearCacheData();
         });
-
+        static::assertSame(3, $total);
         // Add orders
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new OrderDataSet(),
+            $this->runUuid,
             0,
             250
         );
 
-        $criteria = new Criteria();
-
-        // Get data before writing
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $this->clearCacheData();
 
-        $orderTotalBefore = $this->orderRepo->search($criteria, $context)->getTotal();
-        // Get data after writing
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
-            $this->migrationDataWriter->writeData($migrationContext, $context);
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext, &$total): void {
+            $total = $this->migrationDataWriter->writeData($migrationContext, $context);
             $this->clearCacheData();
         });
-        $orderTotalAfter = $this->orderRepo->search($criteria, $context)->getTotal();
 
-        static::assertSame(2, $orderTotalAfter - $orderTotalBefore);
+        static::assertSame(2, $total);
     }
 
     public function testWriteMediaData(): void
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new MediaDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -581,10 +596,11 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new CategoryDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -606,10 +622,11 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -633,10 +650,11 @@ class MigrationDataWriterTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new MediaDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -646,8 +664,7 @@ class MigrationDataWriterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
 
-        static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $logs[0]['code']);
-        static::assertSame('SWAG_MIGRATION__WRITER_NOT_FOUND', $logs[0]['parameters']['exceptionCode']);
+        static::assertSame(RunExceptionLog::getCode(), $logs[0]['code']);
         static::assertCount(1, $logs);
     }
 
@@ -656,8 +673,8 @@ class MigrationDataWriterTest extends TestCase
         return new MappingService(
             $this->migrationMappingRepo,
             $this->entityWriter,
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
-            $this->getContainer()->get(Connection::class),
+            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            static::getContainer()->get(Connection::class),
             new NullLogger()
         );
     }
@@ -682,7 +699,6 @@ class MigrationDataWriterTest extends TestCase
         $this->mediaRepo = static::getContainer()->get('media.repository');
         $this->productRepo = static::getContainer()->get('product.repository');
         $this->categoryRepo = static::getContainer()->get('category.repository');
-        $this->orderRepo = static::getContainer()->get('order.repository');
         $this->customerRepo = static::getContainer()->get('customer.repository');
         $this->connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
         $this->migrationDataRepo = static::getContainer()->get('swag_migration_data.repository');

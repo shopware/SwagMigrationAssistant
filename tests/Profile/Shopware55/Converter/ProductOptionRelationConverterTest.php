@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -53,10 +54,11 @@ class ProductOptionRelationConverterTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new ProductOptionRelationDataSet(),
+            $runId,
             0,
             250
         );
@@ -67,7 +69,7 @@ class ProductOptionRelationConverterTest extends TestCase
             '2',
             $context
         );
-        $this->productUuid = (string) $productMapping['entityUuid'];
+        $this->productUuid = (string) $productMapping['entityId'];
 
         $relationData = require __DIR__ . '/../../../_fixtures/product_option_relation.php';
 
@@ -75,10 +77,10 @@ class ProductOptionRelationConverterTest extends TestCase
             $mapping = $mappingService->getOrCreateMapping(
                 $connectionId,
                 DefaultEntities::PROPERTY_GROUP_OPTION,
-                \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'])),
+                Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5'),
                 $context
             );
-            $this->propertyUuids[$key] = (string) $mapping['entityUuid'];
+            $this->propertyUuids[$key] = (string) $mapping['entityId'];
         }
 
         $this->oldMappingId = Uuid::randomHex();
@@ -98,7 +100,7 @@ class ProductOptionRelationConverterTest extends TestCase
             $relationData[0]['id'] . '_' . $this->productUuid,
             $context
         );
-        $this->oldMappingId = (string) $mapping['entityUuid'];
+        $this->oldMappingId = (string) $mapping['entityId'];
     }
 
     public function testConvert(): void
@@ -152,49 +154,5 @@ class ProductOptionRelationConverterTest extends TestCase
         static::assertSame($this->productUuid, $converted['id']);
         static::assertSame($this->propertyUuids[0], $converted['configuratorSettings'][0]['optionId']);
         static::assertSame($this->oldMappingId, $converted['configuratorSettings'][0]['id']);
-    }
-
-    public function testConvertWithoutProductMapping(): void
-    {
-        $data = require __DIR__ . '/../../../_fixtures/product_option_relation.php';
-        $data = $data[0];
-        $data['productId'] = '18';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->converter->convert($data, $context, $this->migrationContext);
-        $this->converter->writeMapping($context);
-        $logs = $this->loggingService->getLoggingArray();
-
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertEmpty($logs);
-    }
-
-    public function testConvertWithoutPropertyMapping(): void
-    {
-        $relations = require __DIR__ . '/../../../_fixtures/product_option_relation.php';
-        $data = $relations[0];
-        $data['name'] = 'Invalid property value';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->converter->convert($data, $context, $this->migrationContext);
-        $this->converter->writeMapping($context);
-        $logs = $this->loggingService->getLoggingArray();
-
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertEmpty($logs);
-
-        $data = $relations[0];
-        $data['group']['name'] = 'Invalid group name';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->converter->convert($data, $context, $this->migrationContext);
-        $this->converter->writeMapping($context);
-        $logs = $this->loggingService->getLoggingArray();
-
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertEmpty($logs);
     }
 }

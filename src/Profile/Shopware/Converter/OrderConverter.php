@@ -17,19 +17,24 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
+use Shopware\Core\Checkout\Order\Aggregate\OrderAddress\OrderAddressDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderLineItem\OrderLineItemDefinition;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
-use SwagMigrationAssistant\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup;
@@ -64,29 +69,6 @@ abstract class OrderConverter extends ShopwareConverter
 
     protected string $runId;
 
-    /**
-     * @var list<string>
-     */
-    protected array $requiredDataFieldKeys = [
-        'customer',
-        'currency',
-        'currencyFactor',
-        'payment',
-        'status',
-    ];
-
-    /**
-     * @var list<string>
-     */
-    protected array $requiredAddressDataFieldKeys = [
-        'firstname',
-        'lastname',
-        'zipcode',
-        'city',
-        'street',
-        'salutation',
-    ];
-
     protected int $paymentStatusId;
 
     /**
@@ -106,7 +88,7 @@ abstract class OrderConverter extends ShopwareConverter
     }
 
     /**
-     * @throws AssociationEntityRequiredMissingException
+     * @throws MigrationException
      */
     public function convert(
         array $data,
@@ -118,36 +100,13 @@ abstract class OrderConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
         $this->migrationContext = $migrationContext;
 
-        $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
-        if (empty($data['billingaddress']['id'])) {
-            $fields[] = 'billingaddress';
-        }
-        if (isset($data['payment']) && empty($data['payment']['name'])) {
-            $fields[] = 'paymentMethod';
-        }
-
-        if (!empty($fields)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::ORDER,
-                $this->oldId,
-                \implode(',', $fields)
-            ));
-
-            return new ConvertStruct(null, $data);
-        }
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
         $this->context = $context;
-
-        $connection = $migrationContext->getConnection();
-        $this->connectionName = '';
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -157,7 +116,7 @@ abstract class OrderConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $converted['id'] = (string) $this->mainMapping['entityUuid'];
+        $converted['id'] = (string) $this->mainMapping['entityId'];
         unset($data['id']);
         $this->uuid = $converted['id'];
 
@@ -175,11 +134,11 @@ abstract class OrderConverter extends ShopwareConverter
             $this->context
         );
 
-        if ($customerMapping === null) {
-            throw MigrationException::associationEntityRequiredMissing(
-                DefaultEntities::ORDER,
-                DefaultEntities::CUSTOMER
-            );
+        $customerId = null;
+
+        if ($customerMapping !== null) {
+            $customerId = $customerMapping['entityId'];
+            $this->mappingIds[] = $customerMapping['id'];
         }
 
         $orderCustomerMapping = $this->mappingService->getOrCreateMapping(
@@ -190,44 +149,37 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         $converted['orderCustomer'] = [
-            'id' => $orderCustomerMapping['entityUuid'],
-            'customerId' => $customerMapping['entityUuid'],
+            'id' => $orderCustomerMapping['entityId'],
+            'customerId' => $customerId,
         ];
-        $this->mappingIds[] = $customerMapping['id'];
         $this->mappingIds[] = $orderCustomerMapping['id'];
         unset($customerMapping);
 
-        $salutationUuid = $this->getSalutation($data['customer']['salutation']);
-        if ($salutationUuid === null) {
-            return new ConvertStruct(null, $data);
+        if (isset($data['customer']['salutation'])) {
+            $salutationUuid = $this->getSalutation($data['customer']['salutation']);
+
+            if ($salutationUuid !== null) {
+                $converted['orderCustomer']['salutationId'] = $salutationUuid;
+            }
         }
-        $converted['orderCustomer']['salutationId'] = $salutationUuid;
 
-        $this->convertValue($converted['orderCustomer'], 'email', $data['customer'], 'email');
-        $this->convertValue($converted['orderCustomer'], 'firstName', $data['customer'], 'firstname');
-        $this->convertValue($converted['orderCustomer'], 'lastName', $data['customer'], 'lastname');
-        $this->convertValue($converted['orderCustomer'], 'customerNumber', $data['customer'], 'customernumber');
+        if (isset($data['customer'])) {
+            $this->convertValue($converted['orderCustomer'], 'email', $data['customer'], 'email');
+            $this->convertValue($converted['orderCustomer'], 'firstName', $data['customer'], 'firstname');
+            $this->convertValue($converted['orderCustomer'], 'lastName', $data['customer'], 'lastname');
+            $this->convertValue($converted['orderCustomer'], 'customerNumber', $data['customer'], 'customernumber');
+        }
+
         unset($data['userID'], $data['customer']);
-
         $this->convertValue($converted, 'currencyFactor', $data, 'currencyFactor', self::TYPE_FLOAT);
 
-        $currencyUuid = null;
         if (isset($data['currency'])) {
             $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
+
+            if ($currencyUuid !== null) {
+                $converted['currencyId'] = $currencyUuid;
+            }
         }
-        if ($currencyUuid === null) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::ORDER,
-                $this->oldId,
-                'currency'
-            ));
-
-            return new ConvertStruct(null, $data);
-        }
-
-        $converted['currencyId'] = $currencyUuid;
-
         $converted['itemRounding'] = [
             'decimals' => $context->getRounding()->getDecimals(),
             'interval' => 0.01,
@@ -237,26 +189,19 @@ abstract class OrderConverter extends ShopwareConverter
 
         $this->convertValue($converted, 'orderDateTime', $data, 'ordertime', self::TYPE_DATETIME);
 
-        $stateMapping = $this->mappingService->getMapping(
-            $this->connectionId,
-            OrderStateReader::getMappingName(),
-            (string) $data['status'],
-            $this->context
-        );
-
-        if ($stateMapping === null) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                'order_state',
+        if (isset($data['status'])) {
+            $stateMapping = $this->mappingService->getMapping(
+                $this->connectionId,
+                OrderStateReader::getMappingName(),
                 (string) $data['status'],
-                DefaultEntities::ORDER,
-                $this->oldId
-            ));
+                $this->context
+            );
 
-            return new ConvertStruct(null, $data);
+            if ($stateMapping !== null) {
+                $converted['stateId'] = $stateMapping['entityId'];
+                $this->mappingIds[] = $stateMapping['id'];
+            }
         }
-        $converted['stateId'] = $stateMapping['entityUuid'];
-        $this->mappingIds[] = $stateMapping['id'];
 
         $shippingGross = (float) $data['invoice_shipping'];
         $shippingNet = (float) $data['invoice_shipping_net'];
@@ -281,7 +226,7 @@ abstract class OrderConverter extends ShopwareConverter
             $taxStatus = $this->getTaxStatus($data);
             $taxRules = $this->getTaxRules($data, $taxStatus);
 
-            $converted['lineItems'] = $this->getLineItems($data['details'], $taxRules, $taxStatus);
+            $converted['lineItems'] = $this->getLineItems($data['details'], $taxStatus);
 
             $converted['price'] = new CartPrice(
                 (float) $data['invoice_amount_net'],
@@ -328,22 +273,17 @@ abstract class OrderConverter extends ShopwareConverter
             $converted['primaryOrderTransactionId'] = $converted['transactions'][0]['id'];
         }
 
-        $billingAddress = $this->getAddress($data['billingaddress']);
-        if (empty($billingAddress)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::ORDER,
-                $this->oldId,
-                'billingaddress'
-            ));
+        if (isset($data['billingaddress']) && \is_array($data['billingaddress'])) {
+            $billingAddress = $this->getAddress($data['billingaddress']);
+            if (isset($data['billingaddress']['ustid']) && $data['billingaddress']['ustid'] !== '') {
+                $converted['orderCustomer']['vatIds'][] = $data['billingaddress']['ustid'];
+            }
+            if (!empty($billingAddress)) {
+                $converted['billingAddressId'] = $billingAddress['id'];
+                $converted['addresses'][] = $billingAddress;
+            }
+        }
 
-            return new ConvertStruct(null, $data);
-        }
-        if (isset($data['billingaddress']['ustid']) && $data['billingaddress']['ustid'] !== '') {
-            $converted['orderCustomer']['vatIds'][] = $data['billingaddress']['ustid'];
-        }
-        $converted['billingAddressId'] = $billingAddress['id'];
-        $converted['addresses'][] = $billingAddress;
         unset($data['billingaddress']);
 
         if (isset($data['subshopID'])) {
@@ -355,7 +295,7 @@ abstract class OrderConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $converted['salesChannelId'] = $mapping['entityUuid'];
+                $converted['salesChannelId'] = $mapping['entityId'];
                 $this->mappingIds[] = $mapping['id'];
                 unset($data['subshopID']);
             }
@@ -369,7 +309,11 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER, $this->connectionName, ['id', 'orderID'], $this->context);
+            $customField = $this->getAttributes($data['attributes'], DefaultEntities::ORDER, $this->connectionName, ['id', 'orderID'], $this->context);
+
+            if ($customField !== null) {
+                $converted['customFields'] = $customField;
+            }
         }
         unset($data['attributes']);
 
@@ -379,9 +323,9 @@ abstract class OrderConverter extends ShopwareConverter
                 $converted['languageId'] = $languageMapping;
             }
         }
-        unset($data['locale']);
 
-        $converted['deepLinkCode'] = \md5($converted['id']);
+        unset($data['locale']);
+        $converted['deepLinkCode'] = Hasher::hash($converted['id']);
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -436,17 +380,19 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                'transaction_state',
-                $data['cleared'],
-                DefaultEntities::ORDER_TRANSACTION,
-                $this->oldId
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(OrderTransactionDefinition::ENTITY_NAME)
+                    ->withFieldName('stateId')
+                    ->withFieldSourcePath('cleared')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(ConvertEntityUnknownLog::class)
+            );
 
             return;
         }
-        $stateId = $mapping['entityUuid'];
+        $stateId = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -461,7 +407,7 @@ abstract class OrderConverter extends ShopwareConverter
         if ($paymentMethodUuid === null) {
             return;
         }
-        $id = $mapping['entityUuid'];
+        $id = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $transactions = [
@@ -486,28 +432,32 @@ abstract class OrderConverter extends ShopwareConverter
      */
     protected function getPaymentMethod(array $originalData): ?string
     {
-        $paymentMethodMapping = $this->mappingService->getMapping(
-            $this->connectionId,
-            PaymentMethodReader::getMappingName(),
-            $originalData['payment']['id'],
-            $this->context
-        );
+        $paymentMethodMapping = null;
+        if (isset($originalData['payment']['id'])) {
+            $paymentMethodMapping = $this->mappingService->getMapping(
+                $this->connectionId,
+                PaymentMethodReader::getMappingName(),
+                $originalData['payment']['id'],
+                $this->context
+            );
+        }
 
         if ($paymentMethodMapping === null) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                'payment_method',
-                $originalData['payment']['id'],
-                DefaultEntities::ORDER_TRANSACTION,
-                $this->oldId
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(OrderTransactionDefinition::ENTITY_NAME)
+                    ->withFieldName('paymentMethodId')
+                    ->withFieldSourcePath('payment.id')
+                    ->withSourceData($originalData)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
 
             return null;
         }
 
         $this->mappingIds[] = $paymentMethodMapping['id'];
 
-        return $paymentMethodMapping['entityUuid'];
+        return $paymentMethodMapping['entityId'];
     }
 
     /**
@@ -515,20 +465,11 @@ abstract class OrderConverter extends ShopwareConverter
      *
      * @return array<string, mixed>
      */
-    protected function getAddress(array $originalData, string $type = self::BILLING_ADDRESS): array
+    protected function getAddress(?array $originalData, string $type = self::BILLING_ADDRESS): array
     {
-        $fields = $this->checkForEmptyRequiredDataFields($originalData, $this->requiredAddressDataFieldKeys);
-        if (!empty($fields)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::ORDER_ADDRESS,
-                $originalData['id'],
-                \implode(',', $fields)
-            ));
-
+        if ($originalData === null || !isset($originalData['id'])) {
             return [];
         }
-
         $entityName = DefaultEntities::ORDER_ADDRESS;
         if ($type !== self::BILLING_ADDRESS) {
             $entityName = DefaultEntities::ORDER_ADDRESS . '_' . $type;
@@ -541,7 +482,7 @@ abstract class OrderConverter extends ShopwareConverter
             $originalData['id'],
             $this->context
         );
-        $address['id'] = $mapping['entityUuid'];
+        $address['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $address['country'] = $this->getCountry($originalData['country']);
@@ -594,7 +535,7 @@ abstract class OrderConverter extends ShopwareConverter
                 $oldCountryData['id'],
                 $this->context
             );
-            $country['id'] = $mapping['entityUuid'];
+            $country['id'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
         }
 
@@ -640,7 +581,7 @@ abstract class OrderConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
@@ -664,14 +605,13 @@ abstract class OrderConverter extends ShopwareConverter
         $state = ['countryId' => $newCountryId];
 
         if (!isset($oldAddressData['stateID'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
-            $this->loggingService->addLogEntry(
-                new UnknownEntityLog(
-                    $this->runId,
-                    DefaultEntities::COUNTRY_STATE,
-                    $oldAddressData['stateID'] ?? 'unknown',
-                    DefaultEntities::ORDER,
-                    $this->oldId
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
+                    ->withFieldName('countryStateId')
+                    ->withFieldSourcePath('stateID')
+                    ->withSourceData($oldAddressData)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return [];
@@ -685,6 +625,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         if ($countryStateUuid !== null) {
             $state['id'] = $countryStateUuid;
+            $state['shortCode'] = $oldAddressData['country']['countryiso'] . '-' . $oldAddressData['state']['shortcode'];
 
             return $state;
         }
@@ -702,27 +643,29 @@ abstract class OrderConverter extends ShopwareConverter
             $oldAddressData['state']['position'],
             $oldAddressData['state']['active']
         )) {
-            $this->loggingService->addLogEntry(
-                new UnknownEntityLog(
-                    $this->runId,
-                    DefaultEntities::COUNTRY_STATE,
-                    $oldAddressData['stateID'],
-                    DefaultEntities::ORDER,
-                    $this->oldId
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
+                    ->withFieldName('countryStateId')
+                    ->withFieldSourcePath('name')
+                    ->withSourceData($oldAddressData['state'])
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return [];
         }
 
-        $state['id'] = $mapping['entityUuid'];
+        $state['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $oldStateData = $oldAddressData['state'];
 
         $this->applyCountryStateTranslation($state, $oldStateData);
         $this->convertValue($state, 'name', $oldStateData, 'name');
-        $this->convertValue($state, 'shortCode', $oldStateData, 'shortcode');
+
+        $state['shortCode'] = $oldAddressData['country']['countryiso'] . '-' . $oldStateData['shortcode'];
+        unset($oldStateData['shortcode']);
+
         $this->convertValue($state, 'position', $oldStateData, 'position', self::TYPE_INTEGER);
         $this->convertValue($state, 'active', $oldStateData, 'active', self::TYPE_BOOLEAN);
 
@@ -756,7 +699,7 @@ abstract class OrderConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
@@ -775,21 +718,26 @@ abstract class OrderConverter extends ShopwareConverter
     protected function getDeliveries(array $data, array $converted, CalculatedPrice $shippingCosts): array
     {
         $deliveries = [];
-        $deliveryStateMapping = $this->mappingService->getMapping(
-            $this->connectionId,
-            OrderDeliveryStateReader::getMappingName(),
-            (string) $data['status'],
-            $this->context
-        );
+        $deliveryStateMapping = null;
+        if (isset($data['status'])) {
+            $deliveryStateMapping = $this->mappingService->getMapping(
+                $this->connectionId,
+                OrderDeliveryStateReader::getMappingName(),
+                (string) $data['status'],
+                $this->context
+            );
+        }
 
         if ($deliveryStateMapping === null) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                'order_delivery_state',
-                (string) $data['status'],
-                DefaultEntities::ORDER,
-                $this->oldId
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(OrderDeliveryDefinition::ENTITY_NAME)
+                    ->withFieldName('stateId')
+                    ->withFieldSourcePath('status')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(ConvertEntityUnknownLog::class)
+            );
 
             return [];
         }
@@ -804,8 +752,8 @@ abstract class OrderConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         $delivery = [
-            'id' => $mapping['entityUuid'],
-            'stateId' => $deliveryStateMapping['entityUuid'],
+            'id' => $mapping['entityId'],
+            'stateId' => $deliveryStateMapping['entityId'],
             'shippingDateEarliest' => $converted['orderDateTime'],
             'shippingDateLatest' => $converted['orderDateTime'],
         ];
@@ -841,7 +789,7 @@ abstract class OrderConverter extends ShopwareConverter
                 );
                 $this->mappingIds[] = $mapping['id'];
                 $positions[] = [
-                    'id' => $mapping['entityUuid'],
+                    'id' => $mapping['entityId'],
                     'orderLineItemId' => $lineItem['id'],
                     'price' => $lineItem['price'],
                 ];
@@ -849,8 +797,8 @@ abstract class OrderConverter extends ShopwareConverter
 
             $delivery['positions'] = $positions;
         }
-        $delivery['shippingCosts'] = $shippingCosts;
 
+        $delivery['shippingCosts'] = $shippingCosts;
         $deliveries[] = $delivery;
 
         return $deliveries;
@@ -866,19 +814,20 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($shippingMethodMapping === null) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                DefaultEntities::SHIPPING_METHOD,
-                $shippingMethodId,
-                DefaultEntities::ORDER,
-                $this->oldId
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(OrderDeliveryDefinition::ENTITY_NAME)
+                    ->withFieldName('shippingMethodId')
+                    ->withFieldSourcePath('dispatchID')
+                    ->withSourceData(['dispatchID' => $shippingMethodId])
+                    ->build(ConvertEntityUnknownLog::class)
+            );
 
             return null;
         }
         $this->mappingIds[] = $shippingMethodMapping['id'];
 
-        return $shippingMethodMapping['entityUuid'];
+        return $shippingMethodMapping['entityId'];
     }
 
     /**
@@ -886,7 +835,7 @@ abstract class OrderConverter extends ShopwareConverter
      *
      * @return array<int, array<string, mixed>>
      */
-    protected function getLineItems(array $originalData, TaxRuleCollection $taxRules, string $taxStatus): array
+    protected function getLineItems(array $originalData, string $taxStatus): array
     {
         $lineItems = [];
 
@@ -902,8 +851,8 @@ abstract class OrderConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
 
             $lineItem = [
-                'id' => $mapping['entityUuid'],
-                'identifier' => $mapping['entityUuid'],
+                'id' => $mapping['entityId'],
+                'identifier' => $mapping['entityId'],
             ];
 
             if ($isProduct) {
@@ -916,8 +865,8 @@ abstract class OrderConverter extends ShopwareConverter
                     );
 
                     if ($mapping !== null) {
-                        $lineItem['referencedId'] = $mapping['entityUuid'];
-                        $lineItem['productId'] = $mapping['entityUuid'];
+                        $lineItem['referencedId'] = $mapping['entityId'];
+                        $lineItem['productId'] = $mapping['entityId'];
                         $lineItem['payload']['productNumber'] = $originalLineItem['articleordernumber'] ?? '';
                         $this->mappingIds[] = $mapping['id'];
                     }
@@ -936,14 +885,16 @@ abstract class OrderConverter extends ShopwareConverter
             $this->convertValue($lineItem, 'quantity', $originalLineItem, 'quantity', self::TYPE_INTEGER);
             $this->convertValue($lineItem, 'label', $originalLineItem, 'name');
 
+            $lineItemTaxRules = new TaxRuleCollection([new TaxRule((float) $originalLineItem['tax_rate'])]);
+
             $calculatedTax = null;
             $totalPrice = $lineItem['quantity'] * $originalLineItem['price'];
             if ($taxStatus === CartPrice::TAX_STATE_NET) {
-                $calculatedTax = $this->taxCalculator->calculateNetTaxes($totalPrice, $taxRules);
+                $calculatedTax = $this->taxCalculator->calculateNetTaxes($totalPrice, $lineItemTaxRules);
             }
 
             if ($taxStatus === CartPrice::TAX_STATE_GROSS) {
-                $calculatedTax = $this->taxCalculator->calculateGrossTaxes($totalPrice, $taxRules);
+                $calculatedTax = $this->taxCalculator->calculateGrossTaxes($totalPrice, $lineItemTaxRules);
             }
 
             if ($taxStatus === CartPrice::TAX_STATE_FREE) {
@@ -957,13 +908,13 @@ abstract class OrderConverter extends ShopwareConverter
                     (float) $originalLineItem['price'],
                     (float) $totalPrice,
                     $calculatedTax,
-                    $taxRules,
+                    $lineItemTaxRules,
                     (int) $lineItem['quantity']
                 );
 
                 $lineItem['priceDefinition'] = new QuantityPriceDefinition(
                     (float) $originalLineItem['price'],
-                    $taxRules,
+                    $lineItemTaxRules,
                     $lineItem['quantity'] ?? 1
                 );
 
@@ -1033,20 +984,21 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($salutationMapping === null) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                'salutation',
-                $salutation,
-                DefaultEntities::ORDER,
-                $this->oldId
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
+                    ->withFieldName('salutationId')
+                    ->withFieldSourcePath('salutation')
+                    ->withSourceData(['salutation' => $salutation])
+                    ->build(ConvertEntityUnknownLog::class)
+            );
 
             return null;
         }
 
         $this->mappingIds[] = $salutationMapping['id'];
 
-        return $salutationMapping['entityUuid'];
+        return $salutationMapping['entityId'];
     }
 
     /**
@@ -1064,13 +1016,14 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if (!\is_array($mediaMapping)) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                'product_download_media',
-                $originalEsdItem['esdID'],
-                DefaultEntities::ORDER,
-                $this->oldId
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(OrderLineItemDefinition::ENTITY_NAME)
+                    ->withFieldName('coverId')
+                    ->withFieldSourcePath('esd.esdID')
+                    ->withSourceData($originalEsdItem)
+                    ->build(ConvertEntityUnknownLog::class)
+            );
 
             return null;
         }
@@ -1086,6 +1039,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         $accessGranted = false;
         if (isset($originalEsdItem['downloadAvailablePaymentStatus'])) {
+            /** @phpstan-ignore shopware.unserializeUsage */
             $paymentStatusArray = \unserialize($originalEsdItem['downloadAvailablePaymentStatus'], ['allowed_classes' => false]);
 
             if (\is_array($paymentStatusArray) && isset($this->paymentStatusId)) {
@@ -1094,8 +1048,8 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         return [
-            'id' => $mapping['entityUuid'],
-            'mediaId' => $mediaMapping['entityUuid'],
+            'id' => $mapping['entityId'],
+            'mediaId' => $mediaMapping['entityId'],
             'accessGranted' => $accessGranted,
             'position' => 0,
         ];

@@ -121,7 +121,7 @@ class GlobalDocumentBaseConfigLookupTest extends TestCase
 
     private function getGlobalDocumentBaseConfigLookup(): GlobalDocumentBaseConfigLookup
     {
-        return $this->getContainer()->get(GlobalDocumentBaseConfigLookup::class);
+        return static::getContainer()->get(GlobalDocumentBaseConfigLookup::class);
     }
 
     private function getMockedGlobalDocumentBaseConfigLookup(): GlobalDocumentBaseConfigLookup

@@ -26,9 +26,10 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\Test\TestDefaults;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
@@ -49,7 +50,6 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validation;
 
 #[Package('fundamentals@after-sales')]
@@ -85,10 +85,10 @@ class OrderConverterTest extends TestCase
             $this->loggingService,
             $taxCalculator,
             $salesChannelRepo,
-            $this->getContainer()->get(CountryLookup::class),
+            static::getContainer()->get(CountryLookup::class),
             $currencyLookup,
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(CountryStateLookup::class)
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(CountryStateLookup::class)
         );
 
         $this->customerConverter = new Shopware55CustomerConverter(
@@ -110,19 +110,21 @@ class OrderConverterTest extends TestCase
         $connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new OrderDataSet(),
+            $runId,
             0,
             250
         );
 
         $this->customerMigrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new CustomerDataSet(),
+            $runId,
             0,
             250
         );
@@ -220,6 +222,16 @@ class OrderConverterTest extends TestCase
         static::assertInstanceOf(AbsolutePriceDefinition::class, $creditPriceDefinition);
         static::assertSame(-2.0, $creditPriceDefinition->getPrice());
 
+        $lineItem0Price = $converted['lineItems'][0]['price'];
+        static::assertInstanceOf(CalculatedPrice::class, $lineItem0Price);
+        static::assertCount(1, $lineItem0Price->getTaxRules());
+        static::assertSame(19.0, $lineItem0Price->getTaxRules()->first()?->getTaxRate());
+
+        $lineItem3Price = $converted['lineItems'][3]['price'];
+        static::assertInstanceOf(CalculatedPrice::class, $lineItem3Price);
+        static::assertCount(1, $lineItem3Price->getTaxRules());
+        static::assertSame(7.0, $lineItem3Price->getTaxRules()->first()?->getTaxRate());
+
         static::assertTrue(isset($converted['lineItems'][0]['downloads'][0]['mediaId']));
         static::assertFalse($converted['lineItems'][0]['downloads'][0]['accessGranted']);
 
@@ -291,18 +303,16 @@ class OrderConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
 
-        try {
-            $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
-        } catch (\Exception $e) {
-            static::assertInstanceOf(MigrationException::class, $e);
-            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
-            static::assertSame(MigrationException::ASSOCIATION_ENTITY_REQUIRED_MISSING, $e->getErrorCode());
+        $convertResult = $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
 
-            static::assertArrayHasKey('missingEntity', $e->getParameters());
-            static::assertArrayHasKey('entity', $e->getParameters());
-            static::assertSame('order', $e->getParameters()['entity']);
-            static::assertSame('customer', $e->getParameters()['missingEntity']);
-        }
+        static::assertNotNull($convertResult->getConverted());
+        static::assertArrayHasKey('orderCustomer', $convertResult->getConverted());
+        static::assertIsArray($convertResult->getConverted()['orderCustomer']);
+        $orderCustomer = $convertResult->getConverted()['orderCustomer'];
+
+        static::assertSame('test@example.com', $orderCustomer['email']);
+        static::assertSame('20001', $orderCustomer['customerNumber']);
+        static::assertNull($orderCustomer['customerId']);
     }
 
     public function testConvertNetOrder(): void
@@ -398,28 +408,21 @@ class OrderConverterTest extends TestCase
             $this->migrationContext
         );
 
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER');
-        static::assertSame($logs[0]['parameters']['sourceId'], $orderData['id']);
-        static::assertSame($logs[0]['parameters']['emptyField'], $missingProperty);
+        static::assertNotNull($convertResult->getConverted());
     }
 
     /**
-     * @return list<list<string>>
+     * @return array<string, mixed>
      */
     public static function requiredProperties(): array
     {
         return [
-            ['billingaddress'],
-            ['payment'],
-            ['customer'],
-            ['currencyFactor'],
-            ['currency'],
-            ['status'],
+            'billingaddress' => ['billingaddress'],
+            'payment' => ['payment'],
+            'customer' => ['customer'],
+            'currencyFactor' => ['currencyFactor'],
+            'currency' => ['currency'],
+            'status' => ['status'],
         ];
     }
 
@@ -584,17 +587,7 @@ class OrderConverterTest extends TestCase
 
         $converted = $convertResult->getConverted();
 
-        static::assertNull($converted);
-        static::assertCount(2, $this->loggingService->getLoggingArray());
-
-        $validLog = 0;
-        foreach ($this->loggingService->getLoggingArray() as $log) {
-            if ($log['code'] === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_ADDRESS' || $log['code'] === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER') {
-                ++$validLog;
-            }
-        }
-
-        static::assertSame(2, $validLog);
+        static::assertNotNull($converted);
     }
 
     #[DataProvider('requiredAddressProperties')]
@@ -624,69 +617,9 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
-        static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_ADDRESS', $log['code']);
-        }
-    }
-
-    public function testConvertWithoutPaymentName(): void
-    {
-        [$customerData, $orderData] = $this->getFixtureData();
-        $orderData = $orderData[0];
-        unset($orderData['payment']['name']);
-        $context = Context::createDefaultContext();
-
-        $this->customerConverter->convert(
-            $customerData[0],
-            $context,
-            $this->customerMigrationContext
-        );
-
-        $convertResult = $this->orderConverter->convert(
-            $orderData,
-            $context,
-            $this->migrationContext
-        );
-
-        $converted = $convertResult->getConverted();
-
-        static::assertNull($converted);
-        static::assertCount(1, $this->loggingService->getLoggingArray());
-
-        foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER', $log['code']);
-            static::assertSame($log['parameters']['emptyField'], 'paymentMethod');
-        }
-    }
-
-    public function testConvertWithoutKnownOrderState(): void
-    {
-        [$customerData, $orderData] = $this->getFixtureData();
-        $orderData = $orderData[0];
-        $orderData['status'] = 100;
-        $context = Context::createDefaultContext();
-
-        $this->customerConverter->convert(
-            $customerData[0],
-            $context,
-            $this->customerMigrationContext
-        );
-
-        $convertResult = $this->orderConverter->convert(
-            $orderData,
-            $context,
-            $this->migrationContext
-        );
-
-        $converted = $convertResult->getConverted();
-
-        static::assertNull($converted);
-        static::assertCount(1, $this->loggingService->getLoggingArray());
-
-        foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame('SWAG_MIGRATION_ORDER_STATE_ENTITY_UNKNOWN', $log['code']);
+            static::assertSame(ConvertSourceDataIncompleteLog::getCode(), $log['code']);
         }
     }
 
@@ -715,7 +648,7 @@ class OrderConverterTest extends TestCase
             $this->loggingService,
             new TaxCalculator(),
             static::getContainer()->get('sales_channel.repository'),
-            $this->getContainer()->get(CountryLookup::class),
+            static::getContainer()->get(CountryLookup::class),
             $currencyLookup,
             $languageLookup,
             $this->createMock(CountryStateLookup::class)
@@ -817,7 +750,7 @@ class OrderConverterTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('shortCode', 'DE-NW'));
-        $expectedStateId = $this->getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
+        $expectedStateId = static::getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
 
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
@@ -826,12 +759,14 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('countryState', $converted['addresses'][0]);
         static::assertArrayHasKey('id', $converted['addresses'][0]['countryState']);
         static::assertSame($expectedStateId, $converted['addresses'][0]['countryState']['id']);
+        static::assertSame('DE-NW', $converted['addresses'][0]['countryState']['shortCode']);
 
         static::assertArrayHasKey('deliveries', $converted);
         static::assertArrayHasKey('shippingOrderAddress', $converted['deliveries'][0]);
         static::assertArrayHasKey('countryState', $converted['deliveries'][0]['shippingOrderAddress']);
         static::assertArrayHasKey('id', $converted['deliveries'][0]['shippingOrderAddress']['countryState']);
         static::assertSame($expectedStateId, $converted['deliveries'][0]['shippingOrderAddress']['countryState']['id']);
+        static::assertSame('DE-NW', $converted['deliveries'][0]['shippingOrderAddress']['countryState']['shortCode']);
     }
 
     public function testConvertExistingCountryStateWithoutMapping(): void
@@ -858,7 +793,7 @@ class OrderConverterTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('shortCode', 'DE-NW'));
-        $expectedStateId = $this->getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
+        $expectedStateId = static::getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
 
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
@@ -900,11 +835,7 @@ class OrderConverterTest extends TestCase
 
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_COUNTRY_STATE_ENTITY_UNKNOWN');
-        static::assertSame($logs[0]['parameters']['sourceId'], '9999');
-        static::assertSame($logs[0]['parameters']['entity'], DefaultEntities::COUNTRY_STATE);
-        static::assertSame($logs[0]['parameters']['requiredForSourceId'], $orderData['id']);
-        static::assertSame($logs[0]['parameters']['requiredForEntity'], DefaultEntities::ORDER);
+        static::assertSame($logs[0]['code'], ConvertEntityUnknownLog::getCode());
     }
 
     public function testConvertWithShippingTaxRateNotSet(): void

@@ -86,7 +86,7 @@ class DocumentTypeLookupTest extends TestCase
     private function getDocumentTypeLookup(): DocumentTypeLookup
     {
         return new DocumentTypeLookup(
-            $this->getContainer()->get('document_type.repository')
+            static::getContainer()->get('document_type.repository')
         );
     }
 

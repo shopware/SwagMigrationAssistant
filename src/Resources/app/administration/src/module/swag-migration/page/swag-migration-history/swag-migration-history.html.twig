@@ -1,22 +1,24 @@
 {% block swag_migration_history %}
-    <mt-card class="swag-migration-history"
-             :is-loading="isLoading"
-             :large="true"
-             position-identifier="swag-migration-history">
+    <mt-card
+        class="swag-migration-history"
+        :is-loading="isLoading"
+        :large="true"
+        position-identifier="swag-migration-history"
+    >
         <template #grid>
-
             {% block swag_migration_history_grid %}
-                <sw-data-grid v-if="migrationRuns.length > 0"
-                              identifier="swag-migration-history"
-                              :data-source="migrationRuns"
-                              :columns="migrationColumns"
-                              :show-selection="false"
-                              :show-settings="true"
-                              :allow-column-edit="true"
-                              :sort-by="sortBy"
-                              :sort-direction="sortDirection"
-                              @column-sort="onSortColumn">
-
+                <sw-data-grid
+                    v-if="migrationRuns.length > 0"
+                    identifier="swag-migration-history"
+                    :data-source="migrationRuns"
+                    :columns="migrationColumns"
+                    :show-selection="false"
+                    :show-settings="true"
+                    :allow-column-edit="true"
+                    :sort-by="sortBy"
+                    :sort-direction="sortDirection"
+                    @column-sort="onSortColumn"
+                >
                     {% block swag_migration_history_grid_column_status %}
                         <template #column-step="{ item }">
                             <mt-icon v-if="item.step === 'finished'"
@@ -36,7 +38,12 @@
 
                     {% block swag_migration_history_grid_column_profile %}
                         <template #column-connection.profile="{ item }">
-                            {{ item.connection.profileName }} /
+                            {{ item.connection.profileName }}
+                        </template>
+                    {% endblock %}
+
+                    {% block swag_migration_history_grid_column_gateway %}
+                        <template #column-connection.gateway="{ item }">
                             {{ item.connection.gatewayName }}
                         </template>
                     {% endblock %}
@@ -59,13 +66,9 @@
                             <sw-context-menu-item :router-link="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">
                                 {{ $tc('swag-migration.history.contextMenu.details') }}
                             </sw-context-menu-item>
+
                             <sw-context-menu-item @click="onContextDownloadLogFile(item.id)">
                                 {{ $tc('swag-migration.history.contextMenu.downloadLogs') }}
-                            </sw-context-menu-item>
-                            <sw-context-menu-item variant="danger"
-                                                  :disabled="isMediaProcessing"
-                                                  @click="onContextClearRunClicked(item.id)">
-                                {{ $tc('swag-migration.history.contextMenu.clearLogs') }}
                             </sw-context-menu-item>
                         </template>
                     {% endblock %}
@@ -79,17 +82,7 @@
                                                @page-change="onPageChange" />
                         </template>
                     {% endblock %}
-
                 </sw-data-grid>
-            {% endblock %}
-
-            {% block swag_migration_history_no_data %}
-                <div v-if="migrationRuns.length === 0"
-                     class="swag-migration-history__no-data">
-                    <p class="swag-migration-history__no-data-label">
-                        {{ $tc('swag-migration.history.noData') }}
-                    </p>
-                </div>
             {% endblock %}
 
             {% block swag_migration_history_router_view %}
@@ -105,53 +98,6 @@
                            name="runUuid"
                            :value="runIdForLogDownload">
                 </form>
-            {% endblock %}
-
-            {% block swag_migration_history_run_clear_confirm_modal %}
-                <sw-modal v-if="showRunClearConfirmModal"
-                          class="swag-migration-history__run-clear-confirm-modal"
-                          :title="$tc('swag-migration.history.clearRunDialog.title')"
-                          :is-loading="runClearConfirmModalIsLoading"
-                          size="460px"
-                          @modal-close="showRunClearConfirmModal = false">
-
-                    {% block swag_migration_history_run_clear_confirm_modal_content %}
-                        <p class="swag-migration-history__run-clear-confirm-modal-content">
-                            {{ $tc('swag-migration.history.clearRunDialog.content') }}
-                        </p>
-                    {% endblock %}
-
-                    {% block swag_migration_history_run_clear_confirm_modal_content_hint %}
-                        <p class="swag-migration-history__run-clear-confirm-modal-content-hint">
-                            {{ $tc('swag-migration.history.clearRunDialog.contentHint') }}
-                        </p>
-                    {% endblock %}
-
-                    {% block swag_migration_history_run_clear_confirm_modal_footer %}
-                        <template #modal-footer>
-
-                            {% block swag_migration_history_run_clear_confirm_modal_abort %}
-                                <mt-button size="small"
-                                           variant="secondary"
-                                           :disabled="runClearConfirmModalIsLoading"
-                                           @click="showRunClearConfirmModal = false">
-                                    {{ $tc('global.default.cancel') }}
-                                </mt-button>
-                            {% endblock %}
-
-                            {% block swag_migration_history_run_clear_confirm_modal_confirm %}
-                                <mt-button size="small"
-                                           variant="primary"
-                                           :disabled="runClearConfirmModalIsLoading"
-                                           @click="onClearRunConfirmed">
-                                    {{ $tc('global.default.delete') }}
-                                </mt-button>
-                            {% endblock %}
-
-                        </template>
-                    {% endblock %}
-
-                </sw-modal>
             {% endblock %}
 
         </template>

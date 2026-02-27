@@ -13,8 +13,8 @@ on:
   workflow_call:
 
 jobs:
-  eslint:
-    name: ESLint
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: shopware/github-actions/setup-extension@main
@@ -33,7 +33,9 @@ jobs:
             }
       - run: |
           composer -d custom/plugins/${{ github.event.repository.name }} run admin:install
-          composer -d custom/plugins/${{ github.event.repository.name }} run admin:lint
+          composer -d custom/plugins/${{ github.event.repository.name }} run lint:admin
+          composer -d custom/plugins/${{ github.event.repository.name }} run format:admin
+          composer -d custom/plugins/${{ github.event.repository.name }} run format:md
 
   stylelint:
     name: Stylelint
@@ -55,7 +57,7 @@ jobs:
             }
       - run: |
           composer -d custom/plugins/${{ github.event.repository.name }} run admin:install
-          composer -d custom/plugins/${{ github.event.repository.name }} run admin:lint:scss
+          composer -d custom/plugins/${{ github.event.repository.name }} run lint:admin:scss
 
   jest:
     name: Jest

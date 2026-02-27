@@ -7,26 +7,34 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
+use Shopware\Core\Content\Media\Aggregate\MediaTranslation\MediaTranslationDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductManufacturerTranslation\ProductManufacturerTranslationDefinition;
+use Shopware\Core\Content\Product\Aggregate\ProductTranslation\ProductTranslationDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupOptionTranslation\PropertyGroupOptionTranslationDefinition;
+use Shopware\Core\Content\Property\Aggregate\PropertyGroupTranslation\PropertyGroupTranslationDefinition;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\Unit\Aggregate\UnitTranslation\UnitTranslationDefinition;
 use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedData;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertUnserializedDataInvalidLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedTranslationType;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertTranslationTypeUnsupportedLog;
 
 #[Package('fundamentals@after-sales')]
 abstract class TranslationConverter extends ShopwareConverter
@@ -56,18 +64,17 @@ abstract class TranslationConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
-        if (!isset($data['locale'])) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::TRANSLATION,
-                $data['id'],
-                'locale'
-            ));
+        if (!isset($data['locale']) || $data['locale'] === '') {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName('unknown_translation')
+                    ->withFieldName('languageId')
+                    ->withFieldSourcePath('locale')
+                    ->withSourceData($data)
+                    ->build(ConvertSourceDataIncompleteLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
@@ -96,13 +103,12 @@ abstract class TranslationConverter extends ShopwareConverter
                 return $this->createProductMediaTranslation($data);
         }
 
-        $this->loggingService->addLogEntry(
-            new UnsupportedTranslationType(
-                $migrationContext->getRunUuid(),
-                $data['objecttype'],
-                DefaultEntities::TRANSLATION,
-                $data['id']
-            )
+        $this->loggingService->log(
+            MigrationLogBuilder::fromMigrationContext($migrationContext)
+                ->withEntityName('unknown_translation')
+                ->withFieldSourcePath('objecttype')
+                ->withSourceData($data)
+                ->build(ConvertTranslationTypeUnsupportedLog::class)
         );
 
         return new ConvertStruct(null, $data);
@@ -132,18 +138,19 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::PRODUCT,
-                    $data['id'],
-                    DefaultEntities::TRANSLATION
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(ProductTranslationDefinition::ENTITY_NAME)
+                    ->withFieldName('productId')
+                    ->withFieldSourcePath('objectkey')
+                    ->withSourceData($sourceData)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
         }
-        $product['id'] = $mapping['entityUuid'];
+
+        $product['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $product['entityDefinitionClass'] = ProductDefinition::class;
 
@@ -204,10 +211,11 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $productTranslation['id'] = $this->mainMapping['entityUuid'];
+        $productTranslation['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
+
         if ($languageUuid !== null) {
             $productTranslation['languageId'] = $languageUuid;
             $product['translations'][$languageUuid] = $productTranslation;
@@ -243,18 +251,19 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['ordernumber']);
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::PRODUCT,
-                    $data['id'],
-                    DefaultEntities::TRANSLATION
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(ProductTranslationDefinition::ENTITY_NAME)
+                    ->withFieldName('productId')
+                    ->withFieldSourcePath('ordernumber')
+                    ->withSourceData($sourceData)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
         }
-        $product['id'] = $mapping['entityUuid'];
+
+        $product['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $product['entityDefinitionClass'] = ProductDefinition::class;
 
@@ -283,7 +292,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $productTranslation['id'] = $this->mainMapping['entityUuid'];
+        $productTranslation['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
@@ -319,18 +328,19 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::PRODUCT_MANUFACTURER,
-                    $data['id'],
-                    DefaultEntities::TRANSLATION
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(ProductManufacturerTranslationDefinition::ENTITY_NAME)
+                    ->withFieldName('productManufacturerId')
+                    ->withFieldSourcePath('objectkey')
+                    ->withSourceData($sourceData)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
         }
-        $manufacturer['id'] = $mapping['entityUuid'];
+
+        $manufacturer['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $manufacturer['entityDefinitionClass'] = ProductManufacturerDefinition::class;
 
@@ -347,7 +357,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $manufacturerTranslation['id'] = $this->mainMapping['entityUuid'];
+        $manufacturerTranslation['id'] = $this->mainMapping['entityId'];
         unset($data['id'], $data['objectkey']);
 
         $this->convertValue($manufacturerTranslation, 'name', $data, 'name');
@@ -401,18 +411,19 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::UNIT,
-                    $data['id'],
-                    DefaultEntities::TRANSLATION
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(UnitTranslationDefinition::ENTITY_NAME)
+                    ->withFieldName('unitId')
+                    ->withFieldSourcePath('objectkey')
+                    ->withSourceData($sourceData)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
         }
-        $unit['id'] = $mapping['entityUuid'];
+
+        $unit['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $unit['entityDefinitionClass'] = UnitDefinition::class;
 
@@ -429,7 +440,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $unitTranslation['id'] = $this->mainMapping['entityUuid'];
+        $unitTranslation['id'] = $this->mainMapping['entityId'];
 
         $objectData = \array_pop($objectData);
 
@@ -488,18 +499,19 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::CATEGORY,
-                    $data['id'],
-                    DefaultEntities::TRANSLATION
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CategoryTranslationDefinition::ENTITY_NAME)
+                    ->withFieldName('categoryId')
+                    ->withFieldSourcePath('objectkey')
+                    ->withSourceData($sourceData)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
         }
-        $category['id'] = $mapping['entityUuid'];
+
+        $category['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $category['entityDefinitionClass'] = CategoryDefinition::class;
 
@@ -507,7 +519,6 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($objectData === null) {
             return new ConvertStruct(null, $sourceData);
         }
-
         // no equivalent in category translation definition
         unset(
             $objectData['streamId'],
@@ -523,7 +534,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $categoryTranslation['id'] = $this->mainMapping['entityUuid'];
+        $categoryTranslation['id'] = $this->mainMapping['entityId'];
 
         $this->convertValue($categoryTranslation, 'name', $objectData, 'description');
         $this->convertValue($categoryTranslation, 'description', $objectData, 'cmstext');
@@ -585,18 +596,19 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::PROPERTY_GROUP_OPTION,
-                    $data['id'],
-                    DefaultEntities::TRANSLATION
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(PropertyGroupOptionTranslationDefinition::ENTITY_NAME)
+                    ->withFieldName('propertyGroupOptionId')
+                    ->withFieldSourcePath('objectkey')
+                    ->withSourceData($sourceData)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
         }
-        $configuratorOption['id'] = $mapping['entityUuid'];
+
+        $configuratorOption['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $configuratorOption['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
 
@@ -612,7 +624,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['id'],
             $this->context
         );
-        $propertyGroupOptionTranslation['id'] = $this->mainMapping['entityUuid'];
+        $propertyGroupOptionTranslation['id'] = $this->mainMapping['entityId'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'name') {
@@ -664,18 +676,19 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::PROPERTY_GROUP,
-                    $data['id'],
-                    DefaultEntities::TRANSLATION
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(PropertyGroupTranslationDefinition::ENTITY_NAME)
+                    ->withFieldName('propertyGroupId')
+                    ->withFieldSourcePath('objectkey')
+                    ->withSourceData($sourceData)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
         }
-        $configuratorOptionGroup['id'] = $mapping['entityUuid'];
+
+        $configuratorOptionGroup['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $configuratorOptionGroup['entityDefinitionClass'] = PropertyGroupDefinition::class;
 
@@ -692,7 +705,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $propertyGroupTranslation['id'] = $this->mainMapping['entityUuid'];
+        $propertyGroupTranslation['id'] = $this->mainMapping['entityId'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'name') {
@@ -746,18 +759,19 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::PROPERTY_GROUP_OPTION,
-                    $data['id'],
-                    DefaultEntities::TRANSLATION
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(PropertyGroupOptionTranslationDefinition::ENTITY_NAME)
+                    ->withFieldName('propertyGroupOptionId')
+                    ->withFieldSourcePath('objectkey')
+                    ->withSourceData($sourceData)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
         }
-        $propertyValue['id'] = $mapping['entityUuid'];
+
+        $propertyValue['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $propertyValue['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
 
@@ -773,7 +787,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['id'],
             $this->context
         );
-        $propertyValueTranslation['id'] = $this->mainMapping['entityUuid'];
+        $propertyValueTranslation['id'] = $this->mainMapping['entityId'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'optionValue') {
@@ -823,18 +837,19 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::PROPERTY_GROUP,
-                    $data['id'],
-                    DefaultEntities::TRANSLATION
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(PropertyGroupTranslationDefinition::ENTITY_NAME)
+                    ->withFieldName('propertyGroupId')
+                    ->withFieldSourcePath('objectkey')
+                    ->withSourceData($sourceData)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
         }
-        $propertyOption['id'] = $mapping['entityUuid'];
+
+        $propertyOption['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $propertyOption['entityDefinitionClass'] = PropertyGroupDefinition::class;
 
@@ -851,7 +866,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $propertyOptionTranslation['id'] = $this->mainMapping['entityUuid'];
+        $propertyOptionTranslation['id'] = $this->mainMapping['entityId'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'optionName') {
@@ -891,12 +906,11 @@ abstract class TranslationConverter extends ShopwareConverter
      */
     protected function addAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void
     {
-        $connection = $this->migrationContext->getConnection();
-
-        if ($connection === null || $value === '') {
+        if ($value === '') {
             return;
         }
 
+        $connection = $this->migrationContext->getConnection();
         $connectionName = ConnectionNameSanitizer::sanitize($connection->getName());
 
         $isAttribute = \mb_strpos($key, '__attribute_');
@@ -947,22 +961,25 @@ abstract class TranslationConverter extends ShopwareConverter
     protected function unserializeTranslation(array $data, string $entity): ?array
     {
         $objectDataSerialized = $data['objectdata'];
+        $exception = null;
 
         try {
+            /** @phpstan-ignore shopware.unserializeUsage */
             $objectData = \unserialize($objectDataSerialized, ['allowed_classes' => false]);
-        } catch (\Throwable $error) {
+        } catch (\Throwable $e) {
             $objectData = null;
+            $exception = $e;
         }
 
         if (!\is_array($objectData)) {
-            $this->loggingService->addLogEntry(
-                new InvalidUnserializedData(
-                    $this->runId,
-                    DefaultEntities::TRANSLATION,
-                    $data['id'],
-                    $entity,
-                    $objectDataSerialized
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName($entity)
+                    ->withFieldSourcePath('objectdata')
+                    ->withSourceData($data)
+                    ->withExceptionMessage($exception?->getMessage() ?? 'Unserialization failed')
+                    ->withExceptionTrace($exception?->getTrace() ?? [])
+                    ->build(ConvertUnserializedDataInvalidLog::class)
             );
 
             return null;
@@ -990,20 +1007,20 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    DefaultEntities::MEDIA,
-                    $data['mediaId'],
-                    DefaultEntities::TRANSLATION
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(MediaTranslationDefinition::ENTITY_NAME)
+                    ->withFieldName('mediaId')
+                    ->withFieldSourcePath('mediaId')
+                    ->withSourceData($sourceData)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
         }
         unset($data['objectkey'], $data['mediaId']);
 
-        $media['id'] = $mapping['entityUuid'];
+        $media['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $media['entityDefinitionClass'] = MediaDefinition::class;
 
@@ -1020,7 +1037,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $mediaTranslation['id'] = $this->mainMapping['entityUuid'];
+        $mediaTranslation['id'] = $this->mainMapping['entityId'];
 
         foreach (\array_keys($objectData) as $key) {
             if ($key === 'description') {

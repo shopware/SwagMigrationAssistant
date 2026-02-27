@@ -35,5 +35,5 @@ interface MigrationDataFetcherInterface
      *
      * @return array<string, TotalStruct>
      */
-    public function fetchTotals(MigrationContextInterface $migrationContext, Context $context): array;
+    public function fetchTotals(MigrationContextInterface $migrationContext): array;
 }

@@ -83,8 +83,9 @@ class TransactionStateReaderTest extends TestCase
         $connection->setPremapping($premapping);
 
         $this->migrationContext = new MigrationContext(
+            $connection,
             new Shopware55Profile(),
-            $connection
+            null
         );
 
         $gatewayMock = $this->createMock(ShopwareLocalGateway::class);

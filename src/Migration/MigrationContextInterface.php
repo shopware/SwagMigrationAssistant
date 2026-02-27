@@ -18,19 +18,27 @@ interface MigrationContextInterface
 {
     public function getProfile(): ProfileInterface;
 
-    public function getConnection(): ?SwagMigrationConnectionEntity;
-
-    public function getRunUuid(): string;
-
-    public function getDataSet(): ?DataSet;
-
-    public function getOffset(): int;
-
-    public function getLimit(): int;
+    public function setProfile(ProfileInterface $profile): void;
 
     public function getGateway(): GatewayInterface;
 
     public function setGateway(GatewayInterface $gateway): void;
 
+    public function getConnection(): SwagMigrationConnectionEntity;
+
+    public function setConnection(SwagMigrationConnectionEntity $connection): void;
+
+    public function getRunUuid(): string;
+
+    public function getDataSet(): ?DataSet;
+
     public function setDataSet(DataSet $dataSet): void;
+
+    public function getOffset(): int;
+
+    public function setOffset(int $offset): void;
+
+    public function getLimit(): int;
+
+    public function setLimit(int $limit): void;
 }

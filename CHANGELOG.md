@@ -1,35 +1,55 @@
+# 16.0.0
+
+- #14517 - Fixed duplicate key error when re-migrating products with SEO main categories after checksum reset
+- #14400 - Removed the "Delete migration data" action from the migration history context menu
+- #13898 - Fixed migration of orders with different tax rates on line items from SW5
+- #11808 - Introduced Error Resolution to manage data inconsistencies and apply migration fixes directly in the SW6 administration, instead of fixing issues in the source system as it was needed previously.
+- #11808 - Enriched migration logs with detailed data descriptions to improve error traceability.
+- #11808 - Integrated ACL constraints to restrict specific migration actions based on user permissions.
+- #11808 - Improved data reliability via stronger validation checks for converted data.
+- #11808 - Applied general UI/UX improvements for visual consistency.
+- #11808 - Removed CLI commands `migration:abort`, `migration:get-progress`, and `migration:start`. You have to start the migration via the Administration UI, it still runs in the background message queue
+- #11808 - Checksum reset and migration data cleanup now run asynchronously via message queue.
+
 # 15.0.4
+
 - Added `shopIdV2` to the list of ignored system config entries for Shopware 6 connections
 - Media processing has been simplified so that the UI can show the actual progress
 
 # 15.0.3
+
 - Fixed translations of error groups missing details like the entity
 - Fixed handling of customers without default payment method in SW6.7 migrations
 
 # 15.0.2
+
 - Fixed data selection tab freezing due to infinite loop in SW6.7RC4 or later
 - Fixed connections names containing hyphens causing errors for custom field migration
 - Fixed premapping for administration users if username is empty
 
 # 15.0.1
+
 - Fixed deprecation warnings for `tagged` argument in services definitions
 
 # 15.0.0
+
 - MIG-1094 - Added compatibility with Shopware version 6.7
 
 # 14.1.0
+
 - MIG-1082 - Fixes an error with repeated migration of customer wish lists from SW5 to SW6
 - MIG-1096 - Fix `json_decode` with `null` run exceptions that occurred with mappings of old migration runs (older assistant versions)
 
 # 14.0.0
+
 - Moved technical and breaking changes to https://github.com/shopware/SwagMigrationAssistant/blob/trunk/UPGRADE.md
-- MIG-894 - Optimizes the mapping performance for the migration which results in a significantly faster converting step.
+- MIG-894 - Optimizes the mapping performance for the migration which results in a significantly faster converting step
 - MIG-1033 - Added the migration of SEO main category for products with SW5 or SW6 as a source system
 - MIG-1039 - Fix the migration of country states in the order and customer converters
 - MIG-1050 - Improves the migration of SEO URLs
 - MIG-1052 - Fixed migration of "created by admin" flags on customers and orders
 - MIG-1052 - Added premapping for administration users with preselection when the username is identical
-- MIG-1053 - Refactored both Shopware 5 and Shopware 6 EnvironmentReader classes to provide more information about exceptions.
+- MIG-1053 - Refactored both Shopware 5 and Shopware 6 EnvironmentReader classes to provide more information about exceptions
 - MIG-1054 - Fixed error during migration of orders from SW5.4
 - MIG-1061 - Fix the migration of customer wishlists from SW6 to SW6 with empty product list
 - MIG-1062 - Fix the migration of product reviews from SW6 to SW6 with missing associated customer
@@ -42,18 +62,21 @@
 - MIG-1087 - Fixed an issue for the migration of media folders from SW6->SW6, where the default folder id was set wrongly. This includes changes to the way the folder structure is migrated
 
 # 13.2.0
+
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data
-- MIG-1042 - Adding a notice to clear the cache when the Shopware 5 Connector can't be found.
+- MIG-1042 - Adding a notice to clear the cache when the Shopware 5 Connector can't be found
 - MIG-1045 - Fix displayed percentage status while reading data
 - MIG-1046 - Fixed an issue related to the validation of json fields for a migration run, which could prevent starting a migration in the latest shopware version
 
 # 13.1.0
-- MIG-981 - Media migration now uses the system's temporary directory to download files.
-- MIG-1016 - Improves the warnings for different default currency and default language in the data selection.
-- MIG-1016 - Added new block `{% block swag_migration_confirm_warning_alert %}` in `swag-migration/component/card/swag-migration-confirm-warning/swag-migration-confirm-warning.html.twig`.
-- MIG-1037 - Fixes a rare issue that in certain situations not all entities are migrated (some were skipped). Was detected during translations of SW5.
+
+- MIG-981 - Media migration now uses the system's temporary directory to download files
+- MIG-1016 - Improves the warnings for different default currency and default language in the data selection
+- MIG-1016 - Added new block `{% block swag_migration_confirm_warning_alert %}` in `swag-migration/component/card/swag-migration-confirm-warning/swag-migration-confirm-warning.html.twig`
+- MIG-1037 - Fixes a rare issue that in certain situations not all entities are migrated (some were skipped). Was detected during translations of SW5
 
 # 13.0.0
+
 - MIG-945 - [BREAKING] Changed method name `getMedia` to `setMedia` in `SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter`
 - MIG-945 - [BREAKING] Removed cli command `migration:migrate` use `migration:start` instead
 - MIG-945 - [BREAKING] Changed method `writePremapping` of `SwagMigrationAssistant\Controller\PremappingController`
@@ -128,6 +151,7 @@
 - MIG-1011 - Ensure database attributes (like stringify fetches) are always set on local gateway connections
 
 # 12.0.0
+
 - MIG-983 - Fix migration of shop bounded customers
 - MIG-983 - [BREAKING] Changed method name `getAddresses` to `applyAddresses` in `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
 - MIG-983 - [BREAKING] Changed method name `getCountryTranslation` to `applyCountryTranslation` in `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
@@ -136,16 +160,18 @@
 - MIG-989 - Improve migration of Media files
 - MIG-989 - [BREAKING] Added method `filterUnwrittenData` to `\SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface`
 - MIG-990 - Don't let exceptions abort handling of ProcessMediaMessage
-- MIG-990 - [BREAKING] Changed constructor of `BaseMediaService`, added `EntityRepository $mediaFileRepository` as new parameter, updated all extending classes.
+- MIG-990 - [BREAKING] Changed constructor of `BaseMediaService`, added `EntityRepository $mediaFileRepository` as new parameter, updated all extending classes
 - MIG-990 - [BREAKING] Added method `setProcessedFlag` in `BaseMediaService` and updated all media processors to use this method
 - MIG-990 - [BREAKING] Moved `BaseMediaService` to `SwagMigrationAssistant\Migration\Media\Processor` namespace
 - MIG-992 - Fix migration of product seo data
 - MIG-1006 - Fix migration of product covers
 
 # 11.0.1
+
 - MIG-988 - A bug in the premapping UI has been fixed to remain compatible with the latest platform version
 
 # 11.0.0
+
 - MIG-951 - Improve the language migration from Shopware 6 to Shopware 6 so the default language is no longer overwritten
 - MIG-951 - [BREAKING] Changes the access modifier of the function `\SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter::convertData` from public to protected
 - MIG-943 - Fix migration of calculated shipping costs from Shopware 5
@@ -156,20 +182,23 @@
 - MIG-967, MIG-866 - Improving the migration of order documents
 
 # 10.0.1
+
 - MIG-971 - Fix compatibility with Shopware 6.6.0.x
 
 # 10.0.0
-- NEXT-34526 - [BREAKING] Added native type to `result` parameter of `SwagMigrationAssistant\DataProvider\Provider\Data\AbstractProvider::cleanupSearchResult` method.
-- NEXT-34526 - [BREAKING] Removed `DataProvider/Exception/ProviderHasNoTableAccessException.php`, use `SwagMigrationAssistant\Exception\MigrationException::providerHasNoTableAccess` instead.
-- NEXT-34526 - [BREAKING] Removed `Profile/Shopware/Exception/ParentEntityForChildNotFoundException.php`, use `SwagMigrationAssistant\Exception\MigrationException::parentEntityForChildNotFound` instead.
-- NEXT-34526 - [BREAKING] Changed method name `getMediaTranslation` to `addMediaTranslation` in `SwagMigrationAssistant\Profile\Shopware\Converter\CategoryConverter`.
-- NEXT-34526 - [BREAKING] Changed method name `getAttribute` to `addAttribute` in `\SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter`.
-- NEXT-34526 - [BREAKING] Changed parameter name `blacklist` to `excludeList` of method `SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter::getAttributes`.
+
+- NEXT-34526 - [BREAKING] Added native type to `result` parameter of `SwagMigrationAssistant\DataProvider\Provider\Data\AbstractProvider::cleanupSearchResult` method
+- NEXT-34526 - [BREAKING] Removed `DataProvider/Exception/ProviderHasNoTableAccessException.php`, use `SwagMigrationAssistant\Exception\MigrationException::providerHasNoTableAccess` instead
+- NEXT-34526 - [BREAKING] Removed `Profile/Shopware/Exception/ParentEntityForChildNotFoundException.php`, use `SwagMigrationAssistant\Exception\MigrationException::parentEntityForChildNotFound` instead
+- NEXT-34526 - [BREAKING] Changed method name `getMediaTranslation` to `addMediaTranslation` in `SwagMigrationAssistant\Profile\Shopware\Converter\CategoryConverter`
+- NEXT-34526 - [BREAKING] Changed method name `getAttribute` to `addAttribute` in `\SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter`
+- NEXT-34526 - [BREAKING] Changed parameter name `blacklist` to `excludeList` of method `SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter::getAttributes`
 - MIG-868 - Improvement of the product migration, the gross purchase price is now calculated
-- MIG-966 - [BREAKING] Moved the source files into the `src` directory and renamed the `Test` directory to `tests` without breaking namespaces, but you may need to reactivate or reinstall the plugin. This fixed a bug in our deployment process to properly build the plugin.
-- MIG-930 - Improved cross-selling migration, cross-selling no longer overwrites existing cross-selling if there are no changes.
+- MIG-966 - [BREAKING] Moved the source files into the `src` directory and renamed the `Test` directory to `tests` without breaking namespaces, but you may need to reactivate or reinstall the plugin. This fixed a bug in our deployment process to properly build the plugin
+- MIG-930 - Improved cross-selling migration, cross-selling no longer overwrites existing cross-selling if there are no changes
 
 # 9.0.0
+
 - MIG-848 - Improving the assigning of products to sales channel via sub- and language shops
 - MIG-920 - Changed supported Shopware 6 version to 6.6 and made adjustments to the profiles
 - MIG-920 - Added `Migration/Gateway/HttpClientInterface` to unify the usage of HTTP clients
@@ -199,6 +228,7 @@
 - MIG-934 - [BREAKING] Changed `Controller/DataProviderController.php` to final
 
 # 8.0.0
+
 - MIG-274 - Fix migration of cross selling
 - MIG-825 - Improve performance of the migration of orders
 - MIG-825 - Added option `step-size` to the cli command `migration:migrate` of `Command/MigrationCommand.php`
@@ -230,109 +260,130 @@
 - MIG-938 - Fixes wrong calculation when migrating shipping costs
 
 # 7.0.2
+
 - MIG-908 - Fix Shopware 6 migration of `system_config` entities which should not be migrated between different shops
 
 # 7.0.1
+
 - MIG-907 - Fix Shopware 6 profile name in connections
 
 # 7.0.0
+
 - NEXT-31367 - Improve the ConnectionFactory to work more stable
-- MIG-881 - Fix bug for converting shipping methods and shipping costs and also migrate shipping methods with a unknown calculation type.
-- MIG-878 - Fix migration from SW6.5 to SW6.5. Only same major migrations are supported.
-- MIG-905 - Hotfix / known issue for SW6->SW6: `canonicalProductId` of `product` isn't migrated but doesn't prevent migration of products for now.
-- MIG-905 - Hotfix / known issue for SW6->SW6: `cmsPageId` of `product` isn't migrated but doesn't prevent migration of products for now.
-- MIG-905 - Hotfix / known issue for SW6->SW6: `promotionId` of line items of an order aren't migrated but doesn't prevent migration of orders for now.
-- MIG-881 - [BREAKING] Removed method `getDefaultAvailabilityRule` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use the premapping of `default_shipping_availability_rule` instead.
-- MIG-881 - [BREAKING] Removed parameter `customerRepository` of `Migration/MessageQueue/OrderCountIndexer.php`.
-- MIG-878 - [BREAKING] Removed all classes under `Profile/Shopware63`. Use classes under `Profile/Shopware6` instead.
-- MIG-878 - [BREAKING] Changed all converters under `Profile/Shopware6/Converter` to be not `abstract` and implement the corresponding `supports` methods. These now replace the old converters under `Profile/Shopware63/Converter`.
-- MIG-878 - [BREAKING] Renamed `Profile/Shopware63/Shopware63Profile.php` to `Profile/Shopware6/Shopware6MajorProfile`.
-- MIG-878 - [BREAKING] Changed `Profile/Shopware6/Shopware6MajorProfile` to support only the current SW6 major version.
-- MIG-878 - [BREAKING] Changed `Profile/Shopware6/Shopware6MajorProfile` to now return `shopware6major` on `getName`.
-- MIG-878 - [BREAKING] Renamed `swag-migration-profile-shopware6-api-credential-form` vue component to `swag-migration-profile-shopware6major-api-credential-form`.
-- MIG-878 - [BREAKING] Renamed `swag-migration-profile-shopware6-api-page-information` vue component to `swag-migration-profile-shopware6major-api-page-information`.
-- MIG-878 - [BREAKING] Removed `swag-migration-profile-shopware63-api-credential-form` vue component.
-- MIG-878 - [BREAKING] Removed `swag-migration-profile-shopware63-api-page-information` vue component.
-- MIG-878 - [BREAKING] Removed `Profile/Shopware6/DataSelection/DataSet/ProductMainVariantRelationDataSet.php` because it is already migrated with the `product` entity in SW6.
-- MIG-878 - [BREAKING] Removed `DataProvider/Provider/Data/ProductMainVariantRelationProvider.php` because it is already migrated with the `product` entity in SW6.
-- MIG-878 - [BREAKING] Removed `Profile/Shopware6/Gateway/Api/Reader/ProductMainVariantRelationReader.php` because it is already migrated with the `product` entity in SW6.
-- MIG-878 - [BREAKING] Removed `Profile/Shopware6/Converter/ProductMainVariantRelationConverter.php` because it is already migrated with the `product` entity in SW6.
+- MIG-881 - Fix bug for converting shipping methods and shipping costs and also migrate shipping methods with a unknown calculation type
+- MIG-878 - Fix migration from SW6.5 to SW6.5. Only same major migrations are supported
+- MIG-905 - Hotfix / known issue for SW6->SW6: `canonicalProductId` of `product` isn't migrated but doesn't prevent migration of products for now
+- MIG-905 - Hotfix / known issue for SW6->SW6: `cmsPageId` of `product` isn't migrated but doesn't prevent migration of products for now
+- MIG-905 - Hotfix / known issue for SW6->SW6: `promotionId` of line items of an order aren't migrated but doesn't prevent migration of orders for now
+- MIG-881 - [BREAKING] Removed method `getDefaultAvailabilityRule` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use the premapping of `default_shipping_availability_rule` instead
+- MIG-881 - [BREAKING] Removed parameter `customerRepository` of `Migration/MessageQueue/OrderCountIndexer.php`
+- MIG-878 - [BREAKING] Removed all classes under `Profile/Shopware63`. Use classes under `Profile/Shopware6` instead
+- MIG-878 - [BREAKING] Changed all converters under `Profile/Shopware6/Converter` to be not `abstract` and implement the corresponding `supports` methods. These now replace the old converters under `Profile/Shopware63/Converter`
+- MIG-878 - [BREAKING] Renamed `Profile/Shopware63/Shopware63Profile.php` to `Profile/Shopware6/Shopware6MajorProfile`
+- MIG-878 - [BREAKING] Changed `Profile/Shopware6/Shopware6MajorProfile` to support only the current SW6 major version
+- MIG-878 - [BREAKING] Changed `Profile/Shopware6/Shopware6MajorProfile` to now return `shopware6major` on `getName`
+- MIG-878 - [BREAKING] Renamed `swag-migration-profile-shopware6-api-credential-form` vue component to `swag-migration-profile-shopware6major-api-credential-form`
+- MIG-878 - [BREAKING] Renamed `swag-migration-profile-shopware6-api-page-information` vue component to `swag-migration-profile-shopware6major-api-page-information`
+- MIG-878 - [BREAKING] Removed `swag-migration-profile-shopware63-api-credential-form` vue component
+- MIG-878 - [BREAKING] Removed `swag-migration-profile-shopware63-api-page-information` vue component
+- MIG-878 - [BREAKING] Removed `Profile/Shopware6/DataSelection/DataSet/ProductMainVariantRelationDataSet.php` because it is already migrated with the `product` entity in SW6
+- MIG-878 - [BREAKING] Removed `DataProvider/Provider/Data/ProductMainVariantRelationProvider.php` because it is already migrated with the `product` entity in SW6
+- MIG-878 - [BREAKING] Removed `Profile/Shopware6/Gateway/Api/Reader/ProductMainVariantRelationReader.php` because it is already migrated with the `product` entity in SW6
+- MIG-878 - [BREAKING] Removed `Profile/Shopware6/Converter/ProductMainVariantRelationConverter.php` because it is already migrated with the `product` entity in SW6
 
 # 6.0.1
+
 - MIG-887 - Improve performance of the endpoint, which captures all data to be written afterwards
 
 # 6.0.0
+
 - MIG-879 - Fix tax free order migration from SW5
-- MIG-859 - [BREAKING] Removed method `pushMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use `getOrCreateMapping` instead.
-- MIG-859 - [BREAKING] Removed method `pushValueMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use `getOrCreateMapping` instead.
-- MIG-859 - [BREAKING] Removed method `bulkDeleteMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors.
-- MIG-859 - [BREAKING] Added default parameter `$entityValue` to `getOrCreateMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Update implementors.
-- MIG-859 - [BREAKING] Added default parameter `$entityValue` to `createMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Update implementors.
+- MIG-859 - [BREAKING] Removed method `pushMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use `getOrCreateMapping` instead
+- MIG-859 - [BREAKING] Removed method `pushValueMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use `getOrCreateMapping` instead
+- MIG-859 - [BREAKING] Removed method `bulkDeleteMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors
+- MIG-859 - [BREAKING] Added default parameter `$entityValue` to `getOrCreateMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Update implementors
+- MIG-859 - [BREAKING] Added default parameter `$entityValue` to `createMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Update implementors
 
 # 5.1.2
+
 - MIG-871 - Fix bug for converting tax free orders
 - MIG-869 - Add additional information to SW6 profile page
 
 # 5.1.1
+
 - MIG-870 - Fix bug during migration of products
 
 # 5.1.0
+
 - NEXT-22545 - Add migration of digital products
 
 # 5.0.0
+
 - MIG-847 - Shopware 6.5 compatibility
 - MIG-827 - Fix migration of shipping methods with time configuration
 - MIG-829 - Fixed the progress bar is displayed incorrectly at a specific viewport
 - NTR - Migration Custom Product processing
 
 # 4.2.5
+
 - MIG-293 - Improve performance of order documents migration
 
 # 4.2.4
+
 - MIG-246 - Fix resetting of connection settings
 - MIG-262 - Customer migrations are no longer grouped by email address
 - MIG-279 - Fix pre-mapping
 
 # 4.2.3
+
 - MIG-269 - Fix missing order data for systems where MySQL trigger do not work
 
 # 4.2.2
+
 - MIG-263 - Fixes a problem, where order addresses might be erroneously identical or interchanged
 - MIG-260 - Fix sales channel migration with Shopware language pack
 
 # 4.2.1
+
 - MIG-252 - Fix profile installer view
 
 # 4.2.0
+
 - MIG-100 - Add migration profile for Shopware 5.7
 - MIG-243 - Fix migration of orders for Shopware 6 profile
 - MIG-247 - Fix write protection errors for Shopware 6 migration
 
 # 4.1.1
+
 - MIG-206 - Migrate product creation date
 - MIG-237 - Fix customer vatId migration
 - MIG-240 - Optimize customer order count indexer
 
 # 4.1.0
+
 - MIG-126 - Add migration profile for Shopware 6
 - MIG-221 - Fix migration of invoices
 - MIG-224 - Optimize attribute value migration handling from SW5
 - MIG-233 - Migration of notes / wishlists added
 
 # 4.0.0
+
 - MIG-203 - Shopware 6.4 compatibility
 - MIG-220 - Optimize product image cover migration
 
 # 3.0.2
+
 - MIG-218 - Prevents abortion of a migration if customer has an invalid email address
 - MIG-219 - Solves an issue on migration translations of custom fields
 
 # 3.0.1
+
 - MIG-213 - Prevents abortion of a migration if some products with variants could not be written
 - MIG-214 - Improves progress display in CLI
 - MIG-216 - Fix issue with customer emails longer than 64 characters
 
 # 3.0.0
+
 - MIG-125 - Improves the migration of orders, that customer order count is indexed
 - MIG-181 - Provide migration of main variant information for Shopware 5.4 / 5.6
 - MIG-182 - Migration of vouchers added
@@ -343,6 +394,7 @@
 - MIG-196 - Improve the extendability of the plugin
 
 # 2.2.2
+
 - MIG-110 - Improves the migration of media
 - MIG-114 - Provide migration of main variant information
 - MIG-118 - Fix migration of credit line items
@@ -352,16 +404,19 @@
 - MIG-168 - Optimized request options
 
 # 2.2.1
+
 - MIG-105 - Add warning if default languages differ
 - MIG-107 - Improves the migration of shipping methods
 - MIG-109 - Improve migration of orders
 
 # 2.2.0
+
 - MIG-75 - Improves the takeover of a migration
 - MIG-106 - Improves the migration of order line items
 - MIG-124 - Added ACL privileges
 
 # 2.1.2
+
 - MIG-85 - Migrate customer comments in orders
 - MIG-90 - Fix variant migration
 - MIG-92 - Fix broken history download
@@ -369,16 +424,19 @@
 - MIG-103 - Improves the migration of variant translations
 
 # 2.1.1
+
 - MIG-39 - Optimized basic converter
 - MIG-72 - Recognize correct category type when external link is set
 - MIG-73 - Recognize variant attribute translations on SW5 migration
 - MIG-74 - Optimize migration of custom fields
 
 # 2.1.0
+
 - MIG-13 - Migrate product reviews without customer
 - MIG-28 - Optimized rebuilding of container for deactivation and activation of the plugin
 
 # 2.0.0
+
 - MIG-3 - Fixes a problem with migrating order documents
 - MIG-5 - Improve snippet loading of DataSets
 - MIG-14 - Implement deletion of logs from a selected run
@@ -386,59 +444,74 @@
 - MIG-23 - Fixes a problem with log file download
 
 # 1.7.1
+
 - MIG-6 - Add functionality to save premapping without start migration for CLI support
 
 # 1.7.0
+
 - PT-11910 - Add migration of cross selling
 - PT-11922 - Shopware 6.3 compatibility
 - PT-11955 - Fixes a problem with saving media
 
 # 1.6.0
+
 - PT-11692 - Add functionality to finish migration and remove unneeded data
 - PT-11864 - Improve media file processing
 - PT-11942 - Improve migration of product-translations
 
 # 1.5.3
+
 - PT-11845 - Improve migration of customers
 - PT-11855 - Improve migration of media
 
 # 1.5.2
+
 - PT-11788 - Introduce migration of pseudo prices from SW5
 
 # 1.5.1
+
 - PT-11819 - Optimize product variant migration for Shopware 5 profile
 
 # 1.5.0
+
 - PT-11692 - Move migration dashboard card to own component
 - PT-11747 - Ignore seo urls without type id
 - PT-11764 - Add sorting of pre-mapping values
 
 # 1.4.2
+
 - PT-11689 - Add survey to get feedback about the tool from users
 
 # 1.4.1
+
 - NTR - Solve issue with cache service injection
 
 # 1.4.0
+
 - PT-11497 - Solves an issue with incorrect connection state
 - PT-11601 - Shopware 6.2 compatibility
 - PT-11462 - Solves an issue regarding order migration
 
 # 1.3.0
+
 - PT-11586 - Optimized product migration from Shopware 5
 - PT-11617 - Fix error with too many open database connections
 
 # 1.2.2
+
 - NTR - Fixes an issue with the layout when resetting the checksums
 
 # 1.2.1
+
 - NTR - Fixes an issue migrating media folder thumbnail settings from Shopware 5
 
 # 1.2.0
-- PT-11450 - It is now possible to reset the checksums via a button in the connection management drop-down menu.
+
+- PT-11450 - It is now possible to reset the checksums via a button in the connection management drop-down menu
 - PT-11525 - Optimize media migration process
 
 # 1.1.0
+
 - PT-10832 - Preventing an undesired state when creating new connections
 - PT-10983 - Technical concept of the user interfaces changed to Vuex
 - PT-11331 - Fix request timeout for bigger migrations
@@ -446,16 +519,20 @@
 - PT-11400 - Migration error at wrong defined thumbnail sizes fixed
 
 # 1.0.3
+
 - PT-11329 - Migrate meta data for products and categories
 - NTR - Solves an issue with database field length difference between SW5 and SW6
 
 # 1.0.2
+
 - NTR - Improve progress calculation for big amounts of data
 
 # 1.0.1
+
 - NTR - Solves an issue with delta checksums when aborting migration
 
 # 1.0.0
+
 - PT-11113 - Refactor plugin icons
 - PT-11111 - Refactor profile icon for external profile
 - NTR - Fix refresh after wizard install of external profile
@@ -463,7 +540,8 @@
 - PT-11252 - Force number range migration
 
 # 0.40.0
-- PT-11014- Add magento onboarding to migration wizard
+
+- PT-11014 - Add magento onboarding to migration wizard
 - PT-11016 - Refactor first migration wizard page
 - PT-11017 - Add migration card to dashboard
 - PT-11033 - Fix migration of categories
@@ -476,12 +554,13 @@
 - NTR - Fix product image cover when only 1 image exists
 
 # 0.30.1
+
 - PT-10925 - Call indexing controller after every migration
 - PT-10948 - Prevent duplicate document types
 - PT-10946 - Migrate customer language
 
-
 # 0.30.0
+
 - PT-10629 - Raise test coverage
 - PT-10761 - Implement new frontend data handling
 - PT-10783 - Migrate empty labels with attribute name
@@ -502,16 +581,20 @@
 - PT-10875 - Cleanup unwritten migration data when run new starts
 
 # 0.20.0
+
 - Refactor imports to global object
 - Refactor deprecated data handling imports
 
 # 0.10.1
+
 - Add default theme to sales channels
 - Fix indexing after migration
 
 # 0.10.0
+
 - Implement Shopware 5.4 & Shopware 5.6 profiles
 - Refactor converter and reader structure
 
 # 0.9.0
+
 - First version of the Shopware Migration Assistant for Shopware 6

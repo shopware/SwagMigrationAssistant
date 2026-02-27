@@ -11,8 +11,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\MessageQueueExceptionLog;
-use SwagMigrationAssistant\Migration\Logging\Log\RunAbortedAutomatically;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\RunAbortedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunMessageQueueExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
@@ -82,11 +83,22 @@ class MessageQueueSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $connection = $run->getConnection();
+
         /*
          * Raise exception counter and log the exception
          */
         $progress->raiseExceptionCount();
-        $this->loggingService->addLogEntry(new MessageQueueExceptionLog($run->getId(), $event->getThrowable(), $progress->getExceptionCount()));
+        $this->loggingService->log(
+            (new MigrationLogBuilder(
+                $run->getId(),
+                $connection?->getProfileName() ?? 'unknown',
+                $connection?->getGatewayName() ?? 'unknown'
+            ))
+                ->withExceptionMessage($event->getThrowable()->getMessage())
+                ->withExceptionTrace($event->getThrowable()->getTrace())
+                ->build(RunMessageQueueExceptionLog::class)
+        );
 
         /*
          * Check if run is already in aborting state and failed again there, then set run status to aborted and log the error.
@@ -96,8 +108,16 @@ class MessageQueueSubscriber implements EventSubscriberInterface
             $progress->setIsAborted(true);
             $this->updateRun($run->getId(), $progress, $message->getContext());
 
-            $this->loggingService->addLogEntry(new RunAbortedAutomatically($run->getId(), $event->getThrowable()));
-            $this->loggingService->saveLogging($message->getContext());
+            $this->loggingService->log(
+                (new MigrationLogBuilder(
+                    $run->getId(),
+                    $connection?->getProfileName() ?? 'unknown',
+                    $connection?->getGatewayName() ?? 'unknown'
+                ))
+                    ->withExceptionMessage($event->getThrowable()->getMessage())
+                    ->withExceptionTrace($event->getThrowable()->getTrace())
+                    ->build(RunAbortedLog::class)
+            );
 
             return;
         }

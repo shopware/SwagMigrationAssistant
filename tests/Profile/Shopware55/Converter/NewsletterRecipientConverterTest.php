@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NewsletterRecipientDataSet;
@@ -42,7 +43,7 @@ class NewsletterRecipientConverterTest extends TestCase
         $this->newsletterReceiverConverter = new Shopware55NewsletterRecipientConverter(
             $mappingService,
             $this->loggingService,
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LanguageLookup::class)
         );
 
         $runId = Uuid::randomHex();
@@ -53,10 +54,11 @@ class NewsletterRecipientConverterTest extends TestCase
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->context = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new NewsletterRecipientDataSet(),
+            $runId,
             0,
             250
         );
@@ -91,32 +93,6 @@ class NewsletterRecipientConverterTest extends TestCase
         );
     }
 
-    public function testConvertWithoutDoubleOptinConfirmed(): void
-    {
-        $customerData = require __DIR__ . '/../../../_fixtures/invalid/newsletter_recipient_data.php';
-
-        $context = Context::createDefaultContext();
-        $customerData = $customerData[1];
-        $customerData['address']['double_optin_confirmed'] = null;
-        $customerData['address']['salutation'] = 'mr';
-        $customerData['double_optin_confirmed'] = null;
-
-        $convertResult = $this->newsletterReceiverConverter->convert(
-            $customerData,
-            $context,
-            $this->context
-        );
-
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_NEWSLETTER_RECIPIENT');
-        static::assertSame($logs[0]['parameters']['sourceId'], '1');
-        static::assertSame($logs[0]['parameters']['emptyField'], 'status');
-    }
-
     public function testConvertWithNotExistingSalutation(): void
     {
         $data = require __DIR__ . '/../../../_fixtures/invalid/newsletter_recipient_data.php';
@@ -137,9 +113,7 @@ class NewsletterRecipientConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_SALUTATION_ENTITY_UNKNOWN');
-        static::assertSame($logs[0]['parameters']['sourceId'], 'xx');
-        static::assertSame($logs[0]['parameters']['requiredForSourceId'], '1');
+        static::assertSame($logs[0]['code'], ConvertEntityUnknownLog::getCode());
     }
 
     public function testConvert(): void

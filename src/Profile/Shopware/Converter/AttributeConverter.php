@@ -39,12 +39,8 @@ abstract class AttributeConverter extends Converter
         $converted = [];
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        $this->connectionName = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -52,7 +48,7 @@ abstract class AttributeConverter extends Converter
             $this->getCustomFieldEntityName() . 'CustomFieldSet',
             $context
         );
-        $converted['id'] = $mapping['entityUuid'];
+        $converted['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $connectionName = ConnectionNameSanitizer::sanitize($this->connectionName);
@@ -74,7 +70,7 @@ abstract class AttributeConverter extends Converter
 
         $converted['relations'] = [
             [
-                'id' => $mapping['entityUuid'],
+                'id' => $mapping['entityId'],
                 'entityName' => $this->getCustomFieldEntityName(),
             ],
         ];
@@ -95,7 +91,7 @@ abstract class AttributeConverter extends Converter
 
         $converted['customFields'] = [
             [
-                'id' => $this->mainMapping['entityUuid'],
+                'id' => $this->mainMapping['entityId'],
                 'name' => $converted['name'] . '_' . $data['name'],
                 'type' => $this->getCustomFieldType($data),
                 'config' => $this->getCustomFieldConfiguration($data),
@@ -291,32 +287,21 @@ abstract class AttributeConverter extends Converter
     private function getCustomFieldType(array $data): string
     {
         if (isset($data['configuration'])) {
-            switch ($data['configuration']['column_type']) {
-                case 'integer':
-                    return 'int';
-                case 'float':
-                    return 'float';
-                case 'html':
-                    return 'html';
-                case 'boolean':
-                    return 'bool';
-                case 'date':
-                case 'datetime':
-                    return 'datetime';
-                case 'combobox':
-                    return 'select';
-                default:
-                    return 'text';
-            }
-        } else {
-            switch ($data['type']) {
-                case 'int':
-                    return 'int';
-                case 'float':
-                    return 'float';
-                default:
-                    return 'text';
-            }
+            return match ($data['configuration']['column_type']) {
+                'integer' => 'int',
+                'float' => 'float',
+                'html' => 'html',
+                'boolean' => 'bool',
+                'date', 'datetime' => 'datetime',
+                'combobox' => 'select',
+                default => 'text',
+            };
         }
+
+        return match ($data['type']) {
+            'int' => 'int',
+            'float' => 'float',
+            default => 'text',
+        };
     }
 }

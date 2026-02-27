@@ -9,7 +9,9 @@ namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Routing\RoutingException;
+use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Service\PremappingServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,17 +20,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(defaults: ['_routeScope' => ['api']])]
+#[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [ApiRouteScope::ID]])]
 #[Package('fundamentals@after-sales')]
 class PremappingController extends AbstractController
 {
+    /**
+     * @internal
+     */
     public function __construct(
         private readonly PremappingServiceInterface $premappingService,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
     ) {
     }
 
-    #[Route(path: '/api/_action/migration/generate-premapping', name: 'api.admin.migration.generate-premapping', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/generate-premapping',
+        name: 'api.admin.migration.generate-premapping',
+        methods: [Request::METHOD_POST],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']]
+    )]
     public function generatePremapping(Request $request, Context $context): JsonResponse
     {
         $dataSelectionIds = $request->request->all('dataSelectionIds');
@@ -41,7 +51,12 @@ class PremappingController extends AbstractController
         return new JsonResponse($this->premappingService->generatePremapping($context, $migrationContext, $dataSelectionIds));
     }
 
-    #[Route(path: '/api/_action/migration/write-premapping', name: 'api.admin.migration.write-premapping', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/write-premapping',
+        name: 'api.admin.migration.write-premapping',
+        methods: [Request::METHOD_POST],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']]
+    )]
     public function writePremapping(Request $request, Context $context): Response
     {
         $premapping = $request->request->all('premapping');

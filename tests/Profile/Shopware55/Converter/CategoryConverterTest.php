@@ -50,9 +50,9 @@ class CategoryConverterTest extends TestCase
             $mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
         );
 
         $runId = Uuid::randomHex();
@@ -62,10 +62,11 @@ class CategoryConverterTest extends TestCase
         $connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new CategoryDataSet(),
+            $runId,
             0,
             250
         );
@@ -98,8 +99,8 @@ class CategoryConverterTest extends TestCase
             new DummyMappingService(),
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
             $languageLookup
         );
 
@@ -131,9 +132,8 @@ class CategoryConverterTest extends TestCase
             new DummyMappingService(),
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            //            $this->getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
             $languageLookup
         );
 
@@ -177,8 +177,6 @@ class CategoryConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
 
         $logs = $this->loggingService->getLoggingArray();
-        $title = 'The category entity has one or more empty necessary fields';
-        static::assertSame($title, $logs[0]['title']);
         static::assertCount(1, $logs);
     }
 

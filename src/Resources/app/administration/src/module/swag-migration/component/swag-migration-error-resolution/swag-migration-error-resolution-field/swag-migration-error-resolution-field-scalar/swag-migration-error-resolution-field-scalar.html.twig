@@ -1,0 +1,76 @@
+{% block swag_migration_error_resolution_field_scalar %}
+<div class="swag-migration-error-resolution-field-scalar">
+    {% block swag_migration_error_resolution_field_scalar_number %}
+        <mt-number-field
+            v-if="componentType === 'number'"
+            v-model="fieldValue"
+            class="sw-migration-error-resolution-field__number"
+            name="migration-resolution--number"
+            :label="fieldName"
+            :number-type="numberFieldType"
+            :error="error"
+            :disabled="disabled"
+        />
+    {% endblock %}
+
+    {% block swag_migration_error_resolution_field_scalar_textarea %}
+        <mt-textarea
+            v-if="componentType === 'textarea'"
+            v-model="fieldValue"
+            class="sw-migration-error-resolution-field__textarea"
+            name="migration-resolution--textarea"
+            :label="fieldName"
+            :error="error"
+            :disabled="disabled"
+        />
+    {% endblock %}
+
+    {% block swag_migration_error_resolution_field_scalar_text %}
+        <mt-text-field
+            v-if="componentType === 'text'"
+            v-model="fieldValue"
+            class="sw-migration-error-resolution-field__text"
+            name="migration-resolution--text"
+            :label="fieldName"
+            :error="error"
+            :disabled="disabled"
+        />
+    {% endblock %}
+
+    {% block swag_migration_error_resolution_field_scalar_switch %}
+        <mt-switch
+            v-if="componentType === 'switch'"
+            v-model="fieldValue"
+            class="sw-migration-error-resolution-field__switch"
+            name="migration-resolution--switch"
+            :label="fieldName"
+            :error="error"
+            :disabled="disabled"
+        />
+    {% endblock %}
+
+    {% block swag_migration_error_resolution_field_scalar_date %}
+        <mt-datepicker
+            v-if="componentType === 'datepicker'"
+            v-model="fieldValue"
+            class="sw-migration-error-resolution-field__datepicker"
+            name="migration-resolution--datepicker"
+            date-type="datetime"
+            :label="fieldName"
+            :error="error"
+            :disabled="disabled"
+        />
+    {% endblock %}
+
+    {% block swag_migration_error_resolution_field_scalar_editor %}
+        <sw-code-editor
+            v-if="componentType === 'editor'"
+            v-model:value="fieldValue"
+            class="sw-migration-error-resolution-field__editor"
+            name="migration-resolution--code-editor"
+            :error="error"
+            :label="fieldName"
+        />
+    {% endblock %}
+</div>
+{% endblock %}

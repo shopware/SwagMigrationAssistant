@@ -74,49 +74,13 @@ abstract class ShopwareConverter extends Converter
         unset($sourceData[$sourceKey]);
     }
 
-    /**
-     * @param array<string, mixed> $rawData
-     * @param list<string> $requiredDataFieldKeys
-     *
-     * @return list<string>
-     */
-    protected function checkForEmptyRequiredDataFields(array $rawData, array $requiredDataFieldKeys): array
-    {
-        $emptyFields = [];
-        foreach ($requiredDataFieldKeys as $requiredDataFieldKey) {
-            if (!isset($rawData[$requiredDataFieldKey]) || $rawData[$requiredDataFieldKey] === '') {
-                $emptyFields[] = $requiredDataFieldKey;
-            }
-        }
-
-        return $emptyFields;
-    }
-
-    /**
-     * @param array<string, mixed> $converted
-     * @param array<string, string> $requiredDataFields
-     *
-     * @return list<string>
-     */
-    protected function checkForEmptyRequiredConvertedFields(array $converted, array $requiredDataFields): array
-    {
-        $emptyFields = [];
-        foreach ($requiredDataFields as $requiredDataFieldKey => $requiredDataFieldValue) {
-            if (!isset($converted[$requiredDataFieldKey]) || $converted[$requiredDataFieldKey] === '') {
-                $emptyFields[] = $requiredDataFieldValue;
-            }
-        }
-
-        return $emptyFields;
-    }
-
     protected function validDate(string $value): bool
     {
         try {
             new \DateTime($value);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return false;
         }
     }
@@ -148,7 +112,7 @@ abstract class ShopwareConverter extends Converter
             }
 
             $connection = $this->migrationContext->getConnection();
-            if ($context !== null && $connection !== null) {
+            if ($context !== null) {
                 $connectionId = $connection->getId();
                 $mapping = $this->mappingService->getMapping(
                     $connectionId,

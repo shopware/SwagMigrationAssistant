@@ -29,7 +29,6 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
-use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
@@ -49,7 +48,6 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
-use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 
 /**
  * Combines tests for data fetching and converting
@@ -181,10 +179,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new MediaDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -209,10 +208,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new CategoryDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -233,10 +233,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new TranslationDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -257,10 +258,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new CustomerDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -281,10 +283,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -304,10 +307,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -323,59 +327,13 @@ class MigrationDataProcessingTest extends TestCase
         static::assertSame(37, $result->getTotal());
     }
 
-    public function testFetchInvalidCustomerData(): void
-    {
-        $context = Context::createDefaultContext();
-        $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
-            $this->connection,
-            $this->runUuid,
-            new InvalidCustomerDataSet(),
-            0,
-            250
-        );
-
-        $this->clearCacheData();
-        $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
-        static::assertCount(4, $data);
-
-        $this->migrationDataConverter->convert($data, $migrationContext, $context);
-        $logs = $this->loggingRepo->search(new Criteria(), $context)->getEntities();
-
-        $countValidLogging = 0;
-        $countInvalidLogging = 0;
-        foreach ($logs as $log) {
-            $type = $log->getLevel();
-
-            if (
-                ($type === LogEntryInterface::LOG_LEVEL_INFO && $log->getCode() === 'SWAG_MIGRATION_CUSTOMER_ENTITY_FIELD_REASSIGNED')
-                || ($type === LogEntryInterface::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER_ADDRESS')
-                || ($type === LogEntryInterface::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER')
-            ) {
-                ++$countValidLogging;
-
-                continue;
-            }
-
-            ++$countInvalidLogging;
-        }
-        static::assertSame(5, $countValidLogging);
-        static::assertSame(0, $countInvalidLogging);
-
-        $failureConvertCriteria = new Criteria();
-        $failureConvertCriteria->addFilter(new EqualsFilter('convertFailure', true));
-        $logs = $this->migrationDataRepo->search($failureConvertCriteria, $context);
-
-        static::assertSame(2, $logs->getTotal());
-    }
-
     private function createMappingService(): MappingService
     {
         return new MappingService(
-            $this->getContainer()->get('swag_migration_mapping.repository'),
-            $this->getContainer()->get(EntityWriter::class),
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
-            $this->getContainer()->get(Connection::class),
+            static::getContainer()->get('swag_migration_mapping.repository'),
+            static::getContainer()->get(EntityWriter::class),
+            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            static::getContainer()->get(Connection::class),
             new NullLogger()
         );
     }

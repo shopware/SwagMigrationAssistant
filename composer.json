@@ -1,7 +1,7 @@
 {
     "name": "swag/migration-assistant",
     "description": "Migration plugin for shopware/platform",
-    "version": "15.0.4",
+    "version": "16.0.0",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "authors": [
@@ -38,7 +38,8 @@
             "@ecs-fix",
             "@phpstan",
             "@phpunit",
-            "@admin:lint"
+            "@lint:admin",
+            "@format:admin"
         ],
         "ecs": "../../../vendor/bin/php-cs-fixer fix --dry-run",
         "ecs-fix": "../../../vendor/bin/php-cs-fixer fix",
@@ -59,27 +60,44 @@
             "@npm:jest install",
             "@npm:acceptance install"
         ],
-        "admin:lint": [
+        "lint:admin": [
             "@npm:jest run lint",
             "@npm:admin run lint",
             "@npm:acceptance run lint",
             "@npm:admin run lint:scss"
         ],
-        "admin:lint:fix": [
-            "@npm:jest run lint-fix",
-            "@npm:admin run lint-fix",
-            "@npm:acceptance run lint-fix",
-            "@npm:admin run lint:scss-fix"
+        "lint:admin:fix": [
+            "@npm:jest run lint:fix",
+            "@npm:admin run lint:fix",
+            "@npm:acceptance run lint:fix",
+            "@npm:admin run lint:scss:fix"
         ],
-        "admin:lint:scss": [
+        "lint:admin:scss": [
             "@npm:admin run lint:scss"
         ],
+        "format:admin": [
+            "@npm:jest run format",
+            "@npm:admin run format",
+            "@npm:acceptance run format"
+        ],
+        "format:admin:fix": [
+            "@npm:jest run format:fix",
+            "@npm:admin run format:fix",
+            "@npm:acceptance run format:fix"
+        ],
+        "format:md": "@npm:admin run format:md",
+        "format:md:fix": "@npm:admin run format:md:fix",
         "admin:unit": "@npm:jest run unit",
         "admin:unit:watch": "@npm:jest run unit-watch",
         "admin:acceptance": "@npm:acceptance run test",
         "npm:admin": "cd src/Resources/app/administration && npm",
         "npm:jest": "cd tests/Jest && npm",
-        "npm:acceptance": "cd tests/acceptance && npm"
+        "npm:acceptance": "cd tests/acceptance && npm",
+        "npm:init": [
+            "@npm:admin install",
+            "@npm:jest install",
+            "@npm:acceptance install"
+        ]
     },
     "autoload": {
         "psr-4": {

@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test;
 
+use Doctrine\DBAL\Connection;
 use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
@@ -15,6 +16,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
 use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -52,6 +54,8 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
+use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableReader;
@@ -66,6 +70,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55SalesChannelCo
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55TranslationConverter;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGatewayFail;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
 use Symfony\Component\Validator\Validation;
@@ -109,6 +114,38 @@ trait MigrationServicesTrait
 
     /**
      * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
+     * @param EntityRepository<CurrencyCollection> $currencyRepository
+     * @param EntityRepository<LanguageCollection> $languageRepository
+     */
+    protected function getFailingMigrationDataFetcher(
+        EntityRepository $loggingRepo,
+        EntityRepository $currencyRepository,
+        EntityRepository $languageRepository,
+        ReaderRegistryInterface $readerRegistry,
+    ): MigrationDataFetcherInterface {
+        $loggingService = new LoggingService(
+            $loggingRepo,
+            new NullLogger()
+        );
+
+        $connectionFactory = new ConnectionFactory();
+        $gatewayRegistry = new GatewayRegistry(new DummyCollection([
+            new ShopwareApiGateway(
+                $readerRegistry,
+                new EnvironmentReader($connectionFactory),
+                new TableReader($connectionFactory),
+                new TableCountReader($connectionFactory, $loggingService),
+                $currencyRepository,
+                $languageRepository
+            ),
+            new DummyLocalGatewayFail(),
+        ]));
+
+        return new MigrationDataFetcher($gatewayRegistry, $loggingService);
+    }
+
+    /**
+     * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
      * @param EntityRepository<PaymentMethodCollection> $paymentRepo
      * @param EntityRepository<ShippingMethodCollection> $shippingRepo
      * @param EntityRepository<CountryCollection> $countryRepo
@@ -138,48 +175,48 @@ trait MigrationServicesTrait
                         $mappingService,
                         $loggingService,
                         $mediaFileService,
-                        $this->getContainer()->get(TaxLookup::class),
-                        $this->getContainer()->get(MediaDefaultFolderLookup::class),
-                        $this->getContainer()->get(LanguageLookup::class),
-                        $this->getContainer()->get(DeliveryTimeLookup::class),
+                        static::getContainer()->get(TaxLookup::class),
+                        static::getContainer()->get(MediaDefaultFolderLookup::class),
+                        static::getContainer()->get(LanguageLookup::class),
+                        static::getContainer()->get(DeliveryTimeLookup::class),
                     ),
                     new Shopware55TranslationConverter(
                         $mappingService,
                         $loggingService,
-                        $this->getContainer()->get(LanguageLookup::class)
+                        static::getContainer()->get(LanguageLookup::class)
                     ),
                     new Shopware55CategoryConverter(
                         $mappingService,
                         $loggingService,
                         $mediaFileService,
-                        $this->getContainer()->get(LowestRootCategoryLookup::class),
-                        $this->getContainer()->get(DefaultCmsPageLookup::class),
-                        $this->getContainer()->get(LanguageLookup::class)
+                        static::getContainer()->get(LowestRootCategoryLookup::class),
+                        static::getContainer()->get(DefaultCmsPageLookup::class),
+                        static::getContainer()->get(LanguageLookup::class)
                     ),
                     new Shopware55MediaConverter(
                         $mappingService,
                         $loggingService,
                         $mediaFileService,
-                        $this->getContainer()->get(LanguageLookup::class)
+                        static::getContainer()->get(LanguageLookup::class)
                     ),
                     new Shopware55CustomerConverter(
                         $mappingService,
                         $loggingService,
                         $validator,
                         $salesChannelRepo,
-                        $this->getContainer()->get(CountryLookup::class),
-                        $this->getContainer()->get(LanguageLookup::class),
-                        $this->getContainer()->get(CountryStateLookup::class),
+                        static::getContainer()->get(CountryLookup::class),
+                        static::getContainer()->get(LanguageLookup::class),
+                        static::getContainer()->get(CountryStateLookup::class),
                     ),
                     new Shopware55OrderConverter(
                         $mappingService,
                         $loggingService,
                         new TaxCalculator(),
                         $salesChannelRepo,
-                        $this->getContainer()->get(CountryLookup::class),
-                        $this->getContainer()->get(CurrencyLookup::class),
-                        $this->getContainer()->get(LanguageLookup::class),
-                        $this->getContainer()->get(CountryStateLookup::class),
+                        static::getContainer()->get(CountryLookup::class),
+                        static::getContainer()->get(CurrencyLookup::class),
+                        static::getContainer()->get(LanguageLookup::class),
+                        static::getContainer()->get(CountryStateLookup::class),
                     ),
                     new Shopware55SalesChannelConverter(
                         $mappingService,
@@ -189,20 +226,28 @@ trait MigrationServicesTrait
                         $countryRepo,
                         $salesChannelRepo,
                         null,
-                        $this->getContainer()->get(CurrencyLookup::class),
-                        $this->getContainer()->get(LanguageLookup::class),
+                        static::getContainer()->get(CurrencyLookup::class),
+                        static::getContainer()->get(LanguageLookup::class),
                     ),
                     new DummyInvalidCustomerConverter(
                         $mappingService,
                         $loggingService,
                         $validator,
                         $salesChannelRepo,
-                        $this->getContainer()->get(CountryLookup::class),
-                        $this->getContainer()->get(LanguageLookup::class),
-                        $this->getContainer()->get(CountryStateLookup::class),
+                        static::getContainer()->get(CountryLookup::class),
+                        static::getContainer()->get(LanguageLookup::class),
+                        static::getContainer()->get(CountryStateLookup::class),
                     ),
                 ]
             )
+        );
+
+        $validationService = new MigrationEntityValidationService(
+            $this->getContainer()->get(DefinitionInstanceRegistry::class),
+            $this->getContainer()->get('event_dispatcher'),
+            $loggingService,
+            $this->getContainer()->get(MigrationFieldValidationService::class),
+            $this->getContainer()->get(Connection::class),
         );
 
         return new MigrationDataConverter(
@@ -211,7 +256,8 @@ trait MigrationServicesTrait
             $mediaFileService,
             $loggingService,
             $dataDefinition,
-            new DummyMappingService()
+            new DummyMappingService(),
+            $validationService,
         );
     }
 

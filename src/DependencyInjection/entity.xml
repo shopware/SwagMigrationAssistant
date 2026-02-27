@@ -45,5 +45,16 @@
         <service id="SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_connection"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Migration\ErrorResolution\Entity\SwagMigrationFixDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_fix"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Core\Field\AnyJsonFieldSerializer">
+            <argument type="service" id="validator"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
+
+            <tag name="shopware.field_serializer"/>
+        </service>
     </services>
 </container>

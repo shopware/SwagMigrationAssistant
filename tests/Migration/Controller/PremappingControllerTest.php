@@ -75,14 +75,14 @@ class PremappingControllerTest extends TestCase
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
-        $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $stateMachineRepo = $this->getContainer()->get('state_machine.repository');
-        $stateMachineStateRepo = $this->getContainer()->get('state_machine_state.repository');
-        $this->mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
-        $migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
+        $connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
+        $this->runRepo = static::getContainer()->get('swag_migration_run.repository');
+        $stateMachineRepo = static::getContainer()->get('state_machine.repository');
+        $stateMachineStateRepo = static::getContainer()->get('state_machine_state.repository');
+        $this->mappingRepo = static::getContainer()->get('swag_migration_mapping.repository');
+        $migrationContextFactory = static::getContainer()->get(MigrationContextFactory::class);
 
-        $gatewayRegistry = $this->getContainer()->get(GatewayRegistry::class);
+        $gatewayRegistry = static::getContainer()->get(GatewayRegistry::class);
         $this->createMappingService();
 
         $this->controller = new PremappingController(
@@ -120,7 +120,7 @@ class PremappingControllerTest extends TestCase
             );
         });
 
-        $generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
+        $generalSettingRepo = static::getContainer()->get('swag_migration_general_setting.repository');
         $setting = $generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
 
         $generalSettingRepo->update([
@@ -190,8 +190,8 @@ class PremappingControllerTest extends TestCase
 
         static::assertNotNull($firstMapping);
         static::assertNotNull($secondMapping);
-        static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityUuid']);
-        static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityUuid']);
+        static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityId']);
+        static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityId']);
     }
 
     public function testWritePremappingWithoutPremapping(): void
@@ -234,8 +234,8 @@ class PremappingControllerTest extends TestCase
 
         static::assertNotNull($firstMapping);
         static::assertNotNull($secondMapping);
-        static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityUuid']);
-        static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityUuid']);
+        static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityId']);
+        static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityId']);
 
         $firstStateUuid = Uuid::randomHex();
         $firstState = new PremappingEntityStruct('0', 'First State', $firstStateUuid);
@@ -275,17 +275,17 @@ class PremappingControllerTest extends TestCase
 
         static::assertNotNull($firstMapping);
         static::assertNotNull($secondMapping);
-        static::assertSame($firstState->getDestinationUuid(), $firstMapping['entityUuid']);
-        static::assertSame($secondState->getDestinationUuid(), $secondMapping['entityUuid']);
+        static::assertSame($firstState->getDestinationUuid(), $firstMapping['entityId']);
+        static::assertSame($secondState->getDestinationUuid(), $secondMapping['entityId']);
     }
 
     private function createMappingService(): void
     {
         $this->mappingService = new MappingService(
             $this->mappingRepo,
-            $this->getContainer()->get(EntityWriter::class),
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
-            $this->getContainer()->get(Connection::class),
+            static::getContainer()->get(EntityWriter::class),
+            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            static::getContainer()->get(Connection::class),
             new NullLogger()
         );
     }

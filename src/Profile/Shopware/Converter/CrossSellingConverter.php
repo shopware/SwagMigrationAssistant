@@ -11,7 +11,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -35,10 +34,7 @@ abstract class CrossSellingConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -57,33 +53,23 @@ abstract class CrossSellingConverter extends ShopwareConverter
             $this->checksum
         );
 
-        $converted['id'] = $crossSellingMapping['entityUuid'];
-
+        $converted['id'] = $crossSellingMapping['entityId'];
         $sourceProductMapping = $this->getProductMapping($data['articleID']);
-        if ($sourceProductMapping === null) {
-            $this->loggingService->addLogEntry(new AssociationRequiredMissingLog(
-                $this->runId,
-                DefaultEntities::PRODUCT,
-                $data['articleID'],
-                $data['type']
-            ));
 
-            return new ConvertStruct(null, $data);
+        $sourceProductId = null;
+
+        if ($sourceProductMapping !== null) {
+            $this->mappingIds[] = $sourceProductMapping['id'];
+            $sourceProductId = $sourceProductMapping['entityId'];
         }
-        $this->mappingIds[] = $sourceProductMapping['id'];
 
         $relatedProductMapping = $this->getProductMapping($data['relatedarticle']);
-        if ($relatedProductMapping === null) {
-            $this->loggingService->addLogEntry(new AssociationRequiredMissingLog(
-                $this->runId,
-                DefaultEntities::PRODUCT,
-                $data['relatedarticle'],
-                $data['type']
-            ));
+        $relatedProductId = null;
 
-            return new ConvertStruct(null, $data);
+        if ($relatedProductMapping !== null) {
+            $this->mappingIds[] = $relatedProductMapping['id'];
+            $relatedProductId = $relatedProductMapping['entityId'];
         }
-        $this->mappingIds[] = $relatedProductMapping['id'];
 
         if ($data['type'] === DefaultEntities::CROSS_SELLING_SIMILAR) {
             $converted['name'] = 'Similar Items';
@@ -100,12 +86,12 @@ abstract class CrossSellingConverter extends ShopwareConverter
 
         $converted['type'] = 'productList';
         $converted['active'] = true;
-        $converted['productId'] = $sourceProductMapping['entityUuid'];
+        $converted['productId'] = $sourceProductId;
         $converted['assignedProducts'] = [
             [
-                'id' => $relationMapping['entityUuid'],
-                'position' => $data['position'],
-                'productId' => $relatedProductMapping['entityUuid'],
+                'id' => $relationMapping['entityId'] ?? null,
+                'position' => $data['position'] ?? null,
+                'productId' => $relatedProductId,
             ],
         ];
 

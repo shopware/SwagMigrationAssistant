@@ -59,7 +59,7 @@ class SalesChannelConverterTest extends TestCase
             $countryRepo,
             $salesChannelRepo,
             null,
-            $this->getContainer()->get(CurrencyLookup::class),
+            static::getContainer()->get(CurrencyLookup::class),
             $languageLookup,
         );
 
@@ -69,10 +69,11 @@ class SalesChannelConverterTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new SalesChannelDataSet(),
+            $runId,
             0,
             250
         );
@@ -91,7 +92,7 @@ class SalesChannelConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $connection = $this->migrationContext->getConnection();
-        static::assertNotNull($connection);
+
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CUSTOMER_GROUP, '1', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '3', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '39', $context);
@@ -132,7 +133,7 @@ class SalesChannelConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $connection = $this->migrationContext->getConnection();
-        static::assertNotNull($connection);
+
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CUSTOMER_GROUP, '1', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '3', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '39', $context);

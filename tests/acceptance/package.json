@@ -1,34 +1,38 @@
 {
-  "name": "shopware-acceptance-test-suite-swag-migration-assistant",
+  "name": "swag-migration-assistant-acceptance",
+  "author": "shopware AG",
   "version": "1.0.0",
-  "private": true,
-  "type": "module",
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.cjs .",
-    "lint-fix": "npm run lint -- --fix",
     "types": "tsc",
-    "test": "npx playwright test --ui"
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --headed",
+    "test:update": "UPDATE_SNAPSHOTS=1 npx playwright test",
+    "lint": "eslint ./",
+    "lint:fix": "eslint --fix ./",
+    "format": "prettier --check \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache",
+    "format:fix": "prettier --write \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.24.5",
-    "@shopware-ag/eslint-config-base": "^2.0.0",
-    "@typescript-eslint/eslint-plugin": "^7.9.0",
-    "@typescript-eslint/parser": "^7.9.0",
-    "eslint": "^8.57.0",
-    "eslint-import-resolver-webpack": "^0.13.8",
-    "eslint-plugin-html": "^8.1.1",
-    "eslint-plugin-jest": "^28.5.0",
-    "eslint-plugin-playwright": "^1.6.1",
-    "eslint-plugin-simple-import-sort": "^12.1.0",
-    "typescript": "^5.4.5"
+    "@shopware-ag/eslint-config-base": "2.0.0",
+    "@types/node": "20.14.8",
+    "@typescript-eslint/eslint-plugin": "8.21.0",
+    "@typescript-eslint/parser": "8.21.0",
+    "eslint": "8.57.1",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-plugin-import": "2.31.0",
+    "eslint-plugin-playwright": "1.6.2",
+    "prettier": "3.6.2",
+    "prettier-plugin-multiline-arrays": "3.0.6",
+    "typescript": "5.7.3"
   },
   "dependencies": {
-    "@playwright/test": "^1.49.0",
-    "@currents/playwright": "^1.9.0",
-    "@shopware-ag/acceptance-test-suite": "^11.9.3",
+    "@currents/playwright": "1.9.0",
+    "@playwright/test": "1.49.1",
+    "@shopware-ag/acceptance-test-suite": "11.9.3",
     "@shopware/api-client": "0.5.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "16.4.7"
   },
-  "author": "shopware AG",
-  "license": "ISC"
+  "overrides": {
+    "picomatch": "4.0.3"
+  }
 }

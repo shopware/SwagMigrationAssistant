@@ -12,14 +12,16 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\NumberRange\Aggregate\NumberRangeState\NumberRangeStateCollection;
+use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedNumberRangeTypeLog;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
@@ -52,23 +54,18 @@ class NumberRangeConverter extends ShopwareConverter
         if (isset($converted['type']['technicalName'])) {
             $numberRangeTypeMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::NUMBER_RANGE_TYPE, $converted['type']['technicalName'], $this->context);
             if ($numberRangeTypeMapping !== null) {
-                $typeUuid = $numberRangeTypeMapping['entityUuid'];
+                $typeUuid = $numberRangeTypeMapping['entityId'];
             } else {
                 $typeUuid = $this->numberRangeTypeLookup->get($converted['type']['technicalName'], $this->context);
-                if ($typeUuid === null) {
-                    $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
-                        DefaultEntities::NUMBER_RANGE,
-                        $data['id'],
-                        $data['id']
-                    );
 
-                    $this->loggingService->addLogEntry(
-                        new UnsupportedNumberRangeTypeLog(
-                            $this->runId,
-                            DefaultEntities::NUMBER_RANGE,
-                            $data['id'],
-                            $converted['type']['technicalName']
-                        )
+                if ($typeUuid === null) {
+                    $this->loggingService->log(
+                        MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                            ->withEntityName(NumberRangeDefinition::ENTITY_NAME)
+                            ->withFieldName('typeId')
+                            ->withFieldSourcePath('id')
+                            ->withSourceData($data)
+                            ->build(ConvertObjectTypeUnsupportedLog::class)
                     );
 
                     return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);

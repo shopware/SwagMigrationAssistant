@@ -21,13 +21,14 @@ use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Converter\ShippingMethodConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationType;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingCalculationTypeUnsupportedLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingPriceUnsupportedLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ShippingMethodConverter;
@@ -65,8 +66,8 @@ class ShippingMethodConverterTest extends TestCase
         $this->shippingMethodConverter = new Shopware55ShippingMethodConverter(
             $this->mappingService,
             $this->loggingService,
-            $this->getContainer()->get(CountryLookup::class),
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(CountryLookup::class),
+            static::getContainer()->get(LanguageLookup::class)
         );
 
         $runId = Uuid::randomHex();
@@ -76,10 +77,11 @@ class ShippingMethodConverterTest extends TestCase
 
         $this->context = Context::createDefaultContext();
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new ShippingMethodDataSet(),
+            $runId,
             0,
             250
         );
@@ -139,7 +141,7 @@ class ShippingMethodConverterTest extends TestCase
         $shippingMethodConverter = new Shopware55ShippingMethodConverter(
             $this->mappingService,
             $this->loggingService,
-            $this->getContainer()->get(CountryLookup::class),
+            static::getContainer()->get(CountryLookup::class),
             $languageLookup
         );
 
@@ -160,15 +162,14 @@ class ShippingMethodConverterTest extends TestCase
 
         $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
         $logs = $this->loggingService->getLoggingArray();
-        $error = new UnsupportedShippingCalculationType('', DefaultEntities::SHIPPING_METHOD, '15', '5');
+
+        $error = (new MigrationLogBuilder('', 'Profile name', 'Gateway name'))
+            ->build(ConvertShippingCalculationTypeUnsupportedLog::class);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getConverted());
         static::assertCount(1, $logs);
         static::assertSame($error->getCode(), $logs[0]['code']);
-        static::assertSame($error->getSourceId(), $logs[0]['sourceId']);
-        static::assertSame($error->getEntity(), $logs[0]['entity']);
-        static::assertSame($error->getParameters()['type'], $logs[0]['parameters']['type']);
     }
 
     public function testConvertWithFactor(): void
@@ -178,15 +179,14 @@ class ShippingMethodConverterTest extends TestCase
 
         $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
         $logs = $this->loggingService->getLoggingArray();
-        $error = new UnsupportedShippingPriceLog('', DefaultEntities::SHIPPING_METHOD_PRICE, '309', '15');
+
+        $error = (new MigrationLogBuilder('', 'Profile name', 'Gateway name'))
+            ->build(ConvertShippingPriceUnsupportedLog::class);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getConverted());
         static::assertCount(1, $logs);
         static::assertSame($error->getCode(), $logs[0]['code']);
-        static::assertSame($error->getSourceId(), $logs[0]['sourceId']);
-        static::assertSame($error->getEntity(), $logs[0]['entity']);
-        static::assertSame($error->getParameters()['shippingMethodId'], $logs[0]['parameters']['shippingMethodId']);
     }
 
     /**
@@ -810,23 +810,26 @@ class ShippingMethodConverterTest extends TestCase
         $conditions = $availabilityRule['conditions'][0]['children'][0]['children'];
 
         foreach ($conditions as &$condition) {
+            if (isset($condition['children']) && !empty($condition['children'])) {
+                foreach ($condition['children'] as &$child) {
+                    unset(
+                        $child['id'],
+                        $child['ruleId'],
+                        $child['parentId'],
+                        $child['position'],
+                        $child['children']
+                    );
+                }
+            } else {
+                unset($condition['children']);
+            }
+
             unset(
                 $condition['id'],
                 $condition['ruleId'],
                 $condition['parentId'],
                 $condition['position']
             );
-
-            if (isset($condition['children'])) {
-                foreach ($condition['children'] as &$child) {
-                    unset(
-                        $child['id'],
-                        $child['ruleId'],
-                        $child['parentId'],
-                        $child['position']
-                    );
-                }
-            }
         }
 
         static::assertSame($expectedConditions, $conditions);

@@ -85,7 +85,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
         }
 
         if ($uuid !== null) {
-            $mapping['entityUuid'] = $uuid;
+            $mapping['entityId'] = $uuid;
         }
 
         if ($entityValue !== null) {
@@ -118,7 +118,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
                        connection_id AS connectionId,
                        entity,
                        old_identifier AS oldIdentifier,
-                       entity_uuid AS entityUuid,
+                       entity_id AS entityId,
                        entity_value AS entityValue,
                        checksum,
                        additional_data AS additionalData
@@ -133,7 +133,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
         $mapping['id'] = Uuid::fromBytesToHex($mapping['id']);
         $mapping['connectionId'] = Uuid::fromBytesToHex($mapping['connectionId']);
-        $mapping['entityUuid'] = $mapping['entityUuid'] === null ? null : Uuid::fromBytesToHex($mapping['entityUuid']);
+        $mapping['entityId'] = $mapping['entityId'] === null ? null : Uuid::fromBytesToHex($mapping['entityId']);
         if (!empty($mapping['additionalData'])) {
             $mapping['additionalData'] = \json_decode($mapping['additionalData'], true, 512, \JSON_THROW_ON_ERROR);
         } else {
@@ -159,14 +159,14 @@ class MappingService implements MappingServiceInterface, ResetInterface
         ?string $uuid = null,
         ?string $entityValue = null,
     ): array {
-        $fallbackEntityUuid = $entityValue !== null ? null : Uuid::randomHex();
+        $fallbackEntityId = $entityValue !== null ? null : Uuid::randomHex();
 
         $mapping = [
             'id' => Uuid::randomHex(),
             'connectionId' => $connectionId,
             'entity' => $entityName,
             'oldIdentifier' => $oldIdentifier,
-            'entityUuid' => $uuid ?? $fallbackEntityUuid,
+            'entityId' => $uuid ?? $fallbackEntityId,
             'entityValue' => $entityValue,
             'checksum' => $checksum,
             'additionalData' => $additionalData,
@@ -192,7 +192,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
                 $oldIdentifier,
                 $updateData['checksum'] ?? null,
                 $updateData['additionalData'] ?? null,
-                $updateData['entityUuid'] ?? null
+                $updateData['entityId'] ?? null
             );
         }
 
@@ -230,7 +230,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
                     'connectionId' => $mapping->getConnectionId(),
                     'entity' => $entityName,
                     'oldIdentifier' => $oldIdentifier,
-                    'entityUuid' => $mapping->getEntityUuid(),
+                    'entityId' => $mapping->getEntityId(),
                     'entityValue' => $mapping->getEntityValue(),
                     'checksum' => $mapping->getChecksum(),
                     'additionalData' => $mapping->getAdditionalData(),
@@ -248,12 +248,12 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
         $entities = $this->migrationMappingRepo->search($criteria, $context)->getEntities();
 
-        $entityUuids = [];
+        $entityIds = [];
         foreach ($entities as $entity) {
-            $entityUuids[] = $entity->getEntityUuid();
+            $entityIds[] = $entity->getEntityId();
         }
 
-        return $entityUuids;
+        return $entityIds;
     }
 
     public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string
@@ -285,7 +285,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
                 'connectionId' => $element->getConnectionId(),
                 'entity' => $element->getEntity(),
                 'oldIdentifier' => $element->getOldIdentifier(),
-                'entityUuid' => $element->getEntityUuid(),
+                'entityId' => $element->getEntityId(),
                 'entityValue' => $value,
                 'checksum' => $element->getChecksum(),
                 'additionalData' => $element->getAdditionalData(),
@@ -298,10 +298,10 @@ class MappingService implements MappingServiceInterface, ResetInterface
         return null;
     }
 
-    public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void
+    public function deleteMapping(string $entityId, string $connectionId, Context $context): void
     {
         foreach ($this->writeArray as $key => $writeMapping) {
-            if ($writeMapping['connectionId'] === $connectionId && $writeMapping['entityUuid'] === $entityUuid) {
+            if ($writeMapping['connectionId'] === $connectionId && $writeMapping['entityId'] === $entityId) {
                 unset($this->writeArray[$key]);
                 $this->writeArray = \array_values($this->writeArray);
 
@@ -310,13 +310,13 @@ class MappingService implements MappingServiceInterface, ResetInterface
         }
 
         foreach ($this->mappings as $hash => $mapping) {
-            if (isset($mapping['entityUuid']) && $mapping['entityUuid'] === $entityUuid) {
+            if (isset($mapping['entityId']) && $mapping['entityId'] === $entityId) {
                 unset($this->mappings[$hash]);
             }
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('entityUuid', $entityUuid));
+        $criteria->addFilter(new EqualsFilter('entityId', $entityId));
         $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
         $criteria->setLimit(1);
 
@@ -335,12 +335,12 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
         try {
             $isFirstInsert = true;
-            $insertSql = 'INSERT INTO swag_migration_mapping (id, connection_id, entity, old_identifier, entity_uuid, entity_value, checksum, additional_data, created_at) VALUES ';
+            $insertSql = 'INSERT INTO swag_migration_mapping (id, connection_id, entity, old_identifier, entity_id, entity_value, checksum, additional_data, created_at) VALUES ';
             $insertParams = [];
             $updateSql = ' ON DUPLICATE KEY
                        UPDATE entity = VALUES(entity),
                        old_identifier = VALUES(old_identifier),
-                       entity_uuid = VALUES(entity_uuid),
+                       entity_id = VALUES(entity_id),
                        entity_value = VALUES(entity_value),
                        checksum = VALUES(checksum),
                        additional_data = VALUES(additional_data),
@@ -352,13 +352,13 @@ class MappingService implements MappingServiceInterface, ResetInterface
                     $insertSql .= ', ';
                 }
 
-                $insertSql .= \sprintf('(:id%d, :connectionId%d, :entity%d, :oldIdentifier%d, :entityUuid%d, :entityValue%d, :checksum%d, :additionalData%d, :createdAt%d)', $index, $index, $index, $index, $index, $index, $index, $index, $index);
+                $insertSql .= \sprintf('(:id%d, :connectionId%d, :entity%d, :oldIdentifier%d, :entityId%d, :entityValue%d, :checksum%d, :additionalData%d, :createdAt%d)', $index, $index, $index, $index, $index, $index, $index, $index, $index);
 
                 $insertParams['id' . $index] = Uuid::fromHexToBytes($writeMapping['id']);
                 $insertParams['connectionId' . $index] = Uuid::fromHexToBytes($writeMapping['connectionId']);
                 $insertParams['entity' . $index] = $writeMapping['entity'];
                 $insertParams['oldIdentifier' . $index] = $writeMapping['oldIdentifier'];
-                $insertParams['entityUuid' . $index] = $writeMapping['entityUuid'] === null ? null : Uuid::fromHexToBytes($writeMapping['entityUuid']);
+                $insertParams['entityId' . $index] = $writeMapping['entityId'] === null ? null : Uuid::fromHexToBytes($writeMapping['entityId']);
                 $insertParams['entityValue' . $index] = $writeMapping['entityValue'];
                 $insertParams['checksum' . $index] = $writeMapping['checksum'];
                 $insertParams['additionalData' . $index] = \json_encode($writeMapping['additionalData']);
@@ -390,7 +390,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
         $uuids = [];
         foreach ($result as $swagMigrationMappingEntity) {
-            $uuid = $swagMigrationMappingEntity->getEntityUuid();
+            $uuid = $swagMigrationMappingEntity->getEntityId();
 
             if ($uuid === null) {
                 continue;
@@ -423,12 +423,12 @@ class MappingService implements MappingServiceInterface, ResetInterface
     {
         foreach ($this->writeArray as $mapping) {
             try {
-                $insertSql = 'INSERT INTO swag_migration_mapping (id, connection_id, entity, old_identifier, entity_uuid, entity_value, checksum, additional_data, created_at)
-                                VALUES (:id, :connectionId, :entity, :oldIdentifier, :entityUuid, :entityValue, :checksum, :additionalData, :createdAt)
+                $insertSql = 'INSERT INTO swag_migration_mapping (id, connection_id, entity, old_identifier, entity_id, entity_value, checksum, additional_data, created_at)
+                                VALUES (:id, :connectionId, :entity, :oldIdentifier, :entityId, :entityValue, :checksum, :additionalData, :createdAt)
                                 ON DUPLICATE KEY
                        UPDATE entity = VALUES(entity),
                        old_identifier = VALUES(old_identifier),
-                       entity_uuid = VALUES(entity_uuid),
+                       entity_id = VALUES(entity_id),
                        entity_value = VALUES(entity_value),
                        checksum = VALUES(checksum),
                        additional_data = VALUES(additional_data),
@@ -439,7 +439,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
                 $insertParams['connectionId'] = Uuid::fromHexToBytes($mapping['connectionId']);
                 $insertParams['entity'] = $mapping['entity'];
                 $insertParams['oldIdentifier'] = $mapping['oldIdentifier'];
-                $insertParams['entityUuid'] = $mapping['entityUuid'] === null ? null : Uuid::fromHexToBytes($mapping['entityUuid']);
+                $insertParams['entityId'] = $mapping['entityId'] === null ? null : Uuid::fromHexToBytes($mapping['entityId']);
                 $insertParams['entityValue'] = $mapping['entityValue'];
                 $insertParams['checksum'] = $mapping['checksum'];
                 $insertParams['additionalData'] = \json_encode($mapping['additionalData']);

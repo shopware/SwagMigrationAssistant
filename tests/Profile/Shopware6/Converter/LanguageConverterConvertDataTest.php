@@ -52,7 +52,7 @@ class LanguageConverterConvertDataTest extends TestCase
         ];
 
         $result = $languageConverter->convert($data, $context, $migrationContext);
-        $converted = $result->getConverted() ?? [];
+        $converted = $result?->getConverted() ?? [];
 
         static::assertArrayHasKey('id', $converted);
         static::assertSame($languageId, $converted['id']);
@@ -80,7 +80,7 @@ class LanguageConverterConvertDataTest extends TestCase
         ];
 
         $result = $languageConverter->convert($data, $context, $migrationContext);
-        $converted = $result->getConverted() ?? [];
+        $converted = $result?->getConverted() ?? [];
 
         static::assertArrayHasKey('id', $converted);
         static::assertNotSame($defaultLanguageId, $converted['id']);
@@ -106,7 +106,7 @@ class LanguageConverterConvertDataTest extends TestCase
 
         $languageConverter = $this->createLanguageConverter($mappingServiceMock, null, $languageLookupMock);
         $result = $languageConverter->convert($data, $context, $migrationContext);
-        $converted = $result->getConverted() ?? [];
+        $converted = $result?->getConverted() ?? [];
 
         static::assertArrayHasKey('id', $converted);
         static::assertSame($expectedId, $converted['id']);
@@ -133,7 +133,7 @@ class LanguageConverterConvertDataTest extends TestCase
 
         $languageConverter = $this->createLanguageConverter($mappingServiceMock);
         $result = $languageConverter->convert($data, $context, $migrationContext);
-        $converted = $result->getConverted() ?? [];
+        $converted = $result?->getConverted() ?? [];
 
         static::assertArrayHasKey('id', $converted);
         static::assertSame($expectedId, $converted['id']);
@@ -148,8 +148,8 @@ class LanguageConverterConvertDataTest extends TestCase
         return new LanguageConverter(
             $mappingService ?? new Dummy6MappingService(),
             $loggingService ?? $this->createMock(LoggingServiceInterface::class),
-            $languageLookup ?? $this->getContainer()->get(LanguageLookup::class),
-            $localeLookup ?? $this->getContainer()->get(LocaleLookup::class)
+            $languageLookup ?? static::getContainer()->get(LanguageLookup::class),
+            $localeLookup ?? static::getContainer()->get(LocaleLookup::class)
         );
     }
 
@@ -159,10 +159,11 @@ class LanguageConverterConvertDataTest extends TestCase
         $migrationConnectionEntity->setId(Uuid::randomHex());
 
         return new MigrationContext(
-            new Shopware6MajorProfile('6.6.0.0'),
             $migrationConnectionEntity,
-            Uuid::randomHex(),
+            new Shopware6MajorProfile('6.6.0.0'),
+            null,
             new LanguageDataSet(),
+            Uuid::randomHex(),
             0,
             10
         );

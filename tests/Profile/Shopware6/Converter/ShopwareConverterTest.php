@@ -52,10 +52,11 @@ abstract class ShopwareConverterTest extends TestCase
         $connection->setId(Uuid::randomHex());
         $connection->setProfileName($this->getProfileName());
         $this->migrationContext = new MigrationContext(
-            $this->createProfile(),
             $connection,
-            $runId,
+            $this->createProfile(),
+            null,
             $this->createDataSet(),
+            $runId,
             0,
             250
         );
@@ -110,12 +111,13 @@ abstract class ShopwareConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $convertResult = $this->converter->convert($input, $context, $this->migrationContext);
-        $output = $convertResult->getConverted();
+        $output = $convertResult?->getConverted();
 
         $fixtureName = \basename($fixtureFolderPath);
         if ($output !== null) {
-            static::assertNotNull($convertResult->getMappingUuid(), $this->getAssertMessage($fixtureName . ': No mappingUuid in converted result struct.'));
+            static::assertNotNull($convertResult?->getMappingUuid(), $this->getAssertMessage($fixtureName . ': No mappingUuid in converted result struct.'));
         }
+
         static::assertSame($expectedOutput, $output, $this->getAssertMessage($fixtureName . ': Output of converter does not match.'));
 
         $logs = $this->loggingService->getLoggingArray();
@@ -126,6 +128,7 @@ abstract class ShopwareConverterTest extends TestCase
             $realLog = $logs[$index];
 
             foreach (\array_keys($expectedLog) as $key) {
+                static::assertArrayHasKey($key, $realLog, $fixtureName . ': Array key: "' . $key . '" not found in converted log result.');
                 static::assertSame($expectedLog[$key], $realLog[$key], $this->getAssertMessage($fixtureName . ': Log key not as expected (make sure the log array order matches the logging order).'));
             }
         }
@@ -166,13 +169,8 @@ abstract class ShopwareConverterTest extends TestCase
 
     protected function loadMapping(array $mappingArray): void
     {
-        $connection = $this->migrationContext->getConnection();
+        $connectionId = $this->migrationContext->getConnection()->getId();
 
-        if ($connection === null) {
-            return;
-        }
-
-        $connectionId = $connection->getId();
         foreach ($mappingArray as $mapping) {
             $mappingConnection = null;
             if (isset($mapping['connectionId'])) {

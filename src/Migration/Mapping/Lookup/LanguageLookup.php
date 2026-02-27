@@ -52,7 +52,7 @@ class LanguageLookup implements ResetInterface
 
         $localeUuid = $this->localeLookup->get($localeCode, $context);
         if ($localeUuid === null) {
-            throw MigrationException::localeForLanguageLookupNotFound($localeCode);
+            throw MigrationException::localeNotFound($localeCode);
         }
 
         $language = $this->getLanguage($localeUuid, $context);

@@ -32,10 +32,11 @@ class CustomerGroupAttributeReaderTest extends TestCase
         $this->customerGroupAttributeReader = new CustomerGroupAttributeReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new CustomerGroupAttributeDataSet(),
+            $this->runId,
             0,
             10
         );

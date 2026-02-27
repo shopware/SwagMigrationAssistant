@@ -28,6 +28,8 @@ use SwagMigrationAssistant\Migration\Writer\SeoUrlWriter;
 #[Package('fundamentals@after-sales')]
 class SeoUrlWriterTest extends TestCase
 {
+    private const SALES_CHANNEL_ID = 'sales-channel-uuid';
+
     private EntityWriterInterface $entityWriter;
 
     private EntityDefinition $entityDefinition;
@@ -40,7 +42,6 @@ class SeoUrlWriterTest extends TestCase
     private SeoUrlPersister&MockObject $seoUrlPersister;
 
     private SeoUrlWriter $seoUrlWriter;
-    private const SALES_CHANNEL_ID = 'sales-channel-uuid';
 
     protected function setUp(): void
     {
@@ -74,11 +75,11 @@ class SeoUrlWriterTest extends TestCase
 
         $salesChannelSearchResult = $this->getSalesChannelSearchResult($context);
 
-        $this->salesChannelRepository->expects(static::once())
+        $this->salesChannelRepository->expects($this->once())
             ->method('search')
             ->willReturn($salesChannelSearchResult);
 
-        $this->seoUrlPersister->expects(static::once())
+        $this->seoUrlPersister->expects($this->once())
             ->method('updateSeoUrls');
 
         $result = $this->seoUrlWriter->writeData($seoUrlData, $context);
@@ -87,7 +88,7 @@ class SeoUrlWriterTest extends TestCase
         static::assertInstanceOf(EntityWriteResult::class, $result[SeoUrlDefinition::ENTITY_NAME][0]);
     }
 
-    public function testWriteDataSkipIfSalesChannelIsInvalid(): void
+    public function testWriteDataShouldIgnoreIfIsModified(): void
     {
         $context = Context::createDefaultContext();
         $seoUrlData = [
@@ -104,11 +105,11 @@ class SeoUrlWriterTest extends TestCase
 
         $salesChannelSearchResult = $this->getSalesChannelSearchResult($context);
 
-        $this->salesChannelRepository->expects(static::once())
+        $this->salesChannelRepository->expects($this->once())
             ->method('search')
             ->willReturn($salesChannelSearchResult);
 
-        $this->seoUrlPersister->expects(static::never())
+        $this->seoUrlPersister->expects($this->never())
             ->method('updateSeoUrls');
 
         $result = $this->seoUrlWriter->writeData($seoUrlData, $context);

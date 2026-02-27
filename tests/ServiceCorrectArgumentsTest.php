@@ -21,7 +21,7 @@ class ServiceCorrectArgumentsTest extends TestCase
     #[DataProvider('serviceProvider')]
     public function testServiceShouldHaveCorrectArgumentsInContainer(string $xmlPath, string $serviceId): void
     {
-        $service = $this->getContainer()->get($serviceId);
+        $service = static::getContainer()->get($serviceId);
         static::assertNotNull($service);
     }
 
@@ -71,6 +71,7 @@ class ServiceCorrectArgumentsTest extends TestCase
             if ($element instanceof \DOMElement) {
                 $id = $element->getAttribute('id');
                 $abstract = $element->getAttribute('abstract');
+
                 if (\strtolower($abstract) === 'true') {
                     // skipping abstract services,
                     // because objects of them can't be constructed

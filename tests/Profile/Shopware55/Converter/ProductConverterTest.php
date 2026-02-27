@@ -15,6 +15,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertChildEntityFailedLog;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -55,10 +56,10 @@ class ProductConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class),
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class),
         );
 
         $runId = Uuid::randomHex();
@@ -69,10 +70,11 @@ class ProductConverterTest extends TestCase
         $connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $runId,
             0,
             250
         );
@@ -185,10 +187,10 @@ class ProductConverterTest extends TestCase
 
         $downloadId = $this->mappingService->getMapping('', DefaultEntities::PRODUCT_DOWNLOAD, '6_5', $context);
         static::assertNotNull($downloadId);
-        static::assertSame($downloadId['entityUuid'], $converted['downloads'][0]['id']);
+        static::assertSame($downloadId['entityId'], $converted['downloads'][0]['id']);
         $esdMediaId = $this->mappingService->getMapping('', DefaultEntities::MEDIA, 'esd_5', $context);
         static::assertNotNull($esdMediaId);
-        static::assertSame($esdMediaId['entityUuid'], $converted['downloads'][0]['media']['id']);
+        static::assertSame($esdMediaId['entityId'], $converted['downloads'][0]['media']['id']);
     }
 
     public function testConvertWithCategory(): void
@@ -198,9 +200,9 @@ class ProductConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
         );
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
@@ -358,16 +360,18 @@ class ProductConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_PRODUCT_MEDIA_ENTITY');
-        static::assertSame($logs[0]['parameters']['parentSourceId'], 'SW10006');
-        static::assertSame($logs[0]['parameters']['entity'], 'product_media');
+        static::assertSame($logs[0]['code'], ConvertChildEntityFailedLog::getCode());
     }
 
     public function testConvertDeliveryTime(): void
     {
         /** @var array<int, array<string, mixed>> $productData */
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+        static::assertIsArray($productData);
+
         $productData = $productData[0];
+        static::assertIsArray($productData);
+
         $productData['detail']['shippingtime'] = '10';
 
         $context = Context::createDefaultContext();

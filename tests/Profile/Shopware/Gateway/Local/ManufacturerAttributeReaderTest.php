@@ -32,10 +32,11 @@ class ManufacturerAttributeReaderTest extends TestCase
         $this->manufacturerAttributeReader = new ManufacturerAttributeReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new ManufacturerAttributeDataSet(),
+            $this->runId,
             0,
             10
         );

@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -34,10 +35,7 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
         $this->originalData = $data;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $productContainerMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -46,27 +44,30 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
             $context
         );
 
-        if ($productContainerMapping === null) {
-            return new ConvertStruct(null, $this->originalData);
+        $productContainerId = null;
+        if ($productContainerMapping !== null) {
+            $this->mappingIds[] = $productContainerMapping['id'];
+            $productContainerId = $productContainerMapping['entityId'];
         }
-        $this->mappingIds[] = $productContainerMapping['id'];
 
         $optionMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
-            \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'])),
+            Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5'),
             $context
         );
 
-        if ($optionMapping === null) {
-            return new ConvertStruct(null, $this->originalData);
+        $optionId = null;
+
+        if ($optionMapping !== null) {
+            $this->mappingIds[] = $optionMapping['id'];
+            $optionId = $optionMapping['entityId'];
         }
-        $this->mappingIds[] = $optionMapping['id'];
 
         $relationMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT_PROPERTY,
-            $data['id'] . '_' . $productContainerMapping['entityUuid'],
+            $data['id'] . '_' . $productContainerId,
             $context
         );
 
@@ -79,7 +80,7 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
                 $context,
                 null,
                 null,
-                $relationMapping['entityUuid']
+                $relationMapping['entityId']
             );
         } else {
             $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -91,10 +92,10 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
         }
 
         $converted = [];
-        $converted['id'] = $productContainerMapping['entityUuid'];
+        $converted['id'] = $productContainerId;
         $converted['configuratorSettings'][] = [
-            'id' => $this->mainMapping['entityUuid'],
-            'optionId' => $optionMapping['entityUuid'],
+            'id' => $this->mainMapping['entityId'],
+            'optionId' => $optionId,
         ];
         $this->updateMainMapping($migrationContext, $context);
 

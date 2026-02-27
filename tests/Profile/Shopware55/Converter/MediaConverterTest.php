@@ -39,7 +39,7 @@ class MediaConverterTest extends TestCase
             $mappingService,
             new DummyLoggingService(),
             $mediaFileService,
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LanguageLookup::class)
         );
 
         $runId = Uuid::randomHex();
@@ -48,10 +48,11 @@ class MediaConverterTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new MediaDataSet(),
+            $runId,
             0,
             250
         );

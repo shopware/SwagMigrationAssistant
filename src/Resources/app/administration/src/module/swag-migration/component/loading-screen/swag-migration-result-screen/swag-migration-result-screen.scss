@@ -1,75 +1,21 @@
-@import "~scss/variables";
-
 .swag-migration-result-screen {
-    .swag-migration-result-screen__content {
-        text-align: center;
-        font-size: 12pt;
-    }
+    &__log-summary {
+        .mt-card__content {
+            padding: 0 !important;
+        }
 
-    .swag-migration-result-screen__title {
-        margin-bottom: 5px;
-        font-size: $font-size-m;
-        font-weight: $font-weight-semi-bold;
-    }
+        &-banner.mt-banner {
+            margin: var(--scale-size-24) var(--scale-size-24) var(--scale-size-20) var(--scale-size-24);
+        }
 
-    .swag-migration-result-screen__caption {
-        margin: 0 135px var(--scale-size-24) 135px;
-        font-size: $font-size-xxs;
-        color: $color-darkgray-200;
-    }
+        .swag-migration-history-detail-errors {
+            &__description {
+                margin: var(--scale-size-24);
+            }
 
-    a.swag-migration-result-screen__link {
-        font-size: $font-size-xxs;
-        font-weight: $font-weight-semi-bold;
-        color: $color-shopware-brand-500;
-        text-decoration: none;
-    }
-
-    .swag-migration-result-screen__bubble {
-        margin: var(--scale-size-12) auto var(--scale-size-20) auto;
-        width: var(--scale-size-72);
-        height: var(--scale-size-72);
-        border-radius: var(--border-radius-round);
-        background-color: $color-emerald-50;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .swag-migration-result-screen__icon {
-        color: $color-emerald-500;
-    }
-}
-
-.swag-migration-result-survey {
-    .sw-card__content {
-        background-color: transparent;
-    }
-
-    .swag-migration-result-survey__content {
-        text-align: center;
-        font-size: $font-size-xxs;
-    }
-
-    .swag-migration-result-survey__title {
-        margin-bottom: 5px;
-        font-size: $font-size-xxs;
-        font-weight: $font-weight-semi-bold;
-    }
-
-    .swag-migration-result-survey__caption {
-        margin: var(--scale-size-10) 60px var(--scale-size-24) 60px;
-        font-size: $font-size-xxs;
-        color: $color-darkgray-200;
-    }
-
-    .swag-migration-result-survey__external-icon {
-        margin-left: 5px;
-    }
-
-    .swag-migration-result-survey__icon {
-        margin-top: var(--scale-size-12);
-        width: var(--scale-size-22);
+            .sw-data-grid__cell-content {
+                padding: var(--scale-size-10) var(--scale-size-24) !important;
+            }
+        }
     }
 }

@@ -44,12 +44,8 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         unset($data['_locale']);
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        $this->connectionName = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -60,7 +56,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         );
 
         $converted = [];
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
 
         if (isset($data['attributes'])) {
             $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER_GROUP, $this->connectionName, ['id', 'customerGroupID'], $this->context);
@@ -109,7 +105,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
             $data['id'] . ':' . $this->locale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->locale, $this->context);

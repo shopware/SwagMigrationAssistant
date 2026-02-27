@@ -140,6 +140,10 @@ class ProductConverter extends ShopwareMediaConverter
 
         if (isset($converted['configuratorSettings'])) {
             foreach ($converted['configuratorSettings'] as &$setting) {
+                if (!\is_array($setting)) {
+                    continue;
+                }
+
                 if (isset($setting['price'])) {
                     $this->updateAssociationIds(
                         $setting['price'],

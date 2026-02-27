@@ -54,6 +54,7 @@ class SwagMigrationConnectionDefinition extends EntityDefinition
             new PremappingField('premapping', 'premapping'),
             (new StringField('profile_name', 'profileName'))->addFlags(new Required()),
             (new StringField('gateway_name', 'gatewayName'))->addFlags(new Required()),
+            new StringField('source_system_fingerprint', 'sourceSystemFingerprint'),
             new CreatedAtField(),
             new UpdatedAtField(),
             new OneToManyAssociationField('runs', SwagMigrationRunDefinition::class, 'connection_id'),

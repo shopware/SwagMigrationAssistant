@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageCollection;
@@ -22,6 +23,7 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableCountReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
@@ -56,9 +58,9 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         return 'swag-migration.wizard.pages.connectionCreate.gateways.shopwareApi';
     }
 
-    public function supports(MigrationContextInterface $migrationContext): bool
+    public function supports(ProfileInterface $profile): bool
     {
-        return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
+        return $profile instanceof ShopwareProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array
@@ -123,22 +125,8 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         }
         $environmentDataArray['defaultShopLanguage'] = \str_replace('_', '-', $environmentDataArray['defaultShopLanguage']);
 
-        $totals = $this->readTotals($migrationContext, $context);
-
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return new EnvironmentInformation(
-                $profile->getSourceSystemName(),
-                $profile->getVersion(),
-                '',
-                [],
-                [],
-                null
-            );
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $totals = $this->readTotals($migrationContext);
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
             return new EnvironmentInformation(
@@ -171,17 +159,36 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
             $targetCurrencyIsoCode,
             $environmentDataArray['defaultCurrency'],
             $environmentDataArray['defaultShopLanguage'],
-            $targetLocaleCode
+            $targetLocaleCode,
+            $this->generateFingerprint($environmentDataArray),
         );
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function readTotals(MigrationContextInterface $migrationContext): array
     {
-        return $this->tableCountReader->readTotals($migrationContext, $context);
+        return $this->tableCountReader->readTotals($migrationContext);
     }
 
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
         return $this->tableReader->read($migrationContext, $tableName, $filter);
+    }
+
+    /**
+     * @param array<string, mixed> $environmentData
+     */
+    private function generateFingerprint(array $environmentData): ?string
+    {
+        if (!isset($environmentData['config'])) {
+            return null;
+        }
+
+        $config = $environmentData['config'];
+
+        if (!isset($config['esdKey'], $config['installationDate'])) {
+            return null;
+        }
+
+        return Hasher::hash($config['esdKey'] . $config['installationDate']);
     }
 }

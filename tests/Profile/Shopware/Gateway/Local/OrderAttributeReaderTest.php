@@ -32,10 +32,11 @@ class OrderAttributeReaderTest extends TestCase
         $this->orderAttributeReader = new OrderAttributeReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new OrderAttributeDataSet(),
+            $this->runId,
             0,
             10
         );

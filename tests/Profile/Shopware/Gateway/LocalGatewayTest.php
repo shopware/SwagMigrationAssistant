@@ -7,7 +7,9 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception\ConnectionException;
+use Doctrine\DBAL\Result;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
@@ -19,11 +21,13 @@ use Shopware\Core\System\Language\LanguageCollection;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
+use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -54,21 +58,21 @@ class LocalGatewayTest extends TestCase
         );
 
         $migrationContext = new MigrationContext(
-            $profile,
             $connection,
-            '',
+            $profile,
+            null,
             new ProductDataSet()
         );
 
         $connectionFactory = new ConnectionFactory();
-        $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
+        $readerRegistry = static::getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
         /** @var EntityRepository<CurrencyCollection> $currencyRepository */
-        $currencyRepository = $this->getContainer()->get('currency.repository');
+        $currencyRepository = static::getContainer()->get('currency.repository');
 
         /** @var EntityRepository<LanguageCollection> $languageRepository */
-        $languageRepository = $this->getContainer()->get('language.repository');
+        $languageRepository = static::getContainer()->get('language.repository');
 
         $gatewaySource = new ShopwareLocalGateway(
             $readerRegistry,
@@ -105,21 +109,21 @@ class LocalGatewayTest extends TestCase
         );
 
         $migrationContext = new MigrationContext(
-            $profile,
             $connection,
-            '',
-            new FooDataSet()
+            $profile,
+            null,
+            new FooDataSet(),
         );
 
         $connectionFactory = new ConnectionFactory();
-        $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
+        $readerRegistry = static::getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
         /** @var EntityRepository<CurrencyCollection> $currencyRepository */
-        $currencyRepository = $this->getContainer()->get('currency.repository');
+        $currencyRepository = static::getContainer()->get('currency.repository');
 
         /** @var EntityRepository<LanguageCollection> $languageRepository */
-        $languageRepository = $this->getContainer()->get('language.repository');
+        $languageRepository = static::getContainer()->get('language.repository');
 
         $gatewaySource = new ShopwareLocalGateway(
             $readerRegistry,
@@ -156,19 +160,19 @@ class LocalGatewayTest extends TestCase
         $connection->setCredentialFields([]);
 
         $migrationContext = new MigrationContext(
+            $connection,
             $profile,
-            $connection
         );
 
-        $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
+        $readerRegistry = static::getContainer()->get(ReaderRegistry::class);
         $connectionFactory = new ConnectionFactory();
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
         /** @var EntityRepository<CurrencyCollection> $currencyRepository */
-        $currencyRepository = $this->getContainer()->get('currency.repository');
+        $currencyRepository = static::getContainer()->get('currency.repository');
 
         /** @var EntityRepository<LanguageCollection> $languageRepository */
-        $languageRepository = $this->getContainer()->get('language.repository');
+        $languageRepository = static::getContainer()->get('language.repository');
 
         $gateway = new ShopwareLocalGateway(
             $readerRegistry,
@@ -182,6 +186,185 @@ class LocalGatewayTest extends TestCase
         $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
 
         static::assertSame($response->getTotals(), []);
+    }
+
+    public function testGenerateFingerprintWithConfig(): void
+    {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $connection->setCredentialFields([
+            'dbName' => 'test',
+            'dbUser' => 'test',
+            'dbPassword' => 'test',
+            'dbHost' => 'localhost',
+            'dbPort' => '3306',
+        ]);
+
+        $migrationContext = new MigrationContext(
+            $connection,
+            new Shopware55Profile(),
+        );
+
+        $readerRegistry = new ReaderRegistry([]);
+        $connectionFactory = $this->createMock(ConnectionFactoryInterface::class);
+
+        $mockResult = $this->createMock(Result::class);
+        $mockDbConnection = $this->createMock(Connection::class);
+        $mockDbConnection->method('executeQuery')->willReturn($mockResult);
+
+        $connectionFactory->method('createDatabaseConnection')->willReturn($mockDbConnection);
+
+        $localEnvironmentReader = $this->createMock(EnvironmentReaderInterface::class);
+        $localEnvironmentReader->method('read')->willReturn([
+            'defaultShopLanguage' => 'de_DE',
+            'host' => 'sw55.local',
+            'additionalData' => [],
+            'defaultCurrency' => 'EUR',
+            'config' => [
+                'esdKey' => 'test-esd-key',
+                'installationDate' => '2023-01-01 00:00:00',
+            ],
+        ]);
+
+        $localTableReader = new TableReader(new ConnectionFactory());
+
+        /** @var EntityRepository<CurrencyCollection> $currencyRepository */
+        $currencyRepository = static::getContainer()->get('currency.repository');
+        /** @var EntityRepository<LanguageCollection> $languageRepository */
+        $languageRepository = static::getContainer()->get('language.repository');
+
+        $gateway = new ShopwareLocalGateway(
+            $readerRegistry,
+            $localEnvironmentReader,
+            $localTableReader,
+            $connectionFactory,
+            $currencyRepository,
+            $languageRepository
+        );
+
+        $migrationContext->setGateway($gateway);
+        $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
+
+        static::assertNotNull($response->getFingerprint());
+        static::assertIsString($response->getFingerprint());
+    }
+
+    public function testGenerateFingerprintWithoutConfig(): void
+    {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $connection->setCredentialFields([
+            'dbName' => 'test',
+            'dbUser' => 'test',
+            'dbPassword' => 'test',
+            'dbHost' => 'localhost',
+            'dbPort' => '3306',
+        ]);
+
+        $migrationContext = new MigrationContext(
+            $connection,
+            new Shopware55Profile(),
+        );
+
+        $readerRegistry = new ReaderRegistry([]);
+        $connectionFactory = $this->createMock(ConnectionFactoryInterface::class);
+
+        $mockResult = $this->createMock(Result::class);
+        $mockDbConnection = $this->createMock(Connection::class);
+        $mockDbConnection->method('executeQuery')->willReturn($mockResult);
+
+        $connectionFactory->method('createDatabaseConnection')->willReturn($mockDbConnection);
+
+        $localEnvironmentReader = $this->createMock(EnvironmentReaderInterface::class);
+        $localEnvironmentReader->method('read')->willReturn([
+            'defaultShopLanguage' => 'de_DE',
+            'host' => 'sw55.local',
+            'additionalData' => [],
+            'defaultCurrency' => 'EUR',
+        ]);
+
+        $localTableReader = new TableReader(new ConnectionFactory());
+
+        /** @var EntityRepository<CurrencyCollection> $currencyRepository */
+        $currencyRepository = static::getContainer()->get('currency.repository');
+        /** @var EntityRepository<LanguageCollection> $languageRepository */
+        $languageRepository = static::getContainer()->get('language.repository');
+
+        $gateway = new ShopwareLocalGateway(
+            $readerRegistry,
+            $localEnvironmentReader,
+            $localTableReader,
+            $connectionFactory,
+            $currencyRepository,
+            $languageRepository
+        );
+
+        $migrationContext->setGateway($gateway);
+        $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
+
+        static::assertNull($response->getFingerprint());
+    }
+
+    public function testGenerateFingerprintWithoutEsdKey(): void
+    {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $connection->setCredentialFields([
+            'dbName' => 'test',
+            'dbUser' => 'test',
+            'dbPassword' => 'test',
+            'dbHost' => 'localhost',
+            'dbPort' => '3306',
+        ]);
+
+        $migrationContext = new MigrationContext(
+            $connection,
+            new Shopware55Profile(),
+        );
+
+        $readerRegistry = new ReaderRegistry([]);
+        $connectionFactory = $this->createMock(ConnectionFactoryInterface::class);
+
+        $mockResult = $this->createMock(Result::class);
+        $mockDbConnection = $this->createMock(Connection::class);
+        $mockDbConnection->method('executeQuery')->willReturn($mockResult);
+
+        $connectionFactory->method('createDatabaseConnection')->willReturn($mockDbConnection);
+
+        $localEnvironmentReader = $this->createMock(EnvironmentReaderInterface::class);
+        $localEnvironmentReader->method('read')->willReturn([
+            'defaultShopLanguage' => 'de_DE',
+            'host' => 'sw55.local',
+            'additionalData' => [],
+            'defaultCurrency' => 'EUR',
+            'config' => [
+                'installationDate' => '2023-01-01 00:00:00',
+            ],
+        ]);
+
+        $localTableReader = new TableReader(new ConnectionFactory());
+
+        /** @var EntityRepository<CurrencyCollection> $currencyRepository */
+        $currencyRepository = static::getContainer()->get('currency.repository');
+        /** @var EntityRepository<LanguageCollection> $languageRepository */
+        $languageRepository = static::getContainer()->get('language.repository');
+
+        $gateway = new ShopwareLocalGateway(
+            $readerRegistry,
+            $localEnvironmentReader,
+            $localTableReader,
+            $connectionFactory,
+            $currencyRepository,
+            $languageRepository
+        );
+
+        $migrationContext->setGateway($gateway);
+        $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
+
+        static::assertNull($response->getFingerprint());
     }
 
     public static function profileProvider(): array

@@ -7,6 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressDefinition;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -17,19 +19,18 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\FieldReassignedRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertFieldReassignedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\InvalidEmailAddressLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -44,29 +45,6 @@ abstract class CustomerConverter extends ShopwareConverter
     protected string $oldCustomerId;
 
     protected string $runId;
-
-    /**
-     * @var list<string>
-     */
-    protected array $requiredDataFieldKeys = [
-        'firstname',
-        'lastname',
-        'email',
-        'salutation',
-        'customerGroupId',
-    ];
-
-    /**
-     * @var list<string>
-     */
-    protected array $requiredAddressDataFieldKeys = [
-        'firstname',
-        'lastname',
-        'zipcode',
-        'city',
-        'street',
-        'salutation',
-    ];
 
     protected string $connectionName;
 
@@ -96,45 +74,27 @@ abstract class CustomerConverter extends ShopwareConverter
         MigrationContextInterface $migrationContext,
     ): ConvertStruct {
         $this->generateChecksum($data);
-        $oldData = $data;
         $this->runId = $migrationContext->getRunUuid();
         $this->migrationContext = $migrationContext;
 
-        $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
-        if (!empty($fields)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $data['id'],
-                \implode(',', $fields)
-            ));
+        if (!isset($data['_locale']) || $data['_locale'] === '') {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(CustomerDefinition::ENTITY_NAME)
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->build(ConvertSourceDataIncompleteLog::class)
+            );
 
-            return new ConvertStruct(null, $oldData);
+            return new ConvertStruct(null, $data);
         }
-
-        if (!$this->checkEmailValidity($data['email'])) {
-            $this->loggingService->addLogEntry(new InvalidEmailAddressLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $data['id'],
-                $data['email']
-            ));
-
-            return new ConvertStruct(null, $oldData);
-        }
-
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
-
-        $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        $this->connectionName = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -147,7 +107,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->oldCustomerId = $data['id'];
 
         $converted = [];
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
 
         unset($data['id']);
 
@@ -159,13 +119,13 @@ abstract class CustomerConverter extends ShopwareConverter
                 $this->context
             );
 
-            if (isset($mapping['entityUuid'])) {
-                $converted['salesChannelId'] = $mapping['entityUuid'];
+            if (isset($mapping['entityId'])) {
+                $converted['salesChannelId'] = $mapping['entityId'];
                 $this->mappingIds[] = $mapping['id'];
                 unset($data['subshopID']);
 
                 if (isset($data['shop']['customer_scope']) && (bool) $data['shop']['customer_scope'] === true) {
-                    $converted['boundSalesChannelId'] = $mapping['entityUuid'];
+                    $converted['boundSalesChannelId'] = $mapping['entityId'];
                 }
             }
         }
@@ -206,25 +166,24 @@ abstract class CustomerConverter extends ShopwareConverter
         $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER_GROUP,
-            $data['customerGroupId'],
+            $data['customerGroupId'] ?? '',
             $context
         );
-        if ($mapping === null) {
-            return new ConvertStruct(null, $oldData);
+
+        if (\is_array($mapping) && \array_key_exists('entityId', $mapping)) {
+            $converted['groupId'] = $mapping['entityId'];
+            $this->mappingIds[] = $mapping['id'];
+            unset($data['customerGroupId'], $data['customergroup']);
         }
-        $converted['groupId'] = $mapping['entityUuid'];
-        $this->mappingIds[] = $mapping['id'];
-        unset($data['customerGroupId'], $data['customergroup']);
 
         if (isset($data['defaultpayment']['id'])) {
             $defaultPaymentMethodUuid = $this->getDefaultPaymentMethod($data['defaultpayment']);
 
-            if ($defaultPaymentMethodUuid === null) {
-                return new ConvertStruct(null, $oldData);
+            if ($defaultPaymentMethodUuid !== null) {
+                $converted['defaultPaymentMethodId'] = $defaultPaymentMethodUuid;
             }
-
-            $converted['defaultPaymentMethodId'] = $defaultPaymentMethodUuid;
         }
+
         unset($data['defaultpayment'], $data['paymentpreset']);
 
         if (!isset($converted['defaultPaymentMethodId'])) {
@@ -235,28 +194,22 @@ abstract class CustomerConverter extends ShopwareConverter
                 $this->context
             );
 
-            if ($mapping === null) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    DefaultEntities::CUSTOMER,
-                    $this->oldCustomerId,
-                    'defaultpayment'
-                ));
-
-                return new ConvertStruct(null, $oldData);
+            if (\is_array($mapping) && \array_key_exists('entityId', $mapping)) {
+                $converted['defaultPaymentMethodId'] = $mapping['entityId'];
+                $this->mappingIds[] = $mapping['id'];
             }
-            $converted['defaultPaymentMethodId'] = $mapping['entityUuid'];
-            $this->mappingIds[] = $mapping['id'];
         }
 
-        $salutationUuid = $this->getSalutation($data['salutation']);
-        if ($salutationUuid === null) {
-            return new ConvertStruct(null, $oldData);
-        }
-        $converted['salutationId'] = $salutationUuid;
+        if (isset($data['salutation']) && $data['salutation'] !== '') {
+            $salutationUuid = $this->getSalutation($data['salutation']);
 
-        if (isset($data['addresses']) && isset($this->mainMapping['entityUuid'])) {
-            $this->applyAddresses($data, $converted, $this->mainMapping['entityUuid']);
+            if ($salutationUuid !== null) {
+                $converted['salutationId'] = $salutationUuid;
+            }
+        }
+
+        if (isset($data['addresses']) && \is_array($data['addresses']) && isset($this->mainMapping['entityId'])) {
+            $this->applyAddresses($data, $converted);
         }
 
         if (isset($data['attributes'])) {
@@ -295,19 +248,6 @@ abstract class CustomerConverter extends ShopwareConverter
             $returnData = null;
         }
 
-        if (!isset($converted['defaultBillingAddressId'], $converted['defaultShippingAddressId'])) {
-            $this->mappingService->deleteMapping($converted['id'], $this->connectionId, $this->context);
-
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $this->oldCustomerId,
-                'address data'
-            ));
-
-            return new ConvertStruct(null, $oldData);
-        }
-
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
@@ -319,16 +259,23 @@ abstract class CustomerConverter extends ShopwareConverter
      */
     protected function setPassword(array &$data, array &$converted): void
     {
-        $originalEncoder = $data['encoder'];
+        $originalEncoder = $data['encoder'] ?? null;
 
         if ($originalEncoder === 'md5' || $originalEncoder === 'sha256') {
-            $converted['legacyPassword'] = $data['password'];
+            if (isset($data['password'])) {
+                $converted['legacyPassword'] = $data['password'];
+            }
+
             $converted['legacyEncoder'] = \ucfirst($originalEncoder);
             unset($data['password'], $data['encoder']);
 
             return;
         }
-        $converted['password'] = $data['password'];
+
+        if (isset($data['password'])) {
+            $converted['password'] = $data['password'];
+        }
+
         unset($data['password'], $data['encoder']);
     }
 
@@ -345,45 +292,39 @@ abstract class CustomerConverter extends ShopwareConverter
         );
 
         if ($paymentMethodMapping === null) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                DefaultEntities::PAYMENT_METHOD,
-                $originalData['id'],
-                DefaultEntities::CUSTOMER,
-                $this->oldCustomerId
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerDefinition::ENTITY_NAME)
+                    ->withFieldName('defaultPaymentMethodId')
+                    ->withFieldSourcePath('default_payment_method')
+                    ->withSourceData($originalData)
+                    ->build(ConvertEntityUnknownLog::class)
+            );
 
             return null;
         }
         $this->mappingIds[] = $paymentMethodMapping['id'];
 
-        return $paymentMethodMapping['entityUuid'];
+        return $paymentMethodMapping['entityId'];
     }
 
     /**
      * @param array<string, mixed> $originalData
      * @param array<string, mixed> $converted
      */
-    protected function applyAddresses(array &$originalData, array &$converted, string $customerUuid): void
+    protected function applyAddresses(array &$originalData, array &$converted): void
     {
         $addresses = [];
         $mainVatId = null;
+
         foreach ($originalData['addresses'] as $address) {
-            $newAddress = [];
-
-            $fields = $this->checkForEmptyRequiredDataFields($address, $this->requiredAddressDataFieldKeys);
-            if (!empty($fields)) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    DefaultEntities::CUSTOMER_ADDRESS,
-                    $address['id'],
-                    \implode(',', $fields)
-                ));
-
+            if (!\is_array($address) || !isset($address['id']) || $address['id'] === '') {
                 continue;
             }
 
+            $newAddress = [];
             $salutationUuid = $this->getSalutation($address['salutation']);
+
             if ($salutationUuid === null) {
                 continue;
             }
@@ -394,7 +335,7 @@ abstract class CustomerConverter extends ShopwareConverter
                 $address['id'],
                 $this->context
             );
-            $newAddress['id'] = $addressMapping['entityUuid'];
+            $newAddress['id'] = $addressMapping['entityId'];
             $this->mappingIds[] = $addressMapping['id'];
             $newAddress['salutationId'] = $salutationUuid;
 
@@ -414,11 +355,11 @@ abstract class CustomerConverter extends ShopwareConverter
                 }
             }
 
-            if (!isset($this->mainMapping['entityUuid'])) {
+            if (!isset($this->mainMapping['entityId'])) {
                 continue;
             }
 
-            $newAddress['customerId'] = $this->mainMapping['entityUuid'];
+            $newAddress['customerId'] = $this->mainMapping['entityId'];
             $newAddress['country'] = $this->getCountry($address['country']);
 
             $countryState = $this->getCountryState($address, $newAddress['country']['id']);
@@ -456,13 +397,13 @@ abstract class CustomerConverter extends ShopwareConverter
         $converted['addresses'] = $addresses;
 
         // No valid default billing and shipping address was converted, so use the first valid one as default
-        $this->checkUnsetDefaultShippingAndDefaultBillingAddress($originalData, $converted, $customerUuid, $addresses);
+        $this->checkUnsetDefaultShippingAndDefaultBillingAddress($originalData, $converted, $addresses);
 
         // No valid default shipping address was converted, but the default billing address is valid
-        $this->checkUnsetDefaultShippingAddress($originalData, $converted, $customerUuid);
+        $this->checkUnsetDefaultShippingAddress($originalData, $converted);
 
         // No valid default billing address was converted, but the default shipping address is valid
-        $this->checkUnsetDefaultBillingAddress($originalData, $converted, $customerUuid);
+        $this->checkUnsetDefaultBillingAddress($originalData, $converted);
     }
 
     /**
@@ -487,7 +428,7 @@ abstract class CustomerConverter extends ShopwareConverter
                 $oldCountryData['id'],
                 $this->context
             );
-            $country['id'] = $mapping['entityUuid'];
+            $country['id'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
         }
 
@@ -533,7 +474,7 @@ abstract class CustomerConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
@@ -557,14 +498,13 @@ abstract class CustomerConverter extends ShopwareConverter
         $state = ['countryId' => $newCountryId];
 
         if (!isset($oldAddressData['state_id'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
-            $this->loggingService->addLogEntry(
-                new UnknownEntityLog(
-                    $this->runId,
-                    DefaultEntities::COUNTRY_STATE,
-                    $oldAddressData['state_id'] ?? 'unknown',
-                    DefaultEntities::CUSTOMER,
-                    $this->oldCustomerId
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
+                    ->withFieldName('stateId')
+                    ->withFieldSourcePath('state_id')
+                    ->withSourceData($oldAddressData)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return [];
@@ -578,6 +518,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
         if ($countryStateUuid !== null) {
             $state['id'] = $countryStateUuid;
+            $state['shortCode'] = $oldAddressData['country']['countryiso'] . '-' . $oldAddressData['state']['shortcode'];
 
             return $state;
         }
@@ -595,27 +536,29 @@ abstract class CustomerConverter extends ShopwareConverter
             $oldAddressData['state']['position'],
             $oldAddressData['state']['active']
         )) {
-            $this->loggingService->addLogEntry(
-                new UnknownEntityLog(
-                    $this->runId,
-                    DefaultEntities::COUNTRY_STATE,
-                    $oldAddressData['state_id'],
-                    DefaultEntities::CUSTOMER,
-                    $this->oldCustomerId
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
+                    ->withFieldName('stateId')
+                    ->withFieldSourcePath('state.name')
+                    ->withSourceData($oldAddressData['state'])
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return [];
         }
 
-        $state['id'] = $mapping['entityUuid'];
+        $state['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $oldStateData = $oldAddressData['state'];
 
         $this->applyCountryStateTranslation($state, $oldStateData);
         $this->convertValue($state, 'name', $oldStateData, 'name');
-        $this->convertValue($state, 'shortCode', $oldStateData, 'shortcode');
+
+        $state['shortCode'] = $oldAddressData['country']['countryiso'] . '-' . $oldStateData['shortcode'];
+        unset($oldStateData['shortcode']);
+
         $this->convertValue($state, 'position', $oldStateData, 'position', self::TYPE_INTEGER);
         $this->convertValue($state, 'active', $oldStateData, 'active', self::TYPE_BOOLEAN);
 
@@ -649,7 +592,7 @@ abstract class CustomerConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
@@ -664,20 +607,25 @@ abstract class CustomerConverter extends ShopwareConverter
      * @param array<string, mixed> $converted
      * @param array<int, array<string, mixed>> $addresses
      */
-    protected function checkUnsetDefaultShippingAndDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid, array $addresses): void
+    protected function checkUnsetDefaultShippingAndDefaultBillingAddress(array &$originalData, array &$converted, array $addresses): void
     {
         if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
             $converted['defaultBillingAddressId'] = $addresses[0]['id'];
             $converted['defaultShippingAddressId'] = $addresses[0]['id'];
             unset($originalData['default_billing_address_id'], $originalData['default_shipping_address_id']);
 
-            $this->loggingService->addLogEntry(new FieldReassignedRunLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $customerUuid,
-                'default billing and shipping address',
-                'first address'
-            ));
+            $this->loggingService->addLogForEach(
+                [
+                    'defaultBillingAddressId' => 'default_billing_address_id',
+                    'defaultShippingAddressId' => 'default_shipping_address_id',
+                ],
+                fn (string $key, string $value) => MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
+                    ->withFieldName($key)
+                    ->withFieldSourcePath($value)
+                    ->withSourceData($originalData)
+                    ->build(ConvertFieldReassignedLog::class)
+            );
         }
     }
 
@@ -685,19 +633,20 @@ abstract class CustomerConverter extends ShopwareConverter
      * @param array<string, mixed> $originalData
      * @param array<string, mixed> $converted
      */
-    protected function checkUnsetDefaultShippingAddress(array &$originalData, array &$converted, string $customerUuid): void
+    protected function checkUnsetDefaultShippingAddress(array &$originalData, array &$converted): void
     {
         if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
             $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
             unset($originalData['default_shipping_address_id']);
 
-            $this->loggingService->addLogEntry(new FieldReassignedRunLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $customerUuid,
-                'default shipping address',
-                'default billing address'
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
+                    ->withFieldName('defaultShippingAddressId')
+                    ->withFieldSourcePath('default_shipping_address_id')
+                    ->withSourceData($originalData)
+                    ->build(ConvertFieldReassignedLog::class)
+            );
         }
     }
 
@@ -705,19 +654,20 @@ abstract class CustomerConverter extends ShopwareConverter
      * @param array<string, mixed> $originalData
      * @param array<string, mixed> $converted
      */
-    protected function checkUnsetDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid): void
+    protected function checkUnsetDefaultBillingAddress(array &$originalData, array &$converted): void
     {
         if (!isset($converted['defaultBillingAddressId']) && isset($converted['defaultShippingAddressId'])) {
             $converted['defaultBillingAddressId'] = $converted['defaultShippingAddressId'];
             unset($originalData['default_billing_address_id']);
 
-            $this->loggingService->addLogEntry(new FieldReassignedRunLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $customerUuid,
-                'default billing address',
-                'default shipping address'
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
+                    ->withFieldName('defaultBillingAddressId')
+                    ->withFieldSourcePath('default_billing_address_id')
+                    ->withSourceData($originalData)
+                    ->build(ConvertFieldReassignedLog::class)
+            );
         }
     }
 
@@ -731,30 +681,20 @@ abstract class CustomerConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                DefaultEntities::SALUTATION,
-                $salutation,
-                DefaultEntities::CUSTOMER,
-                $this->oldCustomerId
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerDefinition::ENTITY_NAME)
+                    ->withFieldName('salutationId')
+                    ->withFieldSourcePath('salutation')
+                    ->withSourceData(['salutation' => $salutation])
+                    ->build(ConvertEntityUnknownLog::class)
+            );
 
             return null;
         }
         $this->mappingIds[] = $mapping['id'];
 
-        return $mapping['entityUuid'];
-    }
-
-    protected function checkEmailValidity(string $email): bool
-    {
-        $constraint = new Email();
-        $errors = $this->validator->validate(
-            $email,
-            $constraint
-        );
-
-        return \count($errors) === 0;
+        return $mapping['entityId'];
     }
 
     /**
@@ -798,7 +738,7 @@ abstract class CustomerConverter extends ShopwareConverter
      */
     private function getAddressWithId(array $data, string $id): ?array
     {
-        if (!isset($data['addresses'])) {
+        if (!isset($data['addresses']) || !\is_array($data['addresses'])) {
             return null;
         }
 

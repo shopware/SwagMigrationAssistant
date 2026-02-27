@@ -29,8 +29,8 @@ class ConnectionFactoryTests extends TestCase
         }
 
         $migrationContext = new MigrationContext(
-            new Shopware6MajorProfile('6.5.6.1'),
             $connection,
+            new Shopware6MajorProfile('6.5.6.1'),
         );
 
         /** @var StaticEntityRepository<SwagMigrationConnectionCollection> $connectionRepository */

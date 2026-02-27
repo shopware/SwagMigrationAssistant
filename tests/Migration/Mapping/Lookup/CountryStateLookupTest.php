@@ -96,7 +96,7 @@ class CountryStateLookupTest extends TestCase
 
     private function getCountryStateLookup(): CountryStateLookup
     {
-        $countryStateLookup = $this->getContainer()->get(CountryStateLookup::class);
+        $countryStateLookup = static::getContainer()->get(CountryStateLookup::class);
         static::assertInstanceOf(CountryStateLookup::class, $countryStateLookup);
 
         return $countryStateLookup;

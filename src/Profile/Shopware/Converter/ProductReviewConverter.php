@@ -7,12 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -21,14 +22,6 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 #[Package('fundamentals@after-sales')]
 abstract class ProductReviewConverter extends ShopwareConverter
 {
-    /**
-     * @var list<string>
-     */
-    protected array $requiredDataFieldKeys = [
-        '_locale',
-        'articleID',
-    ];
-
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -39,29 +32,26 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
-
-        if (!empty($fields)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $migrationContext->getRunUuid(),
-                DefaultEntities::PRODUCT_REVIEW,
-                $data['id'],
-                \implode(',', $fields)
-            ));
-
-            return new ConvertStruct(null, $data);
-        }
+        $connection = $migrationContext->getConnection();
+        $connectionId = $connection->getId();
         $this->generateChecksum($data);
         $originalData = $data;
-        $mainLocale = $data['_locale'];
-        unset($data['_locale']);
 
-        $connection = $migrationContext->getConnection();
-        $connectionId = '';
-        if ($connection !== null) {
-            $connectionId = $connection->getId();
+        if (!isset($data['_locale']) || $data['_locale'] === '') {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
+                    ->withFieldName('languageId')
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
+
+            return new ConvertStruct(null, $originalData);
         }
 
+        $mainLocale = $data['_locale'];
+        unset($data['_locale']);
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $connectionId,
@@ -70,13 +60,14 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+
+        $converted['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         $mapping = $this->mappingService->getMapping(
             $connectionId,
             DefaultEntities::PRODUCT_MAIN,
-            $data['articleID'],
+            $data['articleID'] ?? '',
             $context
         );
 
@@ -84,26 +75,16 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $mapping = $this->mappingService->getMapping(
                 $connectionId,
                 DefaultEntities::PRODUCT_CONTAINER,
-                $data['articleID'],
+                $data['articleID'] ?? '',
                 $context
             );
-
-            if ($mapping === null) {
-                $this->loggingService->addLogEntry(
-                    new AssociationRequiredMissingLog(
-                        $migrationContext->getRunUuid(),
-                        DefaultEntities::PRODUCT,
-                        $data['articleID'],
-                        DefaultEntities::PRODUCT_REVIEW
-                    )
-                );
-
-                return new ConvertStruct(null, $originalData);
-            }
         }
-        $converted['productId'] = $mapping['entityUuid'];
-        $this->mappingIds[] = $mapping['id'];
-        unset($data['articleID']);
+
+        if ($mapping !== null) {
+            $converted['productId'] = $mapping['entityId'];
+            $this->mappingIds[] = $mapping['id'];
+            unset($data['articleID']);
+        }
 
         if (isset($data['email'])) {
             $mapping = $this->mappingService->getMapping(
@@ -114,10 +95,11 @@ abstract class ProductReviewConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $converted['customerId'] = $mapping['entityUuid'];
+                $converted['customerId'] = $mapping['entityId'];
                 $this->mappingIds[] = $mapping['id'];
             }
         }
+
         $this->convertValue($converted, 'externalEmail', $data, 'email');
         $this->convertValue($converted, 'externalUser', $data, 'name');
 
@@ -129,35 +111,13 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $context
         );
 
-        if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::SALES_CHANNEL,
-                    $shopId,
-                    DefaultEntities::PRODUCT_REVIEW
-                )
-            );
-
-            return new ConvertStruct(null, $originalData);
+        if ($mapping !== null) {
+            $converted['salesChannelId'] = $mapping['entityId'];
+            $this->mappingIds[] = $mapping['id'];
+            unset($data['shop_id'], $data['mainShopId']);
         }
-        $converted['salesChannelId'] = $mapping['entityUuid'];
-        $this->mappingIds[] = $mapping['id'];
-        unset($data['shop_id'], $data['mainShopId']);
 
         $converted['languageId'] = $this->languageLookup->get($mainLocale, $context);
-        if ($converted['languageId'] === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::LANGUAGE,
-                    $mainLocale,
-                    DefaultEntities::PRODUCT_REVIEW
-                )
-            );
-
-            return new ConvertStruct(null, $originalData);
-        }
 
         $this->convertValue($converted, 'title', $data, 'headline');
         if (empty($converted['title'])) {

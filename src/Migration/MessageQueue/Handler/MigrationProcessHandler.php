@@ -54,7 +54,7 @@ final class MigrationProcessHandler
         }
 
         $processor = $this->processorRegistry->getProcessor($run->getStep());
-        $processor->process($migrationContext, $context, $run, $progress);
+        $processor?->process($migrationContext, $context, $run, $progress);
     }
 
     private function getCurrentRun(MigrationProcessMessage $message, Context $context): SwagMigrationRunEntity
@@ -62,7 +62,7 @@ final class MigrationProcessHandler
         $run = $this->migrationRunRepo->search(new Criteria([$message->getRunUuid()]), $context)->getEntities()->first();
 
         if ($run === null) {
-            throw MigrationException::noRunningMigration($message->getRunUuid());
+            throw MigrationException::runNotFound($message->getRunUuid());
         }
 
         return $run;

@@ -34,12 +34,12 @@ class LanguageLookupTest extends TestCase
                 $languageLookup->get($localeCode, Context::createDefaultContext());
             } catch (MigrationException $e) {
                 static::assertSame(
-                    \sprintf('Locale with code: "%s" for language lookup not found.', $localeCode),
+                    \sprintf('Locale entity for code "%s" not found.', $localeCode),
                     $e->getMessage()
                 );
 
                 static::assertSame(
-                    'SWAG_MIGRATION__LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND',
+                    'SWAG_MIGRATION__LOCALE_NOT_FOUND',
                     $e->getErrorCode()
                 );
             }
@@ -196,12 +196,29 @@ class LanguageLookupTest extends TestCase
         return $returnData;
     }
 
+    /**
+     * @return array<string, LanguageEntity>
+     */
+    public function getDefaultLanguageCacheData(): array
+    {
+        $languageRepository = self::getContainer()->get('language.repository');
+        $list = $languageRepository->search(new Criteria(), Context::createDefaultContext())->getEntities();
+
+        $defaultLanguageCacheData = [];
+        foreach ($list as $language) {
+            static::assertInstanceOf(LanguageEntity::class, $language);
+            $defaultLanguageCacheData[$language->getId()] = $language;
+        }
+
+        return $defaultLanguageCacheData;
+    }
+
     private function getLanguageLookup(): LanguageLookup
     {
         return new LanguageLookup(
-            $this->getContainer()->get('language.repository'),
+            static::getContainer()->get('language.repository'),
             new LocaleLookup(
-                $this->getContainer()->get('locale.repository')
+                static::getContainer()->get('locale.repository')
             )
         );
     }
@@ -238,22 +255,5 @@ class LanguageLookupTest extends TestCase
         }
 
         return $cacheData;
-    }
-
-    /**
-     * @return array<string, LanguageEntity>
-     */
-    public function getDefaultLanguageCacheData(): array
-    {
-        $languageRepository = self::getContainer()->get('language.repository');
-        $list = $languageRepository->search(new Criteria(), Context::createDefaultContext())->getEntities();
-
-        $defaultLanguageCacheData = [];
-        foreach ($list as $language) {
-            static::assertInstanceOf(LanguageEntity::class, $language);
-            $defaultLanguageCacheData[$language->getId()] = $language;
-        }
-
-        return $defaultLanguageCacheData;
     }
 }

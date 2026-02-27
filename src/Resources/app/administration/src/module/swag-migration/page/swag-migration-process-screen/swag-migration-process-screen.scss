@@ -1,30 +1,46 @@
 .swag-migration-process-screen {
     .swag-migration-process-screen__step-display {
         position: absolute;
-        padding-right: 50px;
+        padding-right: var(--scale-size-96);
         top: var(--scale-size-40);
-        left: calc(50% - 450px);
+        left: calc(50% - 28rem);
         transform: translate(-100%, 0);
 
-        @media screen and (max-width: 1600px) {
+        @media screen and (max-width: 100rem) {
             position: static;
             transform: none;
             padding: 0 0 var(--scale-size-10) 0;
-            margin: 13px 0 var(--scale-size-16) 0;
+            margin: var(--scale-size-14) 0 var(--scale-size-32) 0;
             text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: var(--scale-size-16);
 
             .sw-step-item {
                 display: inline-flex;
                 flex-direction: column;
+                align-items: center;
                 margin-top: 0;
-                width: 84px;
+                width: var(--scale-size-80);
 
-                &:before {
-                    width: 84px;
-                    height: 1px;
-                    top: 15px;
-                    transform: translate(-50%, 0);
-                    z-index: -1;
+                &::before {
+                    content: "";
+                    /* stylelint-disable-next-line meteor/prefer-sizing-token */
+                    height: 3px;
+                    width: calc(100% + var(--scale-size-16));
+                    background: var(--color-background-tertiary-default);
+                    position: absolute;
+                    left: calc(50% + var(--scale-size-16));
+                    top: calc(var(--scale-size-16) - 1.5px);
+                    z-index: 0;
+                }
+
+                &:first-child::before {
+                    display: block;
+                }
+
+                &:last-child::before {
+                    display: none;
                 }
 
                 .sw-step-item__description {
@@ -35,12 +51,12 @@
             }
         }
 
-        @media screen and (max-width: 780px) {
+        @media screen and (max-width: 48rem) {
             .sw-step-item {
-                width: 52px;
+                width: var(--scale-size-56);
 
-                &:before {
-                    width: 52px;
+                &::before {
+                    width: calc(100% + var(--scale-size-16));
                 }
 
                 .sw-step-item__description {
@@ -57,37 +73,22 @@
     }
 
     .swag-migration-process-screen__confirm-warning {
-        margin-top: 33px;
-    }
-
-    .sw-card {
-        .sw-card__title {
-            margin-bottom: var(--scale-size-12);
-            font-size: 18px;
-            line-height: 24px;
-
-            width: unset;
-            position: unset;
-            left: unset;
-            top: unset;
-            text-align: unset;
-        }
+        margin-top: var(--scale-size-32);
     }
 }
 
 .swag-migration-index-modal-abort-migration-confirm-dialog {
-
-    .sw-modal__body {
-        padding: var(--scale-size-32);
-    }
-
     .swag-migration-index-modal-abort-migration-confirm-dialog-content {
-        text-align: center;
+        font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
+        line-height: var(--font-line-height-s);
     }
 
     .swag-migration-index-modal-abort-migration-confirm-dialog-hint {
-        text-align: center;
-        font-weight: 600;
-        padding-top: var(--scale-size-32);
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
+        line-height: var(--font-line-height-s);
+        padding-bottom: var(--scale-size-6);
     }
 }

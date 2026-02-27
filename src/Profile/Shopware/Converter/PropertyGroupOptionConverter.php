@@ -7,12 +7,15 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertChildEntityFailedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -47,7 +50,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
             $group = $data['group']['name'];
         }
 
-        return \hash('md5', \mb_strtolower($data['name'] . '_' . $group . '_' . $data['type']));
+        return Hasher::hash(\mb_strtolower($data['name'] . '_' . $group . '_' . $data['type']), 'md5');
     }
 
     public function getMediaUuids(array $converted): ?array
@@ -72,18 +75,17 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         if (!isset($data['group']['name'])) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::PROPERTY_GROUP_OPTION,
-                $data['id'],
-                'group'
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(PropertyGroupDefinition::ENTITY_NAME)
+                    ->withFieldName('id')
+                    ->withFieldSourcePath('group.name')
+                    ->withSourceData($data)
+                    ->build(ConvertSourceDataIncompleteLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
@@ -91,23 +93,25 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
-            \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'])),
+            Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5'),
             $context
         );
+
         $this->mappingIds[] = $mapping['id'];
 
         $propertyGroupMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP,
-            \hash('md5', \mb_strtolower($data['group']['name'])),
+            Hasher::hash(\mb_strtolower($data['group']['name']), 'md5'),
             $context
         );
+
         $this->mappingIds[] = $propertyGroupMapping['id'];
 
         $converted = [
-            'id' => $mapping['entityUuid'],
+            'id' => $mapping['entityId'],
             'group' => [
-                'id' => $propertyGroupMapping['entityUuid'],
+                'id' => $propertyGroupMapping['entityId'],
             ],
         ];
 
@@ -132,12 +136,14 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     protected function setMedia(array &$converted, array $data): void
     {
         if (!isset($data['media']['id'])) {
-            $this->loggingService->addLogEntry(new CannotConvertChildEntity(
-                $this->runId,
-                'property_group_option_media',
-                DefaultEntities::PROPERTY_GROUP_OPTION,
-                $data['id']
-            ));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(PropertyGroupDefinition::ENTITY_NAME)
+                    ->withFieldName('media.id')
+                    ->withFieldSourcePath('media.id')
+                    ->withSourceData($data)
+                    ->build(ConvertChildEntityFailedLog::class)
+            );
 
             return;
         }
@@ -149,7 +155,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
             $data['media']['id'],
             $this->context
         );
-        $newMedia['id'] = $mapping['entityUuid'];
+        $newMedia['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         if (empty($data['media']['name'])) {
@@ -179,7 +185,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         );
 
         if ($albumMapping !== null) {
-            $newMedia['mediaFolderId'] = $albumMapping['entityUuid'];
+            $newMedia['mediaFolderId'] = $albumMapping['entityId'];
             $this->mappingIds[] = $albumMapping['id'];
         }
 
@@ -213,7 +219,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
             $data['media']['id'] . ':' . $this->locale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->locale, $this->context);
@@ -254,7 +260,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
-            \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type'])),
+            Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name'] . '_' . $data['type']), 'md5'),
             $this->context,
             $this->checksum
         );
@@ -262,7 +268,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
-            \hash('md5', \mb_strtolower($data['group']['name'] . '_' . $data['type'])),
+            Hasher::hash(\mb_strtolower($data['group']['name'] . '_' . $data['type']), 'md5'),
             $this->context
         );
         $this->mappingIds[] = $mapping['id'];

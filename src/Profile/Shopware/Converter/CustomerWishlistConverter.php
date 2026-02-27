@@ -27,10 +27,7 @@ abstract class CustomerWishlistConverter extends ShopwareConverter
         $this->migrationContext = $migrationContext;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -40,31 +37,31 @@ abstract class CustomerWishlistConverter extends ShopwareConverter
             $this->checksum
         );
 
+        $converted = [];
+
         $customerMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CUSTOMER, $data['userID'], $context);
-        if ($customerMapping === null) {
-            return new ConvertStruct(null, $data);
+        if ($customerMapping !== null) {
+            $this->mappingIds[] = $customerMapping['id'];
+            $converted['customerId'] = $customerMapping['entityId'];
         }
 
+        $productId = null;
         $productMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::PRODUCT, $data['ordernumber'], $context);
-        if ($productMapping === null) {
-            return new ConvertStruct(null, $data);
+        if ($productMapping !== null) {
+            $this->mappingIds[] = $productMapping['id'];
+            $productId = $productMapping['entityId'];
         }
 
         $shopMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::SALES_CHANNEL, $data['subshopID'], $context);
-        if ($shopMapping === null) {
-            return new ConvertStruct(null, $data);
+        if ($shopMapping !== null) {
+            $converted['salesChannelId'] = $shopMapping['entityId'];
         }
 
-        $this->mappingIds[] = $customerMapping['id'];
-        $this->mappingIds[] = $productMapping['id'];
+        $converted['id'] = $this->mainMapping['entityId'];
 
-        $converted = [];
-        $converted['id'] = $this->mainMapping['entityUuid'];
-        $converted['customerId'] = $customerMapping['entityUuid'];
-        $converted['salesChannelId'] = $shopMapping['entityUuid'];
         $converted['products'][] = [
-            'id' => $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_WISHLIST_PRODUCT, $data['userID'] . '_' . $data['ordernumber'], $context)['entityUuid'],
-            'productId' => $productMapping['entityUuid'],
+            'id' => $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_WISHLIST_PRODUCT, $data['userID'] . '_' . $data['ordernumber'], $context)['entityId'],
+            'productId' => $productId,
         ];
 
         $this->updateMainMapping($migrationContext, $context);

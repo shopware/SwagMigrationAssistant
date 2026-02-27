@@ -26,9 +26,11 @@ class GatewayRegistry implements GatewayRegistryInterface
      */
     public function getGateways(MigrationContextInterface $migrationContext): array
     {
+        $profile = $migrationContext->getProfile();
+
         $gateways = [];
         foreach ($this->gateways as $gateway) {
-            if ($gateway->supports($migrationContext)) {
+            if ($gateway->supports($profile)) {
                 $gateways[] = $gateway;
             }
         }
@@ -39,15 +41,11 @@ class GatewayRegistry implements GatewayRegistryInterface
     public function getGateway(MigrationContextInterface $migrationContext): GatewayInterface
     {
         $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            throw MigrationException::migrationContextPropertyMissing('Connection');
-        }
-
         $profileName = $connection->getProfileName();
         $gatewayName = $connection->getGatewayName();
 
         foreach ($this->gateways as $gateway) {
-            if ($gateway->supports($migrationContext) && $gateway->getName() === $gatewayName) {
+            if ($gateway->supports($migrationContext->getProfile()) && $gateway->getName() === $gatewayName) {
                 return $gateway;
             }
         }

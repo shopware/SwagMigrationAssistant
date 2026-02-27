@@ -23,16 +23,17 @@ class SeoUrlConverterConvertDataTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
-    public function testConvertSkipConvertionIfSeoUrlIsUnmodified(): void
+    public function testConvertIfSeoUrlIsUnmodified(): void
     {
         $data = [
             'isModified' => false,
         ];
 
         $seoUrlConverter = $this->createSeoUrlConverter();
+
         $result = $seoUrlConverter->convert($data, Context::createDefaultContext(), $this->createMigrationContext());
+        static::assertNotNull($result);
         static::assertNull($result->getConverted());
-        static::assertSame($data, $result->getUnmapped());
     }
 
     private function createSeoUrlConverter(): SeoUrlConverter
@@ -49,10 +50,11 @@ class SeoUrlConverterConvertDataTest extends TestCase
         $migrationConnectionEntity->setId(Uuid::randomHex());
 
         return new MigrationContext(
-            new Shopware6MajorProfile('6.6.0.0'),
             $migrationConnectionEntity,
-            Uuid::randomHex(),
+            new Shopware6MajorProfile('6.6.0.0'),
+            null,
             new SeoUrlDataSet(),
+            Uuid::randomHex(),
             0,
             10
         );

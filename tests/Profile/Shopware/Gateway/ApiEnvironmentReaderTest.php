@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
@@ -42,7 +43,8 @@ class ApiEnvironmentReaderTest extends TestCase
         $environmentReader = new EnvironmentReader($connectionFactory);
 
         $migrationContext = new MigrationContext(
-            new Shopware55Profile()
+            new SwagMigrationConnectionEntity(),
+            new Shopware55Profile(),
         );
 
         $response = $environmentReader->read($migrationContext);
@@ -81,7 +83,8 @@ class ApiEnvironmentReaderTest extends TestCase
         $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
-            new Shopware55Profile()
+            new SwagMigrationConnectionEntity(),
+            new Shopware55Profile(),
         );
 
         $connectionFactory = $this->createMock(ConnectionFactory::class);
@@ -120,8 +123,8 @@ class ApiEnvironmentReaderTest extends TestCase
             'responses' => [
                 new Response(SymfonyResponse::HTTP_UNAUTHORIZED),
             ],
-            'expectedErrorCode' => MigrationException::INVALID_CONNECTION_AUTHENTICATION,
-            'expectedMessage' => 'Invalid connection authentication for the request: "SwagMigrationEnvironment"',
+            'expectedErrorCode' => MigrationException::INVALID_CONNECTION_CREDENTIALS,
+            'expectedMessage' => 'The connection credentials are invalid or incomplete for "SwagMigrationEnvironment".',
             'shouldHaveException' => true,
         ];
 
@@ -230,6 +233,7 @@ class ApiEnvironmentReaderTest extends TestCase
         $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity(),
             new Shopware55Profile()
         );
 

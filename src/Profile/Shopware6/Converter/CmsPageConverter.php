@@ -37,7 +37,6 @@ class CmsPageConverter extends ShopwareConverter
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
-
         // handle locked default layouts
         if (isset($converted['locked']) && $converted['locked'] === true) {
             $cmsPageMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CMS_PAGE, $data['id'], $this->context);
@@ -119,7 +118,6 @@ class CmsPageConverter extends ShopwareConverter
                 }
                 unset($block);
             }
-
             if (isset($section['backgroundMediaId'])) {
                 $section['backgroundMediaId'] = $this->getMappingIdFacade(DefaultEntities::MEDIA, $section['backgroundMediaId']);
             }

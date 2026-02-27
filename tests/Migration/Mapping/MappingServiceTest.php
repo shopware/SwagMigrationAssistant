@@ -18,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -47,8 +48,8 @@ class MappingServiceTest extends TestCase
     protected function setUp(): void
     {
         $context = Context::createDefaultContext();
-        $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
+        $connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
+        $this->mappingRepo = static::getContainer()->get('swag_migration_mapping.repository');
 
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo): void {
             $this->connectionId = Uuid::randomHex();
@@ -79,7 +80,7 @@ class MappingServiceTest extends TestCase
 
         $mapping1 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', '123', $context);
         static::assertNotNull($mapping1['id']);
-        static::assertNotNull($mapping1['entityUuid']);
+        static::assertNotNull($mapping1['entityId']);
         static::assertNull($mapping1['entityValue']);
 
         $mapping2 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', '123', $context);
@@ -91,7 +92,7 @@ class MappingServiceTest extends TestCase
         ];
 
         $expectedData = $mapping2;
-        $expectedData['entityUuid'] = $uuid;
+        $expectedData['entityId'] = $uuid;
         $expectedData['additionalData'] = $additionalData;
         $mapping3 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', '123', $context, null, ['key' => 'value'], $uuid);
         static::assertSame($expectedData, $mapping3);
@@ -136,7 +137,7 @@ class MappingServiceTest extends TestCase
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $context);
         $this->mappingService->writeMapping();
 
-        $this->mappingService->deleteMapping((string) $languageMapping['entityUuid'], $this->connectionId, $context);
+        $this->mappingService->deleteMapping((string) $languageMapping['entityId'], $this->connectionId, $context);
         $mapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
 
         static::assertNull($mapping);
@@ -244,7 +245,7 @@ class MappingServiceTest extends TestCase
                 $set['entity'],
                 $set['oldIdentifier'],
                 Context::createDefaultContext(),
-                \md5($set['entity'] . $set['oldIdentifier']),
+                Hasher::hash($set['entity'] . $set['oldIdentifier']),
                 null,
                 Uuid::randomHex(),
                 $set['value']
@@ -257,7 +258,7 @@ class MappingServiceTest extends TestCase
         $this->mappingService->writeMapping();
 
         $sql = 'SELECT * FROM swag_migration_mapping';
-        $result = $this->getContainer()->get(Connection::class)->fetchAllAssociative($sql);
+        $result = static::getContainer()->get(Connection::class)->fetchAllAssociative($sql);
 
         static::assertCount(\count($dataset), $result);
         foreach ($dataset as $set) {
@@ -265,7 +266,7 @@ class MappingServiceTest extends TestCase
                 if ($set['oldIdentifier'] === $resultEntry['old_identifier']) {
                     static::assertSame($set['entity'], $resultEntry['entity']);
                     static::assertSame($set['value'], $resultEntry['entity_value']);
-                    static::assertSame(\md5($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
+                    static::assertSame(Hasher::hash($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
                 }
             }
         }
@@ -281,7 +282,7 @@ class MappingServiceTest extends TestCase
         $this->setMappingAndWriteArray($mapping);
         $this->mappingService->writeMapping();
 
-        $result = $this->getContainer()->get(Connection::class)->fetchAllAssociative($sql);
+        $result = static::getContainer()->get(Connection::class)->fetchAllAssociative($sql);
 
         static::assertCount(\count($dataset), $result);
         foreach ($dataset as $set) {
@@ -289,7 +290,7 @@ class MappingServiceTest extends TestCase
                 if ($set['oldIdentifier'] === $resultEntry['old_identifier']) {
                     static::assertSame($set['entity'], $resultEntry['entity']);
                     static::assertSame('EV_newValue', $resultEntry['entity_value']);
-                    static::assertSame(\md5($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
+                    static::assertSame(Hasher::hash($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
                 }
             }
         }
@@ -299,9 +300,9 @@ class MappingServiceTest extends TestCase
     {
         $entity = DefaultEntities::PRODUCT;
         $oldIdentifier = '42';
-        $entityUuid = Uuid::randomHex();
+        $entityId = Uuid::randomHex();
 
-        $conn = $this->getContainer()->get(Connection::class);
+        $conn = static::getContainer()->get(Connection::class);
         $qb = $conn->createQueryBuilder();
         $rowsAffected = $qb->insert('swag_migration_mapping')
             ->values([
@@ -309,7 +310,7 @@ class MappingServiceTest extends TestCase
                 'connection_id' => ':connection_id',
                 'entity' => ':entity',
                 'old_identifier' => ':old_identifier',
-                'entity_uuid' => ':entity_uuid',
+                'entity_id' => ':entity_id',
                 'created_at' => 'NOW()',
                 // 'additional_data' left with NULL, some older shops might have this data
             ])
@@ -317,7 +318,7 @@ class MappingServiceTest extends TestCase
             ->setParameter('connection_id', Uuid::fromHexToBytes($this->connectionId))
             ->setParameter('entity', $entity)
             ->setParameter('old_identifier', $oldIdentifier)
-            ->setParameter('entity_uuid', Uuid::fromHexToBytes($entityUuid))
+            ->setParameter('entity_id', Uuid::fromHexToBytes($entityId))
         ->executeStatement();
         static::assertSame(1, $rowsAffected);
 
@@ -325,8 +326,8 @@ class MappingServiceTest extends TestCase
         $retrievedMapping = $this->mappingService->getMapping($this->connectionId, $entity, $oldIdentifier, Context::createDefaultContext());
 
         static::assertNotNull($retrievedMapping);
-        static::assertArrayHasKey('entityUuid', $retrievedMapping);
-        static::assertSame($entityUuid, $retrievedMapping['entityUuid']);
+        static::assertArrayHasKey('entityId', $retrievedMapping);
+        static::assertSame($entityId, $retrievedMapping['entityId']);
         static::assertArrayHasKey('additionalData', $retrievedMapping);
         static::assertNull($retrievedMapping['additionalData']);
     }
@@ -345,7 +346,7 @@ class MappingServiceTest extends TestCase
                 $set['entity'],
                 $set['oldIdentifier'],
                 Context::createDefaultContext(),
-                \md5($set['entity'] . $set['oldIdentifier']),
+                Hasher::hash($set['entity'] . $set['oldIdentifier']),
                 null,
                 Uuid::randomHex(),
                 $set['value']
@@ -360,7 +361,7 @@ class MappingServiceTest extends TestCase
         $reflectionMethod->invoke($this->mappingService);
 
         $sql = 'SELECT * FROM swag_migration_mapping';
-        $result = $this->getContainer()->get(Connection::class)->fetchAllAssociative($sql);
+        $result = static::getContainer()->get(Connection::class)->fetchAllAssociative($sql);
 
         static::assertCount(\count($dataset), $result);
         foreach ($dataset as $set) {
@@ -368,7 +369,7 @@ class MappingServiceTest extends TestCase
                 if ($set['oldIdentifier'] === $resultEntry['old_identifier']) {
                     static::assertSame($set['entity'], $resultEntry['entity']);
                     static::assertSame($set['value'], $resultEntry['entity_value']);
-                    static::assertSame(\md5($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
+                    static::assertSame(Hasher::hash($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
                 }
             }
         }
@@ -380,7 +381,7 @@ class MappingServiceTest extends TestCase
         $this->setMappingAndWriteArray($mapping);
         $reflectionMethod->invoke($this->mappingService);
 
-        $result = $this->getContainer()->get(Connection::class)->fetchAllAssociative($sql);
+        $result = static::getContainer()->get(Connection::class)->fetchAllAssociative($sql);
 
         static::assertCount(\count($dataset), $result);
         foreach ($dataset as $set) {
@@ -388,7 +389,7 @@ class MappingServiceTest extends TestCase
                 if ($set['oldIdentifier'] === $resultEntry['old_identifier']) {
                     static::assertSame($set['entity'], $resultEntry['entity']);
                     static::assertSame('EV_newValue', $resultEntry['entity_value']);
-                    static::assertSame(\md5($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
+                    static::assertSame(Hasher::hash($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
                 }
             }
         }
@@ -479,9 +480,9 @@ class MappingServiceTest extends TestCase
     {
         $this->mappingService = new MappingService(
             $this->mappingRepo,
-            $this->getContainer()->get(EntityWriter::class),
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
-            $this->getContainer()->get(Connection::class),
+            static::getContainer()->get(EntityWriter::class),
+            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            static::getContainer()->get(Connection::class),
             new NullLogger()
         );
     }

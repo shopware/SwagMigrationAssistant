@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Exception\DataSetNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
@@ -41,16 +41,17 @@ class DataSetRegistryTest extends TestCase
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $this->connection->setCredentialFields([]);
-        $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
+        $this->dataSetRegistry = static::getContainer()->get(DataSetRegistry::class);
     }
 
     public function testSupports(): void
     {
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $this->runId,
             0,
             250
         );
@@ -66,17 +67,18 @@ class DataSetRegistryTest extends TestCase
     public function testDataSetNotFound(): void
     {
         $migrationContext = new MigrationContext(
-            new DummyProfile(),
             $this->connection,
-            $this->runId,
+            new DummyProfile(),
+            null,
             new FooDataSet(),
+            $this->runId,
             0,
             250
         );
         $dataSets = $this->dataSetRegistry->getDataSets($migrationContext);
         static::assertEmpty($dataSets);
 
-        $this->expectException(DataSetNotFoundException::class);
+        static::expectExceptionObject(MigrationException::dataSetNotFound('foo'));
         $this->dataSetRegistry->getDataSet($migrationContext, 'foo');
     }
 }

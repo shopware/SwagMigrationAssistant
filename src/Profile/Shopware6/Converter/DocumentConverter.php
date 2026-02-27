@@ -7,16 +7,18 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Checkout\Document\DocumentDefinition;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\Logging\Log\UnsupportedDocumentTypeLog;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('fundamentals@after-sales')]
@@ -62,11 +64,21 @@ class DocumentConverter extends ShopwareMediaConverter
         );
 
         $converted['documentTypeId'] = $this->documentTypeLookup->get($converted['documentType']['technicalName'], $this->context);
+
         if ($converted['documentTypeId'] === null) {
-            $this->loggingService->addLogEntry(new UnsupportedDocumentTypeLog($this->runId, DefaultEntities::ORDER_DOCUMENT, $data['id'], $data['documentType']['technicalName']));
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(DocumentDefinition::ENTITY_NAME)
+                    ->withFieldName('documentTypeId')
+                    ->withFieldSourcePath('id')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(ConvertObjectTypeUnsupportedLog::class)
+            );
 
             return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
         }
+
         unset($converted['documentType']);
 
         if (isset($converted['config']['documentTypeId'])) {

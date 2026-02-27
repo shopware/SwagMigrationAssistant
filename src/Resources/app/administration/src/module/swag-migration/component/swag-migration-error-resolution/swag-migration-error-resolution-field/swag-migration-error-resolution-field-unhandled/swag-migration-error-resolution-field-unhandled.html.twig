@@ -1,0 +1,18 @@
+{% block swag_migration_error_resolution_field_unhandled %}
+    <div class="swag-migration-error-resolution-field-unhandled">
+        <mt-banner
+            class="swag-migration-error-resolution-field-unhandled__banner"
+            :title="$tc('swag-migration.index.error-resolution.modals.error.right.unhandledBanner.title')"
+            variant="attention"
+        >
+            {{ $tc('swag-migration.index.error-resolution.modals.error.right.unhandledBanner.content') }}
+        </mt-banner>
+
+        <sw-code-editor
+            v-model:value="fieldValue"
+            :label="fieldName"
+            :error="error"
+        />
+    </div>
+{% endblock %}
+

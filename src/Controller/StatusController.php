@@ -11,11 +11,16 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Routing\RoutingException;
+use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Connection\MigrationConnectionFactory;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
+use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
@@ -27,11 +32,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(defaults: ['_routeScope' => ['api']])]
+#[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [ApiRouteScope::ID]])]
 #[Package('fundamentals@after-sales')]
 class StatusController extends AbstractController
 {
     /**
+     * @internal
+     *
      * @param EntityRepository<SwagMigrationConnectionCollection> $migrationConnectionRepo
      * @param EntityRepository<GeneralSettingCollection> $generalSettingRepo
      */
@@ -44,13 +51,14 @@ class StatusController extends AbstractController
         private readonly GatewayRegistryInterface $gatewayRegistry,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly EntityRepository $generalSettingRepo,
+        private readonly MigrationConnectionFactory $connectionFactory,
     ) {
     }
 
     #[Route(
         path: '/api/_action/migration/get-profile-information',
         name: 'api.admin.migration.get-profile-information',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function getProfileInformation(Request $request): Response
@@ -87,8 +95,11 @@ class StatusController extends AbstractController
             return new Response();
         }
 
-        $migrationContext = $this->migrationContextFactory->createByProfileName($profileName);
-        $gateways = $this->gatewayRegistry->getGateways($migrationContext);
+        $profile = $this->profileRegistry->getProfile($profileName);
+        $context = new MigrationContext(new SwagMigrationConnectionEntity());
+        $context->setProfile($profile);
+
+        $gateways = $this->gatewayRegistry->getGateways($context);
 
         $currentGateway = null;
         foreach ($gateways as $gateway) {
@@ -117,7 +128,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/get-profiles',
         name: 'api.admin.migration.get-profiles',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function getProfiles(): JsonResponse
@@ -140,7 +151,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/get-gateways',
         name: 'api.admin.migration.get-gateways',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function getGateways(Request $request): JsonResponse
@@ -151,8 +162,11 @@ class StatusController extends AbstractController
             throw RoutingException::missingRequestParameter('profileName');
         }
 
-        $migrationContext = $this->migrationContextFactory->createByProfileName($profileName);
-        $gateways = $this->gatewayRegistry->getGateways($migrationContext);
+        $profile = $this->profileRegistry->getProfile($profileName);
+        $context = new MigrationContext(new SwagMigrationConnectionEntity());
+        $context->setProfile($profile);
+
+        $gateways = $this->gatewayRegistry->getGateways($context);
 
         $gatewayNames = [];
         foreach ($gateways as $gateway) {
@@ -168,7 +182,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/update-connection-credentials',
         name: 'api.admin.migration.update-connection-credentials',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']],
         methods: [Request::METHOD_POST]
     )]
     public function updateConnectionCredentials(Request $request, Context $context): Response
@@ -195,7 +209,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/data-selection',
         name: 'api.admin.migration.data-selection',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function getDataSelection(Request $request, Context $context): JsonResponse
@@ -220,9 +234,56 @@ class StatusController extends AbstractController
     }
 
     #[Route(
+        path: '/api/_action/migration/create-new-connection',
+        name: 'api.admin.migration.create-new-connection',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.creator']],
+        methods: [Request::METHOD_POST]
+    )]
+    public function createNewConnection(Request $request, Context $context): JsonResponse
+    {
+        $id = $request->request->getAlnum('connectionId');
+        $connectionName = (string) $request->request->get('connectionName');
+        $profileName = (string) $request->request->get('profileName');
+        $gatewayName = (string) $request->request->get('gatewayName');
+        $credentialFields = $request->request->all('credentialFields');
+
+        if ($id === '') {
+            throw RoutingException::missingRequestParameter('connectionId');
+        }
+
+        if ($connectionName === '') {
+            throw RoutingException::missingRequestParameter('connectionName');
+        }
+
+        if ($profileName === '') {
+            throw RoutingException::missingRequestParameter('profileName');
+        }
+
+        if ($gatewayName === '') {
+            throw RoutingException::missingRequestParameter('gatewayName');
+        }
+
+        if (empty($credentialFields)) {
+            throw RoutingException::missingRequestParameter('credentialFields');
+        }
+
+        $connectionEntity = new SwagMigrationConnectionEntity();
+        $connectionEntity->setId($id);
+        $connectionEntity->setName($connectionName);
+        $connectionEntity->setProfileName($profileName);
+        $connectionEntity->setGatewayName($gatewayName);
+        $connectionEntity->setCredentialFields($credentialFields);
+
+        $information = $this->connectionFactory->validate($connectionEntity, $context);
+        $this->connectionFactory->persistNew($connectionEntity, $context);
+
+        return new JsonResponse($information);
+    }
+
+    #[Route(
         path: '/api/_action/migration/check-connection',
         name: 'api.admin.migration.check-connection',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_POST]
     )]
     public function checkConnection(Request $request, Context $context): JsonResponse
@@ -239,8 +300,19 @@ class StatusController extends AbstractController
             throw MigrationException::noConnectionFound();
         }
 
-        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
-        $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
+        $credentialFields = $request->request->all('credentialFields');
+
+        if (!empty($credentialFields)) {
+            $connection->setCredentialFields($credentialFields);
+        }
+
+        $oldFingerprint = $connection->getSourceSystemFingerprint();
+        $information = $this->connectionFactory->validate($connection, $context);
+
+        if ($oldFingerprint !== $connection->getSourceSystemFingerprint()) {
+            // fingerprint updated, persist change to DB
+            $this->connectionFactory->update($connection, $context);
+        }
 
         return new JsonResponse($information);
     }
@@ -248,7 +320,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/start-migration',
         name: 'api.admin.migration.start-migration',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.creator']],
         methods: [Request::METHOD_POST]
     )]
     public function startMigration(Request $request, Context $context): Response
@@ -281,7 +353,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/get-state',
         name: 'api.admin.migration.get-state',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function getState(Context $context): JsonResponse
@@ -292,7 +364,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/approve-finished',
         name: 'api.admin.migration.approveFinished',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']],
         methods: [Request::METHOD_POST]
     )]
     public function approveFinishedMigration(Context $context): Response
@@ -313,16 +385,12 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/abort-migration',
         name: 'api.admin.migration.abort-migration',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']],
         methods: [Request::METHOD_POST]
     )]
     public function abortMigration(Context $context): Response
     {
-        try {
-            $this->runService->abortMigration($context);
-        } catch (\Exception $e) {
-            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $this->runService->abortMigration($context);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
@@ -330,7 +398,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/reset-checksums',
         name: 'api.admin.migration.reset-checksums',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.deleter']],
         methods: [Request::METHOD_POST]
     )]
     public function resetChecksums(Request $request, Context $context): Response
@@ -341,14 +409,7 @@ class StatusController extends AbstractController
             throw RoutingException::missingRequestParameter('connectionId');
         }
 
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
-
-        if ($connection === null) {
-            throw MigrationException::noConnectionFound();
-        }
-
-        // ToDo: MIG-965 - Check how we could put this into the MQ
-        $this->runService->cleanupMappingChecksums($connectionId, $context);
+        $this->runService->startCleanupMappingChecksums($connectionId, $context);
 
         return new Response();
     }
@@ -356,23 +417,23 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/cleanup-migration-data',
         name: 'api.admin.migration.cleanup-migration-data',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.deleter']],
         methods: [Request::METHOD_POST]
     )]
     public function cleanupMigrationData(Context $context): Response
     {
-        $this->runService->cleanupMigrationData($context);
+        $this->runService->startTruncateMigrationData($context);
 
         return new Response();
     }
 
     #[Route(
-        path: '/api/_action/migration/get-reset-status',
+        path: '/api/_action/migration/is-truncating-migration-data',
         name: 'api.admin.migration.get-reset-status',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
-    public function getResetStatus(Context $context): JsonResponse
+    public function isTruncatingMigrationData(Context $context): JsonResponse
     {
         $settings = $this->generalSettingRepo->search(new Criteria(), $context)->getEntities()->first();
 
@@ -381,5 +442,40 @@ class StatusController extends AbstractController
         }
 
         return new JsonResponse($settings->isReset());
+    }
+
+    #[Route(
+        path: '/api/_action/migration/is-resetting-checksums',
+        name: 'api.admin.migration.is-resetting-checksums',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
+        methods: [Request::METHOD_GET]
+    )]
+    public function isResettingChecksums(Context $context): JsonResponse
+    {
+        $settings = $this->generalSettingRepo
+            ->search(new Criteria(), $context)
+            ->getEntities()
+            ->first();
+
+        if ($settings === null) {
+            return new JsonResponse(false);
+        }
+
+        return new JsonResponse(
+            $settings->isResettingChecksums()
+        );
+    }
+
+    #[Route(
+        path: '/api/_action/migration/resume-after-fixes',
+        name: 'api.admin.migration.resume-after-fixes',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
+    public function resumeAfterFixes(Context $context): Response
+    {
+        $this->runService->resumeAfterFixes($context);
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 }

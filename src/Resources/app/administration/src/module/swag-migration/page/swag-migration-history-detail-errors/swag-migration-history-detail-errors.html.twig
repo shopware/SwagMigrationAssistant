@@ -1,20 +1,20 @@
 {% block swag_migration_history_detail_errors %}
     <div class="swag-migration-history-detail-errors">
         <div v-if="!isLoading">
-
             {% block swag_migration_history_detail_errors_grid %}
-                <sw-data-grid v-if="migrationErrors.length > 0"
-                              identifier="swag-migration-history-detail-errors"
-                              :data-source="migrationErrors"
-                              :columns="columns"
-                              :show-selection="false"
-                              :show-settings="false"
-                              :allow-column-edit="false"
-                              :show-actions="false"
-                              :sort-by="sortBy"
-                              :sort-direction="sortDirection"
-                              @column-sort="onSortColumn">
-
+                <sw-data-grid
+                    v-if="migrationErrors.length > 0"
+                    identifier="swag-migration-history-detail-errors"
+                    :data-source="migrationErrors"
+                    :columns="columns"
+                    :show-selection="false"
+                    :show-settings="false"
+                    :allow-column-edit="false"
+                    :show-actions="false"
+                    :sort-by="sortBy"
+                    :sort-direction="sortDirection"
+                    @column-sort="onSortColumn"
+                >
                     {% block swag_migration_history_detail_errors_grid_code%}
                         <template #column-title="{ item }">
                             {{ item.title }}
@@ -35,54 +35,65 @@
 
                     {% block swag_migration_history_detail_errors_grid_pagination %}
                         <template #pagination>
-                            <sw-pagination :page="page"
-                                           :limit="limit"
-                                           :total="total"
-                                           :steps="[5,10]"
-                                           :total-visible="7"
-                                           @page-change="onPageChange" />
+                            <sw-pagination
+                                :page="page"
+                                :limit="limit"
+                                :total="total"
+                                :steps="[5,10]"
+                                :total-visible="7"
+                                @page-change="onPageChange"
+                            />
                         </template>
                     {% endblock %}
                 </sw-data-grid>
             {% endblock %}
 
             {% block swag_migration_history_detail_errors_noError %}
-                <p v-if="migrationErrors.length === 0"
-                   class="swag-migration-history-detail-errors__no-error">
+                <p
+                    v-if="migrationErrors.length === 0"
+                    class="swag-migration-history-detail-errors__no-error"
+                >
                     {{ $tc('swag-migration.history.detailPage.noErrorsOccurred') }}
                 </p>
             {% endblock %}
 
             {% block swag_migration_history_detail_errors_download_form %}
-                <form ref="downloadForm"
-                      class="swag-migration-history-detail-errors__download-form"
-                      :action="downloadUrl"
-                      method="POST">
-                    <input type="hidden"
-                           name="runUuid"
-                           :value="migrationRun.id">
+                <form
+                    ref="downloadForm"
+                    class="swag-migration-history-detail-errors__download-form"
+                    :action="downloadUrl"
+                    method="POST"
+                >
+                    <input
+                        type="hidden"
+                        name="runUuid"
+                        :value="migrationRun.id"
+                    />
                 </form>
             {% endblock %}
 
             {% block swag_migration_history_detail_errors_description %}
                 <p class="swag-migration-history-detail-errors__description">
-                    {{ $tc('swag-migration.history.detailPage.logDescription') }}
+                    <span>{{ $tc('swag-migration.history.detailPage.logDescription') }}</span>
 
-                    <a class="link"
-                       href="#"
-                       @click.prevent="submitDownload">
+                    <mt-link
+                        as="a"
+                        to="#"
+                        type="external"
+                        @click.prevent="submitDownload"
+                    >
                         {{ $tc('swag-migration.history.detailPage.logDownload') }}
-                    </a>
+                    </mt-link>
                 </p>
             {% endblock %}
-
         </div>
 
         {% block swag_migration_history_detail_errors_noError__loader %}
-            <div v-if="isLoading"
-                 class="swag-migration-history-detail-errors__loading-placeholder"></div>
+            <div
+                v-if="isLoading"
+                class="swag-migration-history-detail-errors__loading-placeholder"
+            />
             <mt-loader v-if="isLoading" />
         {% endblock %}
-
     </div>
 {% endblock %}

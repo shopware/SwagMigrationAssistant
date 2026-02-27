@@ -1,0 +1,82 @@
+.swag-migration-error-resolution-step {
+    &__continue-modal-text {
+        font-size: var(--font-size-xs);
+        line-height: var(--font-line-height-xs);
+        font-weight: var(--font-weight-regular);
+    }
+
+    &__header {
+        max-width: 60rem;
+        margin: 0 auto var(--scale-size-40);
+
+        &-container {
+            display: flex;
+            flex-direction: row;
+        }
+
+        &-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--scale-size-8);
+
+            &-title {
+                font-size: var(--font-size-m);
+                line-height: var(--font-line-height-m);
+                font-weight: var(--font-weight-bold);
+                color: var(--color-text-primary-default);
+                margin: 0;
+            }
+
+            &-description {
+                max-width: 35rem;
+                font-size: var(--font-size-xs);
+                line-height: var(--font-line-height-xs);
+                font-weight: var(--font-weight-regular);
+                color: var(--color-text-tertiary-default);
+            }
+        }
+
+        &-buttons {
+            flex: none;
+            display: flex;
+            justify-content: flex-end;
+            align-items: start;
+            gap: var(--scale-size-8);
+        }
+
+        &-banner {
+            margin-top: var(--scale-size-32);
+        }
+    }
+
+    &__card {
+        &-table-empty-state {
+            .mt-empty-state {
+                max-width: none;
+            }
+        }
+
+        &-table-grid {
+            border-radius: var(--border-radius-card);
+        }
+
+        .mt-card__content {
+            padding: 0 !important;
+        }
+
+        .mt-tabs__item:first-of-type {
+            padding-left: var(--scale-size-24);
+        }
+
+        &-table-count {
+            display: flex;
+            align-items: center;
+            gap: var(--scale-size-8);
+
+            &-icon {
+                color: var(--color-icon-positive-default);
+            }
+        }
+    }
+}

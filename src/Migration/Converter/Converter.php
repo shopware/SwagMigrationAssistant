@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -21,7 +22,7 @@ abstract class Converter implements ConverterInterface
     protected LoggingServiceInterface $loggingService;
 
     /**
-     * @var ?array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
+     * @var ?array{id: string, connectionId: string, oldIdentifier: ?string, entityId: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
      */
     protected ?array $mainMapping = null;
 
@@ -58,7 +59,7 @@ abstract class Converter implements ConverterInterface
      */
     protected function generateChecksum(array $data): void
     {
-        $this->checksum = \md5(\serialize($data));
+        $this->checksum = Hasher::hash(\serialize($data));
     }
 
     /**
@@ -70,13 +71,18 @@ abstract class Converter implements ConverterInterface
             return;
         }
 
+        if (!\is_array($this->mainMapping['additionalData'] ?? null)) {
+            $this->mainMapping['additionalData'] = [];
+        }
+
         $this->mainMapping['checksum'] = $this->checksum;
         $this->mainMapping['additionalData']['relatedMappings'] = $this->mappingIds;
         $this->mappingIds = [];
 
         $dataSet = $migrationContext->getDataSet();
         $connection = $migrationContext->getConnection();
-        if ($dataSet === null || $connection === null) {
+
+        if ($dataSet === null) {
             return;
         }
 

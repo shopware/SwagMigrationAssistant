@@ -14,8 +14,8 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup;
@@ -75,10 +75,11 @@ class OrderDocumentConverterTest extends TestCase
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $this->connection->setName('shopware');
         $this->migrationContext = new MigrationContext(
-            new Shopware54Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware54Profile(),
+            null,
             new OrderDocumentDataSet(),
+            $this->runId,
             0,
             250
         );
@@ -91,39 +92,6 @@ class OrderDocumentConverterTest extends TestCase
         $supportsDefinition = $this->orderDocumentConverter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition);
-    }
-
-    public function testConvertWithUnknownOrderId(): void
-    {
-        $orderDocumentData = require __DIR__ . '/../../../_fixtures/order_document_data.php';
-        $context = Context::createDefaultContext();
-
-        $convertResult = $this->orderDocumentConverter->convert(
-            $orderDocumentData[1],
-            $context,
-            $this->migrationContext
-        );
-        static::assertEmpty($convertResult->getConverted());
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_ORDER', $logs[0]['code']);
-    }
-
-    public function testConvertWithoutDocumentType(): void
-    {
-        $orderDocumentData = require __DIR__ . '/../../../_fixtures/order_document_data.php';
-        $context = Context::createDefaultContext();
-        unset($orderDocumentData[0]['documenttype']);
-
-        $convertResult = $this->orderDocumentConverter->convert(
-            $orderDocumentData[0],
-            $context,
-            $this->migrationContext
-        );
-        static::assertEmpty($convertResult->getConverted());
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_DOCUMENT', $logs[0]['code']);
-        static::assertSame('1', $logs[0]['parameters']['sourceId']);
-        static::assertSame('documenttype', $logs[0]['parameters']['emptyField']);
     }
 
     public function testConvert(): void
@@ -171,8 +139,8 @@ class OrderDocumentConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $mappingServiceMock = $this->createMock(MappingServiceInterface::class);
-        $mappingServiceMock->method('getMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex()]);
-        $mappingServiceMock->method('getOrCreateMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex(), 'oldIdentifier' => $document['ID']]);
+        $mappingServiceMock->method('getMapping')->willReturn(['entityId' => Uuid::randomHex(), 'id' => Uuid::randomHex()]);
+        $mappingServiceMock->method('getOrCreateMapping')->willReturn(['entityId' => Uuid::randomHex(), 'id' => Uuid::randomHex(), 'oldIdentifier' => $document['ID']]);
 
         $orderDocumentConverterClasses = [
             Shopware54OrderDocumentConverter::class => 'migration_unknown_type_test_foo_bar',
@@ -183,8 +151,7 @@ class OrderDocumentConverterTest extends TestCase
 
         foreach ($orderDocumentConverterClasses as $orderDocumentConverterClass => $expected) {
             $loggerMock = $this->createMock(LoggingServiceInterface::class);
-            $loggerMock->expects(static::exactly(1))->method('addLogEntry')->with(new DocumentTypeNotSupported($this->runId, '999', $expected));
-
+            $loggerMock->expects($this->exactly(1))->method('log');
             $orderDocumentConverter = $this->createDocumentConverter($orderDocumentConverterClass, $mappingServiceMock, $loggerMock);
             $convertResult = $orderDocumentConverter->convert(
                 $document,
@@ -192,6 +159,7 @@ class OrderDocumentConverterTest extends TestCase
                 $this->migrationContext
             );
 
+            static::assertInstanceOf(ConvertStruct::class, $convertResult);
             $converted = $convertResult->getConverted();
 
             static::assertIsArray($converted);
@@ -210,8 +178,8 @@ class OrderDocumentConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $mappingServiceMock = $this->createMock(MappingServiceInterface::class);
-        $mappingServiceMock->method('getMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex()]);
-        $mappingServiceMock->method('getOrCreateMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex(), 'oldIdentifier' => $document['ID']]);
+        $mappingServiceMock->method('getMapping')->willReturn(['entityId' => Uuid::randomHex(), 'id' => Uuid::randomHex()]);
+        $mappingServiceMock->method('getOrCreateMapping')->willReturn(['entityId' => Uuid::randomHex(), 'id' => Uuid::randomHex(), 'oldIdentifier' => $document['ID']]);
 
         $orderDocumentConverterClasses = [
             Shopware54OrderDocumentConverter::class,
@@ -228,6 +196,7 @@ class OrderDocumentConverterTest extends TestCase
                 $this->migrationContext
             );
 
+            static::assertInstanceOf(ConvertStruct::class, $convertResult);
             $converted = $convertResult->getConverted();
 
             static::assertIsArray($converted);

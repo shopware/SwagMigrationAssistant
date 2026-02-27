@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\NoRunningMigrationException;
+use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('fundamentals@after-sales')]
 interface RunServiceInterface
@@ -19,22 +19,24 @@ interface RunServiceInterface
      * If no migration run is running, it returns the progress with the step status IDLE.
      *
      * After starting the migration run, the steps are as follows, if the migration run is not aborted:
-     * IDLE -> FETCHING -> WRITING -> MEDIA_PROCESSING -> CLEANUP -> INDEXING -> WAITING_FOR_APPROVE -> IDLE
+     * IDLE -> FETCHING -> ERROR_RESOLUTION -> WRITING -> MEDIA_PROCESSING -> CLEANUP -> INDEXING -> WAITING_FOR_APPROVE -> IDLE
      *
      * If the migration run is aborted, the steps are as follows:
-     * IDLE -> [FETCHING || WRITING || MEDIA_PROCESSING] -> ABORTING -> CLEANUP -> INDEXING -> IDLE
+     * IDLE -> [FETCHING || ERROR_RESOLUTION || WRITING || MEDIA_PROCESSING] -> ABORTING -> CLEANUP -> INDEXING -> IDLE
      */
     public function getRunStatus(Context $context): MigrationState;
 
     /**
      * Abort the running migration.
-     * If no migration run is running or the current migration is not in the FETCHING or WRITING or MEDIA_PROCESSING step, it throws a NoRunningMigrationException.
+     * If no migration run is running or the current migration is not in the FETCHING or WRITING or MEDIA_PROCESSING step, it throws a MigrationException.
      *
-     * @throws NoRunningMigrationException
+     * @throws MigrationException
      */
     public function abortMigration(Context $context): void;
 
-    public function cleanupMappingChecksums(string $connectionUuid, Context $context): void;
+    public function startCleanupMappingChecksums(string $connectionUuid, Context $context): void;
+
+    public function startTruncateMigrationData(Context $context): void;
 
     /**
      * @param array<int, string> $dataSelectionIds
@@ -50,5 +52,5 @@ interface RunServiceInterface
 
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void;
 
-    public function cleanupMigrationData(Context $context): void;
+    public function resumeAfterFixes(Context $context): void;
 }

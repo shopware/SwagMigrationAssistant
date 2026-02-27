@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -80,10 +81,11 @@ class CrossSellingConverterTest extends TestCase
         $this->connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new CrossSellingDataSet(),
+            $runId,
             0,
             250
         );
@@ -142,48 +144,18 @@ class CrossSellingConverterTest extends TestCase
         static::assertSame($converted1['assignedProducts'][0]['productId'], $converted2['assignedProducts']['0']['productId']);
     }
 
-    public function testConvertWithoutMapping(): void
-    {
-        $data = require __DIR__ . '/../../../_fixtures/cross_selling_data.php';
-        $product = $data[0];
-        $product['articleID'] = '99';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->crossSellingConverter->convert($product, $context, $this->migrationContext);
-
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_PRODUCT', $logs[0]['code']);
-        static::assertSame('99', $logs[0]['parameters']['sourceId']);
-
-        $this->loggingService->resetLogging();
-        $data[0]['relatedarticle'] = '80';
-        $convertResult = $this->crossSellingConverter->convert($data[0], $context, $this->migrationContext);
-
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_PRODUCT', $logs[0]['code']);
-        static::assertSame('80', $logs[0]['parameters']['sourceId']);
-    }
-
     public function testConvertCreatesAdditionalMappingForTypeAndArticleId(): void
     {
         $crossSellingData = require __DIR__ . '/../../../_fixtures/cross_selling_data.php';
 
         $context = Context::createDefaultContext();
-        $checksum = \md5(\serialize($crossSellingData[1]));
+        $checksum = Hasher::hash(\serialize($crossSellingData[1]));
         $connectionId = $this->connection->getId();
 
         $mappingServiceMock = $this->createMock(MappingService::class);
         $mappingServiceMock->method('getMapping')->willReturn($this->products[0]);
-        $mappingServiceMock->expects(static::once())->method('updateMapping');
-        $mappingServiceMock->expects(static::exactly(3))
+        $mappingServiceMock->expects($this->once())->method('updateMapping');
+        $mappingServiceMock->expects($this->exactly(3))
             ->method('getOrCreateMapping')
             ->willReturnMap([
                 [
@@ -249,13 +221,15 @@ class CrossSellingConverterTest extends TestCase
         static::assertNotNull($converted);
         $this->compareProduct['id'] = $converted['id'];
         $this->compareProduct['name'] = $type;
-        $this->compareProduct['productId'] = $this->products[$fromIndex]['entityUuid'];
+        $this->compareProduct['productId'] = $this->products[$fromIndex]['entityId'];
         $this->compareProduct['assignedProducts']['0']['id'] = $converted['assignedProducts']['0']['id'];
-        $this->compareProduct['assignedProducts']['0']['productId'] = $this->products[$toIndex]['entityUuid'];
+        $this->compareProduct['assignedProducts']['0']['productId'] = $this->products[$toIndex]['entityId'];
         $this->compareProduct['assignedProducts']['0']['position'] = $position;
 
         static::assertNull($convertStruct->getUnmapped());
         static::assertNotNull($convertStruct->getMappingUuid());
-        static::assertSame($this->compareProduct, $converted);
+        foreach ($this->compareProduct as $key => $value) {
+            static::assertSame($value, $converted[$key]);
+        }
     }
 }

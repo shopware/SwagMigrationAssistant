@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
@@ -27,7 +28,39 @@ class EnvironmentReader extends AbstractReader implements EnvironmentReaderInter
             'host' => $this->getHost($migrationContext),
             'additionalData' => $this->getAdditionalData($migrationContext),
             'defaultCurrency' => $this->getDefaultCurrency($migrationContext),
+            'config' => $this->getConfig($migrationContext),
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getConfig(MigrationContextInterface $migrationContext): array
+    {
+        $connection = $this->getConnection($migrationContext);
+
+        $configNames = [
+            'esdKey',
+            'installationDate',
+        ];
+
+        $query = $connection->createQueryBuilder();
+
+        $query->select('config.name', 'config.value')
+            ->from('s_core_config_elements', 'config')
+            ->where('config.name IN (:configNames)')
+            ->setParameter('configNames', $configNames, ArrayParameterType::STRING);
+
+        $rows = $query->executeQuery()->fetchAllAssociative();
+
+        $result = [];
+
+        foreach ($rows as $row) {
+            /** @phpstan-ignore shopware.unserializeUsage */
+            $result[$row['name']] = \unserialize($row['value'], ['allowed_classes' => false]);
+        }
+
+        return $result;
     }
 
     protected function getDefaultCurrency(MigrationContextInterface $migrationContext): string

@@ -1,0 +1,140 @@
+{% block swag_migration_error_resolution_modal %}
+    <sw-modal
+        class="swag-migration-error-resolution-modal"
+        :title="modalTitle"
+        @modal-close="() => $emit('modal-close')"
+    >
+        <swag-migration-error-resolution-details-modal
+            v-if="openDetailsModal"
+            :entity-name="selectedLog.entityName"
+            :selected-log="selectedDetailsLog"
+            @modal-close="onCloseDetailsModal"
+        />
+
+        <div class="swag-migration-error-resolution-modal__container">
+            {% block swag_migration_error_resolution_modal_left %}
+                <div class="swag-migration-error-resolution-modal__left">
+                    <swag-migration-data-grid-extended
+                        class="swag-migration-error-resolution-modal__left-grid"
+                        ref="errorResolutionGrid"
+                        :identifier="tableIdentifier"
+                        item-identifier-property="logId"
+                        :data-source="tableData"
+                        :show-selection="true"
+                        :show-settings="true"
+                        :rows-clickable="true"
+                        :columns="tableColumns"
+                        :is-loading="loading"
+                        :skeleton-item-amount="tableLimit"
+                        :pre-selection="preSelection"
+                        :is-record-selectable="isRecordSelectable"
+                        :custom-selection-count="selectedCount"
+                        @selection-change="onSelectionChanged"
+                    >
+                        <template #column-status="{ item }">
+                            <div
+                                class="swag-migration-error-resolution-modal__left-status"
+                                :class="statusBadgeClass(item.status)"
+                            >
+                                <div class="swag-migration-error-resolution-modal__left-status-pill" />
+
+                                <span class="swag-migration-error-resolution-modal__left-status-text">
+                                    {{ statusBadgeText(item.status) }}
+                                </span>
+                            </div>
+                        </template>
+
+                        <template #bulk>
+                            <mt-link
+                                as="button"
+                                class="swag-migration-error-resolution-step__header-content-link"
+                                :disabled="loading || selectAllMode"
+                                @click="onSelectAllLogs"
+                            >
+                                {{ $tc('swag-migration.index.error-resolution.modals.error.left.select-all', { count: tableTotal - selectedLog.fixCount }) }}
+                            </mt-link>
+                        </template>
+
+                        <template #actions="{ item }">
+                            <sw-context-menu-item
+                                class="swag-migration-error-resolution-modal__left-modal-action-details"
+                                :disabled="loading"
+                                @click="onOpenDetailsModal(item)"
+                            >
+                                {{ $tc('swag-migration.index.error-resolution.modals.error.left.details') }}
+                            </sw-context-menu-item>
+
+                            <sw-context-menu-item
+                                v-if="item.status"
+                                class="swag-migration-error-resolution-modal__left-modal-action-reset"
+                                :disabled="loading"
+                                variant="danger"
+                                @click="onResetResolution(item)"
+                            >
+                                {{ $tc('swag-migration.index.error-resolution.modals.error.left.reset') }}
+                            </sw-context-menu-item>
+                        </template>
+
+                        <template #pagination>
+                            <sw-pagination
+                                :page="tablePage"
+                                :total="tableTotal"
+                                :limit="tableLimit"
+                                :steps="[25, 50, 100]"
+                                @page-change="onPageChange"
+                            />
+                        </template>
+                    </swag-migration-data-grid-extended>
+                </div>
+            {% endblock %}
+
+            {% block swag_migration_error_resolution_modal_right %}
+                <div class="swag-migration-error-resolution-modal__right">
+                    <div class="swag-migration-error-resolution-modal__right-header">
+                        <h2 class="swag-migration-error-resolution-modal__right-header-title">
+                            {{ $tc('swag-migration.index.error-resolution.modals.error.right.title', { count: selectedCount }) }}
+                        </h2>
+                    </div>
+
+                    <div class="swag-migration-error-resolution-modal__right-content">
+                        <div v-if="resolvingComponent === 'DEFAULT'" class="swag-migration-error-resolution-modal__right-content-default">
+                            <swag-migration-error-resolution-field
+                                :log="selectedLog"
+                                :disabled="isResolutionDisabled"
+                                :error="fieldError"
+                            />
+
+                            <mt-button
+                                class="swag-migration-error-resolution-modal__right-content-button"
+                                variant="primary"
+                                :is-loading="submitLoading"
+                                :disabled="isResolutionDisabled"
+                                @click="onSubmitResolution"
+                            >
+                                {{ $tc('swag-migration.index.error-resolution.modals.error.right.apply') }}
+                            </mt-button>
+                        </div>
+
+                        <div v-else-if="resolvingComponent !== null" class="swag-migration-error-resolution-modal__right-content-resolving">
+                            <component
+                                :is="resolvingComponent"
+                                :selected-log="selectedLog"
+                                :selected-log-ids="selectedLogIds"
+                                @submit-resolution="onSubmitResolution"
+                            />
+                        </div>
+
+                        <div v-else class="swag-migration-error-resolution-modal__right-content-unresolvable">
+                            <mt-banner
+                                :title="$tc('swag-migration.index.error-resolution.modals.error.right.unresolvableBanner.title')"
+                                variant="attention"
+                            >
+                                {{ $tc('swag-migration.index.error-resolution.modals.error.right.unresolvableBanner.content') }}
+                            </mt-banner>
+                        </div>
+                    </div>
+                </div>
+            {% endblock %}
+        </div>
+    </sw-modal>
+{% endblock %}

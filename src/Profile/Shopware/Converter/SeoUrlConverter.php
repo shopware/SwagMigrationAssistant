@@ -7,16 +7,18 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Seo\SeoUrl\SeoUrlDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedSeoUrlType;
 
 #[Package('fundamentals@after-sales')]
 abstract class SeoUrlConverter extends ShopwareConverter
@@ -43,10 +45,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
         $originalData = $data;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -56,7 +55,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         $mapping = $this->mappingService->getMapping(
@@ -67,36 +66,28 @@ abstract class SeoUrlConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::SALES_CHANNEL,
-                    $data['subshopID'],
-                    DefaultEntities::SEO_URL
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                    ->withFieldName('salesChannelId')
+                    ->withFieldSourcePath('subshopID')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $originalData);
         }
-        $converted['salesChannelId'] = $mapping['entityUuid'];
+
+        $converted['salesChannelId'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         unset($data['subshopID']);
 
         $converted['languageId'] = $this->languageLookup->get($data['_locale'], $context);
-        if ($converted['languageId'] === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::LANGUAGE,
-                    $data['_locale'],
-                    DefaultEntities::SEO_URL
-                )
-            );
-
-            return new ConvertStruct(null, $originalData);
+        if ($converted['languageId'] !== null) {
+            $this->mappingIds[] = $converted['languageId'];
+            unset($data['_locale']);
         }
-        $this->mappingIds[] = $converted['languageId'];
-        unset($data['_locale']);
 
         if ($data['type'] === self::TYPE_PRODUCT && isset($data['typeId'])) {
             $mapping = $this->mappingService->getMapping(
@@ -113,24 +104,25 @@ abstract class SeoUrlConverter extends ShopwareConverter
                     $data['typeId'],
                     $context
                 );
-
-                if ($mapping === null) {
-                    $this->loggingService->addLogEntry(
-                        new AssociationRequiredMissingLog(
-                            $migrationContext->getRunUuid(),
-                            DefaultEntities::PRODUCT,
-                            $data['typeId'],
-                            DefaultEntities::SEO_URL
-                        )
-                    );
-
-                    return new ConvertStruct(null, $originalData);
-                }
             }
 
-            $converted['foreignKey'] = $mapping['entityUuid'];
+            if ($mapping === null) {
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                        ->withFieldName('foreignKey')
+                        ->withFieldSourcePath('type')
+                        ->withSourceData($data)
+                        ->build(ConvertAssociationMissingLog::class)
+                );
+
+                return new ConvertStruct(null, $originalData);
+            }
+
+            $converted['foreignKey'] = $mapping['entityId'];
             $converted['routeName'] = self::ROUTE_NAME_PRODUCT;
-            $converted['pathInfo'] = '/detail/' . $mapping['entityUuid'];
+            $converted['pathInfo'] = '/detail/' . $mapping['entityId'];
+
             $this->mappingIds[] = $mapping['id'];
         } elseif ($data['type'] === self::TYPE_CATEGORY && isset($data['typeId'])) {
             $mapping = $this->mappingService->getMapping(
@@ -141,32 +133,34 @@ abstract class SeoUrlConverter extends ShopwareConverter
             );
 
             if ($mapping === null) {
-                $this->loggingService->addLogEntry(
-                    new AssociationRequiredMissingLog(
-                        $migrationContext->getRunUuid(),
-                        DefaultEntities::CATEGORY,
-                        $data['typeId'],
-                        DefaultEntities::SEO_URL
-                    )
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                        ->withFieldName('foreignKey')
+                        ->withFieldSourcePath('type')
+                        ->withSourceData($data)
+                        ->build(ConvertAssociationMissingLog::class)
                 );
 
                 return new ConvertStruct(null, $originalData);
             }
-            $converted['foreignKey'] = $mapping['entityUuid'];
+
+            $converted['foreignKey'] = $mapping['entityId'];
             $converted['routeName'] = self::ROUTE_NAME_NAVIGATION;
-            $converted['pathInfo'] = '/navigation/' . $mapping['entityUuid'];
+            $converted['pathInfo'] = '/navigation/' . $mapping['entityId'];
+
             $this->mappingIds[] = $mapping['id'];
         } else {
-            $this->loggingService->addLogEntry(
-                new UnsupportedSeoUrlType(
-                    $migrationContext->getRunUuid(),
-                    $data['type'],
-                    DefaultEntities::SEO_URL,
-                    $originalData['id']
-                )
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(DefaultEntities::SEO_URL)
+                    ->withSourceData($data)
+                    ->withFieldName('type')
+                    ->build(ConvertObjectTypeUnsupportedLog::class)
             );
 
-            return new ConvertStruct(null, $originalData);
+            // skip this entity because we can't migrate this seo type from SW5
+            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
         }
         unset($data['type'], $data['typeId']);
 

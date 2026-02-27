@@ -140,7 +140,7 @@ class ConverterRegistryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->converterRegistry = $this->getContainer()->get(ConverterRegistry::class);
+        $this->converterRegistry = static::getContainer()->get(ConverterRegistry::class);
     }
 
     /**
@@ -153,10 +153,11 @@ class ConverterRegistryTest extends TestCase
         $connection->setProfileName(Shopware54Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $migrationContext = new MigrationContext(
-            $profile,
             $connection,
-            Uuid::randomHex(),
+            $profile,
+            null,
             $dataSet,
+            Uuid::randomHex(),
             0,
             250
         );
@@ -171,10 +172,11 @@ class ConverterRegistryTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            Uuid::randomHex(),
+            new Shopware55Profile(),
+            null,
             new FooDataSet(),
+            Uuid::randomHex(),
             0,
             250
         );

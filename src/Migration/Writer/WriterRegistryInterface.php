@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Writer;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\WriterNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('fundamentals@after-sales')]
 interface WriterRegistryInterface
@@ -16,7 +16,7 @@ interface WriterRegistryInterface
     /**
      * Returns the writer which supports the given entity
      *
-     * @throws WriterNotFoundException
+     * @throws MigrationException
      */
     public function getWriter(string $entityName): WriterInterface;
 }

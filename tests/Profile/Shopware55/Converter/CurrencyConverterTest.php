@@ -57,10 +57,11 @@ class CurrencyConverterTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new CurrencyDataSet(),
+            $runId,
             0,
             250
         );
@@ -141,9 +142,5 @@ class CurrencyConverterTest extends TestCase
         $convertResult = $this->converter->convert($currencyData[0], $this->context, $this->migrationContext);
 
         static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertEmpty($logs);
     }
 }

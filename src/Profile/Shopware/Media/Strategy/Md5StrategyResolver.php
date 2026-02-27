@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Media\Strategy;
 
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -24,12 +25,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
 
     public function resolve(string $path, MigrationContextInterface $migrationContext): string
     {
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return '';
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
             return '';
@@ -45,7 +41,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
         $path = \ltrim($path, '/');
         $pathElements = \explode('/', $path);
         $pathInfo = \pathinfo($path);
-        $md5hash = \md5($path);
+        $md5hash = Hasher::hash($path, 'md5');
 
         if (empty($pathInfo['extension'])) {
             return '';

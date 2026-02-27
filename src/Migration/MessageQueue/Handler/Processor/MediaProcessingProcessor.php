@@ -15,14 +15,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Exception\NoConnectionFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
-use SwagMigrationAssistant\Migration\Logging\Log\DataSetNotFoundLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchDataSetMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchProcessorMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
@@ -99,10 +98,18 @@ class MediaProcessingProcessor extends AbstractProcessor
                 try {
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
                     $migrationContext->setDataSet($currentDataSet);
-                } catch (DataSetNotFoundException $e) {
-                    $this->logDataSetNotFoundException($migrationContext, $mediaFile);
+                } catch (MigrationException $e) {
+                    if ($e->getErrorCode() === MigrationException::DATASET_NOT_FOUND) {
+                        $this->loggingService->log(
+                            MigrationLogBuilder::fromMigrationContext($migrationContext)
+                                ->withEntityName($mediaFile['entity'])
+                                ->withEntityId($mediaFile['id'])
+                                ->build(FetchDataSetMissingLog::class)
+                        );
+                        continue;
+                    }
 
-                    continue;
+                    throw $e;
                 }
             }
 
@@ -129,26 +136,27 @@ class MediaProcessingProcessor extends AbstractProcessor
             $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
             $workload = $processor->process($migrationContext, $context, $workload);
             $this->processFailures($context, $migrationContext, $processor, $workload);
-        } catch (NoConnectionFoundException $e) {
-            $this->loggingService->addLogEntry(new ProcessorNotFoundLog(
-                $run->getId(),
-                $currentDataSet::getEntity(),
-                $connection->getProfileName(),
-                $connection->getGatewayName()
-            ));
-
-            $this->loggingService->saveLogging($context);
+        } catch (MigrationException $e) {
+            if ($e->getErrorCode() === MigrationException::NO_CONNECTION_FOUND) {
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withExceptionMessage($e->getMessage())
+                        ->withExceptionTrace($e->getTrace())
+                        ->withEntityName($currentDataSet::getEntity())
+                        ->build(FetchProcessorMissingLog::class)
+                );
+            } else {
+                throw $e;
+            }
         } catch (\Throwable $e) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $run->getId(),
-                $currentDataSet::getEntity(),
-                $e
-            ));
-
-            $this->loggingService->saveLogging($context);
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($e->getMessage())
+                    ->withExceptionTrace($e->getTrace())
+                    ->withEntityName($currentDataSet::getEntity())
+                    ->build(RunExceptionLog::class)
+            );
         }
-
-        $this->loggingService->saveLogging($context);
 
         $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($workload));
         $progress->setProgress($progress->getProgress() + \count($workload));
@@ -233,28 +241,5 @@ class MediaProcessingProcessor extends AbstractProcessor
         $unprocessedCount = $this->migrationMediaFileRepo->search($criteria, $context)->getTotal();
 
         return $unprocessedCount === 0;
-    }
-
-    /**
-     * @param array<string, mixed> $mediaFile
-     */
-    private function logDataSetNotFoundException(
-        MigrationContextInterface $migrationContext,
-        array $mediaFile,
-    ): void {
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return;
-        }
-
-        $this->loggingService->addLogEntry(
-            new DataSetNotFoundLog(
-                $migrationContext->getRunUuid(),
-                $mediaFile['entity'],
-                $mediaFile['id'],
-                $connection->getProfileName()
-            )
-        );
     }
 }

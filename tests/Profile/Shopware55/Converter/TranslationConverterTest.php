@@ -21,6 +21,10 @@ use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertUnserializedDataInvalidLog;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -95,28 +99,31 @@ class TranslationConverterTest extends TestCase
         $profile = new Shopware55Profile();
 
         $this->migrationContext = new MigrationContext(
-            $profile,
             $connection,
-            $runId,
+            $profile,
+            null,
             new TranslationDataSet(),
+            $runId,
             0,
             250
         );
 
         $this->productMigrationContext = new MigrationContext(
-            $profile,
             $connection,
-            $runId,
+            $profile,
+            null,
             new ProductDataSet(),
+            $runId,
             0,
             250
         );
 
         $this->categoryMigrationContext = new MigrationContext(
-            $profile,
             $connection,
-            $runId,
+            $profile,
+            null,
             new CategoryDataSet(),
+            $runId,
             0,
             250
         );
@@ -141,9 +148,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE');
-        static::assertSame($logs[0]['parameters']['sourceId'], '276');
-        static::assertSame($logs[0]['parameters']['objectType'], 'invalid');
+        static::assertSame($logs[0]['code'], ConvertObjectTypeUnsupportedLog::getCode());
     }
 
     public function testConvertProductTranslation(): void
@@ -155,10 +160,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -216,10 +221,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -260,10 +265,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -277,9 +282,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
-        static::assertSame($logs[0]['parameters']['sourceId'], '273');
-        static::assertSame($logs[0]['parameters']['unserializedEntity'], 'product_manufacturer_translation');
+        static::assertSame($logs[0]['code'], ConvertUnserializedDataInvalidLog::getCode());
     }
 
     public function testConvertUnitTranslation(): void
@@ -291,10 +294,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -324,9 +327,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_UNIT');
-        static::assertSame($logs[0]['parameters']['sourceId'], '274');
-        static::assertSame($logs[0]['parameters']['missingEntity'], 'unit');
+        static::assertSame($logs[0]['code'], ConvertAssociationMissingLog::getCode());
     }
 
     public function testConvertUnitTranslationWithInvalidTranslationObject(): void
@@ -338,10 +339,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -355,9 +356,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
-        static::assertSame($logs[0]['parameters']['sourceId'], '274');
-        static::assertSame($logs[0]['parameters']['unserializedEntity'], 'unit_translation');
+        static::assertSame($logs[0]['code'], ConvertUnserializedDataInvalidLog::getCode());
     }
 
     public function testConvertCategoryTranslation(): void
@@ -370,9 +369,9 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LanguageLookup::class)
         );
         $categoryConvertResult = $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
@@ -394,6 +393,7 @@ class TranslationConverterTest extends TestCase
         static::assertArrayHasKey('translations', $converted);
         static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
 
+        /** @phpstan-ignore shopware.unserializeUsage */
         $originalData = \unserialize($translationData['category']['objectdata'], ['allowed_classes' => false]);
         $translations = $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID];
 
@@ -416,9 +416,9 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LanguageLookup::class)
         );
         $categoryConvertResult = $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
@@ -440,11 +440,11 @@ class TranslationConverterTest extends TestCase
         static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
 
         $expected = [
-            'id' => $categoryMapping['entityUuid'],
+            'id' => $categoryMapping['entityId'],
             'entityDefinitionClass' => CategoryDefinition::class,
             'translations' => [
                 DummyMappingService::DEFAULT_LANGUAGE_UUID => [
-                    'id' => $translationMapping['entityUuid'],
+                    'id' => $translationMapping['entityId'],
                     'customFields' => [
                         'migration_Shopware55_category_attribute1' => 'DE: Attribute 1',
                         'migration_Shopware55_category_attribute2' => 'DE: Attribute 2',
@@ -472,9 +472,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_CATEGORY');
-        static::assertSame($logs[0]['parameters']['sourceId'], '275');
-        static::assertSame($logs[0]['parameters']['missingEntity'], 'category');
+        static::assertSame($logs[0]['code'], ConvertAssociationMissingLog::getCode());
     }
 
     public function testConvertCategoryTranslationWithInvalidTranslationObject(): void
@@ -487,9 +485,9 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LanguageLookup::class)
         );
         $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
@@ -502,9 +500,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
-        static::assertSame($logs[0]['parameters']['sourceId'], '275');
-        static::assertSame($logs[0]['parameters']['unserializedEntity'], 'category_translation');
+        static::assertSame($logs[0]['code'], ConvertUnserializedDataInvalidLog::getCode());
     }
 
     public function testCreateConfiguratorOptionTranslation(): void
@@ -608,10 +604,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -621,7 +617,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
         static::assertCount(1, $this->loggingService->getLoggingArray());
         $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_TRANSLATION', $logs[0]['code']);
+        static::assertSame(ConvertSourceDataIncompleteLog::getCode(), $logs[0]['code']);
     }
 
     public function testConvertVariantAttributeTranslation(): void
@@ -635,10 +631,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -667,14 +663,14 @@ class TranslationConverterTest extends TestCase
         static::assertIsArray($converted);
 
         $expected = [
-            'id' => $productMapping['entityUuid'],
+            'id' => $productMapping['entityId'],
             'entityDefinitionClass' => ProductDefinition::class,
             'translations' => [
                 DummyMappingService::DEFAULT_LANGUAGE_UUID => [
                     'customFields' => [
                         'migration_Shopware55_product_attr1' => 'My free textfield',
                     ],
-                    'id' => $translationMapping['entityUuid'],
+                    'id' => $translationMapping['entityId'],
                     'languageId' => DummyMappingService::DEFAULT_LANGUAGE_UUID,
                 ],
             ],
@@ -706,11 +702,11 @@ class TranslationConverterTest extends TestCase
         );
 
         $expectedData = [
-            'id' => $mediaMapping['entityUuid'],
+            'id' => $mediaMapping['entityId'],
             'entityDefinitionClass' => MediaDefinition::class,
             'translations' => [
                 DummyMappingService::DEFAULT_LANGUAGE_UUID => [
-                    'id' => $translationMapping['entityUuid'],
+                    'id' => $translationMapping['entityId'],
                     'alt' => 'EN - Nice Spachtelmasse',
                     'languageId' => DummyMappingService::DEFAULT_LANGUAGE_UUID,
                 ],
@@ -759,14 +755,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($converted);
         static::assertCount(1, $logs);
 
-        $logParameters = [
-            'missingEntity' => DefaultEntities::MEDIA,
-            'requiredFor' => DefaultEntities::TRANSLATION,
-            'sourceId' => '769',
-        ];
-
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_MEDIA', $logs[0]['code']);
-        static::assertSame($logParameters, $logs[0]['parameters']);
+        static::assertSame(ConvertAssociationMissingLog::getCode(), $logs[0]['code']);
     }
 
     public function testConvertProductTranslationsWithSeoData(): void
@@ -778,10 +767,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 

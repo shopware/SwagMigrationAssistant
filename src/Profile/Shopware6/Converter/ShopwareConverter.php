@@ -11,7 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -41,16 +42,13 @@ abstract class ShopwareConverter extends Converter
         return $data['id'];
     }
 
-    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ?ConvertStruct
     {
         $this->context = $context;
         $this->migrationContext = $migrationContext;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $this->runId = $this->migrationContext->getRunUuid();
 
@@ -67,7 +65,7 @@ abstract class ShopwareConverter extends Converter
     /**
      * @param array<array-key, mixed> $data
      */
-    abstract protected function convertData(array $data): ConvertStruct;
+    abstract protected function convertData(array $data): ?ConvertStruct;
 
     protected function getMappingIdFacade(string $entityName, string $oldIdentifier): ?string
     {
@@ -84,7 +82,7 @@ abstract class ShopwareConverter extends Converter
 
         $this->mappingIds[] = $mapping['id'];
 
-        return $mapping['entityUuid'];
+        return $mapping['entityId'];
     }
 
     protected function getOrCreateMappingIdFacade(
@@ -104,11 +102,11 @@ abstract class ShopwareConverter extends Converter
 
         $this->mappingIds[] = $mapping['id'];
 
-        return $mapping['entityUuid'];
+        return $mapping['entityId'];
     }
 
     /**
-     * @return array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
+     * @return array{id: string, connectionId: string, oldIdentifier: ?string, entityId: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
      */
     protected function getOrCreateMappingMainCompleteFacade(
         string $entityName,
@@ -147,12 +145,12 @@ abstract class ShopwareConverter extends Converter
 
             if (empty($newAssociationId)) {
                 if ($logMissing) {
-                    $this->loggingService->addLogEntry(new AssociationRequiredMissingLog(
-                        $this->runId,
-                        $entity,
-                        $oldAssociationId,
-                        $sourceEntity
-                    ));
+                    $this->loggingService->log(
+                        MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                            ->withEntityName($entity)
+                            ->withConvertedData($association)
+                            ->build(ConvertAssociationMissingLog::class)
+                    );
                 }
 
                 if ($unsetMissing) {

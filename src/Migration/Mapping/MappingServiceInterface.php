@@ -12,7 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
 
 /**
- * @phpstan-type MappingStruct array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
+ * @phpstan-type MappingStruct array{id: string, connectionId: string, oldIdentifier: ?string, entityId: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
  */
 #[Package('fundamentals@after-sales')]
 interface MappingServiceInterface
@@ -75,7 +75,7 @@ interface MappingServiceInterface
      */
     public function getMigratedSalesChannelUuids(string $connectionId, Context $context): array;
 
-    public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void;
+    public function deleteMapping(string $entityId, string $connectionId, Context $context): void;
 
     public function writeMapping(): void;
 

@@ -18,44 +18,35 @@ parameters:
         consoleApplicationLoader: %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/console-application.php
     type_perfect:
         narrow_return: true
-        narrow_param: true
+        narrow_param: false
 
     ignoreErrors:
-        # XML config format will be migrated step by step, so we ignore errors for now, see https://github.com/shopware/shopware/issues/13072
-        - message: '#deprecated class Symfony\\Component\\DependencyInjection\\Loader\\XmlFileLoader#'
-
         - message: '#Service ".*" is private#'
           paths:
               - tests/**/*Test.php
 
-        - # Ignore hash functions rule for the following files because we use it in another context
-            message: '#Do not use .* function, use class Shopware\\Core\\Framework\\Util\\Hasher instead#'
-            paths:
-                - src/Migration/Media/Processor/HttpDownloadServiceBase.php
-                - src/Migration/Service/MigrationDataConverter.php
-                - src/Profile/Shopware/Converter/OrderConverter.php
-                - src/Profile/Shopware/Converter/ProductConverter.php
-                - src/Profile/Shopware/Converter/ProductOptionRelationConverter.php
-                - src/Profile/Shopware/Converter/ProductPropertyRelationConverter.php
-                - src/Profile/Shopware/Converter/PropertyGroupOptionConverter.php
-                - src/Profile/Shopware/Converter/ShippingMethodConverter.php
-                - src/Profile/Shopware/Media/Strategy/Md5StrategyResolver.php
-                - src/Migration/Converter/Converter.php
+        # TODO: XML config format will be migrated step by step, so we ignore errors for now, see https://github.com/shopware/shopware/issues/13072
+        - message: '#deprecated class Symfony\\Component\\DependencyInjection\\Loader\\XmlFileLoader#'
 
-        - # To fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
-            message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
-            path: src/DataProvider/Provider/Data/AbstractProvider.php
+        # TODO: to fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
+        - message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
+          path: src/DataProvider/Provider/Data/AbstractProvider.php
 
         # TODO remove this for 6.8 compatibility
         - message: '#Access to constant on deprecated class Shopware\\Core\\Checkout\\Payment\\Cart\\PaymentHandler\\DebitPayment#'
           paths:
               - src/Profile/Shopware/Premapping/PaymentMethodReader.php
               - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
-
         - message: '#Call to deprecated method __construct\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityDefinition#'
+        - message: '#Call to deprecated method columnExists\(\) of class Shopware\\Core\\Framework\\Migration\\MigrationStep#'
+        - message: '#Call to deprecated method columnExists\(\) of class SwagMigrationAssistant\\Core\\Migration\\Migration1762346793RenameColumnOfMappingTable#'
+        - message: '#Call to deprecated method indexExists\(\) of class Shopware\\Core\\Framework\\Migration\\MigrationStep#'
+        - message: '#Call to deprecated method listTableColumns\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
+        - message: '#Call to deprecated method listTableIndexes\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
+        - message: '#Call to deprecated method getName\(\) of class Doctrine\\DBAL\\Schema\\AbstractAsset#'
+        - message: '#Call to deprecated method listTableForeignKeys\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
 
 rules:
-    # Shopware core rules
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\CoversAttributeRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\MockingSimpleObjectsNotAllowedRule

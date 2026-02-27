@@ -54,10 +54,10 @@ class ProductConverterTest extends TestCase
             $mappingServiceMock,
             $loggerMock,
             $mediaFileServiceMock,
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class),
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class),
         );
 
         $data = require __DIR__ . '/_fixtures/product_with_seo_main_category.php';
@@ -65,10 +65,11 @@ class ProductConverterTest extends TestCase
         $runId = Uuid::randomHex();
 
         $migrationContext = new MigrationContext(
-            new Shopware54Profile(),
             $connection,
-            $runId,
+            new Shopware54Profile(),
+            null,
             new ProductDataSet(),
+            $runId,
             0,
             250
         );
@@ -81,9 +82,11 @@ class ProductConverterTest extends TestCase
         $result = $convertedResult['mainCategories'];
 
         foreach ($result as $mainSeoCategory) {
+            static::assertArrayHasKey('id', $mainSeoCategory);
             static::assertArrayHasKey('categoryId', $mainSeoCategory);
             static::assertArrayHasKey('salesChannelId', $mainSeoCategory);
 
+            static::assertTrue(Uuid::isValid($mainSeoCategory['id']));
             static::assertTrue(Uuid::isValid($mainSeoCategory['categoryId']));
             static::assertTrue(Uuid::isValid($mainSeoCategory['salesChannelId']));
         }

@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
@@ -49,24 +50,24 @@ class Dummy6MappingService extends MappingService
 
     public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string
     {
-        if (!isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
+        if (!isset($this->mappings[Hasher::hash($entityName . $oldIdentifier)])) {
             return null;
         }
 
-        return $this->mappings[\md5($entityName . $oldIdentifier)]['entityValue'];
+        return $this->mappings[Hasher::hash($entityName . $oldIdentifier)]['entityValue'];
     }
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        return isset($this->mappings[\md5($entityName . $identifier)])
-            ? \array_column($this->mappings[\md5($entityName . $identifier)], 'entityUuid')
+        return isset($this->mappings[Hasher::hash($entityName . $identifier)])
+            ? \array_column($this->mappings[Hasher::hash($entityName . $identifier)], 'entityId')
             : [];
     }
 
-    public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void
+    public function deleteMapping(string $entityId, string $connectionId, Context $context): void
     {
         foreach ($this->writeArray as $key => $writeMapping) {
-            if ($writeMapping['connectionId'] === $connectionId && $writeMapping['entityUuid'] === $entityUuid) {
+            if ($writeMapping['connectionId'] === $connectionId && $writeMapping['entityId'] === $entityId) {
                 unset($this->writeArray[$key]);
                 $this->writeArray = \array_values($this->writeArray);
 
@@ -75,7 +76,7 @@ class Dummy6MappingService extends MappingService
         }
 
         foreach ($this->mappings as $hash => $mapping) {
-            if ($mapping['entityUuid'] === $entityUuid) {
+            if ($mapping['entityId'] === $entityId) {
                 unset($this->mappings[$hash]);
             }
         }
@@ -98,9 +99,9 @@ class Dummy6MappingService extends MappingService
 
     public function createListItemMapping(string $connectionId, string $entityName, string $oldIdentifier, Context $context, ?array $additionalData = null, ?string $newUuid = null): void
     {
-        $uuid = Uuid::randomHex();
+        $id = Uuid::randomHex();
         if ($newUuid !== null) {
-            $uuid = $newUuid;
+            $id = $newUuid;
 
             if ($this->isUuidDuplicate($connectionId, $entityName, $oldIdentifier, $newUuid, $context)) {
                 return;
@@ -113,7 +114,7 @@ class Dummy6MappingService extends MappingService
                 'connectionId' => $connectionId,
                 'entity' => $entityName,
                 'oldIdentifier' => $oldIdentifier,
-                'entityUuid' => $uuid,
+                'entityId' => $id,
                 'additionalData' => $additionalData,
             ]
         );
@@ -126,7 +127,7 @@ class Dummy6MappingService extends MappingService
                 $item['connectionId'] === $connectionId
                 && $item['entity'] === $entityName
                 && $item['oldIdentifier'] === $id
-                && $item['entityUuid'] === $uuid
+                && $item['entityId'] === $uuid
             ) {
                 return true;
             }

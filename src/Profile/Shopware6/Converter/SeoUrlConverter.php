@@ -10,6 +10,8 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -42,18 +44,29 @@ class SeoUrlConverter extends ShopwareConverter
         $converted = $data;
 
         if (isset($converted['foreignKey'])) {
-            if ($converted['routeName'] === self::CATEGORY_ROUTE_NAME) {
-                $relatedEntity = DefaultEntities::CATEGORY;
+            if (!isset($converted['routeName'])) {
+                $converted['foreignKey'] = null;
+            } elseif ($converted['routeName'] === self::CATEGORY_ROUTE_NAME) {
+                $converted['foreignKey'] = $this->getMappingIdFacade(
+                    DefaultEntities::CATEGORY,
+                    $converted['foreignKey']
+                );
             } elseif ($converted['routeName'] === self::PRODUCT_ROUTE_NAME) {
-                $relatedEntity = DefaultEntities::PRODUCT;
+                $converted['foreignKey'] = $this->getMappingIdFacade(
+                    DefaultEntities::PRODUCT,
+                    $converted['foreignKey']
+                );
             } else {
-                return new ConvertStruct(null, $converted);
-            }
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->withEntityName(DefaultEntities::SEO_URL)
+                        ->withFieldName('routeName')
+                        ->withSourceData($data)
+                        ->build(ConvertObjectTypeUnsupportedLog::class)
+                );
 
-            $converted['foreignKey'] = $this->getMappingIdFacade(
-                $relatedEntity,
-                $converted['foreignKey']
-            );
+                return new ConvertStruct(null, $data);
+            }
         }
 
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(

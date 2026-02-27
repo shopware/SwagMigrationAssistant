@@ -50,10 +50,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
         unset($data['_locale']);
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -63,7 +60,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         $defaultFolderId = $this->getDefaultFolderId();
@@ -80,7 +77,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
             );
 
             if ($parentMapping !== null) {
-                $converted['parentId'] = $parentMapping['entityUuid'];
+                $converted['parentId'] = $parentMapping['entityId'];
                 $this->mappingIds[] = $parentMapping['id'];
             }
             unset($parentMapping);
@@ -104,10 +101,10 @@ abstract class MediaFolderConverter extends ShopwareConverter
             $this->mappingIds[] = $configurationMapping['id'];
 
             $converted['parent'] = [
-                'id' => $parentMapping['entityUuid'],
+                'id' => $parentMapping['entityId'],
                 'name' => 'Migration media folder',
                 'configuration' => [
-                    'id' => $configurationMapping['entityUuid'],
+                    'id' => $configurationMapping['entityId'],
                 ],
             ];
         }
@@ -115,7 +112,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
         $this->convertValue($converted, 'name', $data, 'name');
 
         if (isset($data['setting'])) {
-            $converted['configuration'] = $this->getConfiguration($data['setting'], $migrationContext);
+            $converted['configuration'] = $this->getConfiguration($data['setting']);
             $converted['useParentConfiguration'] = false;
             unset($data['setting']);
         } else {
@@ -142,7 +139,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
         $this->mappingService->writeMapping();
     }
 
-    protected function getConfiguration(array &$setting, MigrationContextInterface $migrationContext): array
+    protected function getConfiguration(array &$setting): array
     {
         $configuration = [];
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -151,13 +148,13 @@ abstract class MediaFolderConverter extends ShopwareConverter
             $setting['id'],
             $this->context
         );
-        $configuration['id'] = $mapping['entityUuid'];
+        $configuration['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $this->convertValue($configuration, 'createThumbnails', $setting, 'create_thumbnails', self::TYPE_BOOLEAN);
         $this->convertValue($configuration, 'thumbnailQuality', $setting, 'thumbnail_quality', self::TYPE_INTEGER);
 
-        if (isset($setting['thumbnail_size']) && !empty($setting['thumbnail_size'])) {
+        if (!empty($setting['thumbnail_size'])) {
             $thumbnailSizes = \explode(';', \mb_strtolower($setting['thumbnail_size']));
 
             $configuration['mediaThumbnailSizes'] = [];
@@ -176,7 +173,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
                         $thumbnailSize['width'] . '-' . $thumbnailSize['height'],
                         $this->context
                     );
-                    $uuid = $mapping['entityUuid'];
+                    $uuid = $mapping['entityId'];
                     $this->mappingIds[] = $mapping['id'];
                 }
 
@@ -190,16 +187,11 @@ abstract class MediaFolderConverter extends ShopwareConverter
 
     protected function getDefaultFolderId(): ?string
     {
-        switch ($this->oldId) {
-            case '1':
-            case '-12':
-                return $this->mediaFolderLookup->get(DefaultEntities::PRODUCT_MANUFACTURER, $this->context);
-            case '-5':
-                return $this->mediaFolderLookup->get(DefaultEntities::MAIL_TEMPLATE, $this->context);
-            case '-1':
-                return $this->mediaFolderLookup->get(DefaultEntities::PRODUCT, $this->context);
-        }
-
-        return null;
+        return match ($this->oldId) {
+            '1', '-12' => $this->mediaFolderLookup->get(DefaultEntities::PRODUCT_MANUFACTURER, $this->context),
+            '-5' => $this->mediaFolderLookup->get(DefaultEntities::MAIL_TEMPLATE, $this->context),
+            '-1' => $this->mediaFolderLookup->get(DefaultEntities::PRODUCT, $this->context),
+            default => null,
+        };
     }
 }

@@ -12,7 +12,8 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
@@ -49,13 +50,13 @@ class ApiReaderTest extends TestCase
         $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity(),
             new Shopware55Profile(),
             null,
-            '',
-            new ProductDataSet()
+            new ProductDataSet(),
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
-        $mock->expects(static::once())
+        $mock->expects($this->once())
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);
@@ -81,13 +82,13 @@ class ApiReaderTest extends TestCase
         $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity(),
             new Shopware55Profile(),
             null,
-            '',
-            new ProductDataSet()
+            new ProductDataSet(),
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
-        $mock->expects(static::once())
+        $mock->expects($this->once())
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);
@@ -96,13 +97,13 @@ class ApiReaderTest extends TestCase
 
         try {
             $apiReader->read($migrationContext);
-        } catch (GatewayReadException $e) {
+        } catch (MigrationException $e) {
             static::assertArrayHasKey('gateway', $e->getParameters());
             static::assertSame($e->getParameters()['gateway'], 'Shopware Api product');
 
             return;
         }
 
-        static::fail('GatewayReadException not thrown');
+        static::fail('MigrationException not thrown');
     }
 }

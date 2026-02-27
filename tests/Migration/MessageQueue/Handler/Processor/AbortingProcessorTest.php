@@ -13,14 +13,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\Stub\MessageBus\CollectingMessageBus;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbortingProcessor;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\ResetChecksumMessage;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
-use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
@@ -40,54 +38,45 @@ class AbortingProcessorTest extends TestCase
             $this->createMock(EntityRepository::class),
             $this->createMock(EntityRepository::class),
             $this->createMock(RunTransitionServiceInterface::class),
-            $this->createMock(RunServiceInterface::class),
             $this->bus
         );
     }
 
-    public function testProcessingWithoutConnection(): void
-    {
-        $progress = new MigrationProgress(0, 0, new ProgressDataSetCollection(), 'product', 0);
-
-        $run = new SwagMigrationRunEntity();
-        $run->setId(Uuid::randomHex());
-        $run->setProgress($progress);
-
-        try {
-            $this->processor->process(
-                $this->createMock(MigrationContextInterface::class),
-                Context::createDefaultContext(),
-                $run,
-                $progress
-            );
-        } catch (MigrationException $e) {
-            static::assertSame(MigrationException::NO_CONNECTION_FOUND, $e->getErrorCode());
-            static::assertCount(0, $this->bus->getMessages());
-
-            return;
-        }
-    }
-
     public function testProcessing(): void
     {
-        $progress = new MigrationProgress(0, 0, new ProgressDataSetCollection(), 'product', 0);
+        $runId = Uuid::randomHex();
+        $connectionId = Uuid::randomHex();
+        $currentEntity = 'product';
+
+        $progress = new MigrationProgress(0, 0, new ProgressDataSetCollection(), $currentEntity, 0);
 
         $run = new SwagMigrationRunEntity();
-        $run->setId(Uuid::randomHex());
+        $run->setId($runId);
         $run->setProgress($progress);
 
         $connection = new SwagMigrationConnectionEntity();
-        $connection->setId(Uuid::randomHex());
+        $connection->setId($connectionId);
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection);
+        $migrationContext = new MigrationContext($connection, new Shopware55Profile());
+        $context = Context::createDefaultContext();
 
         $this->processor->process(
             $migrationContext,
-            Context::createDefaultContext(),
+            $context,
             $run,
             $progress
         );
 
-        static::assertCount(1, $this->bus->getMessages());
+        $messages = $this->bus->getMessages();
+        static::assertCount(1, $messages);
+
+        $message = $messages[0]->getMessage();
+        static::assertInstanceOf(ResetChecksumMessage::class, $message);
+
+        static::assertSame($connectionId, $message->getConnectionId());
+        static::assertSame($context, $message->getContext());
+        static::assertSame($runId, $message->getRunId());
+        static::assertSame($currentEntity, $message->getEntity());
+        static::assertTrue($message->isPartOfAbort());
     }
 }

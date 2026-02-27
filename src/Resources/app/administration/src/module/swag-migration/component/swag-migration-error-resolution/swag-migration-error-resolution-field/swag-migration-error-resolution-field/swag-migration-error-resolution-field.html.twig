@@ -1,0 +1,46 @@
+{% block swag_migration_error_resolution_field %}
+    <div class="swag-migration-error-resolution-field">
+        <mt-banner
+            v-if="effectiveEntityField?.description"
+            class="swag-migration-error-resolution-field__description-banner"
+            variant="neutral"
+            :title="$tc('swag-migration.index.error-resolution.descriptionTitle')"
+            :hide-icon="true"
+        >
+            "{{ effectiveEntityField.description }}"
+        </mt-banner>
+
+        {% block swag_migration_error_resolution_field_unhandled %}
+            <swag-migration-error-resolution-field-unhandled
+                v-if="isUnhandledField"
+                :field-name="log?.fieldName"
+                :disabled="disabled"
+                :error="error"
+                :example-value="exampleValue"
+            />
+        {% endblock %}
+
+        {% block swag_migration_error_resolution_field_scalar %}
+            <swag-migration-error-resolution-field-scalar
+                v-else-if="isScalarField"
+                :component-type="fieldType"
+                :entity-name="log?.entityName"
+                :field-name="log?.fieldName"
+                :entity-field="entityField"
+                :error="error"
+                :disabled="disabled"
+                :example-value="exampleValue"
+            />
+        {% endblock %}
+
+        {% block swag_migration_error_resolution_field_relation %}
+            <swag-migration-error-resolution-field-relation
+                v-else
+                :relation-type="fieldType"
+                :entity-field="effectiveEntityField"
+                :field-name="log?.fieldName"
+                :disabled="disabled"
+            />
+        {% endblock %}
+    </div>
+{% endblock %}

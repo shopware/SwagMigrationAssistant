@@ -11,7 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertMainVariantRelationFailedLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -20,8 +21,6 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
     protected Context $context;
 
     protected string $connectionId = '';
-
-    private string $runUuid;
 
     public function getSourceIdentifier(array $data): string
     {
@@ -32,13 +31,18 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
     {
         $this->generateChecksum($data);
         $this->context = $context;
-        $this->runUuid = $migrationContext->getRunUuid();
         $connection = $migrationContext->getConnection();
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         if (!isset($data['id'], $data['ordernumber'])) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withSourceData($data)
+                    ->withExceptionMessage('MainVariantRelation requires ID and order number, to be converted successful')
+                    ->withExceptionTrace(\debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 2))
+                    ->build(ConvertMainVariantRelationFailedLog::class)
+            );
+
             return new ConvertStruct(null, $data);
         }
 
@@ -64,27 +68,24 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
             $context
         );
 
-        if ($mainProductMapping === null) {
-            $this->addAssociationRequiredLog(DefaultEntities::PRODUCT_CONTAINER, $data['id']);
+        $mainProductId = null;
 
-            return new ConvertStruct(null, $data);
+        if ($mainProductMapping !== null) {
+            $this->mappingIds[] = $mainProductMapping['id'];
+            $mainProductId = $mainProductMapping['entityId'];
         }
 
-        if ($variantProductMapping === null) {
-            $this->addAssociationRequiredLog(DefaultEntities::PRODUCT, $data['ordernumber']);
-
-            return new ConvertStruct(null, $data);
+        $variantProductId = null;
+        if ($variantProductMapping !== null) {
+            $this->mappingIds[] = $variantProductMapping['id'];
+            $variantProductId = $variantProductMapping['entityId'];
         }
-
-        $this->mappingIds[] = $mainProductMapping['id'];
-        $this->mappingIds[] = $variantProductMapping['id'];
 
         $converted = [];
-        $converted['id'] = $mainProductMapping['entityUuid'];
-
+        $converted['id'] = $mainProductId;
         $converted['variantListingConfig'] = [
             'displayParent' => true,
-            'mainVariantId' => $variantProductMapping['entityUuid'],
+            'mainVariantId' => $variantProductId,
         ];
         unset($data['id'], $data['ordernumber']);
 
@@ -96,17 +97,5 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
-    }
-
-    private function addAssociationRequiredLog(string $requiredEntity, string $id): void
-    {
-        $this->loggingService->addLogEntry(
-            new AssociationRequiredMissingLog(
-                $this->runUuid,
-                $requiredEntity,
-                $id,
-                DefaultEntities::MAIN_VARIANT_RELATION
-            )
-        );
     }
 }

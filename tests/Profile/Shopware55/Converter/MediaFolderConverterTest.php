@@ -37,8 +37,8 @@ class MediaFolderConverterTest extends TestCase
         $this->converter = new Shopware55MediaFolderConverter(
             new DummyMappingService(),
             $loggingService,
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(MediaThumbnailSizeLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(MediaThumbnailSizeLookup::class),
         );
 
         $runId = Uuid::randomHex();
@@ -47,10 +47,11 @@ class MediaFolderConverterTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new MediaFolderDataSet(),
+            $runId,
             0,
             250
         );

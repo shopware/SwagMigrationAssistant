@@ -11,7 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -34,12 +35,13 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         try {
             return $this->gatewayRegistry->getGateway($migrationContext)->read($migrationContext);
         } catch (\Throwable $exception) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $migrationContext->getRunUuid(),
-                $dataSet::getEntity(),
-                $exception
-            ));
-            $this->loggingService->saveLogging($context);
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
+                    ->withEntityName($dataSet::getEntity())
+                    ->build(RunExceptionLog::class)
+            );
         }
 
         return [];
@@ -50,8 +52,8 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         return $this->gatewayRegistry->getGateway($migrationContext)->readEnvironmentInformation($migrationContext, $context);
     }
 
-    public function fetchTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function fetchTotals(MigrationContextInterface $migrationContext): array
     {
-        return $this->gatewayRegistry->getGateway($migrationContext)->readTotals($migrationContext, $context);
+        return $this->gatewayRegistry->getGateway($migrationContext)->readTotals($migrationContext);
     }
 }

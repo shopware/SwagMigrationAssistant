@@ -19,13 +19,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\Stub\MessageBus\CollectingMessageBus;
-use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Exception\NoConnectionFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
-use SwagMigrationAssistant\Migration\Logging\Log\DataSetNotFoundLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchDataSetMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchProcessorMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
@@ -85,7 +83,13 @@ class MediaProcessingProcessorTest extends TestCase
         $this->runEntity->setStep(MigrationStep::FETCHING);
         $this->runEntity->setConnection($connection);
 
-        $this->migrationContext = new MigrationContext(new Shopware55Profile(), $connection, $this->runEntity->getId());
+        $this->migrationContext = new MigrationContext(
+            $connection,
+            new Shopware55Profile(),
+            null,
+            null,
+            $this->runEntity->getId()
+        );
 
         $result = $this->createMock(Result::class);
         $result->method('fetchAllAssociative')->willReturnCallback(fn () => $this->mediaFiles);
@@ -137,7 +141,7 @@ class MediaProcessingProcessorTest extends TestCase
     public function testTransitionsToNextStepIfNoMediaFiles(): void
     {
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
-        $runTransitionService->expects(static::once())
+        $runTransitionService->expects($this->once())
             ->method('transitionToRunStep')
             ->with(
                 $this->migrationContext->getRunUuid(),
@@ -181,12 +185,12 @@ class MediaProcessingProcessorTest extends TestCase
 
         $dataSetRegistry = $this->createMock(DataSetRegistry::class);
         $dataSetRegistry->method('getDataSet')->willThrowException(
-            new DataSetNotFoundException(400, MigrationException::DATASET_NOT_FOUND, 'unknown')
+            MigrationException::dataSetNotFound('unknown')
         );
 
         $logging = $this->createMock(LoggingService::class);
-        $logging->expects(static::once())->method('addLogEntry')->with(
-            static::isInstanceOf(DataSetNotFoundLog::class)
+        $logging->expects($this->once())->method('log')->with(
+            static::isInstanceOf(FetchDataSetMissingLog::class)
         );
 
         $processor = new MediaProcessingProcessor(
@@ -215,15 +219,15 @@ class MediaProcessingProcessorTest extends TestCase
     {
         $processorMock = $this->createMock(MediaFileProcessorInterface::class);
         $processorMock->method('process')->willThrowException(
-            new NoConnectionFoundException(400, MigrationException::DATASET_NOT_FOUND, 'unknown')
+            MigrationException::noConnectionFound()
         );
 
         $registry = $this->createMock(MediaFileProcessorRegistryInterface::class);
         $registry->method('getProcessor')->willReturn($processorMock);
 
         $logging = $this->createMock(LoggingService::class);
-        $logging->expects(static::once())->method('addLogEntry')->with(
-            static::isInstanceOf(ProcessorNotFoundLog::class)
+        $logging->expects($this->once())->method('log')->with(
+            static::isInstanceOf(FetchProcessorMissingLog::class)
         );
 
         $this->mediaFiles = [
@@ -276,7 +280,7 @@ class MediaProcessingProcessorTest extends TestCase
             ),
         ];
 
-        $processorMock->expects(static::once())
+        $processorMock->expects($this->once())
             ->method('process')
             ->willReturn($workload);
 
@@ -345,7 +349,7 @@ class MediaProcessingProcessorTest extends TestCase
             ),
         ];
 
-        $processorMock->expects(static::exactly(2))
+        $processorMock->expects($this->exactly(2))
             ->method('process')
             ->willReturnOnConsecutiveCalls($firstWorkload, $secondWorkload);
 
@@ -403,7 +407,7 @@ class MediaProcessingProcessorTest extends TestCase
             ),
         ];
 
-        $processorMock->expects(static::once())
+        $processorMock->expects($this->once())
             ->method('process')
             ->willReturn($workload);
 
@@ -425,7 +429,7 @@ class MediaProcessingProcessorTest extends TestCase
         $dataSetRegistry->method('getDataSet')->willReturn(new MediaDataSet());
 
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
-        $runTransitionService->expects(static::once())
+        $runTransitionService->expects($this->once())
             ->method('transitionToRunStep')
             ->with(
                 $this->migrationContext->getRunUuid(),

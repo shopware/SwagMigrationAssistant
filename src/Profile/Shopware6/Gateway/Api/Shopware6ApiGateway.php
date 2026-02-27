@@ -19,6 +19,7 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\TotalReaderInterface;
@@ -54,9 +55,9 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
         return 'swag-migration.wizard.pages.connectionCreate.gateways.shopwareApi';
     }
 
-    public function supports(MigrationContextInterface $migrationContext): bool
+    public function supports(ProfileInterface $profile): bool
     {
-        return $migrationContext->getProfile() instanceof Shopware6ProfileInterface;
+        return $profile instanceof Shopware6ProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array
@@ -83,20 +84,7 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
             );
         }
 
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return new EnvironmentInformation(
-                $profile->getSourceSystemName(),
-                $profile->getVersion(),
-                '',
-                [],
-                [],
-                null
-            );
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
             return new EnvironmentInformation(
@@ -143,7 +131,7 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
         $targetSystemLocale = $targetSystemLanguage->getLocale();
         \assert($targetSystemLocale !== null);
 
-        $totals = $this->readTotals($migrationContext, $context);
+        $totals = $this->readTotals($migrationContext);
 
         return new EnvironmentInformation(
             $profile->getSourceSystemName(),
@@ -157,13 +145,14 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
             $targetSystemCurrency->getIsoCode(),
             $environmentDataArray['defaultCurrency'],
             $environmentDataArray['defaultShopLanguage'],
-            $targetSystemLocale->getCode()
+            $targetSystemLocale->getCode(),
+            $environmentDataArray['shopIdV2'] ?? null,
         );
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function readTotals(MigrationContextInterface $migrationContext): array
     {
-        return $this->totalReader->readTotals($migrationContext, $context);
+        return $this->totalReader->readTotals($migrationContext);
     }
 
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array

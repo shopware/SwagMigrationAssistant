@@ -8,76 +8,96 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class DebugLog implements LogEntryInterface
+readonly class DebugLog implements MigrationLogEntry
 {
     /**
-     * @param array<mixed> $logData
+     * @param array<string, mixed> $logData
      */
     public function __construct(
-        private readonly array $logData,
-        private readonly ?string $runId,
+        private string $runId,
+        private array $logData,
     ) {
     }
 
-    public function getLevel(): string
-    {
-        return self::LOG_LEVEL_DEBUG;
-    }
-
-    public function getCode(): string
-    {
-        return 'SWAG_MIGRATION__DEBUG';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Debug';
-    }
-
     /**
-     * @return array{logData: array<mixed>}
+     * @return array<string, mixed>
      */
-    public function getParameters(): array
+    public function getLogData(): array
     {
-        return [
-            'logData' => $this->logData,
-        ];
+        return $this->logData;
     }
 
-    public function getDescription(): string
-    {
-        return (string) \json_encode($this->logData);
-    }
-
-    public function getSnippetRoot(): string
-    {
-        return 'swag-migration.index.error';
-    }
-
-    public function getTitleSnippet(): string
-    {
-        return \sprintf('%s.%s.title', $this->getSnippetRoot(), $this->getCode());
-    }
-
-    public function getDescriptionSnippet(): string
-    {
-        return \sprintf('%s.%s.description', $this->getSnippetRoot(), $this->getCode());
-    }
-
-    public function getEntity(): ?string
-    {
-        return null;
-    }
-
-    public function getSourceId(): ?string
-    {
-        return null;
-    }
-
-    public function getRunId(): ?string
+    public function getRunId(): string
     {
         return $this->runId;
+    }
+
+    public static function isUserFixable(): bool
+    {
+        return false;
+    }
+
+    public function getProfileName(): string
+    {
+        return 'Debug Profile';
+    }
+
+    public function getGatewayName(): string
+    {
+        return 'Debug Gateway';
+    }
+
+    public static function getLevel(): string
+    {
+        return AbstractMigrationLogEntry::LOG_LEVEL_DEBUG;
+    }
+
+    public static function getCode(): string
+    {
+        return 'SWAG_MIGRATION_DEBUG';
+    }
+
+    public function getEntityName(): ?string
+    {
+        return null;
+    }
+
+    public function getFieldName(): ?string
+    {
+        return null;
+    }
+
+    public function getFieldSourcePath(): ?string
+    {
+        return null;
+    }
+
+    public function getSourceData(): ?array
+    {
+        return null;
+    }
+
+    public function getConvertedData(): ?array
+    {
+        return null;
+    }
+
+    public function getExceptionMessage(): ?string
+    {
+        return null;
+    }
+
+    public function getExceptionTrace(): ?array
+    {
+        return null;
+    }
+
+    public function getEntityId(): ?string
+    {
+        return null;
     }
 }

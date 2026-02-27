@@ -15,11 +15,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertChildEntityFailedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 
 #[Package('fundamentals@after-sales')]
@@ -41,10 +42,10 @@ class LoggingServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
-        $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
+        $this->loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
         $this->loggingService = new LoggingService($this->loggingRepo, new NullLogger());
 
-        $runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $runRepo = static::getContainer()->get('swag_migration_run.repository');
         $this->runUuid = Uuid::randomHex();
         $runRepo->create(
             [
@@ -60,16 +61,34 @@ class LoggingServiceTest extends TestCase
 
     public function testAddLogEntry(): void
     {
-        $log1 = new AssociationRequiredMissingLog($this->runUuid, DefaultEntities::PRODUCT, '2', DefaultEntities::PRODUCT_MANUFACTURER);
-        $log2 = new CannotConvertChildEntity($this->runUuid, DefaultEntities::PRODUCT_MANUFACTURER, DefaultEntities::PRODUCT, '200');
+        $log1 = (new MigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))->build(ConvertAssociationMissingLog::class);
 
-        $this->loggingService->addLogEntry($log1);
-        $this->loggingService->addLogEntry($log2);
+        $log2 = (new MigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))->build(ConvertChildEntityFailedLog::class);
+
+        $this->loggingService->log($log1);
+        $this->loggingService->log($log2);
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(0, $result->getTotal());
 
-        $this->loggingService->saveLogging($this->context);
+        $this->loggingService->flush();
+        $this->clearCacheData();
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(2, $result->getTotal());
+
+        // flush should clear buffer
+        $this->loggingService->flush();
         $this->clearCacheData();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
@@ -82,5 +101,120 @@ class LoggingServiceTest extends TestCase
             }
         }
         static::assertSame(2, $validCount);
+    }
+
+    public function testAddLogEntryWithEntityId(): void
+    {
+        $entityId = Uuid::randomHex();
+        $log = (new MigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))
+            ->withEntityId($entityId)
+            ->build(ConvertAssociationMissingLog::class);
+
+        $this->loggingService->log($log);
+        $this->loggingService->flush();
+        $this->clearCacheData();
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(1, $result->getTotal());
+        $resultLog = $result->getEntities()->first();
+        static::assertInstanceOf(SwagMigrationLoggingEntity::class, $resultLog);
+        static::assertSame($entityId, $resultLog->getEntityId());
+    }
+
+    public function testDeconstructLoggingServiceFlushesBuffer(): void
+    {
+        $log = (new MigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))->build(ConvertAssociationMissingLog::class);
+
+        $loggingService = new LoggingService($this->loggingRepo, new NullLogger());
+        $loggingService->log($log);
+        unset($loggingService);
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(1, $result->getTotal());
+    }
+
+    public function testResetFlushesBuffer(): void
+    {
+        $log = (new MigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))->build(ConvertAssociationMissingLog::class);
+
+        $this->loggingService->log($log);
+        $this->loggingService->reset();
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(1, $result->getTotal());
+    }
+
+    public function testBufferOverflowFlushesBuffer(): void
+    {
+        for ($i = 0; $i < LoggingService::BUFFER_SIZE + 10; ++$i) {
+            $log = (new MigrationLogBuilder(
+                $this->runUuid,
+                'Profile name',
+                'Gateway name',
+                Uuid::randomHex(),
+            ))->build(ConvertAssociationMissingLog::class);
+
+            $this->loggingService->log($log);
+        }
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(LoggingService::BUFFER_SIZE, $result->getTotal());
+
+        $this->loggingService->flush();
+        $this->clearCacheData();
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(LoggingService::BUFFER_SIZE + 10, $result->getTotal());
+    }
+
+    public function testLimitExceptionTrace(): void
+    {
+        $trace = [];
+
+        for ($i = 0; $i < LoggingService::TRACE_ITEM_LIMIT + 5; ++$i) {
+            $trace[] = [
+                'file' => __FILE__,
+                'type' => '->',
+                'args' => [],
+            ];
+        }
+
+        $log = (new MigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))
+            ->withExceptionTrace($trace)
+            ->build(ConvertAssociationMissingLog::class);
+
+        $this->loggingService->log($log);
+        $this->loggingService->flush();
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(1, $result->getTotal());
+
+        $resultLog = $result->getEntities()->first();
+        static::assertInstanceOf(SwagMigrationLoggingEntity::class, $resultLog);
+
+        $resultTrace = $resultLog->getExceptionTrace();
+        static::assertIsArray($resultTrace);
+
+        static::assertCount(LoggingService::TRACE_ITEM_LIMIT, $resultTrace);
     }
 }
