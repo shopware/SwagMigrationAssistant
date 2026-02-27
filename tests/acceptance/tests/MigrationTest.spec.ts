@@ -273,6 +273,12 @@ test.describe('Migration Tests @migration @visual', () => {
             // replace ids
             logString = logString.replaceAll(/[0-9a-f]{32}/g, '[uuid]');
 
+            // remove exception traces
+            logString = logString.replaceAll(
+                /Exception trace \(JSON\):\n\[[\s\S]*?\]\n/g,
+                'Exception trace (JSON):\n[trace]\n',
+            );
+
             expect(logString).toMatchSnapshot('migration-log-sw5.txt');
         });
     });
