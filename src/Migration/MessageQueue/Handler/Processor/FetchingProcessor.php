@@ -61,6 +61,20 @@ class FetchingProcessor extends AbstractProcessor
     ): void {
         $runId = $migrationContext->getRunUuid();
         $totalCountOfCurrentEntity = $progress->getDataSets()->getTotalByEntityName($progress->getCurrentEntity());
+
+        // todo: remove benchmarking code
+        if ($progress->getCurrentEntity() === 'product' && $progress->getCurrentEntityProgress() === 0) {
+            $blackfire = new \Blackfire\Client();
+            $config = new \Blackfire\Profile\Configuration();
+            $config->setTitle('Fetching ' . $progress->getCurrentEntity() . ' ' . $progress->getCurrentEntityProgress() . ' / ' . $totalCountOfCurrentEntity . ' limit ' . $migrationContext->getLimit());
+            $config->setMetadata('entity', $progress->getCurrentEntity());
+            $config->setMetadata('progress', (string) $progress->getCurrentEntityProgress());
+            $config->setMetadata('total', (string) $totalCountOfCurrentEntity);
+            $config->setMetadata('limit', (string) $migrationContext->getLimit());
+            $probe = $blackfire->createProbe($config);
+            // code being profiled...
+        }
+
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
         if ($progress->getCurrentEntityProgress() >= $totalCountOfCurrentEntity) {
@@ -81,6 +95,13 @@ class FetchingProcessor extends AbstractProcessor
         $progress->setProgress($progress->getProgress() + \count($data));
 
         $this->updateProgress($runId, $progress, $context);
+
+        // todo: remove benchmarking code
+        if ($progress->getCurrentEntity() === 'product' && $progress->getCurrentEntityProgress() === 0) {
+            // end profiling
+            $profile = $blackfire->endProbe($probe);
+        }
+
         $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 }

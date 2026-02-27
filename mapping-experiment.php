@@ -18,6 +18,8 @@ class MappingTask
 
 class MappingService
 {
+    public const PLACEHOLDER = 'placeholder-mapping-uuid';
+
     /**
      * @var list<MappingTask>
      */
@@ -43,7 +45,7 @@ class MappingService
 
         // and then use the string reference to update the placeholders
 
-        $pointer = 'placeholder-mapping-uuid';
+        $pointer = self::PLACEHOLDER;
 
         $task = new MappingTask($pointer, $sourceId);
         $this->pendingTasks[] = $task;

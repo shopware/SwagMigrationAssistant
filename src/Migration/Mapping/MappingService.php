@@ -114,6 +114,10 @@ class MappingService implements MappingServiceInterface, ResetInterface
             return $this->mappings[$cacheKey];
         }
 
+        // simulate network latency
+        // todo: remove me
+        // \usleep(1000); // 1ms
+
         $sql = 'SELECT id,
                        connection_id AS connectionId,
                        entity,
