@@ -96,12 +96,7 @@ type MigrationPremapping = {
     mapping: MigrationPremappingEntity[];
 };
 
-type MigrationCredentials = {
-    endpoint: string;
-    apiUser?: string;
-    apiKey?: string;
-    apiPassword?: string;
-};
+type MigrationCredentials = Record<string, string | number | boolean | null>;
 
 type MigrationConnection = {
     id: string;
