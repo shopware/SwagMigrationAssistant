@@ -232,8 +232,7 @@
           "title": "Delete access data",
           "content": "There will be no active connection after this. Enter your access data again to restore the connection.",
           "contentHint": "Would you like to delete the current access data?",
-          "abortButtonText": "Keep",
-          "confirmButtonText": "Delete"
+          "abortButtonText": "Keep"
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset checksums",
@@ -446,8 +445,8 @@
           "SWAG_MIGRATION_CONVERT_MAIN_VARIANT_RELATION_FAILED": "Main variant relation conversion failed",
           "SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED": "Object type unsupported",
           "SWAG_MIGRATION_CONVERT_SOURCE_DATA_INCOMPLETE": "Source data incomplete",
-          "SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID": "Unserialized data invalid",
-          "SWAG_MIGRATION_FETCH_DATASET_MISSING": "DataSet for entity missing",
+          "SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID": "Unserialised data invalid",
+          "SWAG_MIGRATION_FETCH_DATASET_MISSING": "Dataset for entity missing",
           "SWAG_MIGRATION_FETCH_ENTITY_COUNT_FAILED": "Failed to read entity count from source system",
           "SWAG_MIGRATION_FETCH_PROCESSOR_MISSING": "Processor for entity missing",
           "SWAG_MIGRATION_MEDIA_FILE_MISSING": "Media file missing",
@@ -549,9 +548,6 @@
                 "headline": "Nothing found",
                 "description": "No logs matching the selected filters were found."
                }
-            },
-            "action": {
-              "edit": "Edit"
             }
           }
         },

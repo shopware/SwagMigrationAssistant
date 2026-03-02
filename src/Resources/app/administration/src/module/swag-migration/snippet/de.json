@@ -232,8 +232,7 @@
           "title": "Zugangsdaten löschen",
           "content": "Danach besteht keine aktive Verbindung mehr. Gib Deine Zugangsdaten erneut ein, um die Verbindung wiederherzustellen.",
           "contentHint": "Möchtest Du die aktuellen Zugangsdaten löschen?",
-          "abortButtonText": "Behalten",
-          "confirmButtonText": "Löschen"
+          "abortButtonText": "Behalten"
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset der Prüfsummen",
@@ -561,9 +560,6 @@
                 "headline": "Keine Ergebnisse",
                 "description": "Wir konnten keine Logs finden, die deinen aktuellen Filtern entsprechen."
               }
-            },
-            "action": {
-              "edit": "Bearbeiten"
             }
           }
         },
