@@ -9,10 +9,14 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware6\Gateway\Connection;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -32,18 +36,15 @@ class AuthClientTest extends TestCase
         $connection = $this->createConnection('existing-token');
         $migrationContext = new MigrationContext($connection);
         $expectedResponse = new Response(SymfonyResponse::HTTP_OK);
+        $apiClient = $this->createApiClientWithResponses([
+            function (RequestInterface $request) use ($expectedResponse): ResponseInterface {
+                static::assertSame('/api/version', (string) $request->getUri());
+                static::assertSame('GET', $request->getMethod());
+                static::assertSame('Bearer existing-token', $request->getHeaderLine('Authorization'));
 
-        $apiClient = $this->createMock(Client::class);
-        $apiClient
-            ->expects($this->once())
-            ->method('get')
-            ->with('/api/version', [
-                'headers' => [
-                    'Authorization' => 'Bearer existing-token',
-                ],
-            ])
-            ->willReturn($expectedResponse);
-        $apiClient->expects($this->never())->method('post');
+                return $expectedResponse;
+            },
+        ]);
 
         $connectionRepository = $this->createConnectionRepositoryMock(0);
         $client = new AuthClient($apiClient, $connectionRepository, $migrationContext, Context::createDefaultContext());
@@ -64,7 +65,10 @@ class AuthClientTest extends TestCase
         $response = $client->get('/api/version');
 
         static::assertSame($expectedResponse, $response);
-        static::assertSame('renewed-token', $connection->getCredentialFields()['bearer_token']);
+        $credentials = $connection->getCredentialFields();
+        static::assertIsArray($credentials);
+        static::assertArrayHasKey('bearer_token', $credentials);
+        static::assertSame('renewed-token', $credentials['bearer_token']);
     }
 
     public function testGetThrowsExceptionOnMissingCredentials(): void
@@ -72,9 +76,8 @@ class AuthClientTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $migrationContext = new MigrationContext($connection);
 
-        $apiClient = $this->createMock(Client::class);
-        /** @var EntityRepository<SwagMigrationConnectionCollection> $connectionRepository */
-        $connectionRepository = $this->createMock(EntityRepository::class);
+        $apiClient = $this->createApiClientWithResponses([]);
+        $connectionRepository = $this->createConnectionRepositoryMock(0);
 
         $client = new AuthClient($apiClient, $connectionRepository, $migrationContext, Context::createDefaultContext());
 
@@ -101,7 +104,10 @@ class AuthClientTest extends TestCase
         $response = $client->get('/api/version');
 
         static::assertSame($expectedResponse, $response);
-        static::assertSame('renewed-token', $connection->getCredentialFields()['bearer_token']);
+        $credentials = $connection->getCredentialFields();
+        static::assertIsArray($credentials);
+        static::assertArrayHasKey('bearer_token', $credentials);
+        static::assertSame('renewed-token', $credentials['bearer_token']);
     }
 
     private function createConnection(string $bearerToken): SwagMigrationConnectionEntity
@@ -123,7 +129,7 @@ class AuthClientTest extends TestCase
      */
     private function createConnectionRepositoryMock(int $expectedUpdateCalls, ?\Throwable $updateException = null): EntityRepository
     {
-        /** @var EntityRepository<SwagMigrationConnectionCollection> $connectionRepository */
+        /** @var EntityRepository<SwagMigrationConnectionCollection>&MockObject $connectionRepository */
         $connectionRepository = $this->createMock(EntityRepository::class);
 
         $updateExpectation = $connectionRepository
@@ -142,7 +148,7 @@ class AuthClientTest extends TestCase
         string $newBearerToken,
         ResponseInterface $expectedResponse
     ): Client {
-        $unauthorizedException = new ClientException(
+        $firstRequestException = new ClientException(
             'Unauthorized',
             new Request('GET', '/api/version'),
             new Response(SymfonyResponse::HTTP_UNAUTHORIZED)
@@ -153,43 +159,45 @@ class AuthClientTest extends TestCase
             (string) json_encode(['access_token' => $newBearerToken])
         );
 
-        $getCallCount = 0;
-        $apiClient = $this->createMock(Client::class);
-        $apiClient
-            ->expects($this->exactly(2))
-            ->method('get')
-            ->willReturnCallback(function (string $uri, array $options) use (
-                &$getCallCount,
-                $unauthorizedException,
-                $oldBearerToken,
-                $newBearerToken,
-                $expectedResponse
-            ): ResponseInterface {
-                ++$getCallCount;
+        return $this->createApiClientWithResponses(
+            [
+                function (RequestInterface $request) use ($oldBearerToken, $firstRequestException): void {
+                    static::assertSame('/api/version', (string) $request->getUri());
+                    static::assertSame('GET', $request->getMethod());
+                    static::assertSame('Bearer ' . $oldBearerToken, $request->getHeaderLine('Authorization'));
 
-                static::assertSame('/api/version', $uri);
+                    throw $firstRequestException;
+                },
+                function (RequestInterface $request) use ($tokenResponse): ResponseInterface {
+                    static::assertSame('/api/oauth/token', (string) $request->getUri());
+                    static::assertSame('POST', $request->getMethod());
+                    static::assertSame(
+                        '{"grant_type":"client_credentials","client_id":"api-user","client_secret":"api-password"}',
+                        (string) $request->getBody()
+                    );
 
-                if ($getCallCount === 1) {
-                    static::assertSame('Bearer ' . $oldBearerToken, $options['headers']['Authorization']);
-                    throw $unauthorizedException;
-                }
+                    return $tokenResponse;
+                },
+                function (RequestInterface $request) use ($newBearerToken, $expectedResponse): ResponseInterface {
+                    static::assertSame('/api/version', (string) $request->getUri());
+                    static::assertSame('GET', $request->getMethod());
+                    static::assertSame('Bearer ' . $newBearerToken, $request->getHeaderLine('Authorization'));
 
-                static::assertSame('Bearer ' . $newBearerToken, $options['headers']['Authorization']);
+                    return $expectedResponse;
+                },
+            ]
+        );
+    }
 
-                return $expectedResponse;
-            });
-        $apiClient
-            ->expects($this->once())
-            ->method('post')
-            ->with('/api/oauth/token', [
-                'json' => [
-                    'grant_type' => 'client_credentials',
-                    'client_id' => 'api-user',
-                    'client_secret' => 'api-password',
-                ],
-            ])
-            ->willReturn($tokenResponse);
+    /**
+     * @param list<\Closure(RequestInterface): ResponseInterface|void> $responses
+     */
+    private function createApiClientWithResponses(array $responses): Client
+    {
+        $handler = HandlerStack::create(new MockHandler($responses));
 
-        return $apiClient;
+        return new Client([
+            'handler' => $handler,
+        ]);
     }
 }
