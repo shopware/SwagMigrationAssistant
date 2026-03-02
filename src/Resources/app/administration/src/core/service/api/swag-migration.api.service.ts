@@ -56,6 +56,9 @@ export type LogLevelCounts = {
     info: number;
 };
 
+// todo: remove me, this is just to test our typescript linting
+export const aNumber: string = 42;
+
 /**
  * @private
  * @sw-package fundamentals@after-sales
