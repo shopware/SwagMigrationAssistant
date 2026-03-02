@@ -129,15 +129,21 @@ class AuthClient implements HttpClientInterface
 
         $connectionUuid = $connection->getId();
         $credentials['bearer_token'] = $this->bearerToken;
+        $connection->setCredentialFields($credentials);
 
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionUuid, $credentials): void {
-            $this->connectionRepository->update([
-                [
-                    'id' => $connectionUuid,
-                    'credentialFields' => $credentials,
-                ],
-            ], $context);
-        });
+        try {
+            $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionUuid, $credentials): void {
+                $this->connectionRepository->update([
+                    [
+                        'id' => $connectionUuid,
+                        'credentialFields' => $credentials,
+                    ],
+                ], $context);
+            });
+        } catch (\Throwable $e) {
+            // ignore failures here because
+            // the connection might not be persisted to the DB yet
+        }
     }
 
     private function loadBearerToken(): void
