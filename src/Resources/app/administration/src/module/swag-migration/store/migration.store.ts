@@ -338,6 +338,7 @@ const migrationStore = Shopware.Store.register({
                     return false;
                 }
 
+                // @ts-ignore
                 const newConnectionId = settings.first().selectedConnectionId;
 
                 if (newConnectionId === this.connectionId) {

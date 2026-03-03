@@ -63,6 +63,7 @@
         "lint:admin": [
             "@npm:jest run lint",
             "@npm:admin run lint",
+            "@npm:admin run lint:types",
             "@npm:acceptance run lint",
             "@npm:admin run lint:scss"
         ],
