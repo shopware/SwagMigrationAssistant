@@ -1,4 +1,4 @@
-import type { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
+import type { AxiosInstance, AxiosResponse } from 'axios';
 import type { LoginService } from '@administration/src/core/service/login.service';
 import type { ApiResponse } from '@administration/src/core/service/api.service';
 import type {
@@ -61,16 +61,10 @@ export type LogLevelCounts = {
  * @sw-package fundamentals@after-sales
  */
 export default class MigrationApiService extends ApiService {
-    private readonly basicConfig: AxiosRequestConfig & { version: string };
-
     constructor(httpClient: AxiosInstance, loginService: LoginService, apiEndpoint = 'migration') {
         super(httpClient, loginService, apiEndpoint);
         // @ts-ignore
         this.name = MIGRATION_API_SERVICE;
-        this.basicConfig = {
-            timeout: 30000,
-            version: Shopware.Context.api.apiVersion,
-        };
     }
 
     async createNewConnection(
@@ -97,7 +91,6 @@ export default class MigrationApiService extends ApiService {
                     credentialFields,
                 },
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -124,7 +117,6 @@ export default class MigrationApiService extends ApiService {
                     credentialFields,
                 },
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -154,7 +146,6 @@ export default class MigrationApiService extends ApiService {
                 `_action/${this.getApiBasePath()}/check-connection`,
                 payload,
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -175,7 +166,6 @@ export default class MigrationApiService extends ApiService {
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/data-selection`, {
-                    ...this.basicConfig,
                     params: {
                         connectionId,
                     },
@@ -198,7 +188,6 @@ export default class MigrationApiService extends ApiService {
                 `_action/${this.getApiBasePath()}/generate-premapping`,
                 { dataSelectionIds },
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -218,7 +207,6 @@ export default class MigrationApiService extends ApiService {
                 `_action/${this.getApiBasePath()}/write-premapping`,
                 { premapping },
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -240,7 +228,6 @@ export default class MigrationApiService extends ApiService {
                     dataSelectionNames,
                 },
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -258,7 +245,6 @@ export default class MigrationApiService extends ApiService {
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/get-state`, {
-                    ...this.basicConfig,
                     headers,
                 })
                 .then((response: AxiosResponse) => {
@@ -278,7 +264,6 @@ export default class MigrationApiService extends ApiService {
                 `_action/${this.getApiBasePath()}/approve-finished`,
                 {},
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -298,7 +283,6 @@ export default class MigrationApiService extends ApiService {
                 `_action/${this.getApiBasePath()}/abort-migration`,
                 {},
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -318,7 +302,6 @@ export default class MigrationApiService extends ApiService {
                 `_action/${this.getApiBasePath()}/resume-after-fixes`,
                 {},
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -336,7 +319,6 @@ export default class MigrationApiService extends ApiService {
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/get-profiles`, {
-                    ...this.basicConfig,
                     headers,
                 })
                 .then((response: AxiosResponse) => {
@@ -354,7 +336,6 @@ export default class MigrationApiService extends ApiService {
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/get-gateways`, {
-                    ...this.basicConfig,
                     params: {
                         profileName,
                     },
@@ -375,7 +356,6 @@ export default class MigrationApiService extends ApiService {
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/get-profile-information`, {
-                    ...this.basicConfig,
                     params: {
                         profileName,
                         gatewayName,
@@ -401,7 +381,6 @@ export default class MigrationApiService extends ApiService {
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/get-grouped-logs-of-run`, {
-                    ...this.basicConfig,
                     params: {
                         runUuid,
                     },
@@ -426,7 +405,6 @@ export default class MigrationApiService extends ApiService {
                     connectionId,
                 },
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -445,7 +423,6 @@ export default class MigrationApiService extends ApiService {
             `_action/${this.getApiBasePath()}/cleanup-migration-data`,
             {},
             {
-                ...this.basicConfig,
                 headers,
             },
         );
@@ -462,7 +439,6 @@ export default class MigrationApiService extends ApiService {
                 `_action/${this.getApiBasePath()}/download-logs-of-run`,
                 { runUuid },
                 {
-                    ...this.basicConfig,
                     headers,
                     responseType: 'blob',
                 },
@@ -524,7 +500,6 @@ export default class MigrationApiService extends ApiService {
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/get-log-groups`, {
-                    ...this.basicConfig,
                     params,
                     headers,
                 })
@@ -543,7 +518,6 @@ export default class MigrationApiService extends ApiService {
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/is-resetting-checksums`, {
-                    ...this.basicConfig,
                     headers,
                 })
                 .then((response: AxiosResponse) => {
@@ -561,7 +535,6 @@ export default class MigrationApiService extends ApiService {
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/is-truncating-migration-data`, {
-                    ...this.basicConfig,
                     headers,
                 })
                 .then((response: AxiosResponse) => {
@@ -594,7 +567,6 @@ export default class MigrationApiService extends ApiService {
                     connectionId,
                 },
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -629,7 +601,6 @@ export default class MigrationApiService extends ApiService {
                     connectionId,
                 },
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -658,7 +629,6 @@ export default class MigrationApiService extends ApiService {
                     fieldValue,
                 },
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
@@ -685,7 +655,6 @@ export default class MigrationApiService extends ApiService {
                     fieldName,
                 },
                 {
-                    ...this.basicConfig,
                     headers,
                 },
             )
