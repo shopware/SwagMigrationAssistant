@@ -81,15 +81,9 @@ class AuthClientTest extends TestCase
 
         $client = new AuthClient($apiClient, $connectionRepository, $migrationContext, Context::createDefaultContext());
 
-        try {
-            $client->get('/api/version');
-        } catch (MigrationException $e) {
-            static::assertSame(MigrationException::INVALID_CONNECTION_CREDENTIALS, $e->getErrorCode());
+        static::expectExceptionObject(MigrationException::invalidConnectionCredentials());
 
-            return;
-        }
-
-        static::fail('Expected exception not thrown');
+        $client->get('/api/version');
     }
 
     public function testGetIgnoresDalFailureWhenSavingRenewedToken(): void
