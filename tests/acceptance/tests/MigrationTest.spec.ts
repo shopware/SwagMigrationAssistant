@@ -279,6 +279,12 @@ test.describe('Migration Tests @migration @visual', () => {
                 'Exception trace (JSON):\n[trace]\n',
             );
 
+            // remove exception paths
+            logString = logString.replaceAll(
+                /^Exception message:.*? in \/.*?\/src\//gm,
+                (match) => match.replace(/ in \/.*?\/src\//, ' in [path]src/'),
+            );
+
             expect(logString).toMatchSnapshot('migration-log-sw5.txt');
         });
     });
