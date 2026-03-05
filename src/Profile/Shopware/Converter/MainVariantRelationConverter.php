@@ -35,11 +35,12 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         $this->connectionId = $connection->getId();
 
         if (!isset($data['id'], $data['ordernumber'])) {
+            $exception = new \Exception('MainVariantRelation requires ID and order number, to be converted successful');
+
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withSourceData($data)
-                    ->withExceptionMessage('MainVariantRelation requires ID and order number, to be converted successful')
-                    ->withExceptionTrace(\debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 2))
+                    ->withException($exception)
                     ->build(ConvertMainVariantRelationFailedLog::class)
             );
 

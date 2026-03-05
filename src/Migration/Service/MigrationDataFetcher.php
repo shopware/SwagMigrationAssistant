@@ -37,8 +37,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         } catch (\Throwable $exception) {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($exception->getMessage())
-                    ->withExceptionTrace($exception->getTrace())
+                    ->withException($exception)
                     ->withEntityName($dataSet::getEntity())
                     ->build(RunExceptionLog::class)
             );

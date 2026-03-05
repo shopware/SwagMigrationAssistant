@@ -140,8 +140,7 @@ class MediaProcessingProcessor extends AbstractProcessor
             if ($e->getErrorCode() === MigrationException::NO_CONNECTION_FOUND) {
                 $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->withExceptionMessage($e->getMessage())
-                        ->withExceptionTrace($e->getTrace())
+                        ->withException($e)
                         ->withEntityName($currentDataSet::getEntity())
                         ->build(FetchProcessorMissingLog::class)
                 );
@@ -151,8 +150,7 @@ class MediaProcessingProcessor extends AbstractProcessor
         } catch (\Throwable $e) {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($e->getMessage())
-                    ->withExceptionTrace($e->getTrace())
+                    ->withException($e)
                     ->withEntityName($currentDataSet::getEntity())
                     ->build(RunExceptionLog::class)
             );

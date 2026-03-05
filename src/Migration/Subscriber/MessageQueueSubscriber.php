@@ -95,8 +95,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
                 $connection?->getProfileName() ?? 'unknown',
                 $connection?->getGatewayName() ?? 'unknown'
             ))
-                ->withExceptionMessage($event->getThrowable()->getMessage())
-                ->withExceptionTrace($event->getThrowable()->getTrace())
+                ->withException($event->getThrowable())
                 ->build(RunMessageQueueExceptionLog::class)
         );
 
@@ -114,8 +113,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
                     $connection?->getProfileName() ?? 'unknown',
                     $connection?->getGatewayName() ?? 'unknown'
                 ))
-                    ->withExceptionMessage($event->getThrowable()->getMessage())
-                    ->withExceptionTrace($event->getThrowable()->getTrace())
+                    ->withException($event->getThrowable())
                     ->build(RunAbortedLog::class)
             );
 
