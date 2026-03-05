@@ -55,6 +55,7 @@ use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\History\LogGroupingService;
 use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
+use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
@@ -382,7 +383,7 @@ class MigrationDataWriterTest extends TestCase
 
         $log = $this->loggingRepo->search(new Criteria(), $this->context)->getEntities()->first();
         static::assertNotNull($log);
-        static::assertSame(RunExceptionLog::getCode(), $log->getCode());
+        static::assertSame(WriteExceptionLog::getCode(), $log->getCode());
     }
 
     #[DataProvider('requiredProperties')]

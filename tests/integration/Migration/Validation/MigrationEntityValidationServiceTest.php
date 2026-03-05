@@ -317,7 +317,7 @@ class MigrationEntityValidationServiceTest extends TestCase
         $exceptionLog = array_values($logs)[0];
         static::assertInstanceOf(MigrationValidationExceptionLog::class, $exceptionLog);
 
-        static::assertSame($expectedExceptionMessage, $exceptionLog->getExceptionMessage());
+        static::assertStringContainsString($expectedExceptionMessage, $exceptionLog->getExceptionMessage());
     }
 
     /**

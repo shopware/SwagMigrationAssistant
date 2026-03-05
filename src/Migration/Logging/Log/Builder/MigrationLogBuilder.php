@@ -177,6 +177,9 @@ class MigrationLogBuilder
         return null;
     }
 
+    /**
+     * @return array<mixed>|null
+     */
     private function getExceptionTrace(): ?array
     {
         if ($this->exceptionTrace !== null) {
