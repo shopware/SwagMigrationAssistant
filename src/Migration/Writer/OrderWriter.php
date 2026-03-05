@@ -33,6 +33,10 @@ class OrderWriter extends AbstractWriter
     public function writeData(array $data, Context $context): array
     {
         foreach ($data as &$item) {
+            if (!isset($item['transactions']) || !\is_array($item['transactions'])) {
+                continue;
+            }
+
             foreach ($item['transactions'] as &$transaction) {
                 $transaction['amount'] = $this->structNormalizer->denormalize($transaction['amount']);
             }
