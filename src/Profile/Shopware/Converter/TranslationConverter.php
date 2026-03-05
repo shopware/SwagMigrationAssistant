@@ -965,6 +965,10 @@ abstract class TranslationConverter extends ShopwareConverter
         try {
             /** @phpstan-ignore shopware.unserializeUsage */
             $objectData = \unserialize($objectDataSerialized, ['allowed_classes' => false]);
+
+            if (!\is_array($objectData)) {
+                throw new \UnexpectedValueException('Unserialized data is not an array');
+            }
         } catch (\Throwable $e) {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
