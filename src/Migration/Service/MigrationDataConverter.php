@@ -23,6 +23,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingDeltaResult;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceV2;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
@@ -38,6 +39,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
         private readonly EntityDefinition $dataDefinition,
         private readonly MappingServiceInterface $mappingService,
         private readonly MigrationEntityValidationService $validationService,
+        private readonly MappingServiceV2 $mappingServiceV2,
     ) {
     }
 
@@ -108,6 +110,8 @@ class MigrationDataConverter implements MigrationDataConverterInterface
 
                 $convertFailureFlag = empty($convertStruct->getConverted());
 
+                // todo: this needs to be called after the whole batch was converted
+                $this->mappingServiceV2->resolvePromises($migrationContext->getConnection()->getId());
                 $this->validationService->validate(
                     $migrationContext,
                     $context,

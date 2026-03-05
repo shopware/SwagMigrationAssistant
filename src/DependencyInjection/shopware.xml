@@ -115,6 +115,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingServiceV2"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ProductOptionRelationConverter"

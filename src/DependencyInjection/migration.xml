@@ -48,6 +48,13 @@
             <tag name="kernel.reset" method="reset"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\Mapping\MappingServiceV2">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="logger"/>
+
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
         <!-- Shopware Lookup services -->
         <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup">
             <argument type="service" id="country.repository"/>
@@ -226,6 +233,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingServiceV2"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" public="true">

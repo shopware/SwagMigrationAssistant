@@ -3,11 +3,11 @@
 namespace SwagMigrationAssistant\Migration\Mapping;
 
 /**
- * A promise that holds a reference to a string and the source id of the mapping.
+ * A promise that holds a reference to a string and the data for looking up a mapping.
  * It makes it possible to update the referenced string at a later point and fulfill the promise to
  * replace it with an actual UUID.
  *
- * If you are familiar with the JS world, this is similar to a JS Promise, but
+ * If you are familiar with the JS world, this is a bit similar to a JS Promise, but
  * there is no automatic executor in the background and these need to be manually fulfilled.
  *
  * @see MappingServiceV2
@@ -35,5 +35,11 @@ class MappingPromise
          */
         public bool $shouldCreate = false,
     ) {
+    }
+
+    public function resolve(string $uuid): void
+    {
+        $this->reference = $uuid;
+        unset($this->reference);
     }
 }

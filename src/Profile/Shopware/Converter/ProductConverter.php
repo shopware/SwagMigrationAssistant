@@ -32,6 +32,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceV2;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredFieldMissingLog;
@@ -80,6 +81,7 @@ abstract class ProductConverter extends ShopwareConverter
         protected readonly MediaDefaultFolderLookup $mediaFolderLookup,
         protected readonly LanguageLookup $languageLookup,
         protected readonly DeliveryTimeLookup $deliveryTimeLookup,
+        protected readonly MappingServiceV2 $mappingServiceV2,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -187,11 +189,8 @@ abstract class ProductConverter extends ShopwareConverter
         if (empty($returnData)) {
             $returnData = null;
         }
-        $this->updateMainMapping($migrationContext, $context);
 
-        $mainMapping = $this->mainMapping['id'] ?? null;
-
-        return new ConvertStruct($converted, $returnData, $mainMapping);
+        return new ConvertStruct($converted, $returnData, null);
     }
 
     /**
@@ -199,17 +198,14 @@ abstract class ProductConverter extends ShopwareConverter
      */
     protected function convertMainProduct(array $data): ConvertStruct
     {
-        $containerMapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $containerUuid = &$this->mappingServiceV2->getMapping(
             DefaultEntities::PRODUCT_CONTAINER,
             $data['id'],
-            $this->context
+            true,
         );
-        $containerUuid = $containerMapping['entityId'];
 
         $converted = [];
         $converted['id'] = $containerUuid;
-        $this->mappingIds[] = $containerMapping['id'];
         unset($data['detail']['articleID']);
 
         $converted = $this->getProductData($data, $converted);
@@ -218,14 +214,8 @@ abstract class ProductConverter extends ShopwareConverter
         $converted['productNumber'] .= 'M';
         // Remove options from product container as in core
         unset($converted['options']);
-        $this->mainMapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
-            DefaultEntities::PRODUCT,
-            $this->oldProductId,
-            $this->context,
-            $this->checksum
-        );
-        $converted['children'][0]['id'] = $this->mainMapping['entityId'];
+        $productUuid = &$this->mappingServiceV2->getMapping(DefaultEntities::PRODUCT, $this->oldProductId, true);
+        $converted['children'][0]['id'] = $productUuid;
 
         if (isset($converted['children'][0]['media'])) {
             if (isset($converted['children'][0]['cover'])) {
@@ -240,7 +230,7 @@ abstract class ProductConverter extends ShopwareConverter
                 );
                 $productMediaRelationUuid = $productMediaRelationMapping['entityId'];
                 $this->mappingIds[] = $productMediaRelationMapping['id'];
-                $media['productId'] = $this->mainMapping['entityId'];
+                $media['productId'] = $productUuid;
                 $media['id'] = $productMediaRelationUuid;
 
                 if (isset($coverMediaUuid) && $media['media']['id'] === $coverMediaUuid) {
@@ -271,7 +261,7 @@ abstract class ProductConverter extends ShopwareConverter
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
+        return new ConvertStruct($converted, $returnData, null);
     }
 
     /**
@@ -281,29 +271,16 @@ abstract class ProductConverter extends ShopwareConverter
      */
     protected function convertVariantProduct(array $data): ConvertStruct
     {
-        $parentMapping = $this->mappingService->getMapping(
-            $this->connectionId,
-            DefaultEntities::PRODUCT_CONTAINER,
-            $data['detail']['articleID'],
-            $this->context
-        );
-
-        if ($parentMapping === null) {
-            throw MigrationException::parentEntityForChildNotFound(DefaultEntities::PRODUCT, $this->oldProductId);
-        }
-
-        $this->mainMapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $converted = [];
+        $converted['id'] = &$this->mappingServiceV2->getMapping(
             DefaultEntities::PRODUCT,
             $this->oldProductId,
-            $this->context,
-            $this->checksum
+            true
         );
-
-        $converted = [];
-        $converted['id'] = $this->mainMapping['entityId'];
-        $converted['parentId'] = $parentMapping['entityId'];
-        $this->mappingIds[] = $parentMapping['id'];
+        $converted['parentId'] = &$this->mappingServiceV2->getMapping(
+            DefaultEntities::PRODUCT_CONTAINER,
+            $data['detail']['articleID']
+        );
         $converted = $this->getProductData($data, $converted);
         unset($data['detail']['id'], $data['detail']['articleID'], $data['categories']);
 
@@ -315,11 +292,8 @@ abstract class ProductConverter extends ShopwareConverter
         if (empty($returnData)) {
             $returnData = null;
         }
-        $this->updateMainMapping($this->migrationContext, $this->context);
 
-        $mainMapping = $this->mainMapping['id'] ?? null;
-
-        return new ConvertStruct($converted, $returnData, $mainMapping);
+        return new ConvertStruct($converted, $returnData, null);
     }
 
     /**
@@ -329,17 +303,15 @@ abstract class ProductConverter extends ShopwareConverter
      */
     private function getUuidForProduct(array &$data): array
     {
-        $this->mainMapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $converted = [];
+        $converted['id'] = &$this->mappingServiceV2->getMapping(
             DefaultEntities::PRODUCT,
             $this->oldProductId,
-            $this->context,
-            $this->checksum
+            true,
         );
 
-        $converted = [];
-        $converted['id'] = $this->mainMapping['entityId'];
-
+        // todo: what was the purpose of this?
+        // todo: looks like it writes back a created mapping to a different entity + source id combination
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT_MAIN,
@@ -349,7 +321,6 @@ abstract class ProductConverter extends ShopwareConverter
             null,
             $converted['id']
         );
-        $this->mappingIds[] = $mapping['id'];
 
         return $converted;
     }
@@ -707,15 +678,12 @@ abstract class ProductConverter extends ShopwareConverter
      */
     private function getManufacturer(array $data): array
     {
-        $mapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $manufacturer = [];
+        $manufacturer['id'] = &$this->mappingServiceV2->getMapping(
             DefaultEntities::PRODUCT_MANUFACTURER,
             $data['id'],
-            $this->context
+            true,
         );
-        $manufacturer = [];
-        $manufacturer['id'] = $mapping['entityId'];
-        $this->mappingIds[] = $mapping['id'];
 
         $this->applyManufacturerTranslation($manufacturer, $data);
         $this->convertValue($manufacturer, 'link', $data, 'link');
