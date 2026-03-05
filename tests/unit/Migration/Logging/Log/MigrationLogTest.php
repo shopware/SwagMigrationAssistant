@@ -387,7 +387,7 @@ class MigrationLogTest extends TestCase
             'exception' => $exception,
             'exceptionMessage' => null,
             'exceptionTrace' => null,
-            'expectedExceptionMessage' => 'Runtime exception occurred' . ' in ' . $file . ':' . $line,
+            'expectedExceptionMessage' => 'Runtime exception occurred in ' . $file . ':' . $line,
             'expectedExceptionTrace' => $trace,
         ];
 
@@ -411,7 +411,7 @@ class MigrationLogTest extends TestCase
             'exception' => $exception,
             'exceptionMessage' => null,
             'exceptionTrace' => ['test' => 'trace2'],
-            'expectedExceptionMessage' => 'Runtime exception occurred' . ' in ' . $file . ':' . $line,
+            'expectedExceptionMessage' => 'Runtime exception occurred in ' . $file . ':' . $line,
             'expectedExceptionTrace' => ['test' => 'trace2'],
         ];
 
