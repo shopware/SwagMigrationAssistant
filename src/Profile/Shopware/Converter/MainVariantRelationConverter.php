@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
@@ -35,7 +36,7 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         $this->connectionId = $connection->getId();
 
         if (!isset($data['id'], $data['ordernumber'])) {
-            $exception = new \Exception('MainVariantRelation requires ID and order number, to be converted successful');
+            $exception = MigrationException::mainVariantRelationMissingIdAndOrderNumber();
 
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)

@@ -105,6 +105,8 @@ class MigrationException extends HttpException
 
     public const LOCAL_DATABASE_CONNECTION_ERROR = 'SWAG_MIGRATION__LOCAL_DATABASE_CONNECTION_ERROR';
 
+    final public const MAIN_VARIANT_RELATION_MISSING_ID_AND_ORDER_NUMBER = 'SWAG_MIGRATION__MAIN_VARIANT_RELATION_MISSING_ID_AND_ORDER_NUMBER';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new self(
@@ -554,6 +556,15 @@ class MigrationException extends HttpException
             Response::HTTP_BAD_REQUEST,
             $code,
             $message,
+        );
+    }
+
+    public static function mainVariantRelationMissingIdAndOrderNumber(): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::MAIN_VARIANT_RELATION_MISSING_ID_AND_ORDER_NUMBER,
+            'MainVariantRelation requires ID and order number.',
         );
     }
 }

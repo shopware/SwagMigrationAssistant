@@ -280,7 +280,7 @@ test.describe('Migration Tests @migration @visual', () => {
             );
 
             // remove exception paths
-            logString = logString.replaceAll(/(^Exception message:.*? in )\/[^ ]*?\/src\//gm, '$1[path]src/');
+            logString = logString.replaceAll(/(^Exception message:.* in ).*/gm, '$1[path]');
 
             expect(logString).toMatchSnapshot('migration-log-sw5.txt');
         });
