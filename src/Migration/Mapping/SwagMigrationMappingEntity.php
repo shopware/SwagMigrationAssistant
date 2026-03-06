@@ -21,20 +21,20 @@ class SwagMigrationMappingEntity extends Entity
 
     protected ?SwagMigrationConnectionEntity $connection = null;
 
-    protected ?string $entity;
+    protected ?string $entity = null;
 
-    protected ?string $oldIdentifier;
+    protected ?string $oldIdentifier = null;
 
-    protected ?string $entityId;
+    protected ?string $entityId = null;
 
-    protected ?string $entityValue;
+    protected ?string $entityValue = null;
 
-    protected ?string $checksum;
+    protected ?string $checksum = null;
 
     /**
      * @var array<string, mixed>|null
      */
-    protected ?array $additionalData;
+    protected ?array $additionalData = null;
 
     public function getConnectionId(): string
     {

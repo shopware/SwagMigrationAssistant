@@ -7,9 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Migration\Mapping;
 
-use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 

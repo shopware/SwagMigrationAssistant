@@ -304,22 +304,21 @@ abstract class ProductConverter extends ShopwareConverter
     private function getUuidForProduct(array &$data): array
     {
         $converted = [];
+        $newUuid = Uuid::randomHex();
         $converted['id'] = &$this->mappingServiceV2->getMapping(
             DefaultEntities::PRODUCT,
             $this->oldProductId,
             true,
+            $newUuid,
         );
 
-        // todo: what was the purpose of this?
-        // todo: looks like it writes back a created mapping to a different entity + source id combination
-        $mapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        // create another mapping that resolves to the same UUID as the mapping above
+        // but uses a different lookup pair
+        $this->mappingServiceV2->getMapping(
             DefaultEntities::PRODUCT_MAIN,
             $data['detail']['articleID'],
-            $this->context,
-            null,
-            null,
-            $converted['id']
+            true,
+            $newUuid
         );
 
         return $converted;

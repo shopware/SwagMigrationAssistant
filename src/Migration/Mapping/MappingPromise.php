@@ -1,4 +1,9 @@
 <?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace SwagMigrationAssistant\Migration\Mapping;
 
@@ -34,6 +39,10 @@ class MappingPromise
          * if true, the mapping will be created in DB if it does not exist
          */
         public bool $shouldCreate = false,
+        /**
+         * if creating, use this Uuid to map to
+         */
+        public ?string $createWith = null,
     ) {
     }
 
