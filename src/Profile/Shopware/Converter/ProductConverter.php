@@ -205,7 +205,7 @@ abstract class ProductConverter extends ShopwareConverter
         );
 
         $converted = [];
-        $converted['id'] = $containerUuid;
+        $converted['id'] = &$containerUuid;
         unset($data['detail']['articleID']);
 
         $converted = $this->getProductData($data, $converted);
@@ -215,7 +215,7 @@ abstract class ProductConverter extends ShopwareConverter
         // Remove options from product container as in core
         unset($converted['options']);
         $productUuid = &$this->mappingServiceV2->getMapping(DefaultEntities::PRODUCT, $this->oldProductId, true);
-        $converted['children'][0]['id'] = $productUuid;
+        $converted['children'][0]['id'] = &$productUuid;
 
         if (isset($converted['children'][0]['media'])) {
             if (isset($converted['children'][0]['cover'])) {
@@ -230,7 +230,7 @@ abstract class ProductConverter extends ShopwareConverter
                 );
                 $productMediaRelationUuid = $productMediaRelationMapping['entityId'];
                 $this->mappingIds[] = $productMediaRelationMapping['id'];
-                $media['productId'] = $productUuid;
+                $media['productId'] = &$productUuid;
                 $media['id'] = $productMediaRelationUuid;
 
                 if (isset($coverMediaUuid) && $media['media']['id'] === $coverMediaUuid) {
@@ -238,7 +238,7 @@ abstract class ProductConverter extends ShopwareConverter
                 }
             }
         }
-        $converted['children'][0]['parentId'] = $containerUuid;
+        $converted['children'][0]['parentId'] = &$containerUuid;
         unset($data['detail']['id'], $converted['children'][0]['translations'], $converted['children'][0]['customFields']);
 
         if (isset($data['categories'])) {
@@ -845,7 +845,7 @@ abstract class ProductConverter extends ShopwareConverter
             );
             $newProductMedia['id'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
-            $newProductMedia['productId'] = $converted['id'];
+            $newProductMedia['productId'] = &$converted['id'];
 
             /** @var array<string, mixed> $newMedia */
             $newMedia = [];
@@ -974,7 +974,7 @@ abstract class ProductConverter extends ShopwareConverter
             );
             $newProductMedia['id'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
-            $newProductMedia['productId'] = $converted['id'];
+            $newProductMedia['productId'] = &$converted['id'];
             $this->convertValue($newProductMedia, 'position', $mediaData, 'position', self::TYPE_INTEGER);
 
             $newMedia = [];
@@ -1360,7 +1360,7 @@ abstract class ProductConverter extends ShopwareConverter
 
             $data = [
                 'id' => $productPriceRuleUuid,
-                'productId' => $converted['id'],
+                'productId' => &$converted['id'],
                 'rule' => [
                     'id' => $priceRuleUuid,
                     'name' => $price['customergroup']['description'],
@@ -1443,7 +1443,7 @@ abstract class ProductConverter extends ShopwareConverter
 
         $localeTranslation = [];
 
-        $localeTranslation['productId'] = $converted['id'];
+        $localeTranslation['productId'] = &$converted['id'];
         $this->convertValue($localeTranslation, 'name', $originalData, 'name');
         $this->convertValue($localeTranslation, 'keywords', $originalData, 'keywords');
         $this->convertValue($localeTranslation, 'description', $originalData, 'description_long');
@@ -1571,7 +1571,7 @@ abstract class ProductConverter extends ShopwareConverter
                 $this->mappingIds[] = $mapping['id'];
                 $visibilities[] = [
                     'id' => (string) $mapping['entityId'],
-                    'productId' => $converted['id'],
+                    'productId' => &$converted['id'],
                     'salesChannelId' => $salesChannelUuid,
                     'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL,
                 ];

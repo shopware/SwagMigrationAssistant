@@ -88,10 +88,10 @@ class MappingServiceV2 implements ResetInterface
         $dbMappings = $this->fetchDbMappings($connectionId, $mappingLookups);
 
         foreach ($dbMappings as $dbMapping) {
-            $key = $dbMapping['entity'] . $dbMapping['oldIdentifier'];
+            $key = $dbMapping->getEntity() . $dbMapping->getOldIdentifier();
             $promises = $this->unfulfilledPromises[$key];
             foreach ($promises as $promise) {
-                $promise->resolve($dbMapping['entityId']);
+                $promise->resolve($dbMapping->getEntityId());
             }
             unset($this->unfulfilledPromises[$key]);
         }
