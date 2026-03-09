@@ -424,7 +424,7 @@ class MigrationLogTest extends TestCase
             'exceptionMessage' => null,
             'exceptionTrace' => [['test' => 'trace2']],
             'expectedExceptionMessage' => 'Runtime exception occurred in ' . $file . ':' . $line,
-            'expectedExceptionTrace' => ['test' => 'trace2'],
+            'expectedExceptionTrace' => [['test' => 'trace2']],
         ];
 
         yield 'with exception, message and trace' => [
@@ -432,7 +432,7 @@ class MigrationLogTest extends TestCase
             'exceptionMessage' => 'Test5',
             'exceptionTrace' => [['test' => 'trace3']],
             'expectedExceptionMessage' => 'Test5',
-            'expectedExceptionTrace' => ['test' => 'trace3'],
+            'expectedExceptionTrace' => [['test' => 'trace3']],
         ];
     }
 }
