@@ -1,3 +1,8 @@
+# 16.1.0
+
+- Fixed log entries to have the file path and line number in the exception message
+- Remove support for Magento 1.9
+
 # 16.0.0
 
 - #14517 - Fixed duplicate key error when re-migrating products with SEO main categories after checksum reset

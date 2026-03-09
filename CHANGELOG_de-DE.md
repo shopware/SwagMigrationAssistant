@@ -1,3 +1,8 @@
+# 16.1.0
+
+- Log-Einträge wurden korrigiert, sodass der Dateipfad und die Zeilennummer nun in der Ausnahmemeldung enthalten sind.
+- Die Unterstützung für Magento 1.9 wurde entfernt.
+
 # 16.0.0
 
 - #14517 - Fehler bei doppeltem Schlüssel beim erneuten Migrieren von Produkten mit SEO-Hauptkategorien nach dem Zurücksetzen der Prüfsummen behoben
