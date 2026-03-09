@@ -280,9 +280,12 @@ test.describe('Migration Tests @migration @visual', () => {
             );
 
             // remove exception paths
+            // (the regex replaces everything after the last occurrence of "in" in the exception message)
             logString = logString.replaceAll(/(^Exception message:.*\bin\b )(?!.*\bin\b ).*/gm, '$1[path]');
-            // some exceptions can also contain paths in the message itself (with the pattern "called in ..."), so we need to replace them as well
-            logString = logString.replaceAll(/^.*(?= called in [^]* called in )/, '[path]');
+            // some exceptions can also contain paths in the message itself (with the pattern "called in ...")
+            // so we need to replace them as well
+            // (the regex replaces everything after the last occurrence of "called in" in the message)
+            logString = logString.replaceAll(/^(Exception message:.*called in ).*$/gm, '$1[path]');
 
             expect(logString).toMatchSnapshot('migration-log-sw5.txt');
         });
