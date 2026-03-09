@@ -280,7 +280,9 @@ test.describe('Migration Tests @migration @visual', () => {
             );
 
             // remove exception paths
-            // logString = logString.replaceAll(/^(Exception message:.*) in .*$/gm, '$1 in [path]');
+            logString = logString.replaceAll(/(^Exception message:.*\bin\b )(?!.*\bin\b ).*/gm, '$1[path]');
+            // some exceptions can also contain paths in the message itself (with the pattern "called in ..."), so we need to replace them as well
+            logString = logString.replaceAll(/^.*(?= called in [^]* called in )/, '[path]');
 
             expect(logString).toMatchSnapshot('migration-log-sw5.txt');
         });
