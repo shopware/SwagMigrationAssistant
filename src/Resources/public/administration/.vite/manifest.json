@@ -1,0 +1,455 @@
+{
+  "main.ts": {
+    "file": "assets/swag-migration-assistant-DH6X1j3d.js",
+    "name": "swag-migration-assistant",
+    "src": "main.ts",
+    "isEntry": true,
+    "dynamicImports": [
+      "module/swag-migration/component/card/swag-migration-shop-information/index.ts",
+      "module/swag-migration/component/card/swag-migration-premapping/index.ts",
+      "module/swag-migration/component/card/swag-migration-progress-bar/index.ts",
+      "module/swag-migration/component/card/swag-migration-confirm-warning/index.ts",
+      "module/swag-migration/component/loading-screen/swag-migration-loading-screen/index.ts",
+      "module/swag-migration/component/loading-screen/swag-migration-result-screen/index.ts",
+      "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field/index.ts",
+      "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-scalar/index.ts",
+      "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-relation/index.ts",
+      "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-unhandled/index.ts",
+      "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-details-modal/index.ts",
+      "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-modal/index.ts",
+      "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-log-filter/index.ts",
+      "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-step/index.ts",
+      "module/swag-migration/component/swag-migration-dashboard-card/index.ts",
+      "module/swag-migration/component/swag-migration-grid-extended/index.ts",
+      "module/swag-migration/component/swag-migration-data-grid-extended/index.ts",
+      "module/swag-migration/component/swag-migration-grid-selection/index.ts",
+      "module/swag-migration/component/swag-migration-settings-icon/index.ts",
+      "module/swag-migration/component/swag-migration-tab-card/index.ts",
+      "module/swag-migration/component/swag-migration-tab-card-item/index.ts",
+      "module/swag-migration/extension/sw-dashboard-index/index.ts",
+      "module/swag-migration/page/wizard/swag-migration-wizard/index.ts",
+      "module/swag-migration/page/wizard/swag-migration-wizard-page-connection-create/index.ts",
+      "module/swag-migration/page/wizard/swag-migration-wizard-page-connection-select/index.ts",
+      "module/swag-migration/page/wizard/swag-migration-wizard-page-credentials/index.ts",
+      "module/swag-migration/page/wizard/swag-migration-wizard-page-credentials-error/index.ts",
+      "module/swag-migration/page/wizard/swag-migration-wizard-page-credentials-success/index.ts",
+      "module/swag-migration/page/wizard/swag-migration-wizard-page-introduction/index.ts",
+      "module/swag-migration/page/wizard/swag-migration-wizard-page-profile-installation/index.ts",
+      "module/swag-migration/page/swag-migration-base/index.ts",
+      "module/swag-migration/page/swag-migration-data-selector/index.ts",
+      "module/swag-migration/page/swag-migration-history/index.ts",
+      "module/swag-migration/page/swag-migration-history-detail/index.ts",
+      "module/swag-migration/page/swag-migration-history-detail-data/index.ts",
+      "module/swag-migration/page/swag-migration-history-detail-errors/index.ts",
+      "module/swag-migration/page/swag-migration-index/index.ts",
+      "module/swag-migration/page/swag-migration-main-page/index.ts",
+      "module/swag-migration/page/swag-migration-process-screen/index.ts",
+      "module/swag-migration/profile/shopware/api/swag-migration-profile-shopware-api-credential-form/index.ts",
+      "module/swag-migration/profile/shopware/local/swag-migration-profile-shopware-local-credential-form/index.ts",
+      "module/swag-migration/profile/shopware6/api/swag-migration-profile-shopware6-api-credential-form/index.ts"
+    ]
+  },
+  "module/swag-migration/component/card/swag-migration-confirm-warning/index.ts": {
+    "file": "assets/index-CkmKVrZ7.js",
+    "name": "index",
+    "src": "module/swag-migration/component/card/swag-migration-confirm-warning/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-Ce6Q44Ax.css"
+    ]
+  },
+  "module/swag-migration/component/card/swag-migration-premapping/index.ts": {
+    "file": "assets/index-D_jB5xwM.js",
+    "name": "index",
+    "src": "module/swag-migration/component/card/swag-migration-premapping/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-CVcQYMhw.css"
+    ]
+  },
+  "module/swag-migration/component/card/swag-migration-progress-bar/index.ts": {
+    "file": "assets/index-pD82aeHI.js",
+    "name": "index",
+    "src": "module/swag-migration/component/card/swag-migration-progress-bar/index.ts",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-D7I4mAIu.css"
+    ]
+  },
+  "module/swag-migration/component/card/swag-migration-shop-information/index.ts": {
+    "file": "assets/index-CdkrVS6-.js",
+    "name": "index",
+    "src": "module/swag-migration/component/card/swag-migration-shop-information/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-B5ZJ_ahO.css"
+    ]
+  },
+  "module/swag-migration/component/loading-screen/swag-migration-loading-screen/index.ts": {
+    "file": "assets/index-FksfSad2.js",
+    "name": "index",
+    "src": "module/swag-migration/component/loading-screen/swag-migration-loading-screen/index.ts",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-CFAA43Xq.css"
+    ]
+  },
+  "module/swag-migration/component/loading-screen/swag-migration-result-screen/index.ts": {
+    "file": "assets/index-MjkWAiqj.js",
+    "name": "index",
+    "src": "module/swag-migration/component/loading-screen/swag-migration-result-screen/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-CMndGuTk.css"
+    ]
+  },
+  "module/swag-migration/component/swag-migration-dashboard-card/index.ts": {
+    "file": "assets/index-DCo7l9IG.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-dashboard-card/index.ts",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-BtSgsUwz.css"
+    ]
+  },
+  "module/swag-migration/component/swag-migration-data-grid-extended/index.ts": {
+    "file": "assets/index-D2GIB4YS.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-data-grid-extended/index.ts",
+    "isDynamicEntry": true
+  },
+  "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-details-modal/index.ts": {
+    "file": "assets/index-JhSVvHdo.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-details-modal/index.ts",
+    "isDynamicEntry": true
+  },
+  "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-relation/index.ts": {
+    "file": "assets/index-Bd7IO38m.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-relation/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-DGe37BiI.css"
+    ]
+  },
+  "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-scalar/index.ts": {
+    "file": "assets/index-D0pGH_GU.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-scalar/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ]
+  },
+  "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-unhandled/index.ts": {
+    "file": "assets/index-DRusSH_l.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-unhandled/index.ts",
+    "isDynamicEntry": true
+  },
+  "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field/index.ts": {
+    "file": "assets/index-DsEFWWhn.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-_Ah02Q8I.css"
+    ]
+  },
+  "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-log-filter/index.ts": {
+    "file": "assets/index-KA-jIKGD.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-log-filter/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-BK9Rig7i.css"
+    ]
+  },
+  "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-modal/index.ts": {
+    "file": "assets/index-Bx-LIJcp.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-modal/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-2w-x0vdv.css"
+    ]
+  },
+  "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-step/index.ts": {
+    "file": "assets/index-BHSoIFMe.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-step/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-BjcNg2p-.css"
+    ]
+  },
+  "module/swag-migration/component/swag-migration-grid-extended/index.ts": {
+    "file": "assets/index-DNZVnlin.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-grid-extended/index.ts",
+    "isDynamicEntry": true
+  },
+  "module/swag-migration/component/swag-migration-grid-selection/index.ts": {
+    "file": "assets/index-FRzPQX54.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-grid-selection/index.ts",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-e4XCjdVK.css"
+    ]
+  },
+  "module/swag-migration/component/swag-migration-settings-icon/index.ts": {
+    "file": "assets/index-qaXF09jY.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-settings-icon/index.ts",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-BZ4YuGRA.css"
+    ]
+  },
+  "module/swag-migration/component/swag-migration-tab-card-item/index.ts": {
+    "file": "assets/index-Cp7hG_bx.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-tab-card-item/index.ts",
+    "isDynamicEntry": true
+  },
+  "module/swag-migration/component/swag-migration-tab-card/index.ts": {
+    "file": "assets/index-DQDas16W.js",
+    "name": "index",
+    "src": "module/swag-migration/component/swag-migration-tab-card/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-DkIVy21h.css"
+    ]
+  },
+  "module/swag-migration/extension/sw-dashboard-index/index.ts": {
+    "file": "assets/index-tXds0Jyl.js",
+    "name": "index",
+    "src": "module/swag-migration/extension/sw-dashboard-index/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ]
+  },
+  "module/swag-migration/page/swag-migration-base/index.ts": {
+    "file": "assets/index-Dl-3Nkn_.js",
+    "name": "index",
+    "src": "module/swag-migration/page/swag-migration-base/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-CahlfvWh.css"
+    ]
+  },
+  "module/swag-migration/page/swag-migration-data-selector/index.ts": {
+    "file": "assets/index-DVzqOhVE.js",
+    "name": "index",
+    "src": "module/swag-migration/page/swag-migration-data-selector/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-T9ZNlsrq.css"
+    ]
+  },
+  "module/swag-migration/page/swag-migration-history-detail-data/index.ts": {
+    "file": "assets/index-QXgdrhF7.js",
+    "name": "index",
+    "src": "module/swag-migration/page/swag-migration-history-detail-data/index.ts",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-DQBmkxLH.css"
+    ]
+  },
+  "module/swag-migration/page/swag-migration-history-detail-errors/index.ts": {
+    "file": "assets/index-JqwP_2JH.js",
+    "name": "index",
+    "src": "module/swag-migration/page/swag-migration-history-detail-errors/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-CbDsE8Au.css"
+    ]
+  },
+  "module/swag-migration/page/swag-migration-history-detail/index.ts": {
+    "file": "assets/index-DM4Fju80.js",
+    "name": "index",
+    "src": "module/swag-migration/page/swag-migration-history-detail/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts",
+      "module/swag-migration/component/card/swag-migration-shop-information/index.ts"
+    ],
+    "css": [
+      "assets/index-DWGV3E5f.css"
+    ]
+  },
+  "module/swag-migration/page/swag-migration-history/index.ts": {
+    "file": "assets/index-DEdtU4Eb.js",
+    "name": "index",
+    "src": "module/swag-migration/page/swag-migration-history/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-CD1HyXNh.css"
+    ]
+  },
+  "module/swag-migration/page/swag-migration-index/index.ts": {
+    "file": "assets/index-HSopPnHN.js",
+    "name": "index",
+    "src": "module/swag-migration/page/swag-migration-index/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ]
+  },
+  "module/swag-migration/page/swag-migration-main-page/index.ts": {
+    "file": "assets/index-Bg1imw7N.js",
+    "name": "index",
+    "src": "module/swag-migration/page/swag-migration-main-page/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-D9jh4-B_.css"
+    ]
+  },
+  "module/swag-migration/page/swag-migration-process-screen/index.ts": {
+    "file": "assets/index-BFR0IAVh.js",
+    "name": "index",
+    "src": "module/swag-migration/page/swag-migration-process-screen/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-DsYdYxYw.css"
+    ]
+  },
+  "module/swag-migration/page/wizard/swag-migration-wizard-page-connection-create/index.ts": {
+    "file": "assets/index-B5jiu8-N.js",
+    "name": "index",
+    "src": "module/swag-migration/page/wizard/swag-migration-wizard-page-connection-create/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-BdGHCUqK.css"
+    ]
+  },
+  "module/swag-migration/page/wizard/swag-migration-wizard-page-connection-select/index.ts": {
+    "file": "assets/index-CqOYv4HO.js",
+    "name": "index",
+    "src": "module/swag-migration/page/wizard/swag-migration-wizard-page-connection-select/index.ts",
+    "isDynamicEntry": true
+  },
+  "module/swag-migration/page/wizard/swag-migration-wizard-page-credentials-error/index.ts": {
+    "file": "assets/index-DRIt38S1.js",
+    "name": "index",
+    "src": "module/swag-migration/page/wizard/swag-migration-wizard-page-credentials-error/index.ts",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-CQ3QH1B6.css"
+    ]
+  },
+  "module/swag-migration/page/wizard/swag-migration-wizard-page-credentials-success/index.ts": {
+    "file": "assets/index-Bnx1_Jjd.js",
+    "name": "index",
+    "src": "module/swag-migration/page/wizard/swag-migration-wizard-page-credentials-success/index.ts",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-CxrmbS4X.css"
+    ]
+  },
+  "module/swag-migration/page/wizard/swag-migration-wizard-page-credentials/index.ts": {
+    "file": "assets/index-JSWmhmP2.js",
+    "name": "index",
+    "src": "module/swag-migration/page/wizard/swag-migration-wizard-page-credentials/index.ts",
+    "isDynamicEntry": true
+  },
+  "module/swag-migration/page/wizard/swag-migration-wizard-page-introduction/index.ts": {
+    "file": "assets/index-De4WQEjf.js",
+    "name": "index",
+    "src": "module/swag-migration/page/wizard/swag-migration-wizard-page-introduction/index.ts",
+    "isDynamicEntry": true
+  },
+  "module/swag-migration/page/wizard/swag-migration-wizard-page-profile-installation/index.ts": {
+    "file": "assets/index-DAThSPjg.js",
+    "name": "index",
+    "src": "module/swag-migration/page/wizard/swag-migration-wizard-page-profile-installation/index.ts",
+    "isDynamicEntry": true,
+    "css": [
+      "assets/index-DJBKVO-R.css"
+    ]
+  },
+  "module/swag-migration/page/wizard/swag-migration-wizard/index.ts": {
+    "file": "assets/index-upzmjNDr.js",
+    "name": "index",
+    "src": "module/swag-migration/page/wizard/swag-migration-wizard/index.ts",
+    "isDynamicEntry": true,
+    "imports": [
+      "main.ts"
+    ],
+    "css": [
+      "assets/index-DQyGozmS.css"
+    ]
+  },
+  "module/swag-migration/profile/shopware/api/swag-migration-profile-shopware-api-credential-form/index.ts": {
+    "file": "assets/index-CThCSNBO.js",
+    "name": "index",
+    "src": "module/swag-migration/profile/shopware/api/swag-migration-profile-shopware-api-credential-form/index.ts",
+    "isDynamicEntry": true
+  },
+  "module/swag-migration/profile/shopware/local/swag-migration-profile-shopware-local-credential-form/index.ts": {
+    "file": "assets/index-CTRedija.js",
+    "name": "index",
+    "src": "module/swag-migration/profile/shopware/local/swag-migration-profile-shopware-local-credential-form/index.ts",
+    "isDynamicEntry": true
+  },
+  "module/swag-migration/profile/shopware6/api/swag-migration-profile-shopware6-api-credential-form/index.ts": {
+    "file": "assets/index-DfcEwnKP.js",
+    "name": "index",
+    "src": "module/swag-migration/profile/shopware6/api/swag-migration-profile-shopware6-api-credential-form/index.ts",
+    "isDynamicEntry": true
+  }
+}
