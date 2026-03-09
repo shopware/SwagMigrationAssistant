@@ -1,3 +1,7 @@
+# 16.0.1
+
+- Reduced log file size by removing exception trace args
+
 # 16.0.0
 
 - #14517 - Fixed duplicate key error when re-migrating products with SEO main categories after checksum reset
