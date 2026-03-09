@@ -690,7 +690,7 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         $localeTranslation = [];
-        $localeTranslation['productManufacturerId'] = $manufacturer['id'];
+        $localeTranslation['productManufacturerId'] = &$manufacturer['id'];
 
         $this->convertValue($localeTranslation, 'name', $data, 'name');
         $this->convertValue($localeTranslation, 'description', $data, 'description');
