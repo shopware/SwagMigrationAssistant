@@ -86,7 +86,11 @@ class MigrationLogTest extends TestCase
             ->withSourceData(['test' => 'test4'])
             ->withConvertedData(['test' => 'test5'])
             ->withExceptionMessage('test7')
-            ->withExceptionTrace(['test' => 'test8'])
+            ->withExceptionTrace([[
+                'file' => 'test8',
+                'line' => 123,
+                'args' => ['something'],
+            ]])
             ->withEntityId($entityId)
             ->build($logClass);
 
@@ -100,7 +104,10 @@ class MigrationLogTest extends TestCase
         static::assertSame(['test' => 'test4'], $logEntry->getSourceData());
         static::assertSame(['test' => 'test5'], $logEntry->getConvertedData());
         static::assertSame('test7', $logEntry->getExceptionMessage());
-        static::assertSame(['test' => 'test8'], $logEntry->getExceptionTrace());
+        static::assertSame([[
+            'file' => 'test8',
+            'line' => 123,
+        ]], $logEntry->getExceptionTrace());
         static::assertSame($entityId, $logEntry->getEntityId());
     }
 

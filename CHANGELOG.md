@@ -2,6 +2,7 @@
 
 - Fixed log entries to have the file path and line number in the exception message
 - Remove support for Magento 1.9
+- Reduced log file size by removing exception trace args
 
 # 16.0.0
 
