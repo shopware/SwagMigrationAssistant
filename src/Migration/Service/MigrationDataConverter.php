@@ -93,6 +93,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
     ): array {
         $runUuid = $migrationContext->getRunUuid();
 
+        $convertData = [];
         $createData = [];
         foreach ($data as $item) {
             try {
@@ -108,10 +109,43 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     continue;
                 }
 
-                $convertFailureFlag = empty($convertStruct->getConverted());
+                $convertData[] = [
+                    'convertStruct' => $convertStruct,
+                    'item' => $item,
+                ];
+            } catch (\Throwable $exception) {
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withExceptionMessage($exception->getMessage())
+                        ->withExceptionTrace($exception->getTrace())
+                        ->withEntityName($dataSet::getEntity())
+                        ->withSourceData($item)
+                        ->build(RunExceptionLog::class)
+                );
 
-                // todo: this needs to be called after the whole batch was converted
-                $this->mappingServiceV2->resolvePromises($migrationContext->getConnection()->getId());
+                $createData[] = [
+                    'entity' => $dataSet::getEntity(),
+                    'runId' => $runUuid,
+                    'raw' => $item,
+                    'converted' => null,
+                    'unmapped' => $item,
+                    'mappingUuid' => null,
+                    'convertFailure' => true,
+                ];
+            }
+        }
+
+        // todo: this can throw as well
+        $this->mappingServiceV2->resolvePromises($migrationContext->getConnection()->getId());
+
+        // todo: validation needs to be called after the whole batch was converted + mappings resolved
+        // todo: should be refactored to work with batches and be outsourced like MigrationDataFetcher + MigrationDataConverter
+        // todo: for now this is a temporary ugly workaround
+        foreach ($convertData as $convertItem) {
+            $convertStruct = $convertItem['convertStruct'];
+            $item = $convertItem['item'];
+
+            try {
                 $this->validationService->validate(
                     $migrationContext,
                     $context,
@@ -119,6 +153,8 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     $dataSet::getEntity(),
                     $item
                 );
+
+                $convertFailureFlag = empty($convertStruct->getConverted());
 
                 $createData[] = [
                     'entity' => $dataSet::getEntity(),
@@ -148,8 +184,6 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'mappingUuid' => null,
                     'convertFailure' => true,
                 ];
-
-                continue;
             }
         }
 
