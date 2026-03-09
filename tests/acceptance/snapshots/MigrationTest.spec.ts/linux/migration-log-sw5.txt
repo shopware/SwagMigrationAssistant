@@ -735,7 +735,7 @@ Profile name: shopware55
 Gateway name: local
 Created at: [timestamp]
 Entity: product
-Exception message: SwagMigrationAssistant\Profile\Shopware\Converter\ProductConverter::getPrice(): Argument #1 ($priceData) must be of type array, null given, called in /home/runner/work/SwagMigrationAssistant/SwagMigrationAssistant/custom/plugins/SwagMigrationAssistant/src/Profile/Shopware/Converter/ProductConverter.php on line 383
+Exception message: SwagMigrationAssistant\Profile\Shopware\Converter\ProductConverter::getPrice(): Argument #1 ($priceData) must be of type array, null given, called in [path]
 Source data (JSON):
 {
     "id": "273",
@@ -824,7 +824,7 @@ Gateway name: local
 Created at: [timestamp]
 Entity: product_translation
 Source path: objectdata
-Exception message: Unserialization failed
+Exception message: Unserialized data is not an array in [path]
 Source data (JSON):
 {
     "id": "170",
@@ -838,6 +838,8 @@ Source data (JSON):
     "ordernumber": null,
     "objectlanguage": "2"
 }
+Exception trace (JSON):
+[trace]
 
 ----- Log Entry #10 -----
 ID: [uuid]
@@ -848,7 +850,7 @@ Gateway name: local
 Created at: [timestamp]
 Entity: product_translation
 Source path: objectdata
-Exception message: Unserialization failed
+Exception message: Unserialized data is not an array in [path]
 Source data (JSON):
 {
     "id": "172",
@@ -862,6 +864,8 @@ Source data (JSON):
     "ordernumber": null,
     "objectlanguage": "2"
 }
+Exception trace (JSON):
+[trace]
 
 ----- Log Entry #11 -----
 ID: [uuid]

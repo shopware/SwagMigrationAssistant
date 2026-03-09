@@ -916,8 +916,7 @@ abstract class ProductConverter extends ShopwareConverter
                         ->withFieldName('path')
                         ->withFieldSourcePath('path')
                         ->withSourceData($esdFile)
-                        ->withExceptionMessage($e->getMessage())
-                        ->withExceptionTrace($e->getTrace())
+                        ->withException($e)
                         ->build(ConvertChildEntityFailedLog::class)
                 );
 

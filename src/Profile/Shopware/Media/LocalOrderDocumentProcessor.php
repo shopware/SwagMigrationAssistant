@@ -129,14 +129,14 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
 
                 $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->withExceptionMessage($e->getMessage())
-                        ->withExceptionTrace($e->getTrace())
+                        ->withException($e)
+                        ->withEntityName(MediaDefinition::ENTITY_NAME)
+                        ->withEntityId($mediaId)
                         ->withSourceData([
                             'media_id' => $mediaId,
                             'source_path' => $sourcePath,
                             'media' => $mappedWorkload[$mediaId],
                         ])
-                        ->withEntityId($mediaId)
                         ->build(RunExceptionLog::class)
                 );
             }

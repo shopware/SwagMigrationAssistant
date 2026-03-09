@@ -528,8 +528,7 @@ class MigrationEntityValidationService implements ResetInterface
                 ->withFieldName($fieldName)
                 ->withConvertedData($validationContext->getConvertedData())
                 ->withSourceData($validationContext->getSourceData())
-                ->withExceptionMessage($exception->getMessage())
-                ->withExceptionTrace($exception->getTrace())
+                ->withException($exception)
                 ->withEntityId($entityId)
                 ->build($logClass)
         );
@@ -545,8 +544,7 @@ class MigrationEntityValidationService implements ResetInterface
                 ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                 ->withSourceData($validationContext->getSourceData())
                 ->withConvertedData($convertedData)
-                ->withExceptionMessage($exception->getMessage())
-                ->withExceptionTrace($exception->getTrace())
+                ->withException($exception)
                 ->withEntityId($entityId)
                 ->build(MigrationValidationExceptionLog::class)
         );

@@ -287,8 +287,7 @@ class RunService implements RunServiceInterface
                         $connection->getProfileName(),
                         $connection->getGatewayName(),
                     ))
-                        ->withExceptionMessage($exception->getMessage())
-                        ->withExceptionTrace($exception->getTrace())
+                        ->withException($exception)
                         ->withEntityName(ThemeDefinition::ENTITY_NAME)
                         ->withEntityId($defaultThemeId)
                         ->build(WriteThemeCompilingFailedLog::class)

@@ -74,8 +74,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
         } catch (\Throwable $exception) {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($exception->getMessage())
-                    ->withExceptionTrace($exception->getTrace())
+                    ->withException($exception)
                     ->withEntityName($dataSet::getEntity())
                     ->build(RunExceptionLog::class)
             );
@@ -128,8 +127,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             } catch (\Throwable $exception) {
                 $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->withExceptionMessage($exception->getMessage())
-                        ->withExceptionTrace($exception->getTrace())
+                        ->withException($exception)
                         ->withEntityName($dataSet::getEntity())
                         ->withSourceData($item)
                         ->build(RunExceptionLog::class)

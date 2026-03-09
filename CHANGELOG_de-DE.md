@@ -1,5 +1,7 @@
-# 16.0.1
+# 16.1.0
 
+- Log-Einträge wurden korrigiert, sodass der Dateipfad und die Zeilennummer nun in der Ausnahmemeldung enthalten sind.
+- Die Unterstützung für Magento 1.9 wurde entfernt.
 - Größe der Protokolldatei reduziert, indem Exception-Trace Argumente entfernt wurden
 
 # 16.0.0

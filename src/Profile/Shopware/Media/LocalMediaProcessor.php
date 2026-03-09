@@ -198,8 +198,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                                 'source_path' => $sourcePath,
                                 'media' => $mediaFile,
                             ])
-                            ->withExceptionMessage($e->getMessage())
-                            ->withExceptionTrace($e->getTrace())
+                            ->withException($e)
                             ->withEntityId($mediaId)
                             ->build(RunExceptionLog::class)
                     );
