@@ -136,13 +136,6 @@ class MigrationLogBuilder
     {
         \assert(\class_exists($logClass) && \is_subclass_of($logClass, AbstractMigrationLogEntry::class));
 
-        if ($this->exceptionTrace !== null) {
-            // remove args from trace, as they quickly become too large
-            foreach ($this->exceptionTrace as &$trace) {
-                unset($trace['args']);
-            }
-        }
-
         return new $logClass(
             $this->runId,
             $this->profileName,
@@ -189,14 +182,14 @@ class MigrationLogBuilder
      */
     private function getExceptionTrace(): ?array
     {
-        if ($this->exceptionTrace !== null) {
-            return $this->exceptionTrace;
+        $trace = $this->exceptionTrace ?? $this->exception?->getTrace();
+
+        if ($trace !== null) {
+            foreach ($trace as &$traceEntry) {
+                unset($traceEntry['args']);
+            }
         }
 
-        if ($this->exception !== null) {
-            return $this->exception->getTrace();
-        }
-
-        return null;
+        return $trace;
     }
 }
