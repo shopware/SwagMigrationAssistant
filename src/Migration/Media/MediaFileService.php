@@ -75,6 +75,7 @@ class MediaFileService implements MediaFileServiceInterface, ResetInterface
 
     public function saveMediaFile(array $mediaFile): void
     {
+        // todo: this is likely broken with MappingServiceV2 and needs to be checked, maybe refactored
         $mediaId = $mediaFile['mediaId'];
         if (isset($this->uuids[$mediaId])) {
             return;

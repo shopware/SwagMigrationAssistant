@@ -58,7 +58,14 @@ class MappingServiceV2 implements ResetInterface
         bool $shouldCreate = false,
         ?string $createWith = null,
     ): string {
-        $ref = self::PLACEHOLDER;
+        // todo: figure out a nice dev experience for debugging
+        $trace = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        // [0] = current function
+        // [1] = caller
+        $caller = $trace[1] ?? [];
+        $callerString = ($caller['file'] ?? '') . '::' . ($caller['line'] ?? '');
+
+        $ref = self::PLACEHOLDER . '(' . $entityName . ',' . $oldIdentifier . ')+++' . $callerString;
 
         $promise = new MappingPromise($ref, $entityName, $oldIdentifier, $shouldCreate, $createWith);
 
