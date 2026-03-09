@@ -390,6 +390,11 @@ class MigrationLogTest extends TestCase
         $line = $exception->getLine();
         $trace = $exception->getTrace();
 
+        // unset args from trace for comparison, as they are removed in the log entry
+        foreach ($trace as &$traceEntry) {
+            unset($traceEntry['args']);
+        }
+
         yield 'with exception' => [
             'exception' => $exception,
             'exceptionMessage' => null,
@@ -401,9 +406,9 @@ class MigrationLogTest extends TestCase
         yield 'with exception message and trace' => [
             'exception' => null,
             'exceptionMessage' => 'Test2',
-            'exceptionTrace' => ['test' => 'trace'],
+            'exceptionTrace' => [['test' => 'trace']],
             'expectedExceptionMessage' => 'Test2',
-            'expectedExceptionTrace' => ['test' => 'trace'],
+            'expectedExceptionTrace' => [['test' => 'trace']],
         ];
 
         yield 'with exception and message' => [
@@ -417,7 +422,7 @@ class MigrationLogTest extends TestCase
         yield 'with exception and trace' => [
             'exception' => $exception,
             'exceptionMessage' => null,
-            'exceptionTrace' => ['test' => 'trace2'],
+            'exceptionTrace' => [['test' => 'trace2']],
             'expectedExceptionMessage' => 'Runtime exception occurred in ' . $file . ':' . $line,
             'expectedExceptionTrace' => ['test' => 'trace2'],
         ];
@@ -425,7 +430,7 @@ class MigrationLogTest extends TestCase
         yield 'with exception, message and trace' => [
             'exception' => $exception,
             'exceptionMessage' => 'Test5',
-            'exceptionTrace' => ['test' => 'trace3'],
+            'exceptionTrace' => [['test' => 'trace3']],
             'expectedExceptionMessage' => 'Test5',
             'expectedExceptionTrace' => ['test' => 'trace3'],
         ];
