@@ -1,3 +1,7 @@
+# 16.0.1
+
+- Größe der Protokolldatei reduziert, indem Exception-Trace Argumente entfernt wurden
+
 # 16.0.0
 
 - #14517 - Fehler bei doppeltem Schlüssel beim erneuten Migrieren von Produkten mit SEO-Hauptkategorien nach dem Zurücksetzen der Prüfsummen behoben
