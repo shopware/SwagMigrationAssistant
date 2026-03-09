@@ -735,7 +735,7 @@ Profile name: shopware55
 Gateway name: local
 Created at: [timestamp]
 Entity: product
-Exception message: SwagMigrationAssistant\Profile\Shopware\Converter\ProductConverter::getPrice(): Argument #1 ($priceData) must be of type array, null given, called in [path]
+Exception message:
 Source data (JSON):
 {
     "id": "273",
