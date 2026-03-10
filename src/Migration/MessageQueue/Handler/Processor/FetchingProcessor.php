@@ -99,7 +99,7 @@ class FetchingProcessor extends AbstractProcessor
         // todo: remove benchmarking code
         if ($progress->getCurrentEntity() === 'product' && $progress->getCurrentEntityProgress() === 0) {
             // end profiling
-            // $profile = $blackfire->endProbe($probe);
+            $profile = $blackfire->endProbe($probe);
         }
 
         $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
