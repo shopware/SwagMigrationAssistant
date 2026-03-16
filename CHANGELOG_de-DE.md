@@ -1,6 +1,6 @@
 # NEXT
 
-- #15318 - Fehlende Bereinigung der Tabelle `swag_migration_fix` beim Zurücksetzen einer Migration
+- #15318 - Fehlende Bereinigung der Tabelle `swag_migration_fix` beim Zurücksetzen einer Migration hinzugefügt
 
 # 16.1.0
 
