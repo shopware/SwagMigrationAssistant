@@ -19,7 +19,7 @@ class DataSelectionCollection extends Collection
     public function sortByPosition(): void
     {
         $this->sort(
-            function (DataSelectionStruct $first, DataSelectionStruct $second) {
+            static function (DataSelectionStruct $first, DataSelectionStruct $second) {
                 return $first->getPosition() <=> $second->getPosition();
             }
         );

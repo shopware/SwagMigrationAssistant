@@ -198,7 +198,7 @@ class DataProviderController extends AbstractController
             throw MediaException::fileNotFound($media->getFileName() . '.' . $media->getFileExtension());
         }
 
-        return new StreamedResponse(function () use ($stream): void {
+        return new StreamedResponse(static function () use ($stream): void {
             \fpassthru($stream);
         }, Response::HTTP_OK, $this->getStreamHeaders($media));
     }

@@ -978,7 +978,7 @@ class StatusControllerTest extends TestCase
 
         $mockDataFetcher
             ->method('getEnvironmentInformation')
-            ->willReturnCallback(function (MigrationContextInterface $migrationContext, Context $context) use ($baseDataFetcher, $fingerprint): EnvironmentInformation {
+            ->willReturnCallback(static function (MigrationContextInterface $migrationContext, Context $context) use ($baseDataFetcher, $fingerprint): EnvironmentInformation {
                 $environmentInformation = $baseDataFetcher->getEnvironmentInformation($migrationContext, $context);
                 $environmentInformation->setFingerprint($fingerprint);
 

@@ -41,7 +41,7 @@ class ProgressDataSetCollection extends Collection
      */
     public function getEntityNames(): array
     {
-        return $this->map(function (ProgressDataSet $progressDataSet) {
+        return $this->map(static function (ProgressDataSet $progressDataSet) {
             return $progressDataSet->getEntityName();
         });
     }

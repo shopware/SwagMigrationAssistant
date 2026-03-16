@@ -126,7 +126,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
         $eventClasses = [];
         $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
         $eventDispatcher->expects($this->exactly(2))->method('dispatch')
-            ->willReturnCallback(function ($event) use (&$eventClasses) {
+            ->willReturnCallback(static function ($event) use (&$eventClasses) {
                 $eventClasses[] = $event::class;
 
                 return $event;

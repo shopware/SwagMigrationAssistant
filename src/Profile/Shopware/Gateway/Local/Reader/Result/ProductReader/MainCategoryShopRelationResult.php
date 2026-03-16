@@ -30,12 +30,12 @@ class MainCategoryShopRelationResult
      */
     public function getShopIds(string $categoryId): array
     {
-        $result = \array_filter($this->shopCategoryRelation, function ($shopCategoryRelation) use ($categoryId) {
+        $result = \array_filter($this->shopCategoryRelation, static function ($shopCategoryRelation) use ($categoryId) {
             return $shopCategoryRelation->getCategoryId() === $categoryId;
         });
 
         return \array_values(
-            \array_map(function (ShopCategoryRelation $shopCategoryRelation) {
+            \array_map(static function (ShopCategoryRelation $shopCategoryRelation) {
                 return $shopCategoryRelation->getShopId();
             }, $result)
         );

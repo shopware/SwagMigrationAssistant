@@ -37,7 +37,7 @@ class AuthClientTest extends TestCase
         $migrationContext = new MigrationContext($connection);
         $expectedResponse = new Response(SymfonyResponse::HTTP_OK);
         $apiClient = $this->createApiClientWithResponses([
-            function (RequestInterface $request) use ($expectedResponse): ResponseInterface {
+            static function (RequestInterface $request) use ($expectedResponse): ResponseInterface {
                 static::assertSame('/api/version', (string) $request->getUri());
                 static::assertSame('GET', $request->getMethod());
                 static::assertSame('Bearer existing-token', $request->getHeaderLine('Authorization'));
@@ -155,14 +155,14 @@ class AuthClientTest extends TestCase
 
         return $this->createApiClientWithResponses(
             [
-                function (RequestInterface $request) use ($oldBearerToken, $firstRequestException): void {
+                static function (RequestInterface $request) use ($oldBearerToken, $firstRequestException): void {
                     static::assertSame('/api/version', (string) $request->getUri());
                     static::assertSame('GET', $request->getMethod());
                     static::assertSame('Bearer ' . $oldBearerToken, $request->getHeaderLine('Authorization'));
 
                     throw $firstRequestException;
                 },
-                function (RequestInterface $request) use ($tokenResponse): ResponseInterface {
+                static function (RequestInterface $request) use ($tokenResponse): ResponseInterface {
                     static::assertSame('/api/oauth/token', (string) $request->getUri());
                     static::assertSame('POST', $request->getMethod());
                     static::assertSame(
@@ -172,7 +172,7 @@ class AuthClientTest extends TestCase
 
                     return $tokenResponse;
                 },
-                function (RequestInterface $request) use ($newBearerToken, $expectedResponse): ResponseInterface {
+                static function (RequestInterface $request) use ($newBearerToken, $expectedResponse): ResponseInterface {
                     static::assertSame('/api/version', (string) $request->getUri());
                     static::assertSame('GET', $request->getMethod());
                     static::assertSame('Bearer ' . $newBearerToken, $request->getHeaderLine('Authorization'));

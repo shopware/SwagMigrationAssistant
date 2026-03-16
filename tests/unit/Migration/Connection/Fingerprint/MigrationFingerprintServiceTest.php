@@ -87,7 +87,7 @@ class MigrationFingerprintServiceTest extends TestCase
         $connectionRepo = $this->createMock(EntityRepository::class);
         $connectionRepo->expects($this->once())
             ->method('searchIds')
-            ->with(static::callback(function (Criteria $criteria) use ($connectionId) {
+            ->with(static::callback(static function (Criteria $criteria) use ($connectionId) {
                 static::assertCount(2, $criteria->getFilters());
 
                 $query = $criteria->getFilters()[1];

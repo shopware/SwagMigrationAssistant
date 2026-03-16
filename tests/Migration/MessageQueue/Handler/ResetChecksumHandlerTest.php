@@ -133,7 +133,7 @@ class ResetChecksumHandlerTest extends TestCase
         $this->migrationRunRepo
             ->expects($this->once())
             ->method('update')
-            ->with(static::callback(function ($data) use ($runId) {
+            ->with(static::callback(static function ($data) use ($runId) {
                 return isset($data[0]['id'])
                     && $data[0]['id'] === $runId
                     && isset($data[0]['progress']);
@@ -165,20 +165,20 @@ class ResetChecksumHandlerTest extends TestCase
         $this->migrationRunRepo
             ->expects($this->once())
             ->method('update')
-            ->with(static::callback(function ($data) use ($runId) {
+            ->with(static::callback(static function ($data) use ($runId) {
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
             }));
 
         $this->messageBus
             ->expects($this->once())
             ->method('dispatch')
-            ->with(static::callback(function ($dispatchedMessage) use ($connectionId) {
+            ->with(static::callback(static function ($dispatchedMessage) use ($connectionId) {
                 return $dispatchedMessage instanceof ResetChecksumMessage
                     && $dispatchedMessage->getConnectionId() === $connectionId
                     && $dispatchedMessage->getProcessedMappings() === ResetChecksumHandler::BATCH_SIZE
                     && $dispatchedMessage->getTotalMappings() === 500;
             }))
-            ->willReturnCallback(fn ($msg) => new Envelope($msg));
+            ->willReturnCallback(static fn ($msg) => new Envelope($msg));
 
         $this->handler->__invoke($message);
     }
@@ -200,7 +200,7 @@ class ResetChecksumHandlerTest extends TestCase
             ->expects($this->once())
             ->method('dispatch')
             ->with(static::isInstanceOf(ResetChecksumMessage::class))
-            ->willReturnCallback(fn ($msg) => new Envelope($msg));
+            ->willReturnCallback(static fn ($msg) => new Envelope($msg));
 
         $this->handler->__invoke($message);
     }
@@ -231,7 +231,7 @@ class ResetChecksumHandlerTest extends TestCase
         $this->migrationRunRepo
             ->expects($this->once())
             ->method('update')
-            ->with(static::callback(function ($data) use ($runId) {
+            ->with(static::callback(static function ($data) use ($runId) {
                 $progress = $data[0]['progress'];
 
                 return $data[0]['id'] === $runId
@@ -244,7 +244,7 @@ class ResetChecksumHandlerTest extends TestCase
             ->expects($this->once())
             ->method('dispatch')
             ->with(static::isInstanceOf(MigrationProcessMessage::class))
-            ->willReturnCallback(fn ($msg) => new Envelope($msg));
+            ->willReturnCallback(static fn ($msg) => new Envelope($msg));
 
         $this->handler->__invoke($message);
     }
@@ -276,13 +276,13 @@ class ResetChecksumHandlerTest extends TestCase
         $this->messageBus
             ->expects($this->once())
             ->method('dispatch')
-            ->with(static::callback(function ($dispatchedMessage) use ($connectionId, $runId) {
+            ->with(static::callback(static function ($dispatchedMessage) use ($connectionId, $runId) {
                 return $dispatchedMessage instanceof ResetChecksumMessage
                     && $dispatchedMessage->getConnectionId() === $connectionId
                     && $dispatchedMessage->getRunId() === $runId
                     && $dispatchedMessage->isPartOfAbort();
             }))
-            ->willReturnCallback(fn ($msg) => new Envelope($msg));
+            ->willReturnCallback(static fn ($msg) => new Envelope($msg));
 
         $this->handler->__invoke($message);
     }
@@ -306,7 +306,7 @@ class ResetChecksumHandlerTest extends TestCase
         $this->migrationRunRepo
             ->expects($this->once())
             ->method('update')
-            ->with(static::callback(function ($data) use ($runId) {
+            ->with(static::callback(static function ($data) use ($runId) {
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
             }));
 
@@ -335,7 +335,7 @@ class ResetChecksumHandlerTest extends TestCase
         $this->migrationRunRepo
             ->expects($this->once())
             ->method('update')
-            ->with(static::callback(function ($data) use ($runId) {
+            ->with(static::callback(static function ($data) use ($runId) {
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
             }));
 
@@ -367,7 +367,7 @@ class ResetChecksumHandlerTest extends TestCase
         $this->migrationRunRepo
             ->expects($this->once())
             ->method('update')
-            ->with(static::callback(function ($data) use ($runId) {
+            ->with(static::callback(static function ($data) use ($runId) {
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
             }));
 
@@ -425,7 +425,7 @@ class ResetChecksumHandlerTest extends TestCase
     {
         $this->connection
             ->method('executeStatement')
-            ->willReturnCallback(function (string $sql) use ($affectedRows): int {
+            ->willReturnCallback(static function (string $sql) use ($affectedRows): int {
                 if (\str_contains($sql, 'swag_migration_mapping')) {
                     return $affectedRows;
                 }

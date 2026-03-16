@@ -1,3 +1,7 @@
+# NEXT
+
+- #15318 - Fixed missing cleanup of the `swag_migration_fix` table when truncating a migration.
+
 # 16.1.0
 
 - Fixed log entries to have the file path and line number in the exception message

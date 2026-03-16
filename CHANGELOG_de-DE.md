@@ -1,3 +1,7 @@
+# NEXT
+
+- #15318 - Fehlende Bereinigung der Tabelle `swag_migration_fix` beim Zurücksetzen einer Migration hinzugefügt
+
 # 16.1.0
 
 - Log-Einträge wurden korrigiert, sodass der Dateipfad und die Zeilennummer nun in der Ausnahmemeldung enthalten sind.
