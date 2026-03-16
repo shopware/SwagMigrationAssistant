@@ -9,17 +9,33 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\ErrorResolution\Entity\SwagMigrationFixDefinition;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\TruncateMigrationMessage;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[AsMessageHandler]
-#[Package('fundamentals@after-sales')]
 /**
  * @internal
  */
+#[AsMessageHandler]
+#[Package('fundamentals@after-sales')]
 final class TruncateMigrationHandler
 {
+    final public const TABLE_TO_TRUNCATE = [
+        SwagMigrationMappingDefinition::ENTITY_NAME,
+        SwagMigrationLoggingDefinition::ENTITY_NAME,
+        SwagMigrationDataDefinition::ENTITY_NAME,
+        SwagMigrationMediaFileDefinition::ENTITY_NAME,
+        SwagMigrationFixDefinition::ENTITY_NAME,
+        SwagMigrationRunDefinition::ENTITY_NAME,
+        SwagMigrationConnectionDefinition::ENTITY_NAME,
+    ];
     private const BATCH_SIZE = 250;
 
     public function __construct(
@@ -31,18 +47,10 @@ final class TruncateMigrationHandler
     public function __invoke(TruncateMigrationMessage $message): void
     {
         $currentStep = 0;
-        $tablesToReset = [
-            'swag_migration_mapping',
-            'swag_migration_logging',
-            'swag_migration_data',
-            'swag_migration_media_file',
-            'swag_migration_run',
-            'swag_migration_connection',
-        ];
 
         $step = \array_search(
             $message->getTableName(),
-            $tablesToReset,
+            self::TABLE_TO_TRUNCATE,
             true
         );
 
@@ -50,23 +58,25 @@ final class TruncateMigrationHandler
             $currentStep = $step;
         }
 
+        $currentTable = self::TABLE_TO_TRUNCATE[$currentStep];
+
         $affectedRows = (int) $this->connection->executeStatement(
-            'DELETE FROM ' . $tablesToReset[$currentStep] . ' LIMIT ' . self::BATCH_SIZE
+            'DELETE FROM ' . $currentTable . ' LIMIT ' . self::BATCH_SIZE
         );
 
         if ($affectedRows >= self::BATCH_SIZE) {
             $this->bus->dispatch(new TruncateMigrationMessage(
-                $tablesToReset[$currentStep]
+                $currentTable,
             ));
 
             return;
         }
 
-        $nextStep = $currentStep + 1;
+        $nextTable = self::TABLE_TO_TRUNCATE[$currentStep + 1] ?? null;
 
-        if (isset($tablesToReset[$nextStep])) {
+        if ($nextTable !== null) {
             $this->bus->dispatch(new TruncateMigrationMessage(
-                $tablesToReset[$nextStep]
+                $nextTable
             ));
 
             return;
