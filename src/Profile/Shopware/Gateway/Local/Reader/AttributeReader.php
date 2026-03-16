@@ -192,7 +192,7 @@ SQL;
         $fks = [];
 
         foreach ($foreignKeys as $foreignKey) {
-            $fks[] = array_map(fn (UnqualifiedName $name) => $name->toString(), $foreignKey->getReferencingColumnNames());
+            $fks[] = array_map(static fn (UnqualifiedName $name) => $name->toString(), $foreignKey->getReferencingColumnNames());
         }
 
         if ($fks !== []) {

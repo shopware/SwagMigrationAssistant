@@ -469,7 +469,7 @@ class RunService implements RunServiceInterface
         $dataSetCollection = $this->calculateToBeFetchedTotals($environmentInformation, $dataSelectionCollection);
         $overallTotal = 0;
 
-        $dataSetCollection->map(function (ProgressDataSet $progressDataSet) use (&$overallTotal): void {
+        $dataSetCollection->map(static function (ProgressDataSet $progressDataSet) use (&$overallTotal): void {
             $overallTotal += $progressDataSet->getTotal();
         });
 

@@ -172,7 +172,7 @@ class MigrationEntityValidationServiceTest extends TestCase
         static::assertCount(\count($expectedLogs), $logs);
         static::assertCount(\count($expectedLogs), $result->getLogs());
 
-        $logCodes = \array_map(fn ($log) => $log::class, $result->getLogs());
+        $logCodes = \array_map(static fn ($log) => $log::class, $result->getLogs());
         static::assertSame($expectedLogs, $logCodes);
     }
 
@@ -288,7 +288,7 @@ class MigrationEntityValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $missingFields = \array_map(fn ($log) => $log->getFieldName(), $result->getLogs());
+        $missingFields = \array_map(static fn ($log) => $log->getFieldName(), $result->getLogs());
 
         // Only 'stock' should be required as its not nullable in db and has no default
         static::assertCount(1, $missingFields);
@@ -311,7 +311,7 @@ class MigrationEntityValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $logs = \array_filter($result->getLogs(), fn ($log) => $log instanceof MigrationValidationExceptionLog);
+        $logs = \array_filter($result->getLogs(), static fn ($log) => $log instanceof MigrationValidationExceptionLog);
         static::assertCount(1, $logs);
 
         $exceptionLog = array_values($logs)[0];

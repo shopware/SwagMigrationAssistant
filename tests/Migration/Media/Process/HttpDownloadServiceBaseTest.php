@@ -72,7 +72,7 @@ class HttpDownloadServiceBaseTest extends TestCase
 
         $queryBuilderMock = $this->createMock(QueryBuilder::class);
         $queryBuilderMock->method('andWhere')
-            ->willReturnCallback(function ($argument) use (&$testResult, $queryBuilderMock) {
+            ->willReturnCallback(static function ($argument) use (&$testResult, $queryBuilderMock) {
                 $testResult[] = $argument;
 
                 return $queryBuilderMock;
@@ -260,7 +260,7 @@ class HttpDownloadServiceBaseTest extends TestCase
         // TestCase: Check that the filename starts with "/tmp/", the file exists and the size is correct
         $fileSaverMock->expects($this->exactly(2))
             ->method('persistFileToMedia')
-            ->willReturnCallback(function ($mediaFile, $destination, $mediaId): void {
+            ->willReturnCallback(static function ($mediaFile, $destination, $mediaId): void {
                 static::assertInstanceOf(MediaFile::class, $mediaFile);
                 static::assertStringStartsWith('/tmp/', $mediaFile->getFileName());
                 static::assertFileExists($mediaFile->getFileName());

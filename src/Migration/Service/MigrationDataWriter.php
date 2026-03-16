@@ -195,7 +195,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             $updateWrittenData[$dataId]['written'] = false;
             $updateWrittenData[$dataId]['writeFailure'] = true;
 
-            $currentData = $migrationData->firstWhere(function (SwagMigrationDataEntity $item) use ($dataId) {
+            $currentData = $migrationData->firstWhere(static function (SwagMigrationDataEntity $item) use ($dataId) {
                 return $item->getId() === $dataId;
             });
 

@@ -62,7 +62,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
         );
 
         $events = [];
-        $this->addEventListener($this->eventDispatcher, MigrationPreErrorResolutionEvent::class, function (MigrationPreErrorResolutionEvent $event) use (&$events): void {
+        $this->addEventListener($this->eventDispatcher, MigrationPreErrorResolutionEvent::class, static function (MigrationPreErrorResolutionEvent $event) use (&$events): void {
             $events[] = $event;
         });
 
@@ -166,7 +166,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
         ];
 
         $events = [];
-        $this->addEventListener($this->eventDispatcher, MigrationPreErrorResolutionEvent::class, function (MigrationPreErrorResolutionEvent $event) use (&$events): void {
+        $this->addEventListener($this->eventDispatcher, MigrationPreErrorResolutionEvent::class, static function (MigrationPreErrorResolutionEvent $event) use (&$events): void {
             $events[] = $event;
         });
 

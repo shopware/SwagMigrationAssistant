@@ -110,7 +110,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
             $oldWorkloadSearchResult = \array_filter(
                 $workload,
-                function (MediaProcessWorkloadStruct $work) use ($uuid) {
+                static function (MediaProcessWorkloadStruct $work) use ($uuid) {
                     return $work->getMediaId() === $uuid;
                 }
             );
