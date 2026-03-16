@@ -12,8 +12,15 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\ErrorResolution\Entity\SwagMigrationFixDefinition;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\TruncateMigrationHandler;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\TruncateMigrationMessage;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -222,12 +229,13 @@ class TruncateMigrationHandlerTest extends TestCase
     public function testInvokeProcessesAllTablesInCorrectOrder(): void
     {
         $expectedTables = [
-            'swag_migration_mapping',
-            'swag_migration_logging',
-            'swag_migration_data',
-            'swag_migration_media_file',
-            'swag_migration_run',
-            'swag_migration_connection',
+            SwagMigrationMappingDefinition::ENTITY_NAME,
+            SwagMigrationLoggingDefinition::ENTITY_NAME,
+            SwagMigrationDataDefinition::ENTITY_NAME,
+            SwagMigrationMediaFileDefinition::ENTITY_NAME,
+            SwagMigrationFixDefinition::ENTITY_NAME,
+            SwagMigrationRunDefinition::ENTITY_NAME,
+            SwagMigrationConnectionDefinition::ENTITY_NAME,
         ];
 
         foreach ($expectedTables as $index => $tableName) {

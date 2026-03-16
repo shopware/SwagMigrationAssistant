@@ -36,6 +36,7 @@ final class TruncateMigrationHandler
         SwagMigrationRunDefinition::ENTITY_NAME,
         SwagMigrationConnectionDefinition::ENTITY_NAME,
     ];
+
     private const BATCH_SIZE = 250;
 
     public function __construct(
