@@ -1,6 +1,7 @@
-# NEXT
+# 16.1.1
 
-- #15318 - Fixed missing cleanup of the `swag_migration_fix` table when truncating a migration.
+- #15318 - Fixed missing cleanup of the `swag_migration_fix` table when truncating a migration
+- #15637 - Fixed connection fingerprint compatibility with <6.7.2.0
 
 # 16.1.0
 
