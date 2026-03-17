@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\DataProvider\Service;
 
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Context\SystemSource;
+use Shopware\Core\Framework\App\ShopId\ShopIdProvider;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -23,8 +24,11 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 #[Package('fundamentals@after-sales')]
 class EnvironmentService implements EnvironmentServiceInterface
 {
-    private const SHOP_ID_CONFIG_KEY_V1 = 'core.app.shopId';
-
+    /**
+     * @see ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY_V2
+     * Which was introduced with 6.7.2.0, but we need to support older versions as
+     * well, so we cannot directly use the constant
+     */
     private const SHOP_ID_CONFIG_KEY_V2 = 'core.app.shopIdV2';
 
     /**
@@ -87,7 +91,7 @@ class EnvironmentService implements EnvironmentServiceInterface
     private function getShopIdV2(): ?string
     {
         $response = $this->systemConfigService->get(self::SHOP_ID_CONFIG_KEY_V2)
-            ?? $this->systemConfigService->get(self::SHOP_ID_CONFIG_KEY_V1);
+            ?? $this->systemConfigService->get(ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY);
 
         if (\is_array($response) && isset($response['id'])) {
             return $response['id'];
