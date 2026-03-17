@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\DataProvider\Service;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
+use Shopware\Core\Framework\App\ShopId\ShopIdProvider;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -62,7 +63,15 @@ class EnvironmentServiceTest extends TestCase
         ];
     }
 
-    protected function createEnvironmentService(string $shopwareVersion = '6.5.6.1', string $defaultCurrency = 'EUR', string $defaultLocale = 'de-DE', ?string $shopIdV2 = 'shop-id', bool $updateAvailable = false): void
+    public function testGetShopIdFallsBackToV1Key(): void
+    {
+        $this->createEnvironmentService(shopIdV2: null, shopIdV1: 'legacy-shop-id');
+        $data = $this->environmentService->getEnvironmentData(Context::createDefaultContext());
+
+        static::assertSame('legacy-shop-id', $data['shopIdV2']);
+    }
+
+    protected function createEnvironmentService(string $shopwareVersion = '6.5.6.1', string $defaultCurrency = 'EUR', string $defaultLocale = 'de-DE', ?string $shopIdV2 = 'shop-id', bool $updateAvailable = false, ?string $shopIdV1 = null): void
     {
         $currencyEntity = new CurrencyEntity();
         $currencyEntity->setId(Defaults::CURRENCY);
@@ -112,9 +121,10 @@ class EnvironmentServiceTest extends TestCase
         $extensionDataProviderStub = static::createStub(AbstractExtensionDataProvider::class);
 
         $systemConfigService = $this->createMock(SystemConfigService::class);
-        $systemConfigService->method('get')->willReturn($shopIdV2 ? [
-            'id' => $shopIdV2,
-        ] : null);
+        $systemConfigService->method('get')->willReturnMap([
+            [ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY_V2, null, $shopIdV2 ? ['id' => $shopIdV2] : null],
+            [ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY, null, $shopIdV1 ? ['id' => $shopIdV1] : null],
+        ]);
 
         $this->environmentService = new EnvironmentService(
             $currencyRepo,
