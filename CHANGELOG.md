@@ -1,6 +1,7 @@
 # NEXT
 
-- #15318 - Fixed missing cleanup of the `swag_migration_fix` table when truncating a migration.
+- #15318 - Fixed missing cleanup of the `swag_migration_fix` table when truncating a migration
+- #15568 - Switched to PHP Symfony service definitions
 
 # 16.1.0
 

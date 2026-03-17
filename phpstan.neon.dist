@@ -25,9 +25,6 @@ parameters:
           paths:
               - tests/**/*Test.php
 
-        # TODO: XML config format will be migrated step by step, so we ignore errors for now, see https://github.com/shopware/shopware/issues/13072
-        - message: '#deprecated class Symfony\\Component\\DependencyInjection\\Loader\\XmlFileLoader#'
-
         # TODO: to fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
         - message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
           path: src/DataProvider/Provider/Data/AbstractProvider.php
