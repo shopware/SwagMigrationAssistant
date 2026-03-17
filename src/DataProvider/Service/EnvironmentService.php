@@ -83,7 +83,8 @@ class EnvironmentService implements EnvironmentServiceInterface
 
     private function getShopIdV2(): ?string
     {
-        $response = $this->systemConfigService->get(ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY_V2);
+        $response = $this->systemConfigService->get(ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY_V2)
+            ?? $this->systemConfigService->get(ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY);
 
         if (\is_array($response) && isset($response['id'])) {
             return $response['id'];
