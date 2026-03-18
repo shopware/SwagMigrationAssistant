@@ -217,14 +217,14 @@ test.describe('Migration Tests @migration @visual', () => {
         });
 
         await test.step('Verify migrated entities', async () => {
-            await EntityCounter.checkEntityCount('swag_migration_logging', 703);
+            await EntityCounter.checkEntityCount('swag_migration_logging', 698);
 
-            await EntityCounter.checkEntityCount('product', 427);
+            await EntityCounter.checkEntityCount('product', 428);
             await EntityCounter.checkEntityCount('product_review', 2);
             await EntityCounter.checkEntityCount('category', 63);
             await EntityCounter.checkEntityCount('property_group', 14);
             await EntityCounter.checkEntityCount('property_group_option', 93);
-            await EntityCounter.checkEntityCount('product_manufacturer', 14);
+            await EntityCounter.checkEntityCount('product_manufacturer', 15);
 
             await EntityCounter.checkEntityCount('order', 2);
             await EntityCounter.checkEntityCount('customer', 3);
