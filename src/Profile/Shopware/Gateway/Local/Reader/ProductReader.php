@@ -131,6 +131,10 @@ class ProductReader extends AbstractReader implements ReaderInterface
         $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($products as &$product) {
+            if (!isset($product['detail']['id']) || !isset($product['id'])) {
+                continue;
+            }
+
             $product['_locale'] = \str_replace('_', '-', $locale);
             $product['assets'] = [];
 
