@@ -384,12 +384,7 @@ abstract class ProductConverter extends ShopwareConverter
             $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
         }
 
-        if (isset($data['prices'])) {
-            $converted['prices'] = $this->getPrices($data['prices'], $converted);
-            unset($data['prices']);
-        }
-
-        if (empty($converted['price']) || empty($converted['prices'])) {
+        if (empty($converted['price'])) {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(ProductDefinition::ENTITY_NAME)
@@ -399,6 +394,11 @@ abstract class ProductConverter extends ShopwareConverter
                     ->withConvertedData($converted)
                     ->build(MigrationValidationRequiredFieldMissingLog::class)
             );
+        }
+
+        if (isset($data['prices'])) {
+            $converted['prices'] = $this->getPrices($data['prices'], $converted);
+            unset($data['prices']);
         }
 
         if (isset($data['assets'])) {
