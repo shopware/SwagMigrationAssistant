@@ -131,10 +131,6 @@ class ProductReader extends AbstractReader implements ReaderInterface
         $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($products as &$product) {
-            if (!isset($product['detail']['id']) || !isset($product['id'])) {
-                continue;
-            }
-
             $product['_locale'] = \str_replace('_', '-', $locale);
             $product['assets'] = [];
 
@@ -164,7 +160,9 @@ class ProductReader extends AbstractReader implements ReaderInterface
                 }
             }
 
-            $product['shops'] = $productVisibility->getShops($product['id']);
+            if (!empty($product['id'])) {
+                $product['shops'] = $productVisibility->getShops($product['id']);
+            }
         }
         unset(
             $product, $categories, $seoMainCategories,
