@@ -244,7 +244,7 @@
         "resetMigrationConfirmDialog": {
             "title": "Migration archivieren",
             "header": "Hast Du deine Shopdaten fertig migriert?",
-            "content": "Wenn Du alle deine Shop-Daten erfolgreich migriert hast, kannst Du diese Migration archivieren. Dadurch kann das System temporäre Dateien und ungenutzte Daten bereinigen.",
+            "content": "Wenn Du alle deine Shopdaten erfolgreich migriert hast, kannst Du diese Migration archivieren. Dadurch kann das System temporäre Dateien und ungenutzte Daten bereinigen.",
             "abortButtonText": "Behalten",
             "confirmButtonText": "Archivieren",
             "errorNotification": {
