@@ -9,11 +9,26 @@ test.describe('Migration Tests @migration @visual', () => {
         timeout: 300_000,
     });
 
-    test('Perform migration from Shopware 5 to Shopware 6', async ({ ShopAdmin, EntityCounter }) => {
+    test('Perform migration from Shopware 5 to Shopware 6', async ({ ShopAdmin, EntityCounter, MigrationConnection: _ }) => {
         const page = ShopAdmin.page;
         const mask = getMask(page);
 
-        const baseline = await EntityCounter.getBaseline();
+        const baseline = await EntityCounter.buildBaseline({
+            product: 427,
+            product_review: 2,
+            category: 62,
+            property_group: 14,
+            property_group_option: 93,
+            product_manufacturer: 13,
+            order: 2,
+            customer: 3,
+            cms_page: 0,
+            media: 592,
+            media_folder: 14,
+            document: 8,
+            newsletter_recipient: 0,
+            promotion: 4,
+        });
 
         await page.goto('/admin');
         await waitForLoaders(page);
