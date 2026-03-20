@@ -1,3 +1,7 @@
+# NEXT
+
+- #15568 - Umstellung auf PHP-Symfony-Service-Definitionen
+
 # 16.1.1
 
 - #15318 - Fehlende Bereinigung der Tabelle `swag_migration_fix` beim Zurücksetzen einer Migration hinzugefügt

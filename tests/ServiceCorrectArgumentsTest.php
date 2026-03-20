@@ -11,6 +11,10 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use SwagMigrationAssistant\SwagMigrationAssistant;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 use Symfony\Component\Finder\Finder;
 
 #[Package('fundamentals@after-sales')]
@@ -19,69 +23,44 @@ class ServiceCorrectArgumentsTest extends TestCase
     use KernelTestBehaviour;
 
     #[DataProvider('serviceProvider')]
-    public function testServiceShouldHaveCorrectArgumentsInContainer(string $xmlPath, string $serviceId): void
+    public function testServiceShouldHaveCorrectArgumentsInContainer(string $serviceId): void
     {
         $service = static::getContainer()->get($serviceId);
+
         static::assertNotNull($service);
     }
 
     /**
-     * @return array<string, array{ xmlPath: string, serviceId: string }>
+     * @return array<string, array{ serviceId: string }>
      */
     public static function serviceProvider(): array
     {
-        $pluginPath = __DIR__ . '/../';
+        $locator = new FileLocator(SwagMigrationAssistant::DEPENDENCY_LOCATION);
+
+        $container = new ContainerBuilder();
+        $loader = new PhpFileLoader($container, $locator);
+
         $finder = new Finder();
-        $finder->in($pluginPath)->files()->name('*.xml')->contains('<services>');
+        $finder->in(SwagMigrationAssistant::DEPENDENCY_LOCATION)
+            ->files()
+            ->name('*.php');
+
+        foreach ($finder as $file) {
+            $loader->load($file->getFilename());
+        }
 
         $testCases = [];
-        foreach ($finder->getIterator() as $xmlFile) {
-            $xmlPath = $xmlFile->getRealPath();
-            if (!$xmlPath) {
+
+        foreach ($container->getDefinitions() as $serviceId => $definition) {
+            if ($definition->isAbstract()) {
                 continue;
             }
 
-            $services = self::getServicesFromXml($xmlPath);
-
-            foreach ($services as $serviceId) {
-                $testCases[$serviceId] = [
-                    'xmlPath' => $xmlPath,
-                    'serviceId' => $serviceId,
-                ];
-            }
+            $testCases[$serviceId] = [
+                'serviceId' => $serviceId,
+            ];
         }
 
         return $testCases;
-    }
-
-    /**
-     * @return string[]
-     */
-    private static function getServicesFromXml(string $xmlPath): array
-    {
-        $xmlContent = file_get_contents($xmlPath);
-        static::assertNotFalse($xmlContent);
-        $document = new \DOMDocument();
-        $document->loadXML($xmlContent);
-
-        $serviceTags = $document->getElementsByTagName('service');
-
-        $serviceIds = [];
-        foreach ($serviceTags as $element) {
-            if ($element instanceof \DOMElement) {
-                $id = $element->getAttribute('id');
-                $abstract = $element->getAttribute('abstract');
-
-                if (\strtolower($abstract) === 'true') {
-                    // skipping abstract services,
-                    // because objects of them can't be constructed
-                    continue;
-                }
-
-                $serviceIds[] = $id;
-            }
-        }
-
-        return $serviceIds;
     }
 }
