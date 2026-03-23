@@ -72,9 +72,9 @@ export default class MigrationApiService extends ApiService {
         connectionName: string,
         profileName: string,
         gatewayName: string,
-        credentialFields: Record<string, MigrationCredentials>,
+        credentialFields: MigrationCredentials,
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<ApiResponse<unknown>> {
+    ): Promise<ApiResponse<MigrationEnvironmentInformation>> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);
 
@@ -101,9 +101,9 @@ export default class MigrationApiService extends ApiService {
 
     async updateConnectionCredentials(
         connectionId: string,
-        credentialFields: Record<string, MigrationCredentials>,
+        credentialFields: MigrationCredentials,
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<ApiResponse<unknown>> {
+    ): Promise<ApiResponse<MigrationEnvironmentInformation>> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);
 
