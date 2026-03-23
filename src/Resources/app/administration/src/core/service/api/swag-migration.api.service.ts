@@ -1,6 +1,4 @@
 import type { AxiosInstance, AxiosResponse } from 'axios';
-import type { LoginService } from '@administration/src/core/service/login.service';
-import type { ApiResponse } from '@administration/src/core/service/api.service';
 import type {
     MigrationDataSelection,
     MigrationEnvironmentInformation,
@@ -11,6 +9,8 @@ import type {
     MigrationCredentials,
     MigrationError,
 } from '../../../type/types';
+
+export type ApiResponse<T> = T extends null | undefined ? AxiosResponse<T> : T;
 
 type AdditionalHeaders = Record<string, string>;
 
@@ -61,7 +61,7 @@ export type LogLevelCounts = {
  * @sw-package fundamentals@after-sales
  */
 export default class MigrationApiService extends ApiService {
-    constructor(httpClient: AxiosInstance, loginService: LoginService, apiEndpoint = 'migration') {
+    constructor(httpClient: AxiosInstance, loginService: unknown, apiEndpoint = 'migration') {
         super(httpClient, loginService, apiEndpoint);
         // @ts-ignore
         this.name = MIGRATION_API_SERVICE;

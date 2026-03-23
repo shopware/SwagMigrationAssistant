@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue,.html,.html.twig .",
-    "lint:types": "tsc --noEmit 2>&1 | grep -E '^src/' && exit 1 || exit 0",
+    "lint:types": "tsc --noEmit",
     "lint:fix": "npm run lint -- --fix",
     "lint:scss": "stylelint ./**/*.scss",
     "lint:scss:fix": "npm run lint:scss -- --fix",

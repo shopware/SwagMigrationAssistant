@@ -2,16 +2,9 @@
  * @sw-package fundamentals@after-sales
  * @private
  */
-import type Repository from '@administration/src/core/data/repository.data';
-
-/**
- * @private
- */
-export type { Entity as TEntity } from '@shopware-ag/admin-extension-sdk/es/data/_internals/Entity';
-export type { default as TEntityCollection } from '@shopware-ag/admin-extension-sdk/es/data/_internals/EntityCollection';
-export type { default as TCriteria } from '@shopware-ag/admin-extension-sdk/es/data/Criteria';
-
-type TRepository<T> = Repository<T>;
+export type { Entity as TEntity } from '@shopware-ag/meteor-admin-sdk/es/_internals/data/Entity';
+export type { default as TEntityCollection } from '@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection';
+export type { Repository as TRepository } from '@shopware-ag/meteor-admin-sdk/es/data/repository';
 
 type MigrationStep =
     | 'idle'
@@ -132,7 +125,6 @@ type MigrationFix = {
  */
 export {
     MIGRATION_LOG_LEVEL,
-    TRepository,
     MigrationStep,
     MigrationState,
     MigrationProfile,

@@ -26,8 +26,6 @@
   ],
   "files": [
     "../../../../../../../src/Administration/Resources/app/administration/src/html-shim.d.ts",
-    "../../../../../../../src/Administration/Resources/app/administration/src/global.types.ts",
-    "../../../../../../../src/Administration/Resources/app/administration/src/entity-schema-definition.d.ts",
-    "../../../../../../../src/Administration/Resources/app/administration/src/global.types.ts"
+    "../../../../../../../src/Administration/Resources/app/administration/src/entity-schema-definition.d.ts"
   ]
 }
