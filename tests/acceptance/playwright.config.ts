@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 import dotenv from 'dotenv';
-import { VIEWPORT } from './fixtures/TestHelpers';
+import { VIEWPORT } from '@fixtures/TestHelpers';
 
 const IS_CI = !!process.env.CI;
 const UPDATE_SNAPSHOTS = process.env.UPDATE_SNAPSHOTS === 'true' || process.env.UPDATE_SNAPSHOTS === '1';

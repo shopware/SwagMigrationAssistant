@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
-    "lib": ["ES2022"],
+    "target": "ES6",
+    "lib": ["ESNext", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
     "esModuleInterop": true,
     "types": ["node"],
     "baseUrl": ".",
     "strict": true,
     "allowJs": true,
+    "paths": {
+      "@fixtures/*": ["fixtures/*"],
+    }
   },
   "include": [
     "./**/*.js",
