@@ -1,3 +1,18 @@
+# NEXT
+
+- [BREAKING] - refactor!: centralize configuration into `MigrationConfiguration` service
+    - [BREAKING] Added required constructor parameter `SwagMigrationAssistant\Migration\MigrationConfiguration $migrationConfig` to `SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase`
+    - [BREAKING] Added required constructor parameter `SwagMigrationAssistant\Migration\MigrationConfiguration $migrationConfig` to `SwagMigrationAssistant\Profile\Shopware6\Media\HttpOrderDocumentGenerationService`
+    - [BREAKING] Removed constant `BUFFER_SIZE` from `SwagMigrationAssistant\Migration\Logging\LoggingService`, use `MigrationConfiguration::$MIGRATION_LOG_BUFFER_SIZE` instead
+    - [BREAKING] Removed constant `TRACE_ITEM_LIMIT` from `SwagMigrationAssistant\Migration\Logging\LoggingService`, use `MigrationConfiguration::$MIGRATION_LOG_EXCEPTION_TRACE_ITEM_LIMIT` instead
+    - [BREAKING] Removed constant `LOG_FETCH_LIMIT` from `SwagMigrationAssistant\Migration\History\HistoryService`, use `MigrationConfiguration::$MIGRATION_DEFAULT_FETCH_SIZE` instead
+    - [BREAKING] Removed constant `LOG_TIME_FORMAT` from `SwagMigrationAssistant\Migration\History\HistoryService`
+    - [BREAKING] Removed constant `BATCH_SIZE` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\ResetChecksumHandler`, use `MigrationConfiguration::$MIGRATION_DEFAULT_BATCH_SIZE` instead
+    - [BREAKING] Removed constant `BATCH_SIZE` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\CleanUpProcessor`, use `MigrationConfiguration::$MIGRATION_DEFAULT_BATCH_SIZE` instead
+    - [BREAKING] Removed constant `MEDIA_ERROR_THRESHOLD` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor`, use `MigrationConfiguration::$MIGRATION_DEFAULT_EXCEPTION_THRESHOLD` instead
+    - [BREAKING] Removed constant `MESSAGE_SIZE` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor`, use `MigrationConfiguration::$MIGRATION_MEDIA_PROCESSING_BATCH_SIZE` instead
+    - Added `SwagMigrationAssistant\Migration\MigrationConfiguration` service
+
 # 16.0.0
 
 - [BREAKING] [#124](https://github.com/shopware/SwagMigrationAssistant/pull/124) - refactor!: refactored log classes naming pattern

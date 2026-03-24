@@ -1,6 +1,7 @@
 # NEXT
 
 - #15568 - Switched to PHP Symfony service definitions
+- #14598 - Introduced `MigrationConfiguration` service as a central place for internal configurations
 
 # 16.1.1
 
