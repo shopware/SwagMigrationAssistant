@@ -380,7 +380,9 @@ abstract class ProductConverter extends ShopwareConverter
             unset($data['unit'], $data['detail']['unitID']);
         }
 
-        $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
+        if (isset($data['prices'][0])) {
+            $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
+        }
 
         if (empty($converted['price'])) {
             $this->loggingService->log(
@@ -394,8 +396,10 @@ abstract class ProductConverter extends ShopwareConverter
             );
         }
 
-        $converted['prices'] = $this->getPrices($data['prices'], $converted);
-        unset($data['prices']);
+        if (isset($data['prices'])) {
+            $converted['prices'] = $this->getPrices($data['prices'], $converted);
+            unset($data['prices']);
+        }
 
         if (isset($data['assets'])) {
             $convertedMedia = $this->getMedia($data['assets'], $data['detail']['id'], $converted);

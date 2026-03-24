@@ -15,34 +15,56 @@ use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\ErrorResolution\Entity\SwagMigrationFixDefinition;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
 
 #[Package('fundamentals@after-sales')]
 class SwagMigrationAssistant extends Plugin
 {
-    /**
-     * {@inheritdoc}
-     */
+    final public const MIGRATION_ENTITIES = [
+        SwagMigrationDataDefinition::ENTITY_NAME,
+        SwagMigrationMediaFileDefinition::ENTITY_NAME,
+        SwagMigrationLoggingDefinition::ENTITY_NAME,
+        SwagMigrationRunDefinition::ENTITY_NAME,
+        SwagMigrationMappingDefinition::ENTITY_NAME,
+        GeneralSettingDefinition::ENTITY_NAME,
+        SwagMigrationFixDefinition::ENTITY_NAME,
+        SwagMigrationConnectionDefinition::ENTITY_NAME,
+    ];
+
+    final public const DEPENDENCY_LOCATION = __DIR__ . '/DependencyInjection/';
+
+    private const CORE_MIGRATION_NAMESPACE = '\Core\Migration';
+
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
 
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/DependencyInjection/'));
-        $loader->load('entity.xml');
-        $loader->load('gateway.xml');
-        $loader->load('migration.xml');
-        $loader->load('profile.xml');
-        $loader->load('shopware.xml');
-        $loader->load('shopware54.xml');
-        $loader->load('shopware55.xml');
-        $loader->load('shopware56.xml');
-        $loader->load('shopware57.xml');
-        $loader->load('shopware6.xml');
-        $loader->load('subscriber.xml');
-        $loader->load('writer.xml');
-        $loader->load('dataProvider.xml');
+        $locator = new FileLocator(self::DEPENDENCY_LOCATION);
+
+        $phpLoader = new PhpFileLoader($container, $locator);
+        $phpLoader->load('shopware.php');
+        $phpLoader->load('shopware54.php');
+        $phpLoader->load('shopware55.php');
+        $phpLoader->load('shopware56.php');
+        $phpLoader->load('shopware57.php');
+        $phpLoader->load('shopware6.php');
+        $phpLoader->load('dataProvider.php');
+        $phpLoader->load('entity.php');
+        $phpLoader->load('gateway.php');
+        $phpLoader->load('migration.php');
+        $phpLoader->load('profile.php');
+        $phpLoader->load('subscriber.php');
+        $phpLoader->load('writer.php');
     }
 
     public function rebuildContainer(): bool
@@ -50,16 +72,13 @@ class SwagMigrationAssistant extends Plugin
         return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMigrationNamespace(): string
     {
-        return $this->getNamespace() . '\Core\Migration';
+        return $this->getNamespace() . self::CORE_MIGRATION_NAMESPACE;
     }
 
     /**
-     * {@inheritdoc}
+     * @throws DBALException
      */
     public function postInstall(InstallContext $installContext): void
     {
@@ -74,7 +93,7 @@ class SwagMigrationAssistant extends Plugin
         $connection->beginTransaction();
 
         try {
-            $connection->insert('swag_migration_general_setting', [
+            $connection->insert(GeneralSettingDefinition::ENTITY_NAME, [
                 'id' => Uuid::randomBytes(),
                 'created_at' => $now,
             ]);
@@ -87,13 +106,10 @@ class SwagMigrationAssistant extends Plugin
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function uninstall(UninstallContext $context): void
+    public function uninstall(UninstallContext $uninstallContext): void
     {
-        if ($context->keepUserData()) {
-            parent::uninstall($context);
+        if ($uninstallContext->keepUserData()) {
+            parent::uninstall($uninstallContext);
 
             return;
         }
@@ -104,18 +120,11 @@ class SwagMigrationAssistant extends Plugin
 
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
-        $connection->executeStatement('
-SET foreign_key_checks = 0;
-DROP TABLE IF EXISTS swag_migration_general_setting;
-DROP TABLE IF EXISTS swag_migration_data;
-DROP TABLE IF EXISTS swag_migration_fix;
-DROP TABLE IF EXISTS swag_migration_mapping;
-DROP TABLE IF EXISTS swag_migration_logging;
-DROP TABLE IF EXISTS swag_migration_media_file;
-DROP TABLE IF EXISTS swag_migration_run;
-DROP TABLE IF EXISTS swag_migration_connection;
-');
 
-        parent::uninstall($context);
+        foreach (self::MIGRATION_ENTITIES as $table) {
+            $connection->executeStatement('DROP TABLE IF EXISTS `' . $table . '`');
+        }
+
+        parent::uninstall($uninstallContext);
     }
 }

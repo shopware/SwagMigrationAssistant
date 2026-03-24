@@ -288,6 +288,9 @@ test.describe('Migration Tests @migration @visual', () => {
             // (the regex replaces everything after the last occurrence of "called in" in the message)
             logString = logString.replaceAll(/^(Exception message:.*called in ).*$/gm, '$1[path]');
 
+            // replace log entry counts
+            logString = logString.replaceAll(/----- Log Entry #\d+ -----/g, '----- Log Entry [count] -----');
+
             expect(logString).toMatchSnapshot('migration-log-sw5.txt');
         });
     });
