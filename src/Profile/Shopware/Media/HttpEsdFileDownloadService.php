@@ -37,8 +37,8 @@ class HttpEsdFileDownloadService extends HttpDownloadServiceBase
         EntityRepository $mediaFileRepo,
         FileSaver $fileSaver,
         LoggingServiceInterface $loggingService,
-        private readonly ConnectionFactoryInterface $connectionFactory,
         MigrationConfiguration $migrationConfig,
+        private readonly ConnectionFactoryInterface $connectionFactory,
     ) {
         parent::__construct(
             $dbalConnection,
