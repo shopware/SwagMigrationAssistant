@@ -14,12 +14,12 @@ test.describe('Migration Tests @migration @visual', () => {
         const mask = getMask(page);
 
         const baseline = await EntityCounter.buildBaseline({
-            product: 427,
+            product: 428,
             product_review: 2,
             category: 62,
             property_group: 14,
             property_group_option: 93,
-            product_manufacturer: 13,
+            product_manufacturer: 14,
             order: 2,
             customer: 3,
             cms_page: 0,
@@ -234,7 +234,7 @@ test.describe('Migration Tests @migration @visual', () => {
         });
 
         await test.step('Verify migrated entities', async () => {
-            await EntityCounter.assert('swag_migration_logging', 703);
+            await EntityCounter.assert('swag_migration_logging', 702);
 
             await EntityCounter.assertBaseline(baseline);
         });
