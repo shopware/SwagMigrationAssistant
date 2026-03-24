@@ -729,58 +729,6 @@ Source data (JSON):
 
 ----- Log Entry [count] -----
 ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: product_translation
-Source path: objectdata
-Exception message: Unserialized data is not an array in [path]
-Source data (JSON):
-{
-    "id": "170",
-    "name": null,
-    "dirty": null,
-    "locale": "en-GB",
-    "mediaId": null,
-    "objectkey": "211",
-    "objectdata": "a:3:{s:10:\"txtArtikel\";s:55:\"Bonus article with shopping cart value of over 250 Euro\";s:19:\"txtshortdescription\";s:122:\"Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 250 Euros.\";s:19:\"txtlangbeschreibung\";s:225:\"<p>Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 250 Euro.<\/p>\n<p>This function needs to be activated in your backend under Configuration --&gt; Frontend<\/p>\";}",
-    "objecttype": "article",
-    "ordernumber": null,
-    "objectlanguage": "2"
-}
-Exception trace (JSON):
-[trace]
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: product_translation
-Source path: objectdata
-Exception message: Unserialized data is not an array in [path]
-Source data (JSON):
-{
-    "id": "172",
-    "name": null,
-    "dirty": null,
-    "locale": "en-GB",
-    "mediaId": null,
-    "objectkey": "210",
-    "objectdata": "a:3:{s:10:\"txtArtikel\";s:54:\"Bonus article with shopping cart value of over 50 Euro\";s:19:\"txtshortdescription\";s:122:\"Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 250 Euros.\";s:19:\"txtlangbeschreibung\";s:224:\"<p>Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 50 Euro.<\/p>\n<p>This function needs to be activated in your backend under Configuration --&gt; Frontend<\/p>\";}",
-    "objecttype": "article",
-    "ordernumber": null,
-    "objectlanguage": "2"
-}
-Exception trace (JSON):
-[trace]
-
------ Log Entry [count] -----
-ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
 Profile name: shopware55
@@ -896,6 +844,58 @@ Source data (JSON):
 
 ----- Log Entry [count] -----
 ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: product_translation
+Source path: objectdata
+Exception message: Unserialized data is not an array in [path]
+Source data (JSON):
+{
+    "id": "170",
+    "name": null,
+    "dirty": null,
+    "locale": "en-GB",
+    "mediaId": null,
+    "objectkey": "211",
+    "objectdata": "a:3:{s:10:\"txtArtikel\";s:55:\"Bonus article with shopping cart value of over 250 Euro\";s:19:\"txtshortdescription\";s:122:\"Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 250 Euros.\";s:19:\"txtlangbeschreibung\";s:225:\"<p>Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 250 Euro.<\/p>\n<p>This function needs to be activated in your backend under Configuration --&gt; Frontend<\/p>\";}",
+    "objecttype": "article",
+    "ordernumber": null,
+    "objectlanguage": "2"
+}
+Exception trace (JSON):
+[trace]
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: product_translation
+Source path: objectdata
+Exception message: Unserialized data is not an array in [path]
+Source data (JSON):
+{
+    "id": "172",
+    "name": null,
+    "dirty": null,
+    "locale": "en-GB",
+    "mediaId": null,
+    "objectkey": "210",
+    "objectdata": "a:3:{s:10:\"txtArtikel\";s:54:\"Bonus article with shopping cart value of over 50 Euro\";s:19:\"txtshortdescription\";s:122:\"Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 250 Euros.\";s:19:\"txtlangbeschreibung\";s:224:\"<p>Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 50 Euro.<\/p>\n<p>This function needs to be activated in your backend under Configuration --&gt; Frontend<\/p>\";}",
+    "objecttype": "article",
+    "ordernumber": null,
+    "objectlanguage": "2"
+}
+Exception trace (JSON):
+[trace]
+
+----- Log Entry [count] -----
+ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
 Profile name: shopware55
@@ -973,6 +973,40 @@ Entity: seo_url
 Field: type
 Source data (JSON):
 {
+    "main": "0",
+    "path": "hilfe-support",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=2"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "0",
+    "path": "versand-und-zahlungsbedingungen",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=6"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
     "main": "1",
     "path": "trends-news\/der-sommer-wird-bunt",
     "type": "blog",
@@ -1011,6 +1045,125 @@ Source data (JSON):
     "path": "trends-news\/ich-packe-meinen-koffer",
     "type": "blog",
     "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=5"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "hilfe-support",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=2"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "impressum",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=3"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "agb",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=4"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "0",
+    "path": "versand-und-zahlungsbedingungen",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=6"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "datenschutz",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=7"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "widerrufsrecht",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=8"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "ueber-uns",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=9"
 }
 
 ----- Log Entry [count] -----
@@ -1195,6 +1348,91 @@ Field: type
 Source data (JSON):
 {
     "main": "1",
+    "path": "versand-und-zahlung",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=6"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "stellenangebote",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=52"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "messen",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=54"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "das-team",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=55"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "unternehmensgeschichte",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=56"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
     "path": "trends-news\/",
     "type": "blog",
     "org_path": "sViewport=blog&sCategory=17"
@@ -1283,244 +1521,6 @@ Source data (JSON):
     "path": "passend-fuer-ihren-sommerurlaub",
     "type": "campaign",
     "org_path": "sViewport=campaign&emotionId=9"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "0",
-    "path": "hilfe-support",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=2"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "0",
-    "path": "versand-und-zahlungsbedingungen",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=6"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "hilfe-support",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=2"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "impressum",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=3"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "agb",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=4"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "0",
-    "path": "versand-und-zahlungsbedingungen",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=6"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "datenschutz",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=7"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "widerrufsrecht",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=8"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "ueber-uns",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=9"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "versand-und-zahlung",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=6"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "stellenangebote",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=52"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "messen",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=54"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "das-team",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=55"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "unternehmensgeschichte",
-    "type": "custom",
-    "org_path": "sViewport=custom&sCustom=56"
 }
 
 ----- Log Entry [count] -----
@@ -3068,12 +3068,12 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
-        "uri": "media\/image\/Lagerkorn-5l-Ballon502e4d0dcef95.jpg",
+        "uri": "media\/image\/Lagerkorn-5l-Ballon.jpg",
         "entity": "media",
         "run_id": "[uuid]",
         "written": "1",
         "media_id": "[uuid]",
-        "file_name": "Lagerkorn-5l-Ballon502e4d0dcef95",
+        "file_name": "Lagerkorn-5l-Ballon",
         "file_size": "18921",
         "processed": "0",
         "created_at": "[timestamp]",
@@ -3081,7 +3081,7 @@ Source data (JSON):
         "process_failure": "0"
     },
     "media_id": "[uuid]",
-    "source_path": "media\/image\/Lagerkorn-5l-Ballon502e4d0dcef95.jpg"
+    "source_path": "media\/image\/Lagerkorn-5l-Ballon.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -3411,13 +3411,41 @@ Source data (JSON):
         "media_id": "[uuid]",
         "file_name": "Lagerkorn-5l-Ballon502e4d0dcef95",
         "file_size": "18921",
-        "processed": "1",
+        "processed": "0",
         "created_at": "[timestamp]",
         "updated_at": "[timestamp]",
-        "process_failure": "1"
+        "process_failure": "0"
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Lagerkorn-5l-Ballon502e4d0dcef95.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
+        "uri": "media\/image\/Lagerkorn-50klein.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Lagerkorn-5,0klein",
+        "file_size": "18921",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Lagerkorn-50klein.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -3446,34 +3474,6 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/deli_logo.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
-        "uri": "media\/image\/Lagerkorn-5l-Ballon.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Lagerkorn-5l-Ballon",
-        "file_size": "18921",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Lagerkorn-5l-Ballon.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -3964,6 +3964,34 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
+        "uri": "media\/image\/LatteMacchiato.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "LatteMacchiato",
+        "file_size": "23944",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/LatteMacchiato.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
         "uri": "media\/image\/e_3.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -4006,34 +4034,6 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/schokoleim.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
-        "uri": "media\/image\/LatteMacchiato.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "LatteMacchiato",
-        "file_size": "23944",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/LatteMacchiato.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -5308,6 +5308,34 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
+        "uri": "media\/image\/Kwon-Fussschuetzer-grip-leather-schwarz503e21d45c10c.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Kwon-Fussschuetzer-grip-leather-schwarz503e21d45c10c",
+        "file_size": "33794",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Kwon-Fussschuetzer-grip-leather-schwarz503e21d45c10c.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
         "uri": "media\/image\/Kwon-Club-Line-Judo--Anzug-ganz.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -5336,20 +5364,20 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
-        "uri": "media\/image\/Kwon-Fussschuetzer-grip-leather-schwarz503e21d45c10c.jpg",
+        "uri": "media\/image\/PU-ERH-Tee-Geschenkset-Tasse.jpg",
         "entity": "media",
         "run_id": "[uuid]",
         "written": "1",
         "media_id": "[uuid]",
-        "file_name": "Kwon-Fussschuetzer-grip-leather-schwarz503e21d45c10c",
-        "file_size": "33794",
+        "file_name": "PU-ERH-Tee-Geschenkset-Tasse",
+        "file_size": "34178",
         "processed": "0",
         "created_at": "[timestamp]",
         "updated_at": "[timestamp]",
         "process_failure": "0"
     },
     "media_id": "[uuid]",
-    "source_path": "media\/image\/Kwon-Fussschuetzer-grip-leather-schwarz503e21d45c10c.jpg"
+    "source_path": "media\/image\/PU-ERH-Tee-Geschenkset-Tasse.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -5406,34 +5434,6 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/olivenoel.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
-        "uri": "media\/image\/PU-ERH-Tee-Geschenkset-Tasse.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "PU-ERH-Tee-Geschenkset-Tasse",
-        "file_size": "34178",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/PU-ERH-Tee-Geschenkset-Tasse.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -5588,34 +5588,6 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
-        "uri": "media\/image\/Steel-Dartpfeil.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Steel-Dartpfeil",
-        "file_size": "34912",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Steel-Dartpfeil.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
         "uri": "media\/image\/Schneebesen503f475f63a73.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -5630,6 +5602,34 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Schneebesen503f475f63a73.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
+        "uri": "media\/image\/Steel-Dartpfeil.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Steel-Dartpfeil",
+        "file_size": "34912",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Steel-Dartpfeil.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -7016,34 +7016,6 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
-        "uri": "media\/image\/wohnwelten_top_banner_small_02.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "wohnwelten_top_banner_small_02",
-        "file_size": "41168",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/wohnwelten_top_banner_small_02.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
         "uri": "media\/image\/Oelwechsel-Zitrone.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -7058,6 +7030,34 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Oelwechsel-Zitrone.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
+        "uri": "media\/image\/wohnwelten_top_banner_small_02.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "wohnwelten_top_banner_small_02",
+        "file_size": "41168",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/wohnwelten_top_banner_small_02.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -7828,34 +7828,6 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
-        "uri": "media\/image\/Kwon-Tasche-Coach-schwarz503e242e4ab03.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Kwon-Tasche-Coach-schwarz503e242e4ab03",
-        "file_size": "45616",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Kwon-Tasche-Coach-schwarz503e242e4ab03.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
         "uri": "media\/image\/Kwon-Chosun-Plus-Schuhe-weiss503e21265ab7b.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -7870,6 +7842,34 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Kwon-Chosun-Plus-Schuhe-weiss503e21265ab7b.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
+        "uri": "media\/image\/Kwon-Tasche-Coach-schwarz503e242e4ab03.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Kwon-Tasche-Coach-schwarz503e242e4ab03",
+        "file_size": "45616",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Kwon-Tasche-Coach-schwarz503e242e4ab03.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -8136,34 +8136,6 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
-        "uri": "media\/image\/wohnwelten_top_banner_small_01.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "wohnwelten_top_banner_small_01",
-        "file_size": "47236",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/wohnwelten_top_banner_small_01.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
         "uri": "media\/image\/PU-ERH-Tee-Geschenkset-Karte.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -8178,6 +8150,34 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/PU-ERH-Tee-Geschenkset-Karte.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
+        "uri": "media\/image\/wohnwelten_top_banner_small_01.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "wohnwelten_top_banner_small_01",
+        "file_size": "47236",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/wohnwelten_top_banner_small_01.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -9760,6 +9760,34 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
+        "uri": "media\/image\/Heiku-Kicker-Champ-Elite-Hauptbild.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Heiku-Kicker-Champ-Elite-Hauptbild",
+        "file_size": "54037",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Heiku-Kicker-Champ-Elite-Hauptbild.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
         "uri": "media\/image\/Herrenhandschuhe-aus-Peccary-zweifarbig_720x600503f77b696fa2.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -9802,34 +9830,6 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Heiku-Kicker-Champ-Elite-Hauptbild503492770db11.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
-        "uri": "media\/image\/Heiku-Kicker-Champ-Elite-Hauptbild.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Heiku-Kicker-Champ-Elite-Hauptbild",
-        "file_size": "54037",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Heiku-Kicker-Champ-Elite-Hauptbild.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -10236,34 +10236,6 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
-        "uri": "media\/image\/Oelwechsel-Sorten-Front502df8eb7b40f.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Oelwechsel-Sorten-Front502df8eb7b40f",
-        "file_size": "61644",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Oelwechsel-Sorten-Front502df8eb7b40f.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
         "uri": "media\/image\/Heiku-Kicker-Champ-Family-hauptbild.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -10306,6 +10278,34 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Heiku-Kicker-Champ-Individuell-Hauptbild.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
+        "uri": "media\/image\/Oelwechsel-Sorten-Front.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Oelwechsel-Sorten-Front",
+        "file_size": "61644",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Oelwechsel-Sorten-Front.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -10544,6 +10544,34 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
+        "uri": "media\/image\/Oelwechsel-Sorten-Front502df8eb7b40f.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Oelwechsel-Sorten-Front502df8eb7b40f",
+        "file_size": "61644",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Oelwechsel-Sorten-Front502df8eb7b40f.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
         "uri": "media\/image\/Schluesselkasten-weiss-offen.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -10698,34 +10726,6 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Ranunkel-Deko-Topf.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
-        "uri": "media\/image\/Oelwechsel-Sorten-Front.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Oelwechsel-Sorten-Front",
-        "file_size": "61644",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Oelwechsel-Sorten-Front.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -12868,6 +12868,34 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
+        "uri": "media\/image\/Traubenbatterie-Rotbart-CloseUp.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Traubenbatterie-Rotbart-CloseUp",
+        "file_size": "96079",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Traubenbatterie-Rotbart-CloseUp.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
         "uri": "media\/image\/teaser504063fd12513.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -12938,34 +12966,6 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Banner.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
-        "uri": "media\/image\/Traubenbatterie-Rotbart-CloseUp.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Traubenbatterie-Rotbart-CloseUp",
-        "file_size": "96079",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Traubenbatterie-Rotbart-CloseUp.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -15108,34 +15108,6 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
-        "uri": "media\/image\/Servietten.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Servietten",
-        "file_size": "150967",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Servietten.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
         "uri": "media\/image\/Buecher-ESD503f5a25e6a12.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -15150,6 +15122,34 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Buecher-ESD503f5a25e6a12.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
+        "uri": "media\/image\/Servietten.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Servietten",
+        "file_size": "150967",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Servietten.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -15920,6 +15920,34 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
+        "uri": "media\/image\/PU-ERH-Tee-Geschenkset-Cover.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "PU-ERH-Tee-Geschenkset-Cover",
+        "file_size": "198293",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/PU-ERH-Tee-Geschenkset-Cover.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
         "uri": "media\/image\/beach1.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -15962,34 +15990,6 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/wohnwelten_top_banner.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
-        "uri": "media\/image\/PU-ERH-Tee-Geschenkset-Cover.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "PU-ERH-Tee-Geschenkset-Cover",
-        "file_size": "198293",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/PU-ERH-Tee-Geschenkset-Cover.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -17320,6 +17320,34 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
+        "uri": "media\/image\/Emmelkamper_Holunderlikoer_700ml.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Emmelkamper_Holunderlikoer_700ml",
+        "file_size": "395538",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Emmelkamper_Holunderlikoer_700ml.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
         "uri": "media\/image\/Blog-bunt-Woman.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -17362,34 +17390,6 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Blog-bunt-Woman503737f821891.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
-        "uri": "media\/image\/Emmelkamper_Holunderlikoer_700ml.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Emmelkamper_Holunderlikoer_700ml",
-        "file_size": "395538",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Emmelkamper_Holunderlikoer_700ml.jpg"
 }
 
 ----- Log Entry [count] -----
@@ -18384,34 +18384,6 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
-        "uri": "media\/image\/Blog-Koffer503df8a7784c3.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Blog-Koffer503df8a7784c3",
-        "file_size": "717424",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Blog-Koffer503df8a7784c3.jpg"
-}
-
------ Log Entry [count] -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
         "uri": "media\/image\/Strandtuch-gelb-gross.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -18426,6 +18398,34 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Strandtuch-gelb-gross.jpg"
+}
+
+----- Log Entry [count] -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
+        "uri": "media\/image\/Blog-Koffer503df8a7784c3.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Blog-Koffer503df8a7784c3",
+        "file_size": "717424",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Blog-Koffer503df8a7784c3.jpg"
 }
 
 ----- Log Entry [count] -----
