@@ -30,7 +30,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
-use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
@@ -53,6 +53,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         private readonly MediaService $mediaService,
         private readonly ConnectionFactoryInterface $connectionFactory,
         Connection $dbalConnection,
+        private readonly MigrationConfiguration $migrationConfig,
     ) {
         parent::__construct($dbalConnection, $migrationMediaFileRepo);
     }
@@ -282,7 +283,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         $mappedWorkload->setAdditionalData($additionalData);
         $mappedWorkload->setErrorCount($mappedWorkload->getErrorCount() + 1);
 
-        if ($mappedWorkload->getErrorCount() > MediaProcessingProcessor::MEDIA_ERROR_THRESHOLD) {
+        if ($mappedWorkload->getErrorCount() > $this->migrationConfig->MIGRATION_DEFAULT_EXCEPTION_THRESHOLD) {
             $failureUuids[] = $uuid;
             $mappedWorkload->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 

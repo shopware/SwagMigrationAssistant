@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\TruncateMigrationHandler;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\TruncateMigrationMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -41,7 +42,8 @@ class TruncateMigrationHandlerTest extends TestCase
 
         $this->handler = new TruncateMigrationHandler(
             $this->connection,
-            $this->messageBus
+            $this->messageBus,
+            new MigrationConfiguration(),
         );
     }
 
@@ -243,7 +245,11 @@ class TruncateMigrationHandlerTest extends TestCase
 
             $connection = $this->createMock(Connection::class);
             $messageBus = $this->createMock(MessageBusInterface::class);
-            $handler = new TruncateMigrationHandler($connection, $messageBus);
+            $handler = new TruncateMigrationHandler(
+                $connection,
+                $messageBus,
+                new MigrationConfiguration()
+            );
 
             if ($index < \count($expectedTables) - 1) {
                 $connection

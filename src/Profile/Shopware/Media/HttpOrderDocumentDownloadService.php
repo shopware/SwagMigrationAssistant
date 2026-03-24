@@ -17,6 +17,7 @@ use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
@@ -37,12 +38,14 @@ class HttpOrderDocumentDownloadService extends HttpDownloadServiceBase
         FileSaver $fileSaver,
         LoggingServiceInterface $loggingService,
         private readonly ConnectionFactoryInterface $connectionFactory,
+        MigrationConfiguration $migrationConfig,
     ) {
         parent::__construct(
             $dbalConnection,
             $mediaFileRepo,
             $fileSaver,
             $loggingService,
+            $migrationConfig,
         );
     }
 

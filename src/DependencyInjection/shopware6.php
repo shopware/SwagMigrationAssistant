@@ -67,6 +67,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
 use SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryAssociationConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryCmsPageAssociationConverter;
@@ -277,7 +278,10 @@ return static function (ContainerConfigurator $container): void {
     $services = $container->services();
 
     $services->set(ConnectionFactory::class)
-        ->args([service('swag_migration_connection.repository')]);
+        ->args([
+            service('swag_migration_connection.repository'),
+            service(MigrationConfiguration::class),
+        ]);
 
     $services->set(Shopware6ApiGateway::class)
         ->args([
@@ -1194,12 +1198,18 @@ return static function (ContainerConfigurator $container): void {
 
     $services->set(HttpOrderDocumentDownloadService::class)
         ->parent(HttpDownloadServiceBase::class)
-        ->args([service(ConnectionFactory::class)])
+        ->args([
+            service(ConnectionFactory::class),
+            service(MigrationConfiguration::class),
+        ])
         ->tag('shopware.migration.media_file_processor');
 
     $services->set(HttpProductDownloadService::class)
         ->parent(HttpDownloadServiceBase::class)
-        ->args([service(ConnectionFactory::class)])
+        ->args([
+            service(ConnectionFactory::class),
+            service(MigrationConfiguration::class),
+        ])
         ->tag('shopware.migration.media_file_processor');
 
     $services->set(HttpOrderDocumentGenerationService::class)
@@ -1212,6 +1222,7 @@ return static function (ContainerConfigurator $container): void {
             service(MediaService::class),
             service(ConnectionFactory::class),
             service(Connection::class),
+            service(MigrationConfiguration::class),
         ])
         ->tag('shopware.migration.media_file_processor');
 };

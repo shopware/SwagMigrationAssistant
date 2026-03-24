@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ResetChecksumMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
@@ -31,8 +32,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[Package('fundamentals@after-sales')]
 final readonly class ResetChecksumHandler
 {
-    public const BATCH_SIZE = 250;
-
     /**
      * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
      */
@@ -41,6 +40,7 @@ final readonly class ResetChecksumHandler
         private MessageBusInterface $messageBus,
         private EntityRepository $migrationRunRepo,
         private RunTransitionServiceInterface $runTransitionService,
+        private MigrationConfiguration $migrationConfig,
     ) {
     }
 
@@ -56,7 +56,7 @@ final readonly class ResetChecksumHandler
         $affectedRows = $this->resetChecksums($connectionId);
         $newProcessedCount = $message->getProcessedMappings() + $affectedRows;
 
-        $isCompleted = $affectedRows < self::BATCH_SIZE;
+        $isCompleted = $affectedRows < $this->migrationConfig->MIGRATION_DEFAULT_BATCH_SIZE;
 
         if ($isCompleted) {
             $this->handleCompletion($message);
@@ -115,7 +115,7 @@ final readonly class ResetChecksumHandler
             LIMIT :limit',
             [
                 'connectionId' => Uuid::fromHexToBytes($connectionId),
-                'limit' => self::BATCH_SIZE,
+                'limit' => $this->migrationConfig->MIGRATION_DEFAULT_BATCH_SIZE,
             ],
             [
                 'connectionId' => ParameterType::BINARY,

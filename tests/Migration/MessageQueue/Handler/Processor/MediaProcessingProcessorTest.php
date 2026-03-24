@@ -30,6 +30,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
@@ -118,6 +119,7 @@ class MediaProcessingProcessorTest extends TestCase
             $this->dbalConnection,
             $this->createMock(MediaFileProcessorRegistryInterface::class),
             $this->createMock(DataSetRegistry::class),
+            new MigrationConfiguration(),
         );
     }
 
@@ -158,6 +160,7 @@ class MediaProcessingProcessorTest extends TestCase
             $this->createMock(Connection::class),
             $this->createMock(MediaFileProcessorRegistryInterface::class),
             $this->createMock(DataSetRegistry::class),
+            new MigrationConfiguration(),
         );
 
         $this->processor->process(
@@ -202,7 +205,8 @@ class MediaProcessingProcessorTest extends TestCase
             $logging,
             $this->dbalConnection,
             $this->createMock(MediaFileProcessorRegistryInterface::class),
-            $dataSetRegistry
+            $dataSetRegistry,
+            new MigrationConfiguration(),
         );
 
         $processor->process(
@@ -253,7 +257,8 @@ class MediaProcessingProcessorTest extends TestCase
             $logging,
             $this->dbalConnection,
             $registry,
-            $dataSetRegistry
+            $dataSetRegistry,
+            new MigrationConfiguration(),
         );
 
         $processor->process(
@@ -310,7 +315,8 @@ class MediaProcessingProcessorTest extends TestCase
             $this->createMock(LoggingService::class),
             $this->dbalConnection,
             $processorRegistry,
-            $dataSetRegistry
+            $dataSetRegistry,
+            new MigrationConfiguration(),
         );
 
         $processor->process(
@@ -379,7 +385,8 @@ class MediaProcessingProcessorTest extends TestCase
             $this->createMock(LoggingService::class),
             $this->dbalConnection,
             $processorRegistry,
-            $dataSetRegistry
+            $dataSetRegistry,
+            new MigrationConfiguration(),
         );
 
         $processor->process(
@@ -457,7 +464,8 @@ class MediaProcessingProcessorTest extends TestCase
             $this->createMock(LoggingService::class),
             $this->dbalConnection,
             $processorRegistry,
-            $dataSetRegistry
+            $dataSetRegistry,
+            new MigrationConfiguration(),
         );
 
         $processor->process(

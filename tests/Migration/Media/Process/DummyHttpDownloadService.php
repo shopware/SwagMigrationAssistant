@@ -15,6 +15,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -26,12 +27,14 @@ class DummyHttpDownloadService extends HttpDownloadServiceBase
         FileSaver $fileSaver,
         LoggingServiceInterface $loggingService,
         private readonly HttpClientInterface $httpClient,
+        MigrationConfiguration $migrationConfig,
     ) {
         parent::__construct(
             $dbalConnection,
             $mediaFileRepo,
             $fileSaver,
             $loggingService,
+            $migrationConfig,
         );
     }
 

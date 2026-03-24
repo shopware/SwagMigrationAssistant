@@ -34,6 +34,6 @@ class HttpMediaDownloadService extends HttpDownloadServiceBase
 
     protected function getHttpClient(MigrationContextInterface $migrationContext): ?HttpClientInterface
     {
-        return new HttpSimpleClient();
+        return new HttpSimpleClient(['connect_timeout' => $this->migrationConfig->MIGRATION_CONNECTION_TIMEOUT]);
     }
 }

@@ -32,7 +32,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
-use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 /**
@@ -49,6 +49,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
         EntityRepository $mediaFileRepo,
         private readonly FileSaver $fileSaver,
         private readonly LoggingServiceInterface $loggingService,
+        protected readonly MigrationConfiguration $migrationConfig,
     ) {
         parent::__construct($dbalConnection, $mediaFileRepo);
     }
@@ -118,7 +119,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                 $work->setAdditionalData($additionalData);
                 $work->setErrorCount($work->getErrorCount() + 1);
 
-                if ($work->getErrorCount() > MediaProcessingProcessor::MEDIA_ERROR_THRESHOLD) {
+                if ($work->getErrorCount() > $this->migrationConfig->MIGRATION_DEFAULT_EXCEPTION_THRESHOLD) {
                     $failureUuids[] = $uuid;
                     $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 

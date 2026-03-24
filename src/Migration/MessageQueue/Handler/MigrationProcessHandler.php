@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -25,8 +26,6 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
  */
 final class MigrationProcessHandler
 {
-    private int $batchSize = 100;
-
     /**
      * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
      */
@@ -34,6 +33,7 @@ final class MigrationProcessHandler
         private readonly EntityRepository $migrationRunRepo,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly MigrationProcessorRegistry $processorRegistry,
+        private readonly MigrationConfiguration $migrationConfig,
     ) {
     }
 
@@ -47,7 +47,12 @@ final class MigrationProcessHandler
             throw MigrationException::noRunProgressFound($run->getId());
         }
 
-        $migrationContext = $this->migrationContextFactory->create($run, $progress->getCurrentEntityProgress(), $this->batchSize, $progress->getCurrentEntity());
+        $migrationContext = $this->migrationContextFactory->create(
+            $run,
+            $progress->getCurrentEntityProgress(),
+            $this->migrationConfig->MIGRATION_DEFAULT_BATCH_SIZE,
+            $progress->getCurrentEntity()
+        );
 
         if ($migrationContext === null) {
             throw MigrationException::migrationContextNotCreated();

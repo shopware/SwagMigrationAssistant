@@ -28,6 +28,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
@@ -39,9 +40,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[Package('fundamentals@after-sales')]
 class MediaProcessingProcessor extends AbstractProcessor
 {
-    final public const MEDIA_ERROR_THRESHOLD = 3;
-    final public const MESSAGE_SIZE = 10;
-
     /**
      * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
      * @param EntityRepository<SwagMigrationDataCollection> $migrationDataRepo
@@ -57,6 +55,7 @@ class MediaProcessingProcessor extends AbstractProcessor
         private readonly Connection $dbalConnection,
         private readonly MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry,
         private readonly DataSetRegistry $dataSetRegistry,
+        private readonly MigrationConfiguration $migrationConfig,
     ) {
         parent::__construct(
             $migrationRunRepo,
@@ -119,7 +118,7 @@ class MediaProcessingProcessor extends AbstractProcessor
 
             ++$currentCount;
 
-            if ($currentCount > self::MESSAGE_SIZE) {
+            if ($currentCount > $this->migrationConfig->MIGRATION_MEDIA_PROCESSING_BATCH_SIZE) {
                 break;
             }
 
@@ -203,7 +202,7 @@ class MediaProcessingProcessor extends AbstractProcessor
         MediaFileProcessorInterface $processor,
         array $workload,
     ): void {
-        for ($i = 0; $i < self::MEDIA_ERROR_THRESHOLD; ++$i) {
+        for ($i = 0; $i < $this->migrationConfig->MIGRATION_DEFAULT_EXCEPTION_THRESHOLD; ++$i) {
             $errorWorkload = [];
 
             foreach ($workload as $item) {

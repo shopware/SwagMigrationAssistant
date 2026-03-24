@@ -2,6 +2,9 @@
 .idea/
 .vscode/
 
+# llm
+.claude
+
 # os
 .DS_Store
 

@@ -41,7 +41,7 @@ class HttpSimpleClient implements HttpClientInterface
     protected function constructClient(array $additionalOptions = []): Client
     {
         return new Client(\array_merge([
-            'connect_timeout' => 15.0,
+            'timeout' => 15.0,
         ], $additionalOptions));
     }
 }

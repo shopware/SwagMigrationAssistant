@@ -50,6 +50,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
@@ -93,7 +94,8 @@ trait MigrationServicesTrait
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService(
             $loggingRepo,
-            new NullLogger()
+            new NullLogger(),
+            new MigrationConfiguration()
         );
 
         $connectionFactory = new ConnectionFactory();
@@ -125,7 +127,8 @@ trait MigrationServicesTrait
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService(
             $loggingRepo,
-            new NullLogger()
+            new NullLogger(),
+            new MigrationConfiguration()
         );
 
         $connectionFactory = new ConnectionFactory();
@@ -164,7 +167,8 @@ trait MigrationServicesTrait
     ): MigrationDataConverterInterface {
         $loggingService = new LoggingService(
             $loggingRepo,
-            new NullLogger()
+            new NullLogger(),
+            new MigrationConfiguration()
         );
 
         $validator = Validation::createValidator();
