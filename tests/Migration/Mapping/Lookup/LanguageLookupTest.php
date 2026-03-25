@@ -110,7 +110,7 @@ class LanguageLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{localeCode: string|null, expectedResult: ?string}>
+     * @return array<int, array{localeCode: string, expectedResult: ?string}>
      */
     public static function getData(): array
     {
@@ -122,7 +122,7 @@ class LanguageLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{localeCode: string|null, expectedResult: string}>
+     * @return array<int, array{localeCode: string, expectedResult: string}>
      */
     public static function getDatabaseData(): array
     {
@@ -135,8 +135,11 @@ class LanguageLookupTest extends TestCase
         foreach ($list as $language) {
             static::assertInstanceOf(LanguageEntity::class, $language);
 
+            $localeCode = $language->getLocale()?->getCode();
+            static::assertNotNull($localeCode);
+
             $returnData[] = [
-                'localeCode' => $language->getLocale()?->getCode(),
+                'localeCode' => $localeCode,
                 'expectedResult' => $language->getId(),
             ];
         }

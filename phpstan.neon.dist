@@ -29,7 +29,9 @@ parameters:
         - message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
           path: src/DataProvider/Provider/Data/AbstractProvider.php
 
-        # TODO remove this for 6.8 compatibility
+        # TODO: remove this for 6.8 compatibility
+        - message: '#Call to deprecated method addFlags\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\Field\\Field#'
+        - message: '#Call to deprecated method setFlags\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\Field\\Field#'
         - message: '#Access to constant on deprecated class Shopware\\Core\\Checkout\\Payment\\Cart\\PaymentHandler\\DebitPayment#'
           paths:
               - src/Profile/Shopware/Premapping/PaymentMethodReader.php
@@ -42,6 +44,10 @@ parameters:
         - message: '#Call to deprecated method listTableIndexes\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
         - message: '#Call to deprecated method getName\(\) of class Doctrine\\DBAL\\Schema\\AbstractAsset#'
         - message: '#Call to deprecated method listTableForeignKeys\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
+
+        # TODO: The MainOrContainer type cannot fully express its state after nested array mutations
+        - identifier: parameterByRef.type
+          path: src/Profile/Shopware/Converter/ShippingMethodConverter.php
 
 rules:
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule

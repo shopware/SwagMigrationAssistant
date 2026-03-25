@@ -47,8 +47,10 @@ class MigrationFieldExampleGeneratorTest extends TestCase
     }
 
     #[DataProvider('exampleFieldProvider')]
-    public function testGenerateExample(Field $field, ?string $expected): void
+    public function testGenerateExample(Field $field, string|false|null $expected): void
     {
+        static::assertIsString($expected);
+
         $example = MigrationFieldExampleGenerator::generateExample($field);
         static::assertSame($expected, $example);
     }

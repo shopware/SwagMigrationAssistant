@@ -51,7 +51,7 @@ class StateMachineStateLookupTest extends TestCase
     }
 
     /**
-     * @return array<array{technicalName: string, stateMachineTechnicalName: string|null, expectedResult: string|null}>
+     * @return array<array{technicalName: string, stateMachineTechnicalName: string, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -63,7 +63,7 @@ class StateMachineStateLookupTest extends TestCase
     }
 
     /**
-     * @return array<array{technicalName: string, stateMachineTechnicalName: string|null, expectedResult: string}>
+     * @return array<array{technicalName: string, stateMachineTechnicalName: string, expectedResult: string}>
      */
     public static function getDatabaseData(): array
     {
@@ -74,9 +74,13 @@ class StateMachineStateLookupTest extends TestCase
         $returnData = [];
         foreach ($list as $stateMachineState) {
             static::assertInstanceOf(StateMachineStateEntity::class, $stateMachineState);
+
+            $stateMachineTechnicalName = $stateMachineState->getStateMachine()?->getTechnicalName();
+            static::assertNotNull($stateMachineTechnicalName);
+
             $returnData[] = [
                 'technicalName' => $stateMachineState->getTechnicalName(),
-                'stateMachineTechnicalName' => $stateMachineState->getStateMachine()?->getTechnicalName(),
+                'stateMachineTechnicalName' => $stateMachineTechnicalName,
                 'expectedResult' => $stateMachineState->getId(),
             ];
         }
