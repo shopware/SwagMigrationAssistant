@@ -33,6 +33,7 @@ export type ErrorResolutionTableData = {
     entityName: string;
     fieldName: string;
     resolved: boolean;
+    isPreviouslyFixed: boolean;
 };
 
 /**
@@ -309,6 +310,7 @@ export default Shopware.Component.wrapComponentConfig({
                     code: item.code,
                     profileName: item.profileName,
                     gatewayName: item.gatewayName,
+                    isPreviouslyFixed: item.isPreviouslyFixed ?? false,
                 }));
             } catch {
                 this.createNotificationError({

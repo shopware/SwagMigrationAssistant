@@ -73,7 +73,7 @@ readonly class LogGroupingService
     /**
      * @throws Exception
      *
-     * @return array{total: int, items: array<int, array{code: string, entityName: string|null, fieldName: string|null, count: int, fixCount: int}>, levelCounts: array{error: int, warning: int, info: int}}
+     * @return array{total: int, items: array<int, array{code: string, entityName: string|null, fieldName: string|null, profileName: string, gatewayName: string, count: int, fixCount: int, isPreviouslyFixed: bool}>, levelCounts: array{error: int, warning: int, info: int}}
      */
     public function getGroupedLogsByCodeAndEntity(
         string $runUuid,
@@ -123,15 +123,22 @@ readonly class LogGroupingService
 
         $additionalWhere = $whereConditions !== [] ? ' AND ' . \implode(' AND ', $whereConditions) : '';
 
-        // determine if we need the fix join for status filtering
+        // for the previously-fixed part of the UNION, entity/field conditions reference different columns
+        $additionalWherePreviouslyFixed = \str_replace(
+            ['l.entity_name', 'l.field_name'],
+            ['f.entity_name', 'f.path'],
+            $additionalWhere
+        );
+
+        // still needed to control the fix JOIN in the level-counts query
         $includeFixJoin = $validatedFilterStatus !== null;
 
         $sql = $this->buildMainQuery(
             $additionalWhere,
+            $additionalWherePreviouslyFixed,
             $validatedFilterStatus,
             $orderColumn,
             $orderDirection,
-            $includeFixJoin
         );
 
         $result = $this->connection->executeQuery($sql, $params, [
@@ -298,82 +305,107 @@ readonly class LogGroupingService
     }
 
     /**
-     * builds the main grouped logs query.
+     * builds the unified grouped-logs query.
+     *
+     * Uses UNION ALL to combine current-run log groups with previously-fixed groups
+     * (fixes that exist for this connection but have no log in the current run).
+     * A window function replaces the old count subquery for simpler pagination totals.
+     *
+     * Filter status is applied as an outer WHERE rather than HAVING on each branch,
+     * which naturally excludes previously-fixed groups when filtering for 'unresolved'
+     * (they always have count = fix_count) and includes them for 'resolved'.
      */
     private function buildMainQuery(
         string $additionalWhere,
+        string $additionalWherePreviouslyFixed,
         ?string $filterStatus,
         string $orderColumn,
         string $orderDirection,
-        bool $includeFixJoin,
     ): string {
-        // build HAVING clause from validated filter status
-        $havingClause = match ($filterStatus) {
-            'resolved' => 'HAVING COUNT(DISTINCT l.id) > 0 AND COUNT(DISTINCT l.id) = COUNT(DISTINCT f.id)',
-            'unresolved' => 'HAVING COUNT(DISTINCT l.id) > 0 AND COUNT(DISTINCT l.id) != COUNT(DISTINCT f.id)',
-            default => '',
-        };
-
-        // build count subquery components
-        $countSubqueryFixJoin = $includeFixJoin
-            ? 'LEFT JOIN swag_migration_fix f2 ON (
-                        f2.connection_id = :connectionId
-                        AND f2.entity_name = l2.entity_name
-                        AND f2.path = l2.field_name
-                        AND f2.entity_id = l2.entity_id
-                    )'
-            : '';
-
-        $countSubqueryHaving = match ($filterStatus) {
-            'resolved' => 'HAVING COUNT(DISTINCT l2.id) > 0 AND COUNT(DISTINCT l2.id) = COUNT(DISTINCT f2.id)',
-            'unresolved' => 'HAVING COUNT(DISTINCT l2.id) > 0 AND COUNT(DISTINCT l2.id) != COUNT(DISTINCT f2.id)',
-            default => '',
-        };
-
-        $countSubqueryWhere = \str_replace('l.', 'l2.', $additionalWhere);
-
         /*
-         * MAIN QUERY STRUCTURE:
-         * this query groups logs by code, entity_name, and field_name, counting occurrences
-         * and tracking fix status. The subquery calculates total count for pagination.
+         * @SECURITY $orderColumn is validated against ALLOWED_SORT_COLUMNS before reaching here.
+         * The outer ORDER BY uses unqualified aliases, so strip the 'l.' table qualifier.
          */
+        $outerOrderColumn = \str_replace('l.', '', $orderColumn);
+
+        $outerWhereClause = match ($filterStatus) {
+            'resolved' => 'WHERE `count` > 0 AND `count` = fix_count',
+            'unresolved' => 'WHERE `count` > 0 AND `count` != fix_count',
+            default => '',
+        };
+
         return "
             SELECT
-                l.code,
-                l.entity_name,
-                l.field_name,
-                l.gateway_name,
-                l.profile_name,
-                COUNT(DISTINCT l.id) as count,
-                (
-                    SELECT COUNT(*)
-                    FROM (
+                code,
+                entity_name,
+                field_name,
+                gateway_name,
+                profile_name,
+                count,
+                fix_count,
+                is_previously_fixed,
+                COUNT(*) OVER() AS total
+            FROM (
+                SELECT
+                    l.code,
+                    l.entity_name,
+                    l.field_name,
+                    l.gateway_name,
+                    l.profile_name,
+                    COUNT(DISTINCT l.id)  AS count,
+                    COUNT(DISTINCT f.id)  AS fix_count,
+                    0                     AS is_previously_fixed
+                FROM swag_migration_logging l
+                LEFT JOIN swag_migration_fix f ON (
+                    f.connection_id = :connectionId
+                    AND f.entity_name = l.entity_name
+                    AND f.path = l.field_name
+                    AND f.entity_id = l.entity_id
+                )
+                WHERE l.run_id = :runId
+                    AND l.level = :level
+                    AND l.user_fixable = 1
+                    {$additionalWhere}
+                GROUP BY l.code, l.entity_name, l.field_name
+
+                UNION ALL
+
+                SELECT
+                    l.code,
+                    f.entity_name,
+                    f.path                      AS field_name,
+                    MIN(l.gateway_name)         AS gateway_name,
+                    MIN(l.profile_name)         AS profile_name,
+                    COUNT(DISTINCT f.entity_id) AS count,
+                    COUNT(DISTINCT f.entity_id) AS fix_count,
+                    1                           AS is_previously_fixed
+                FROM swag_migration_fix f
+                JOIN swag_migration_logging l ON (
+                    l.entity_id   = f.entity_id
+                    AND l.entity_name = f.entity_name
+                    AND l.field_name  = f.path
+                    AND l.user_fixable = 1
+                    AND l.level       = :level
+                )
+                JOIN swag_migration_run r ON (
+                    l.run_id        = r.id
+                    AND r.connection_id = :connectionId
+                )
+                WHERE f.connection_id = :connectionId
+                    AND NOT EXISTS (
                         SELECT 1
-                        FROM swag_migration_logging l2
-                        {$countSubqueryFixJoin}
-                        WHERE l2.run_id = :runId
-                            AND l2.level = :level
-                            AND l2.user_fixable = 1
-                            {$countSubqueryWhere}
-                        GROUP BY l2.code, l2.entity_name, l2.field_name
-                        {$countSubqueryHaving}
-                    ) as grouped_logs
-                ) as total,
-                COUNT(DISTINCT f.id) as fix_count
-            FROM swag_migration_logging l
-            LEFT JOIN swag_migration_fix f ON (
-                f.connection_id = :connectionId
-                AND f.entity_name = l.entity_name
-                AND f.path = l.field_name
-                AND f.entity_id = l.entity_id
-            )
-            WHERE l.run_id = :runId
-                AND l.level = :level
-                AND l.user_fixable = 1
-                {$additionalWhere}
-            GROUP BY l.code, l.entity_name, l.field_name
-            {$havingClause}
-            ORDER BY {$orderColumn} {$orderDirection}, l.code ASC, l.entity_name ASC, l.field_name ASC
+                        FROM swag_migration_logging curr
+                        WHERE curr.run_id       = :runId
+                          AND curr.entity_id   = f.entity_id
+                          AND curr.entity_name = f.entity_name
+                          AND curr.field_name  = f.path
+                          AND curr.user_fixable = 1
+                    )
+                    {$additionalWherePreviouslyFixed}
+                GROUP BY l.code, f.entity_name, f.path
+            ) AS unified
+            {$outerWhereClause}
+            ORDER BY {$outerOrderColumn} {$orderDirection}, code ASC, entity_name ASC, field_name ASC
             LIMIT :limit OFFSET :offset
         ";
     }
@@ -456,7 +488,7 @@ readonly class LogGroupingService
     /**
      * @param array<array<string, mixed>> $rows
      *
-     * @return array<int, array{code: string, entityName: string|null, fieldName: string|null, profileName: string, gatewayName: string, count: int, fixCount: int}>
+     * @return array<int, array{code: string, entityName: string|null, fieldName: string|null, profileName: string, gatewayName: string, count: int, fixCount: int, isPreviouslyFixed: bool}>
      */
     private function mapLogsFromRows(array $rows): array
     {
@@ -469,6 +501,7 @@ readonly class LogGroupingService
                 'gatewayName' => $row['gateway_name'],
                 'count' => (int) $row['count'],
                 'fixCount' => (int) $row['fix_count'],
+                'isPreviouslyFixed' => (bool) $row['is_previously_fixed'],
             ],
             $rows
         );
