@@ -364,7 +364,6 @@ export default Shopware.Component.wrapComponentConfig({
                         connectionCheckResponse.requestStatus.code !== '' &&
                         connectionCheckResponse.requestStatus.isWarning === true
                     ) {
-                        // eslint-disable-next-line max-len
                         this.errorMessageSnippet = `swag-migration.wizard.pages.credentials.success.${connectionCheckResponse.requestStatus.code}`;
                     }
 

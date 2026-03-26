@@ -308,7 +308,6 @@ export default Shopware.Component.wrapComponentConfig({
 
             for (let i = 0; i < iterations; i += 1) {
                 // each batch must be completed before fetching the next
-                // eslint-disable-next-line no-await-in-loop
                 const { entityIds } = await this.migrationApiService.getLogEntityIdsWithoutFix(
                     this.runId,
                     this.selectedLog.code,
@@ -321,7 +320,6 @@ export default Shopware.Component.wrapComponentConfig({
                 const entities = entityIds.map((entityId: string) => this.createResolutionEntity(entityId));
 
                 // each batch must be completed before fetching the next
-                // eslint-disable-next-line no-await-in-loop
                 await this.migrationFixRepository.saveAll(entities);
             }
         },

@@ -23,7 +23,7 @@ export default [
     ...tsPlugin.configs['flat/recommended'],
     ...pluginVue.configs['flat/recommended'],
     {
-        files: ['**/*.js', '**/*.ts', '**/*.vue', '**/*.html', '**/*.html.twig'],
+        files: ['**/*.js', '**/*.ts', '**/*.vue', '**/*.html'],
         languageOptions: {
             parser: vueParser,
             parserOptions: {
