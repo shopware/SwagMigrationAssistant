@@ -75,7 +75,7 @@ module.exports = {
     },
 
     transform: {
-        '^.+\\.[jt]sx?$': '<rootDir>/tests/Jest/babel-transform.js',
+        '^.+\\.[jt]s$': '<rootDir>/tests/Jest/babel-transform.js',
         '^.+(\\.twig|\\.html)$': '<rootDir>/tests/Jest/node_modules/@shopware-ag/jest-preset-sw6-admin/@tool/twig-to-vue-transformer/index.js',
     },
 
