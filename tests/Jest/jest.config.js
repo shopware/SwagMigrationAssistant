@@ -74,6 +74,11 @@ module.exports = {
         '^lodash-es/(.*)$': 'lodash/$1',
     },
 
+    transform: {
+        '^.+\\.[jt]sx?$': '<rootDir>/tests/Jest/babel-transform.js',
+        '^.+(\\.twig|\\.html)$': '<rootDir>/tests/Jest/node_modules/@shopware-ag/jest-preset-sw6-admin/@tool/twig-to-vue-transformer/index.js',
+    },
+
     transformIgnorePatterns: [
         '/node_modules/(?!(@shopware-ag/meteor-component-library|@shopware-ag/meteor-icon-kit|uuidv7|other)/)',
     ],
