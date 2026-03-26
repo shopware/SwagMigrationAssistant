@@ -79,6 +79,8 @@ class ErrorResolutionControllerTest extends TestCase
     #[DataProvider('fieldStructureProvider')]
     public function testGetFieldStructureProduct(string $entityName, string $fieldName, array $expected): void
     {
+        static::assertNotFalse($expected['example']);
+
         $request = new Request([], [
             'entityName' => $entityName,
             'fieldName' => $fieldName,
