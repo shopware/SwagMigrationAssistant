@@ -152,6 +152,7 @@ readonly class LogGroupingService
         $levelCounts = $this->getLogLevelCounts(
             $params,
             $additionalWhere,
+            $additionalWherePreviouslyFixed,
             $validatedFilterStatus,
             $includeFixJoin
         );
@@ -307,12 +308,12 @@ readonly class LogGroupingService
     /**
      * builds the unified grouped-logs query.
      *
-     * Uses UNION ALL to combine current-run log groups with previously-fixed groups
+     * Uses UNION ALL to combine current-run log groups with previously fixed groups
      * (fixes that exist for this connection but have no log in the current run).
      * A window function replaces the old count subquery for simpler pagination totals.
      *
      * Filter status is applied as an outer WHERE rather than HAVING on each branch,
-     * which naturally excludes previously-fixed groups when filtering for 'unresolved'
+     * which naturally excludes previously fixed groups when filtering for 'unresolved'
      * (they always have count = fix_count) and includes them for 'resolved'.
      */
     private function buildMainQuery(
@@ -413,6 +414,9 @@ readonly class LogGroupingService
     /**
      * gets log counts grouped by level for the filter badge counts.
      *
+     * Uses the same UNION ALL structure as buildMainQuery so that previously fixed
+     * groups are reflected in the badge counts alongside current-run groups.
+     *
      * @param array<string, mixed> $params
      *
      * @throws Exception
@@ -422,6 +426,7 @@ readonly class LogGroupingService
     private function getLogLevelCounts(
         array $params,
         string $additionalWhere,
+        string $additionalWherePreviouslyFixed,
         ?string $filterStatus,
         bool $includeFixJoin,
     ): array {
@@ -442,6 +447,41 @@ readonly class LogGroupingService
             }
         : '';
 
+        $previouslyFixedUnion = $filterStatus !== 'unresolved'
+            ? "
+                UNION ALL
+
+                SELECT
+                    l.level,
+                    l.code,
+                    f.entity_name,
+                    f.path AS field_name
+                FROM swag_migration_fix f
+                JOIN swag_migration_logging l ON (
+                    l.entity_id   = f.entity_id
+                    AND l.entity_name = f.entity_name
+                    AND l.field_name  = f.path
+                    AND l.user_fixable = 1
+                )
+                JOIN swag_migration_run r ON (
+                    l.run_id        = r.id
+                    AND r.connection_id = :connectionId
+                )
+                WHERE f.connection_id = :connectionId
+                    AND NOT EXISTS (
+                        SELECT 1
+                        FROM swag_migration_logging curr
+                        WHERE curr.run_id       = :runId
+                          AND curr.entity_id   = f.entity_id
+                          AND curr.entity_name = f.entity_name
+                          AND curr.field_name  = f.path
+                          AND curr.user_fixable = 1
+                    )
+                    {$additionalWherePreviouslyFixed}
+                GROUP BY l.level, l.code, f.entity_name, f.path
+            "
+            : '';
+
         $sql = "
             SELECT
                 level,
@@ -459,6 +499,7 @@ readonly class LogGroupingService
                     {$additionalWhere}
                 GROUP BY l.level, l.code, l.entity_name, l.field_name
                 {$havingClause}
+                {$previouslyFixedUnion}
             ) as filtered_logs
             GROUP BY level
         ";

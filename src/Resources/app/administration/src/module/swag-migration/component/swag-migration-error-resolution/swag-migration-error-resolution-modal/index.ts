@@ -193,7 +193,11 @@ export default Shopware.Component.wrapComponentConfig({
 
         selectedCount(): number {
             if (this.selectAllMode) {
-                return this.tableTotal - this.selectedLog.fixCount;
+                if (this.selectedLog.isPreviouslyFixed) {
+                    return this.tableTotal;
+                }
+
+                return Math.max(0, this.tableTotal - this.selectedLog.fixCount);
             }
 
             return this.selectedLogIds.length;
@@ -461,7 +465,8 @@ export default Shopware.Component.wrapComponentConfig({
             const logsResult = await this.migrationLoggingRepository.search(this.loggingCriteria);
             this.tableTotal = logsResult.total;
 
-            const entityIds = logsResult.map((log: MigrationLog) => log.entityId)
+            const entityIds = logsResult
+                .map((log: MigrationLog) => log.entityId)
                 .filter((entityId): entityId is string => !!entityId);
 
             const fixesMap = await this.buildFixesMap(entityIds);
@@ -509,6 +514,7 @@ export default Shopware.Component.wrapComponentConfig({
                 .addFilter(Criteria.equals('entityName', this.selectedLog.entityName))
                 .addFilter(Criteria.equals('fieldName', this.selectedLog.fieldName))
                 .addFilter(Criteria.equalsAny('entityId', entityIds))
+                .addFilter(Criteria.equals('run.connectionId', this.migrationStore.connectionId))
                 .addIncludes({
                     swag_migration_logging: [
                         'id',
@@ -644,15 +650,14 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            if (!this.selectAllMode) {
-                // force select-all behaviour
-                this.applySelectionToGrid(true);
+            // force select-all behaviour
+            this.applySelectionToGrid(true);
 
-                await this.$nextTick();
+            await this.$nextTick();
+            this.selectedLogIds = [];
+            await this.$nextTick();
 
-                this.selectedLogIds = [];
-                this.selectAllMode = true;
-            }
+            this.selectAllMode = true;
         },
 
         async onResetResolution(item: ResolutionModalRow) {
@@ -669,6 +674,8 @@ export default Shopware.Component.wrapComponentConfig({
                         ...this.tableData.slice(index + 1),
                     ];
                 }
+
+                this.$emit('fixes-reset');
 
                 return;
             }
