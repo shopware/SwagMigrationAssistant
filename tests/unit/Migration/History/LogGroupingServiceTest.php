@@ -59,7 +59,7 @@ class LogGroupingServiceTest extends TestCase
     /**
      * @param array<int, array<string, mixed>> $dbRows
      * @param array<int, array<string, mixed>> $levelCountRows
-     * @param array<int, array{code: string, entityName: string|null, fieldName: string|null, profileName: string, gatewayName: string, count: int, fixCount: int}> $expectedItems
+     * @param array<int, array{code: string, entityName: string|null, fieldName: string|null, profileName: string, gatewayName: string, count: int, fixCount: int, isPreviouslyFixed: bool}> $expectedItems
      * @param array{error: int, warning: int, info: int} $expectedLevelCounts
      */
     #[DataProvider('getGroupedLogsDataProvider')]
@@ -102,7 +102,7 @@ class LogGroupingServiceTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{dbRows: array<int, array<string, mixed>>, levelCountRows: array<int, array<string, mixed>>, expectedTotal: int, expectedItems: array<int, array{code: string, entityName: string|null, fieldName: string|null, profileName: string, gatewayName: string, count: int, fixCount: int}>, expectedLevelCounts: array{error: int, warning: int, info: int}}>
+     * @return iterable<string, array{dbRows: array<int, array<string, mixed>>, levelCountRows: array<int, array<string, mixed>>, expectedTotal: int, expectedItems: array<int, array{code: string, entityName: string|null, fieldName: string|null, profileName: string, gatewayName: string, count: int, fixCount: int, isPreviouslyFixed: bool}>, expectedLevelCounts: array{error: int, warning: int, info: int}}>
      */
     public static function getGroupedLogsDataProvider(): iterable
     {
@@ -125,6 +125,7 @@ class LogGroupingServiceTest extends TestCase
                     'count' => '5',
                     'total' => '1',
                     'fix_count' => '2',
+                    'is_previously_fixed' => '0',
                 ],
             ],
             'levelCountRows' => [
@@ -140,12 +141,13 @@ class LogGroupingServiceTest extends TestCase
                     'gatewayName' => 'local',
                     'count' => 5,
                     'fixCount' => 2,
+                    'isPreviouslyFixed' => false,
                 ],
             ],
             'expectedLevelCounts' => ['error' => 1, 'warning' => 0, 'info' => 0],
         ];
 
-        yield 'multiple log entries with all levels' => [
+        yield 'multiple log entries with all levels and previously fixed entry' => [
             'dbRows' => [
                 [
                     'code' => 'MISSING_REQUIRED_FIELD',
@@ -156,6 +158,7 @@ class LogGroupingServiceTest extends TestCase
                     'count' => '10',
                     'total' => '3',
                     'fix_count' => '5',
+                    'is_previously_fixed' => '0',
                 ],
                 [
                     'code' => 'INVALID_FORMAT',
@@ -166,6 +169,7 @@ class LogGroupingServiceTest extends TestCase
                     'count' => '3',
                     'total' => '3',
                     'fix_count' => '0',
+                    'is_previously_fixed' => '0',
                 ],
                 [
                     'code' => 'DEPRECATED_FIELD',
@@ -176,6 +180,7 @@ class LogGroupingServiceTest extends TestCase
                     'count' => '1',
                     'total' => '3',
                     'fix_count' => '1',
+                    'is_previously_fixed' => '1',
                 ],
             ],
             'levelCountRows' => [
@@ -193,6 +198,7 @@ class LogGroupingServiceTest extends TestCase
                     'gatewayName' => 'local',
                     'count' => 10,
                     'fixCount' => 5,
+                    'isPreviouslyFixed' => false,
                 ],
                 [
                     'code' => 'INVALID_FORMAT',
@@ -202,6 +208,7 @@ class LogGroupingServiceTest extends TestCase
                     'gatewayName' => 'api',
                     'count' => 3,
                     'fixCount' => 0,
+                    'isPreviouslyFixed' => false,
                 ],
                 [
                     'code' => 'DEPRECATED_FIELD',
@@ -211,6 +218,7 @@ class LogGroupingServiceTest extends TestCase
                     'gatewayName' => 'local',
                     'count' => 1,
                     'fixCount' => 1,
+                    'isPreviouslyFixed' => true,
                 ],
             ],
             'expectedLevelCounts' => ['error' => 2, 'warning' => 5, 'info' => 10],
@@ -227,6 +235,7 @@ class LogGroupingServiceTest extends TestCase
                     'count' => '1',
                     'total' => '1',
                     'fix_count' => '0',
+                    'is_previously_fixed' => '0',
                 ],
             ],
             'levelCountRows' => [
@@ -244,6 +253,7 @@ class LogGroupingServiceTest extends TestCase
                     'gatewayName' => 'local',
                     'count' => 1,
                     'fixCount' => 0,
+                    'isPreviouslyFixed' => false,
                 ],
             ],
             'expectedLevelCounts' => ['error' => 3, 'warning' => 2, 'info' => 0],
@@ -343,6 +353,7 @@ class LogGroupingServiceTest extends TestCase
         $levelResult->method('fetchAllAssociative')->willReturn([]);
 
         $capturedSql = '';
+
         $this->connection->method('executeQuery')
             ->willReturnCallback(static function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
                 if ($capturedSql === '') {
@@ -382,27 +393,27 @@ class LogGroupingServiceTest extends TestCase
 
         yield 'valid sort by code' => [
             'inputSortBy' => 'code',
-            'expectedColumnInQuery' => 'l.code',
+            'expectedColumnInQuery' => 'code',
         ];
 
         yield 'valid sort by entityName' => [
             'inputSortBy' => 'entityName',
-            'expectedColumnInQuery' => 'l.entity_name',
+            'expectedColumnInQuery' => 'entity_name',
         ];
 
         yield 'valid sort by fieldName' => [
             'inputSortBy' => 'fieldName',
-            'expectedColumnInQuery' => 'l.field_name',
+            'expectedColumnInQuery' => 'field_name',
         ];
 
         yield 'valid sort by profileName' => [
             'inputSortBy' => 'profileName',
-            'expectedColumnInQuery' => 'l.profile_name',
+            'expectedColumnInQuery' => 'profile_name',
         ];
 
         yield 'valid sort by gatewayName' => [
             'inputSortBy' => 'gatewayName',
-            'expectedColumnInQuery' => 'l.gateway_name',
+            'expectedColumnInQuery' => 'gateway_name',
         ];
 
         yield 'invalid sort column falls back to count' => [
@@ -437,6 +448,7 @@ class LogGroupingServiceTest extends TestCase
         $levelResult->method('fetchAllAssociative')->willReturn([]);
 
         $capturedSql = '';
+
         $this->connection->method('executeQuery')
             ->willReturnCallback(static function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
                 if ($capturedSql === '') {
@@ -513,8 +525,10 @@ class LogGroupingServiceTest extends TestCase
     #[DataProvider('filterStatusValidationProvider')]
     public function testFilterStatusValidation(
         ?string $inputFilterStatus,
-        bool $expectHavingClause,
+        ?string $expectedMainWhereClause,
+        bool $expectLevelJoinAndHavingClause,
         ?string $expectedHavingType,
+        bool $expectPreviouslyFixedUnion,
     ): void {
         $connectionId = Uuid::randomBytes();
 
@@ -526,14 +540,18 @@ class LogGroupingServiceTest extends TestCase
         $levelResult = $this->createMock(Result::class);
         $levelResult->method('fetchAllAssociative')->willReturn([]);
 
-        $capturedSql = '';
+        $capturedMainSql = '';
+        $capturedLevelSql = '';
+
         $this->connection->method('executeQuery')
-            ->willReturnCallback(static function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
-                if ($capturedSql === '') {
-                    $capturedSql = $sql;
+            ->willReturnCallback(static function (string $sql) use (&$capturedMainSql, &$capturedLevelSql, $mainResult, $levelResult): Result {
+                if ($capturedMainSql === '') {
+                    $capturedMainSql = $sql;
 
                     return $mainResult;
                 }
+
+                $capturedLevelSql = $sql;
 
                 return $levelResult;
             });
@@ -551,58 +569,86 @@ class LogGroupingServiceTest extends TestCase
             null
         );
 
-        if ($expectHavingClause) {
-            static::assertStringContainsString('HAVING COUNT(DISTINCT l.id)', $capturedSql);
+        if ($expectedMainWhereClause !== null) {
+            static::assertStringContainsString($expectedMainWhereClause, $capturedMainSql);
+        } else {
+            static::assertStringNotContainsString('WHERE `count` > 0 AND `count`', $capturedMainSql);
+        }
+
+        if ($expectLevelJoinAndHavingClause) {
+            static::assertStringContainsString('LEFT JOIN swag_migration_fix f ON (', $capturedLevelSql);
+            static::assertStringContainsString('HAVING COUNT(DISTINCT l.id)', $capturedLevelSql);
 
             if ($expectedHavingType === 'resolved') {
-                static::assertStringContainsString('COUNT(DISTINCT l.id) = COUNT(DISTINCT f.id)', $capturedSql);
+                static::assertStringContainsString('COUNT(DISTINCT l.id) = COUNT(DISTINCT f.id)', $capturedLevelSql);
             } elseif ($expectedHavingType === 'unresolved') {
-                static::assertStringContainsString('COUNT(DISTINCT l.id) != COUNT(DISTINCT f.id)', $capturedSql);
+                static::assertStringContainsString('COUNT(DISTINCT l.id) != COUNT(DISTINCT f.id)', $capturedLevelSql);
             }
         } else {
-            static::assertStringNotContainsString('HAVING COUNT(DISTINCT l.id)', $capturedSql);
+            static::assertStringNotContainsString('LEFT JOIN swag_migration_fix f ON (', $capturedLevelSql);
+            static::assertStringNotContainsString('HAVING COUNT(DISTINCT l.id)', $capturedLevelSql);
+        }
+
+        static::assertStringContainsString('FROM swag_migration_fix f', $capturedMainSql);
+
+        if ($expectPreviouslyFixedUnion) {
+            static::assertStringContainsString('FROM swag_migration_fix f', $capturedLevelSql);
+        } else {
+            static::assertStringNotContainsString('FROM swag_migration_fix f', $capturedLevelSql);
         }
     }
 
     /**
-     * @return iterable<string, array{inputFilterStatus: string|null, expectHavingClause: bool, expectedHavingType: string|null}>
+     * @return iterable<string, array{inputFilterStatus: string|null, expectedMainWhereClause: string|null, expectLevelJoinAndHavingClause: bool, expectedHavingType: string|null, expectPreviouslyFixedUnion: bool}>
      */
     public static function filterStatusValidationProvider(): iterable
     {
-        yield 'null filter status - no HAVING clause' => [
+        yield 'null filter status - no status filter clauses' => [
             'inputFilterStatus' => null,
-            'expectHavingClause' => false,
+            'expectedMainWhereClause' => null,
+            'expectLevelJoinAndHavingClause' => false,
             'expectedHavingType' => null,
+            'expectPreviouslyFixedUnion' => true,
         ];
 
-        yield 'resolved filter status - HAVING with equals' => [
+        yield 'resolved filter status - outer where and level having with equals' => [
             'inputFilterStatus' => 'resolved',
-            'expectHavingClause' => true,
+            'expectedMainWhereClause' => 'WHERE `count` > 0 AND `count` = fix_count',
+            'expectLevelJoinAndHavingClause' => true,
             'expectedHavingType' => 'resolved',
+            'expectPreviouslyFixedUnion' => true,
         ];
 
-        yield 'unresolved filter status - HAVING with not equals' => [
+        yield 'unresolved filter status - outer where and level having with not equals' => [
             'inputFilterStatus' => 'unresolved',
-            'expectHavingClause' => true,
+            'expectedMainWhereClause' => 'WHERE `count` > 0 AND `count` != fix_count',
+            'expectLevelJoinAndHavingClause' => true,
             'expectedHavingType' => 'unresolved',
+            'expectPreviouslyFixedUnion' => false,
         ];
 
-        yield 'invalid filter status treated as null - no HAVING clause' => [
+        yield 'invalid filter status treated as null - no status filter clauses' => [
             'inputFilterStatus' => 'invalid_status',
-            'expectHavingClause' => false,
+            'expectedMainWhereClause' => null,
+            'expectLevelJoinAndHavingClause' => false,
             'expectedHavingType' => null,
+            'expectPreviouslyFixedUnion' => true,
         ];
 
-        yield 'SQL injection attempt treated as null - no HAVING clause' => [
+        yield 'SQL injection attempt treated as null - no status filter clauses' => [
             'inputFilterStatus' => 'resolved\'; DROP TABLE users; --',
-            'expectHavingClause' => false,
+            'expectedMainWhereClause' => null,
+            'expectLevelJoinAndHavingClause' => false,
             'expectedHavingType' => null,
+            'expectPreviouslyFixedUnion' => true,
         ];
 
-        yield 'empty string treated as null - no HAVING clause' => [
+        yield 'empty string treated as null - no status filter clauses' => [
             'inputFilterStatus' => '',
-            'expectHavingClause' => false,
+            'expectedMainWhereClause' => null,
+            'expectLevelJoinAndHavingClause' => false,
             'expectedHavingType' => null,
+            'expectPreviouslyFixedUnion' => true,
         ];
     }
 
@@ -625,14 +671,18 @@ class LogGroupingServiceTest extends TestCase
         $levelResult = $this->createMock(Result::class);
         $levelResult->method('fetchAllAssociative')->willReturn([]);
 
-        $capturedSql = '';
+        $capturedMainSql = '';
+        $capturedLevelSql = '';
+
         $this->connection->method('executeQuery')
-            ->willReturnCallback(static function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
-                if ($capturedSql === '') {
-                    $capturedSql = $sql;
+            ->willReturnCallback(static function (string $sql) use (&$capturedMainSql, &$capturedLevelSql, $mainResult, $levelResult): Result {
+                if ($capturedMainSql === '') {
+                    $capturedMainSql = $sql;
 
                     return $mainResult;
                 }
+
+                $capturedLevelSql = $sql;
 
                 return $levelResult;
             });
@@ -651,21 +701,35 @@ class LogGroupingServiceTest extends TestCase
         );
 
         if ($expectCodeCondition) {
-            static::assertStringContainsString('l.code = :filterCode', $capturedSql);
+            static::assertStringContainsString('l.code = :filterCode', $capturedMainSql);
+            static::assertStringContainsString('l.code = :filterCode', $capturedLevelSql);
         } else {
-            static::assertStringNotContainsString('l.code = :filterCode', $capturedSql);
+            static::assertStringNotContainsString('l.code = :filterCode', $capturedMainSql);
+            static::assertStringNotContainsString('l.code = :filterCode', $capturedLevelSql);
         }
 
         if ($expectEntityCondition) {
-            static::assertStringContainsString('l.entity_name = :filterEntity', $capturedSql);
+            static::assertStringContainsString('l.entity_name = :filterEntity', $capturedMainSql);
+            static::assertStringContainsString('f.entity_name = :filterEntity', $capturedMainSql);
+            static::assertStringContainsString('l.entity_name = :filterEntity', $capturedLevelSql);
+            static::assertStringContainsString('f.entity_name = :filterEntity', $capturedLevelSql);
         } else {
-            static::assertStringNotContainsString('l.entity_name = :filterEntity', $capturedSql);
+            static::assertStringNotContainsString('l.entity_name = :filterEntity', $capturedMainSql);
+            static::assertStringNotContainsString('f.entity_name = :filterEntity', $capturedMainSql);
+            static::assertStringNotContainsString('l.entity_name = :filterEntity', $capturedLevelSql);
+            static::assertStringNotContainsString('f.entity_name = :filterEntity', $capturedLevelSql);
         }
 
         if ($expectFieldCondition) {
-            static::assertStringContainsString('l.field_name = :filterField', $capturedSql);
+            static::assertStringContainsString('l.field_name = :filterField', $capturedMainSql);
+            static::assertStringContainsString('f.path = :filterField', $capturedMainSql);
+            static::assertStringContainsString('l.field_name = :filterField', $capturedLevelSql);
+            static::assertStringContainsString('f.path = :filterField', $capturedLevelSql);
         } else {
-            static::assertStringNotContainsString('l.field_name = :filterField', $capturedSql);
+            static::assertStringNotContainsString('l.field_name = :filterField', $capturedMainSql);
+            static::assertStringNotContainsString('f.path = :filterField', $capturedMainSql);
+            static::assertStringNotContainsString('l.field_name = :filterField', $capturedLevelSql);
+            static::assertStringNotContainsString('f.path = :filterField', $capturedLevelSql);
         }
     }
 
@@ -791,8 +855,7 @@ class LogGroupingServiceTest extends TestCase
             Uuid::randomHex(),
             'MISSING_FIELD',
             'product',
-            'name',
-            null
+            'name'
         );
 
         static::assertSame(1, $count);

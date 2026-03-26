@@ -123,14 +123,13 @@ readonly class LogGroupingService
 
         $additionalWhere = $whereConditions !== [] ? ' AND ' . \implode(' AND ', $whereConditions) : '';
 
-        // for the previously-fixed part of the UNION, entity/field conditions reference different columns
+        // for the previously fixed part of the UNION, entity/field conditions reference different columns
         $additionalWherePreviouslyFixed = \str_replace(
             ['l.entity_name', 'l.field_name'],
             ['f.entity_name', 'f.path'],
             $additionalWhere
         );
 
-        // still needed to control the fix JOIN in the level-counts query
         $includeFixJoin = $validatedFilterStatus !== null;
 
         $sql = $this->buildMainQuery(
