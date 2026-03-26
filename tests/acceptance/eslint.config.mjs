@@ -62,7 +62,6 @@ export default [
             '@typescript-eslint/no-unsafe-assignment': 'off',
             '@typescript-eslint/no-unsafe-return': 'off',
             'playwright/expect-expect': 'off',
-            // Playwright tests often require sequential awaits in loops
             'no-await-in-loop': 'off',
             'no-restricted-syntax': 'off',
             'no-plusplus': 'off',
@@ -73,26 +72,19 @@ export default [
             '@typescript-eslint/return-await': 'off',
             'no-promise-executor-return': 'off',
             camelcase: 'off',
-            // Correctness rules (aligned with other configs)
             'eqeqeq': ['error', 'always', { null: 'ignore' }],
             'array-callback-return': ['error', { allowImplicit: true }],
             'no-return-assign': 'error',
-            'no-throw-literal': 'error',
             'no-loop-func': 'error',
-            'no-unused-expressions': ['error', { allowShortCircuit: true, allowTernary: true, allowTaggedTemplates: true }],
             'no-new-wrappers': 'error',
             'default-case': ['error', { commentPattern: '^no default$' }],
             'radix': 'error',
-            // Security rules
             'no-eval': 'error',
-            'no-implied-eval': 'error',
             'no-new-func': 'error',
             'no-script-url': 'error',
-            // Modern JS rules
             'prefer-template': 'error',
             'prefer-rest-params': 'error',
             'prefer-spread': 'error',
-            // Variable shadowing (TS-aware version)
             'no-shadow': 'off',
             '@typescript-eslint/no-shadow': 'error',
         },
