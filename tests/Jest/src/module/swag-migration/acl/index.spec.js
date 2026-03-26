@@ -7,6 +7,7 @@ const originalShopware = Shopware;
 
 describe('src/module/swag-migration/acl/index', () => {
     beforeAll(() => {
+        // eslint-disable-next-line no-global-assign
         Shopware = {
             ...originalShopware,
             Service: () => {
@@ -26,6 +27,7 @@ describe('src/module/swag-migration/acl/index', () => {
     });
 
     afterAll(() => {
+        // eslint-disable-next-line no-global-assign
         Shopware = originalShopware;
     });
 
