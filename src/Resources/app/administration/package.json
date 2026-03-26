@@ -4,9 +4,9 @@
   "author": "shopware AG",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint .",
+    "lint": "npx eslint .",
     "lint:fix": "npm run lint -- --fix",
-    "lint:scss": "stylelint ./**/*.scss",
+    "lint:scss": "npx stylelint ./**/*.scss",
     "lint:scss:fix": "npm run lint:scss -- --fix",
     "format": "npx prettier --check \"src/**/*.{js,ts}\" --config ../../../../.prettierrc.json --cache",
     "format:fix": "npx prettier --write \"src/**/*.{js,ts}\" --config ../../../../.prettierrc.json --cache",

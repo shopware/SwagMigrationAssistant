@@ -3,10 +3,10 @@
   "author": "shopware AG",
   "version": "1.0.0",
   "scripts": {
-    "unit": "jest --config jest.config.js --ci",
-    "unit-watch": "jest --config jest.config.js --watch --coverage=false",
-    "lint": "eslint ./",
-    "lint:fix": "eslint --fix ./",
+    "unit": "npx jest --config jest.config.js --ci",
+    "unit-watch": "npx jest --config jest.config.js --watch --coverage=false",
+    "lint": "npx eslint ./",
+    "lint:fix": "npx eslint --fix ./",
     "format": "npx prettier --check \"src/**/*.{js,ts}\" --config ../../.prettierrc.json --cache",
     "format:fix": "npx prettier --write \"src/**/*.{js,ts}\" --config ../../.prettierrc.json --cache"
   },
