@@ -11,6 +11,10 @@ on:
             - trunk
     pull_request:
 
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
+
 jobs:
     danger:
         name: Danger Check
@@ -19,6 +23,7 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
+
             - name: Run Danger PHP
               uses: docker://ghcr.io/shyim/danger-php:latest
               with:
@@ -43,6 +48,7 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v5
+
             - name: Run PHPUnit
               uses: ./.github/actions/phpunit
               with:
@@ -68,5 +74,6 @@ jobs:
                           "symlink": true
                         }
                       }
+
             - name: Uninstall Plugin
               run: php bin/console plugin:uninstall ${{ env.EXTENSION_NAME }}

@@ -9,6 +9,12 @@ inputs:
 runs:
     using: composite
     steps:
+        - name: Cache npm
+          uses: actions/cache@v4
+          with:
+              path: ~/.npm
+              key: ${{ runner.os }}-admin-${{ hashFiles('src/Resources/app/administration/package-lock.json', 'tests/Jest/package-lock.json', 'tests/acceptance/package-lock.json') }}
+
         - name: Setup extension
           uses: shopware/github-actions/setup-extension@main
           with:
@@ -24,6 +30,7 @@ runs:
                       "symlink": true
                     }
                   }
+
         - name: Run Jest
           shell: bash
           run: |

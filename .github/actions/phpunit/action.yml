@@ -26,10 +26,12 @@ runs:
                       "symlink": true
                     }
                   }
+
         - name: Import SW5 TestData DB
           working-directory: custom/plugins/${{ inputs.extension_name }}/tests
           shell: bash
           run: mysql -uroot < _fixtures/database/shopware55.sql
+
         - name: Run PHPUnit
           working-directory: custom/plugins/${{ inputs.extension_name }}
           shell: bash

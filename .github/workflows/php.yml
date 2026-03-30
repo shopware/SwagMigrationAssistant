@@ -14,7 +14,11 @@ on:
             - src/**/*.php
             - tests/**/*.php
             - .github/actions/**
-            - .github/workflows/*.yml
+            - .github/workflows/**
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
 
 jobs:
     codestyle_php:
@@ -31,6 +35,7 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v5
+
             - name: Run PHPStan
               uses: ./.github/actions/phpstan
               with:

@@ -16,6 +16,12 @@ inputs:
 runs:
     using: composite
     steps:
+        - name: Cache npm
+          uses: actions/cache@v4
+          with:
+              path: ~/.npm
+              key: ${{ runner.os }}-acceptance-${{ hashFiles('tests/acceptance/package-lock.json') }}
+
         - name: Setup extension
           uses: shopware/github-actions/setup-extension@main
           with:

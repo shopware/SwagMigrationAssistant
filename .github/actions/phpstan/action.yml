@@ -26,11 +26,13 @@ runs:
                       "symlink": true
                     }
                   }
+
         - name: Create phpstan.neon
           working-directory: custom/plugins/${{ inputs.extension_name }}
           shell: bash
           run: |
               printf "parameters:\n  tmpDir: ${GITHUB_WORKSPACE}/var/phpstan\nincludes:\n  - phpstan.neon.dist" > phpstan.neon
+
         - name: PHPStan cache
           uses: actions/cache@v4
           with:
@@ -38,9 +40,11 @@ runs:
               key: ${{ runner.os }}-${{ github.repository }}-phpstan-${{ github.sha }}
               restore-keys: |
                   ${{ runner.os }}-${{ github.repository }}-phpstan-
+
         - name: Build PHPStan Bootstrap
           shell: bash
           run: php ${GITHUB_WORKSPACE}/src/Core/DevOps/StaticAnalyze/phpstan-bootstrap.php
+
         - name: Run PHPStan
           shell: bash
           run: |
