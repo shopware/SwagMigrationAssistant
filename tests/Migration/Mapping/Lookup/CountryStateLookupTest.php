@@ -56,7 +56,7 @@ class CountryStateLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{countryIso: string|null, countryStateCode: string, expectedResult: string|null}>
+     * @return array<int, array{countryIso: string, countryStateCode: string, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -69,7 +69,7 @@ class CountryStateLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{countryIso: string|null, countryStateCode: string, expectedResult: string}>
+     * @return array<int, array{countryIso: string, countryStateCode: string, expectedResult: string}>
      */
     public static function getDatabaseData(): array
     {
@@ -82,7 +82,9 @@ class CountryStateLookupTest extends TestCase
         $returnData = [];
         foreach ($list as $countryState) {
             static::assertInstanceOf(CountryStateEntity::class, $countryState);
+
             $countryIso = $countryState->getCountry()?->getIso();
+            static::assertNotNull($countryIso);
 
             $returnData[] = [
                 'countryIso' => $countryIso,

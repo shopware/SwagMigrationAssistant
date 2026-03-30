@@ -985,22 +985,10 @@ parameters:
 			path: src/Profile/Shopware6/Converter/ShopwareMediaConverter.php
 
 		-
-			message: '#^Method SwagMigrationAssistant\\Test\\DataProvider\\Service\\EnvironmentServiceTest\:\:provideEnvironments\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/DataProvider/Service/EnvironmentServiceTest.php
-
-		-
 			message: '#^Property SwagMigrationAssistant\\Test\\DeprecatedTagTest\:\:\$whiteList type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/DeprecatedTagTest.php
-
-		-
-			message: '#^Method SwagMigrationAssistant\\Test\\Migration\\Converter\\ConverterRegistryTest\:\:converterProvider\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/Migration/Converter/ConverterRegistryTest.php
 
 		-
 			message: '#^Call to deprecated method getMockForAbstractClass\(\) of class PHPUnit\\Framework\\TestCase\.$#'
@@ -1159,22 +1147,10 @@ parameters:
 			path: tests/Profile/Shopware/Gateway/ApiReaderTest.php
 
 		-
-			message: '#^Method SwagMigrationAssistant\\Test\\Profile\\Shopware\\Gateway\\LocalGatewayTest\:\:profileProvider\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/Profile/Shopware/Gateway/LocalGatewayTest.php
-
-		-
 			message: '#^Method SwagMigrationAssistant\\Test\\Profile\\Shopware6\\Converter\\ProductSortingConverterTest\:\:loadMapping\(\) has parameter \$mappingArray with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Profile/Shopware6/Converter/ProductSortingConverterTest.php
-
-		-
-			message: '#^Method SwagMigrationAssistant\\Test\\Profile\\Shopware6\\Converter\\ShopwareConverterTest\:\:dataProviderConvert\(\) return type has no value type specified in iterable type iterable\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/Profile/Shopware6/Converter/ShopwareConverterTest.php
 
 		-
 			message: '#^Method SwagMigrationAssistant\\Test\\Profile\\Shopware6\\Converter\\ShopwareConverterTest\:\:loadMapping\(\) has parameter \$mappingArray with no value type specified in iterable type array\.$#'

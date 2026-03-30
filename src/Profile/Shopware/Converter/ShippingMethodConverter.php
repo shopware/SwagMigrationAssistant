@@ -863,7 +863,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 'children' => [],
             ];
 
-            // @phpstan-ignore-next-line parameterByRef.type
             $values[] = $value;
         }
     }
@@ -1073,7 +1072,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 'children' => [],
             ];
 
-            // @phpstan-ignore-next-line parameterByRef.type
             $mainOrContainer['children'][0]['children'][] = $condition;
         }
     }
