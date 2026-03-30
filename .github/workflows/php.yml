@@ -1,0 +1,37 @@
+name: PHP Checks
+
+env:
+    EXTENSION_NAME: ${{ github.event.repository.name }}
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - trunk
+    pull_request:
+        paths:
+            - composer.json
+            - src/**/*.php
+            - tests/**/*.php
+            - .github/actions/**
+            - .github/workflows/*.yml
+
+jobs:
+    codestyle_php:
+        name: Codestyle PHP
+        runs-on: ubuntu-latest
+        steps:
+            - uses: shopware/github-actions/cs-fixer@main
+              with:
+                  rules: ''
+
+    phpstan:
+        name: PHPStan
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+            - name: Run PHPStan
+              uses: ./.github/actions/phpstan
+              with:
+                  extension_name: ${{ env.EXTENSION_NAME }}

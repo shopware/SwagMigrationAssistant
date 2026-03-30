@@ -1,0 +1,74 @@
+name: Nightly
+
+env:
+    EXTENSION_NAME: ${{ github.event.repository.name }}
+    PLATFORM_BRANCH: trunk
+
+on:
+    schedule:
+        - cron: '0 3 * * *'
+    workflow_dispatch:
+
+concurrency:
+    group: nightly-${{ github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    phpstan:
+        name: PHPStan
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+            - name: Run PHPStan
+              uses: ./.github/actions/phpstan
+              with:
+                  extension_name: ${{ env.EXTENSION_NAME }}
+
+    phpunit:
+        name: PHPUnit
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+            - name: Run PHPUnit
+              uses: ./.github/actions/phpunit
+              with:
+                  extension_name: ${{ env.EXTENSION_NAME }}
+                  platform_branch: ${{ env.PLATFORM_BRANCH }}
+
+    jest:
+        name: Jest
+        runs-on: ubuntu-latest
+        env:
+            ARTIFACTS_PATH: ${{ github.workspace }}/development
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+            - name: Run Jest
+              uses: ./.github/actions/jest
+              with:
+                  extension_name: ${{ env.EXTENSION_NAME }}
+
+    acceptance:
+        name: Playwright
+        runs-on: ubuntu-latest
+        services:
+            mysql:
+                image: mysql:8.0
+                env:
+                    MYSQL_ROOT_PASSWORD: root
+                    MYSQL_DATABASE: shopware
+                ports:
+                    - 3306:3306
+        env:
+            DATABASE_URL: mysql://root:root@127.0.0.1:3306/shopware
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+            - name: Run Playwright
+              uses: ./.github/actions/acceptance
+              with:
+                  extension_name: ${{ env.EXTENSION_NAME }}
+                  platform_branch: ${{ env.PLATFORM_BRANCH }}
+                  update_snapshots: false

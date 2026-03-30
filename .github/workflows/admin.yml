@@ -1,0 +1,80 @@
+name: Admin
+
+env:
+    EXTENSION_NAME: ${{ github.event.repository.name }}
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - trunk
+    pull_request:
+        paths:
+            - src/Resources/app/administration/**
+            - tests/Jest/**
+            - .github/actions/**
+            - .github/workflows/*.yml
+
+jobs:
+    lint:
+        name: Lint
+        runs-on: ubuntu-latest
+        steps:
+            - name: Setup extension
+              uses: shopware/github-actions/setup-extension@main
+              with:
+                  extensionName: ${{ env.EXTENSION_NAME }}
+                  install: true
+                  install-admin: true
+                  install-storefront: false
+                  extraRepositories: |
+                      {
+                        "${{ env.EXTENSION_NAME }}": {
+                          "type": "path",
+                          "url": "custom/plugins/${{ env.EXTENSION_NAME }}",
+                          "symlink": true
+                        }
+                      }
+            - name: Run lint and formatting checks
+              run: |
+                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run admin:install
+                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run lint:admin
+                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run format:admin
+                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run format:md
+
+    stylelint:
+        name: Stylelint
+        runs-on: ubuntu-latest
+        steps:
+            - name: Setup extension
+              uses: shopware/github-actions/setup-extension@main
+              with:
+                  extensionName: ${{ env.EXTENSION_NAME }}
+                  install: true
+                  install-admin: true
+                  install-storefront: false
+                  extraRepositories: |
+                      {
+                        "${{ env.EXTENSION_NAME }}": {
+                          "type": "path",
+                          "url": "custom/plugins/${{ env.EXTENSION_NAME }}",
+                          "symlink": true
+                        }
+                      }
+            - name: Run stylelint
+              run: |
+                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run admin:install
+                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run lint:admin:scss
+
+    jest:
+        name: Jest
+        runs-on: ubuntu-latest
+        env:
+            ARTIFACTS_PATH: ${{ github.workspace }}/development
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+            - name: Run Jest
+              uses: ./.github/actions/jest
+              with:
+                  extension_name: ${{ env.EXTENSION_NAME }}

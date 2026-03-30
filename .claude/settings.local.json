@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/l.kemper/code/swag/shopware/**)",
+      "Bash(vendor/bin/phpunit custom/plugins/SwagMigrationAssistant/tests/unit/Migration/History/LogGroupingServiceTest.php)"
+    ]
+  }
+}

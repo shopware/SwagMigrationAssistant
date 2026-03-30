@@ -1,0 +1,42 @@
+name: Acceptance
+
+env:
+    EXTENSION_NAME: ${{ github.event.repository.name }}
+    PLATFORM_BRANCH: trunk
+
+on:
+    workflow_dispatch:
+        inputs:
+            update_snapshots:
+                description: Update snapshots
+                required: false
+                type: boolean
+                default: false
+    push:
+        branches:
+            - trunk
+    pull_request:
+
+jobs:
+    playwright:
+        name: Playwright
+        runs-on: ubuntu-latest
+        services:
+            mysql:
+                image: mysql:8.0
+                env:
+                    MYSQL_ROOT_PASSWORD: root
+                    MYSQL_DATABASE: shopware
+                ports:
+                    - 3306:3306
+        env:
+            DATABASE_URL: mysql://root:root@127.0.0.1:3306/shopware
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v5
+            - name: Run Playwright
+              uses: ./.github/actions/acceptance
+              with:
+                  extension_name: ${{ env.EXTENSION_NAME }}
+                  platform_branch: ${{ env.PLATFORM_BRANCH }}
+                  update_snapshots: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.update_snapshots == 'true' }}

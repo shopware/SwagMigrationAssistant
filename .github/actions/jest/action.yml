@@ -1,0 +1,31 @@
+name: Jest
+description: Set up the extension and run Jest
+
+inputs:
+    extension_name:
+        required: true
+        description: Extension directory name
+
+runs:
+    using: composite
+    steps:
+        - name: Setup extension
+          uses: shopware/github-actions/setup-extension@main
+          with:
+              extensionName: ${{ inputs.extension_name }}
+              install: true
+              install-admin: true
+              install-storefront: false
+              extraRepositories: |
+                  {
+                    "${{ inputs.extension_name }}": {
+                      "type": "path",
+                      "url": "custom/plugins/${{ inputs.extension_name }}",
+                      "symlink": true
+                    }
+                  }
+        - name: Run Jest
+          shell: bash
+          run: |
+              composer -d custom/plugins/${{ inputs.extension_name }} run admin:install
+              composer -d custom/plugins/${{ inputs.extension_name }} run admin:unit -- --ci
