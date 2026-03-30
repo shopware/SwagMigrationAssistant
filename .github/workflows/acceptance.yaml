@@ -1,9 +1,5 @@
 name: Acceptance
 
-env:
-    EXTENSION_NAME: ${{ github.event.repository.name }}
-    PLATFORM_BRANCH: trunk
-
 on:
     workflow_dispatch:
         inputs:
@@ -26,6 +22,6 @@ jobs:
         name: Playwright
         uses: ./.github/workflows/action-acceptance.yml
         with:
-            extension_name: ${{ env.EXTENSION_NAME }}
-            platform_branch: ${{ env.PLATFORM_BRANCH }}
+            extension_name: ${{ github.event.repository.name }}
+            platform_branch: trunk
             update_snapshots: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.update_snapshots == 'true' }}

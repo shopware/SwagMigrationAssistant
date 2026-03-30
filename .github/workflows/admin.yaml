@@ -75,4 +75,4 @@ jobs:
         name: Jest
         uses: ./.github/workflows/action-jest.yml
         with:
-            extension_name: ${{ env.EXTENSION_NAME }}
+            extension_name: ${{ github.event.repository.name }}

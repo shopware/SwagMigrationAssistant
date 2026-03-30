@@ -1,8 +1,5 @@
 name: PHP Checks
 
-env:
-    EXTENSION_NAME: ${{ github.event.repository.name }}
-
 on:
     workflow_dispatch:
     push:
@@ -32,4 +29,4 @@ jobs:
         name: PHPStan
         uses: ./.github/workflows/action-phpstan.yml
         with:
-            extension_name: ${{ env.EXTENSION_NAME }}
+            extension_name: ${{ github.event.repository.name }}

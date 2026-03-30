@@ -46,8 +46,8 @@ jobs:
         name: PHPUnit
         uses: ./.github/workflows/action-phpunit.yml
         with:
-            extension_name: ${{ env.EXTENSION_NAME }}
-            platform_branch: ${{ env.PLATFORM_BRANCH }}
+            extension_name: ${{ github.event.repository.name }}
+            platform_branch: trunk
 
     smoke_test:
         name: Smoke test
