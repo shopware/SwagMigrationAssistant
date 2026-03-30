@@ -3,6 +3,9 @@ name: Nightly
 on:
     schedule:
         - cron: '0 1 * * *'
+    pull_request:
+        paths:
+            - '.github/workflows/nightly.yaml'
     workflow_dispatch:
 
 concurrency:
@@ -48,7 +51,11 @@ jobs:
         if: >-
             ${{
                 always() &&
-                github.event_name == 'schedule' &&
+                (
+                    github.event_name == 'schedule' ||
+                    github.event_name == 'pull_request' ||
+                    github.event_name == 'workflow_dispatch'
+                ) &&
                 (
                     needs.phpstan.result == 'failure' ||
                     needs.phpunit.result == 'failure' ||
