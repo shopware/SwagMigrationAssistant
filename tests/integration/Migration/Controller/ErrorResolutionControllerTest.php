@@ -7,6 +7,7 @@
 
 namespace integration\Migration\Controller;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
+#[CoversClass(ErrorResolutionController::class)]
 class ErrorResolutionControllerTest extends TestCase
 {
     use IntegrationTestBehaviour;
