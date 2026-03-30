@@ -486,6 +486,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
     let store = null;
 
     beforeAll(() => {
+        // eslint-disable-next-line no-global-assign
         Shopware = {
             ...originalShopware,
             Service: () => {
@@ -521,6 +522,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
     });
 
     afterAll(() => {
+        // eslint-disable-next-line no-global-assign
         Shopware = originalShopware;
     });
 
