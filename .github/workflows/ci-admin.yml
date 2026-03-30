@@ -12,7 +12,6 @@ on:
         paths:
             - src/Resources/app/administration/**
             - tests/Jest/**
-            - .github/actions/**
             - .github/workflows/**
 
 concurrency:
@@ -74,14 +73,6 @@ jobs:
 
     jest:
         name: Jest
-        runs-on: ubuntu-latest
-        env:
-            ARTIFACTS_PATH: ${{ github.workspace }}/development
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v5
-
-            - name: Run Jest
-              uses: ./.github/actions/jest
-              with:
-                  extension_name: ${{ env.EXTENSION_NAME }}
+        uses: ./.github/workflows/action-jest.yml
+        with:
+            extension_name: ${{ env.EXTENSION_NAME }}

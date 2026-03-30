@@ -13,7 +13,6 @@ on:
             - composer.json
             - src/**/*.php
             - tests/**/*.php
-            - .github/actions/**
             - .github/workflows/**
 
 concurrency:
@@ -31,12 +30,6 @@ jobs:
 
     phpstan:
         name: PHPStan
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v5
-
-            - name: Run PHPStan
-              uses: ./.github/actions/phpstan
-              with:
-                  extension_name: ${{ env.EXTENSION_NAME }}
+        uses: ./.github/workflows/action-phpstan.yml
+        with:
+            extension_name: ${{ env.EXTENSION_NAME }}

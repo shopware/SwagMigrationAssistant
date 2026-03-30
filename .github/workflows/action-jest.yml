@@ -1,0 +1,42 @@
+name: Reusable Jest
+
+on:
+    workflow_call:
+        inputs:
+            extension_name:
+                required: true
+                type: string
+
+jobs:
+    jest:
+        name: Jest
+        runs-on: ubuntu-latest
+        env:
+            ARTIFACTS_PATH: ${{ github.workspace }}/development
+        steps:
+            - name: Cache npm
+              uses: actions/cache@v4
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-admin-${{ hashFiles('src/Resources/app/administration/package-lock.json', 'tests/Jest/package-lock.json', 'tests/acceptance/package-lock.json') }}
+
+            - name: Setup extension
+              uses: shopware/github-actions/setup-extension@main
+              with:
+                  extensionName: ${{ inputs.extension_name }}
+                  install: true
+                  install-admin: true
+                  install-storefront: false
+                  extraRepositories: |
+                      {
+                        "${{ inputs.extension_name }}": {
+                          "type": "path",
+                          "url": "custom/plugins/${{ inputs.extension_name }}",
+                          "symlink": true
+                        }
+                      }
+
+            - name: Run Jest
+              uses: shopware/github-actions/admin-jest@main
+              with:
+                  extensionName: ${{ inputs.extension_name }}

@@ -1,0 +1,40 @@
+name: Reusable PHPUnit
+
+on:
+    workflow_call:
+        inputs:
+            extension_name:
+                required: true
+                type: string
+            platform_branch:
+                required: true
+                type: string
+
+jobs:
+    phpunit:
+        name: PHPUnit
+        runs-on: ubuntu-latest
+        steps:
+            - name: Setup extension
+              uses: shopware/github-actions/setup-extension@main
+              with:
+                  extensionName: ${{ inputs.extension_name }}
+                  install: true
+                  shopwareVersion: ${{ inputs.platform_branch }}
+                  extraRepositories: |
+                      {
+                        "${{ inputs.extension_name }}": {
+                          "type": "path",
+                          "url": "custom/plugins/${{ inputs.extension_name }}",
+                          "symlink": true
+                        }
+                      }
+
+            - name: Import SW5 test data DB
+              working-directory: custom/plugins/${{ inputs.extension_name }}/tests
+              run: mysql -uroot < _fixtures/database/shopware55.sql
+
+            - name: Run PHPUnit
+              uses: shopware/github-actions/phpunit@main
+              with:
+                  extensionName: ${{ inputs.extension_name }}

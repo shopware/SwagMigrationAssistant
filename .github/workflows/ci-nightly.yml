@@ -1,0 +1,42 @@
+name: Nightly
+
+env:
+    EXTENSION_NAME: ${{ github.event.repository.name }}
+    PLATFORM_BRANCH: trunk
+
+on:
+    schedule:
+        - cron: '0 1 * * *'
+    workflow_dispatch:
+
+concurrency:
+    group: nightly-${{ github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    phpstan:
+        name: PHPStan
+        uses: ./.github/workflows/action-phpstan.yml
+        with:
+            extension_name: ${{ env.EXTENSION_NAME }}
+
+    phpunit:
+        name: PHPUnit
+        uses: ./.github/workflows/action-phpunit.yml
+        with:
+            extension_name: ${{ env.EXTENSION_NAME }}
+            platform_branch: ${{ env.PLATFORM_BRANCH }}
+
+    jest:
+        name: Jest
+        uses: ./.github/workflows/action-jest.yml
+        with:
+            extension_name: ${{ env.EXTENSION_NAME }}
+
+    acceptance:
+        name: Playwright
+        uses: ./.github/workflows/action-acceptance.yml
+        with:
+            extension_name: ${{ env.EXTENSION_NAME }}
+            platform_branch: ${{ env.PLATFORM_BRANCH }}
+            update_snapshots: false

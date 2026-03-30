@@ -1,0 +1,31 @@
+name: Acceptance
+
+env:
+    EXTENSION_NAME: ${{ github.event.repository.name }}
+    PLATFORM_BRANCH: trunk
+
+on:
+    workflow_dispatch:
+        inputs:
+            update_snapshots:
+                description: Update snapshots
+                required: false
+                type: boolean
+                default: false
+    push:
+        branches:
+            - trunk
+    pull_request:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    playwright:
+        name: Playwright
+        uses: ./.github/workflows/action-acceptance.yml
+        with:
+            extension_name: ${{ env.EXTENSION_NAME }}
+            platform_branch: ${{ env.PLATFORM_BRANCH }}
+            update_snapshots: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.update_snapshots == 'true' }}

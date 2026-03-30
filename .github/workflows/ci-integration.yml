@@ -44,16 +44,10 @@ jobs:
 
     phpunit:
         name: PHPUnit
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v5
-
-            - name: Run PHPUnit
-              uses: ./.github/actions/phpunit
-              with:
-                  extension_name: ${{ env.EXTENSION_NAME }}
-                  platform_branch: ${{ env.PLATFORM_BRANCH }}
+        uses: ./.github/workflows/action-phpunit.yml
+        with:
+            extension_name: ${{ env.EXTENSION_NAME }}
+            platform_branch: ${{ env.PLATFORM_BRANCH }}
 
     smoke_test:
         name: Smoke test
