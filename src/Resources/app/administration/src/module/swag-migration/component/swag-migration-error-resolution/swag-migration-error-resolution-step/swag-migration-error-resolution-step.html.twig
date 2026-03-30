@@ -161,8 +161,15 @@
                                         {{ item.fixCount }} / {{ item.count }}
                                     </span>
 
+                                    <mt-badge
+                                        v-if="isNew(item)"
+                                        variant="attention"
+                                    >
+                                        {{ $t('swag-migration.index.error-resolution.step.card.table.new') }}
+                                    </mt-badge>
+
                                     <mt-icon
-                                        v-if="item.resolved"
+                                        v-else-if="item.resolved"
                                         class="swag-migration-error-resolution-step__card-table-count-icon"
                                         name="solid-check-circle"
                                         size="16"

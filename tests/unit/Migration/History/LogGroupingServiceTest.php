@@ -526,7 +526,7 @@ class LogGroupingServiceTest extends TestCase
     public function testFilterStatusValidation(
         ?string $inputFilterStatus,
         ?string $expectedMainWhereClause,
-        bool $expectLevelJoinAndHavingClause,
+        bool $expectLevelHavingClause,
         ?string $expectedHavingType,
         bool $expectPreviouslyFixedUnion,
     ): void {
@@ -575,8 +575,10 @@ class LogGroupingServiceTest extends TestCase
             static::assertStringNotContainsString('WHERE `count` > 0 AND `count`', $capturedMainSql);
         }
 
-        if ($expectLevelJoinAndHavingClause) {
-            static::assertStringContainsString('LEFT JOIN swag_migration_fix f ON (', $capturedLevelSql);
+        static::assertStringContainsString('LEFT JOIN swag_migration_fix f ON (', $capturedLevelSql);
+        static::assertStringContainsString('AND f.id IS NULL', $capturedLevelSql);
+
+        if ($expectLevelHavingClause) {
             static::assertStringContainsString('HAVING COUNT(DISTINCT l.id)', $capturedLevelSql);
 
             if ($expectedHavingType === 'resolved') {
@@ -585,7 +587,6 @@ class LogGroupingServiceTest extends TestCase
                 static::assertStringContainsString('COUNT(DISTINCT l.id) != COUNT(DISTINCT f.id)', $capturedLevelSql);
             }
         } else {
-            static::assertStringNotContainsString('LEFT JOIN swag_migration_fix f ON (', $capturedLevelSql);
             static::assertStringNotContainsString('HAVING COUNT(DISTINCT l.id)', $capturedLevelSql);
         }
 
@@ -599,14 +600,14 @@ class LogGroupingServiceTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{inputFilterStatus: string|null, expectedMainWhereClause: string|null, expectLevelJoinAndHavingClause: bool, expectedHavingType: string|null, expectPreviouslyFixedUnion: bool}>
+     * @return iterable<string, array{inputFilterStatus: string|null, expectedMainWhereClause: string|null, expectLevelHavingClause: bool, expectedHavingType: string|null, expectPreviouslyFixedUnion: bool}>
      */
     public static function filterStatusValidationProvider(): iterable
     {
         yield 'null filter status - no status filter clauses' => [
             'inputFilterStatus' => null,
             'expectedMainWhereClause' => null,
-            'expectLevelJoinAndHavingClause' => false,
+            'expectLevelHavingClause' => false,
             'expectedHavingType' => null,
             'expectPreviouslyFixedUnion' => true,
         ];
@@ -614,7 +615,7 @@ class LogGroupingServiceTest extends TestCase
         yield 'resolved filter status - outer where and level having with equals' => [
             'inputFilterStatus' => 'resolved',
             'expectedMainWhereClause' => 'WHERE `count` > 0 AND `count` = fix_count',
-            'expectLevelJoinAndHavingClause' => true,
+            'expectLevelHavingClause' => true,
             'expectedHavingType' => 'resolved',
             'expectPreviouslyFixedUnion' => true,
         ];
@@ -622,7 +623,7 @@ class LogGroupingServiceTest extends TestCase
         yield 'unresolved filter status - outer where and level having with not equals' => [
             'inputFilterStatus' => 'unresolved',
             'expectedMainWhereClause' => 'WHERE `count` > 0 AND `count` != fix_count',
-            'expectLevelJoinAndHavingClause' => true,
+            'expectLevelHavingClause' => true,
             'expectedHavingType' => 'unresolved',
             'expectPreviouslyFixedUnion' => false,
         ];
@@ -630,7 +631,7 @@ class LogGroupingServiceTest extends TestCase
         yield 'invalid filter status treated as null - no status filter clauses' => [
             'inputFilterStatus' => 'invalid_status',
             'expectedMainWhereClause' => null,
-            'expectLevelJoinAndHavingClause' => false,
+            'expectLevelHavingClause' => false,
             'expectedHavingType' => null,
             'expectPreviouslyFixedUnion' => true,
         ];
@@ -638,7 +639,7 @@ class LogGroupingServiceTest extends TestCase
         yield 'SQL injection attempt treated as null - no status filter clauses' => [
             'inputFilterStatus' => 'resolved\'; DROP TABLE users; --',
             'expectedMainWhereClause' => null,
-            'expectLevelJoinAndHavingClause' => false,
+            'expectLevelHavingClause' => false,
             'expectedHavingType' => null,
             'expectPreviouslyFixedUnion' => true,
         ];
@@ -646,7 +647,7 @@ class LogGroupingServiceTest extends TestCase
         yield 'empty string treated as null - no status filter clauses' => [
             'inputFilterStatus' => '',
             'expectedMainWhereClause' => null,
-            'expectLevelJoinAndHavingClause' => false,
+            'expectLevelHavingClause' => false,
             'expectedHavingType' => null,
             'expectPreviouslyFixedUnion' => true,
         ];

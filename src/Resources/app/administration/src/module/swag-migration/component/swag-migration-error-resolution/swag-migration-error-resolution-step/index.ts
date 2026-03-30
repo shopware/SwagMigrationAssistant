@@ -462,5 +462,13 @@ export default Shopware.Component.wrapComponentConfig({
 
             await this.fetchLogByLevel(null);
         },
+
+        isNew(log: ErrorResolutionTableData): boolean {
+            if (this.tableData.filter((item) => item.isPreviouslyFixed) > 0) {
+                return false;
+            }
+
+            return !this.isPreviouslyFixed && log.fixCount === 0;
+        },
     },
 });

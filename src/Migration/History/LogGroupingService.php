@@ -130,8 +130,6 @@ readonly class LogGroupingService
             $additionalWhere
         );
 
-        $includeFixJoin = $validatedFilterStatus !== null;
-
         $sql = $this->buildMainQuery(
             $additionalWhere,
             $additionalWherePreviouslyFixed,
@@ -153,7 +151,6 @@ readonly class LogGroupingService
             $additionalWhere,
             $additionalWherePreviouslyFixed,
             $validatedFilterStatus,
-            $includeFixJoin
         );
 
         return [
@@ -353,7 +350,7 @@ readonly class LogGroupingService
                     l.gateway_name,
                     l.profile_name,
                     COUNT(DISTINCT l.id)  AS count,
-                    COUNT(DISTINCT f.id)  AS fix_count,
+                    0                     AS fix_count,
                     0                     AS is_previously_fixed
                 FROM swag_migration_logging l
                 LEFT JOIN swag_migration_fix f ON (
@@ -365,6 +362,7 @@ readonly class LogGroupingService
                 WHERE l.run_id = :runId
                     AND l.level = :level
                     AND l.user_fixable = 1
+                    AND f.id IS NULL
                     {$additionalWhere}
                 GROUP BY l.code, l.entity_name, l.field_name
 
@@ -392,15 +390,6 @@ readonly class LogGroupingService
                     AND r.connection_id = :connectionId
                 )
                 WHERE f.connection_id = :connectionId
-                    AND NOT EXISTS (
-                        SELECT 1
-                        FROM swag_migration_logging curr
-                        WHERE curr.run_id       = :runId
-                          AND curr.entity_id   = f.entity_id
-                          AND curr.entity_name = f.entity_name
-                          AND curr.field_name  = f.path
-                          AND curr.user_fixable = 1
-                    )
                     {$additionalWherePreviouslyFixed}
                 GROUP BY l.code, f.entity_name, f.path
             ) AS unified
@@ -427,24 +416,19 @@ readonly class LogGroupingService
         string $additionalWhere,
         string $additionalWherePreviouslyFixed,
         ?string $filterStatus,
-        bool $includeFixJoin,
     ): array {
-        $joinClause = $includeFixJoin
-            ? 'LEFT JOIN swag_migration_fix f ON (
+        $joinClause = 'LEFT JOIN swag_migration_fix f ON (
                     f.connection_id = :connectionId
                     AND f.entity_name = l.entity_name
                     AND f.path = l.field_name
                     AND f.entity_id = l.entity_id
-                )'
-            : '';
+                )';
 
-        $havingClause = $includeFixJoin
-            ? match ($filterStatus) {
-                'resolved' => 'HAVING COUNT(DISTINCT l.id) > 0 AND COUNT(DISTINCT l.id) = COUNT(DISTINCT f.id)',
-                'unresolved' => 'HAVING COUNT(DISTINCT l.id) > 0 AND COUNT(DISTINCT l.id) != COUNT(DISTINCT f.id)',
-                default => '',
-            }
-        : '';
+        $havingClause = match ($filterStatus) {
+            'resolved' => 'HAVING COUNT(DISTINCT l.id) > 0 AND COUNT(DISTINCT l.id) = COUNT(DISTINCT f.id)',
+            'unresolved' => 'HAVING COUNT(DISTINCT l.id) > 0 AND COUNT(DISTINCT l.id) != COUNT(DISTINCT f.id)',
+            default => '',
+        };
 
         $previouslyFixedUnion = $filterStatus !== 'unresolved'
             ? "
@@ -467,15 +451,6 @@ readonly class LogGroupingService
                     AND r.connection_id = :connectionId
                 )
                 WHERE f.connection_id = :connectionId
-                    AND NOT EXISTS (
-                        SELECT 1
-                        FROM swag_migration_logging curr
-                        WHERE curr.run_id       = :runId
-                          AND curr.entity_id   = f.entity_id
-                          AND curr.entity_name = f.entity_name
-                          AND curr.field_name  = f.path
-                          AND curr.user_fixable = 1
-                    )
                     {$additionalWherePreviouslyFixed}
                 GROUP BY l.level, l.code, f.entity_name, f.path
             "
@@ -495,6 +470,7 @@ readonly class LogGroupingService
                 {$joinClause}
                 WHERE l.run_id = :runId
                     AND l.user_fixable = 1
+                    AND f.id IS NULL
                     {$additionalWhere}
                 GROUP BY l.level, l.code, l.entity_name, l.field_name
                 {$havingClause}

@@ -547,6 +547,7 @@
               "infos": "Informationen ({count})"
             },
             "table": {
+              "new": "Neu",
               "columns": {
                 "count": "Behoben / Gesamt",
                 "name": "Name",

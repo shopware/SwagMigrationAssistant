@@ -535,6 +535,7 @@
               "infos": "Infos ({count})"
             },
             "table": {
+              "new": "New",
               "columns": {
                 "count": "Fixed / Total",
                 "name": "Name",
