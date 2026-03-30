@@ -208,8 +208,7 @@ export default Shopware.Component.wrapComponentConfig({
         profile() {
             return this.connection === null || this.connection.profile === undefined
                 ? ''
-                : // eslint-disable-next-line max-len
-                  `${this.connection.profile.sourceSystemName} ${this.connection.profile.version} - ${this.connection.profile.author}`;
+                : `${this.connection.profile.sourceSystemName} ${this.connection.profile.version} - ${this.connection.profile.author}`;
         },
 
         profileIcon() {

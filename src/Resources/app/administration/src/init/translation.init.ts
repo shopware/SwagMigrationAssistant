@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * @deprecated tag:v17.0.0 - With Shopware v6.8.0 - `translation.init.ts` will be removed to use automatic language loading with language layer support
  */
