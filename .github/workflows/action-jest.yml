@@ -18,7 +18,7 @@ jobs:
               uses: actions/cache@v4
               with:
                   path: ~/.npm
-                  key: ${{ runner.os }}-admin-${{ hashFiles('src/Resources/app/administration/package-lock.json', 'tests/Jest/package-lock.json', 'tests/acceptance/package-lock.json') }}
+                  key: ${{ runner.os }}-jest-${{ hashFiles('tests/Jest/package-lock.json') }}
 
             - name: Setup extension
               uses: shopware/github-actions/setup-extension@main
@@ -36,7 +36,10 @@ jobs:
                         }
                       }
 
+            - name: Install Jest dependencies
+              working-directory: custom/plugins/${{ inputs.extension_name }}/tests/Jest
+              run: npm ci
+
             - name: Run Jest
-              uses: shopware/github-actions/admin-jest@main
-              with:
-                  extensionName: ${{ inputs.extension_name }}
+              working-directory: custom/plugins/${{ inputs.extension_name }}/tests/Jest
+              run: npm run unit

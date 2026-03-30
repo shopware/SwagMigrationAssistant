@@ -35,6 +35,4 @@ jobs:
               run: mysql -uroot < _fixtures/database/shopware55.sql
 
             - name: Run PHPUnit
-              uses: shopware/github-actions/phpunit@main
-              with:
-                  extensionName: ${{ inputs.extension_name }}
+              run: composer -d custom/plugins/${{ inputs.extension_name }} run phpunit
