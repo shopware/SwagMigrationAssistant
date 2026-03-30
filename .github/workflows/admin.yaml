@@ -20,56 +20,39 @@ concurrency:
 
 jobs:
     lint:
-        name: Lint
+        name: Lint and formatting checks
         runs-on: ubuntu-latest
         steps:
-            - name: Setup extension
-              uses: shopware/github-actions/setup-extension@main
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
               with:
-                  extensionName: ${{ env.EXTENSION_NAME }}
-                  install: true
-                  install-admin: true
-                  install-storefront: false
-                  extraRepositories: |
-                      {
-                        "${{ env.EXTENSION_NAME }}": {
-                          "type": "path",
-                          "url": "custom/plugins/${{ env.EXTENSION_NAME }}",
-                          "symlink": true
-                        }
-                      }
+                  node-version: 20
+                  cache: npm
+                  cache-dependency-path: |
+                      src/Resources/app/administration/package-lock.json
+                      tests/Jest/package-lock.json
+                      tests/acceptance/package-lock.json
+
+            - name: Install admin dependencies
+              run: |
+                  npm ci --prefix src/Resources/app/administration
+                  npm ci --prefix tests/Jest
+                  npm ci --prefix tests/acceptance
 
             - name: Run lint and formatting checks
               run: |
-                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run admin:install
-                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run lint:admin
-                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run format:admin
-                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run format:md
-
-    stylelint:
-        name: Stylelint
-        runs-on: ubuntu-latest
-        steps:
-            - name: Setup extension
-              uses: shopware/github-actions/setup-extension@main
-              with:
-                  extensionName: ${{ env.EXTENSION_NAME }}
-                  install: true
-                  install-admin: true
-                  install-storefront: false
-                  extraRepositories: |
-                      {
-                        "${{ env.EXTENSION_NAME }}": {
-                          "type": "path",
-                          "url": "custom/plugins/${{ env.EXTENSION_NAME }}",
-                          "symlink": true
-                        }
-                      }
-
-            - name: Run stylelint
-              run: |
-                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run admin:install
-                  composer -d custom/plugins/${{ env.EXTENSION_NAME }} run lint:admin:scss
+                  npm run lint --prefix tests/Jest
+                  npm run lint --prefix src/Resources/app/administration
+                  npm run lint --prefix tests/acceptance
+                  npm run lint:scss --prefix src/Resources/app/administration
+                  npm run format --prefix tests/Jest
+                  npm run format --prefix src/Resources/app/administration
+                  npm run format --prefix tests/acceptance
+                  npm run format:md --prefix src/Resources/app/administration
+                  npm run format:yml --prefix src/Resources/app/administration
 
     jest:
         name: Jest
