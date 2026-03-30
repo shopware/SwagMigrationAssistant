@@ -25,6 +25,13 @@ parameters:
           paths:
               - tests/**/*Test.php
 
+        - identifier: shopware.unexpectedTestCovers
+          paths:
+              - tests/Core/Migration/*Test.php
+              - tests/Migration/*Test.php
+              - tests/Profile/*Test.php
+              - tests/unit/*Test.php
+
         # TODO: to fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
         - message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
           path: src/DataProvider/Provider/Data/AbstractProvider.php
