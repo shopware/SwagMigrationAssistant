@@ -41,7 +41,7 @@ class MessageQueueSubscriberTest extends TestCase
     }
 
     /**
-     * @param array{messageCount: int, exceptionCount: int, logCount: int, updateCount: int, step: string} $expected
+     * @param array{messageCount: int, exceptionCount: int, logCount: int, updateCount: int, step: MigrationStep, isAborted: bool} $expected
      */
     #[DataProvider('getOnWorkerMessageFailedProvider')]
     public function testOnWorkerMessageFailed(MigrationStep $step, bool $isAborted, bool $messageWillRetry, array $expected): void
@@ -102,7 +102,7 @@ class MessageQueueSubscriberTest extends TestCase
     }
 
     /**
-     * @return \Generator<string, array{step: MigrationStep, messageWillRetry: bool, expected: array{messageCount: int, exceptionCount: int, logCount: int, updateCount: int, step: MigrationStep}}>
+     * @return \Generator<string, array{step: MigrationStep, isAborted: bool, messageWillRetry: bool, expected: array{messageCount: int, exceptionCount: int, logCount: int, updateCount: int, step: MigrationStep, isAborted: bool}}>
      */
     public static function getOnWorkerMessageFailedProvider(): \Generator
     {

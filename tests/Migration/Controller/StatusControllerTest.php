@@ -629,14 +629,12 @@ class StatusControllerTest extends TestCase
 
     /**
      * @param array{
-     *      requestData: array{
-     *          connectionId?: string,
-     *          connectionName?: string,
-     *          profileName?: string,
-     *          gatewayName?: string,
-     *          credentialFields?: array<string, string>,
-     *     },
-     *     exceptionParameter: string} $requestData
+     *     connectionId?: string,
+     *     connectionName?: string,
+     *     profileName?: string,
+     *     gatewayName?: string,
+     *     credentialFields?: array<string, string>,
+     * } $requestData
      */
     #[DataProvider('provideParamsForCreateNewConnectionToTestExceptions')]
     public function testCreateNewConnectionWithMissingParameterShouldThrowException(

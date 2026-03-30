@@ -67,7 +67,7 @@ class CountryLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{iso2: string|null, expectedResult: string|null}>
+     * @return array<int, array{iso2: string, expectedResult: string|null}>
      */
     public static function getIso2TestData(): array
     {
@@ -79,7 +79,7 @@ class CountryLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{iso3: string|null, expectedResult: string|null}>
+     * @return array<int, array{iso3: string, expectedResult: string|null}>
      */
     public static function getIso3TestData(): array
     {
@@ -91,7 +91,7 @@ class CountryLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{iso2: string|null, expectedResult: string|null}>
+     * @return array<int, array{iso2: string, expectedResult: string|null}>
      */
     public static function getIso2DatabaseData(): array
     {
@@ -106,7 +106,7 @@ class CountryLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{iso3: string|null, expectedResult: string|null}>
+     * @return array<int, array{iso3: string, expectedResult: string|null}>
      */
     public static function getIso3DatabaseData(): array
     {
@@ -121,7 +121,7 @@ class CountryLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{iso2: string|null, iso3: string|null, expectedResult: string|null}>
+     * @return array<int, array{iso2: string, iso3: string, expectedResult: string|null}>
      */
     private static function getDatabaseData(): array
     {
@@ -134,6 +134,8 @@ class CountryLookupTest extends TestCase
         $returnData = [];
         foreach ($list as $country) {
             static::assertInstanceOf(CountryEntity::class, $country);
+            static::assertNotNull($country->getIso());
+            static::assertNotNull($country->getIso3());
 
             $returnData[] = [
                 'iso2' => $country->getIso(),

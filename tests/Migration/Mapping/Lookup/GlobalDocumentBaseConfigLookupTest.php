@@ -89,7 +89,7 @@ class GlobalDocumentBaseConfigLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{documentTypeId: string|null, expectedResult: string|null}>
+     * @return array<int, array{documentTypeId: string, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -100,7 +100,7 @@ class GlobalDocumentBaseConfigLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{documentTypeId: string|null, expectedResult: string}>
+     * @return array<int, array{documentTypeId: string, expectedResult: string}>
      */
     public static function getDatabaseData(): array
     {
@@ -113,7 +113,14 @@ class GlobalDocumentBaseConfigLookupTest extends TestCase
         $returnData = [];
         foreach ($list as $documentBaseConfig) {
             static::assertInstanceOf(DocumentBaseConfigEntity::class, $documentBaseConfig);
-            $returnData[] = ['documentTypeId' => $documentBaseConfig->getDocumentType()?->getId(), 'expectedResult' => $documentBaseConfig->getId()];
+
+            $documentTypeId = $documentBaseConfig->getDocumentType()?->getId();
+            static::assertNotNull($documentTypeId);
+
+            $returnData[] = [
+                'documentTypeId' => $documentTypeId,
+                'expectedResult' => $documentBaseConfig->getId(),
+            ];
         }
 
         return $returnData;
