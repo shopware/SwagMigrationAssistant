@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Test\integration\Migration\Validation;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
@@ -22,7 +21,6 @@ use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-#[CoversClass(MigrationFieldValidationService::class)]
 class MigrationFieldValidationServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;
