@@ -127,20 +127,24 @@ class SeoUrlReader extends AbstractReader implements ReaderInterface
     /**
      * @param array<int, array<string, string>> $seoUrls
      *
-     * @return array<int, array<string, string>>
+     * @return array<int, array<string, mixed>>
      */
     private function extractTypeInformation(array $seoUrls): array
     {
         foreach ($seoUrls as &$seoUrl) {
             \parse_str($seoUrl['org_path'], $output);
+
             $seoUrl['type'] = $output['sViewport'];
+
             if ($output['sViewport'] === 'cat') {
                 $seoUrl['typeId'] = $output['sCategory'];
             }
+
             if ($output['sViewport'] === 'detail') {
                 $seoUrl['typeId'] = $output['sArticle'];
             }
         }
+
         unset($seoUrl);
 
         return $seoUrls;

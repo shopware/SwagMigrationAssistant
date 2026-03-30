@@ -114,8 +114,12 @@ abstract class ShopwareConverterTest extends TestCase
         $output = $convertResult?->getConverted();
 
         $fixtureName = \basename($fixtureFolderPath);
+
         if ($output !== null) {
-            static::assertNotNull($convertResult?->getMappingUuid(), $this->getAssertMessage($fixtureName . ': No mappingUuid in converted result struct.'));
+            static::assertNotNull(
+                $convertResult->getMappingUuid(),
+                $this->getAssertMessage($fixtureName . ': No mappingUuid in converted result struct.')
+            );
         }
 
         static::assertSame($expectedOutput, $output, $this->getAssertMessage($fixtureName . ': Output of converter does not match.'));

@@ -339,8 +339,8 @@ class MigrationLogTest extends TestCase
     }
 
     /**
-     * @param array<string, mixed>|null $exceptionTrace
-     * @param array<string, mixed> $expectedExceptionTrace
+     * @param list<array<string, mixed>>|null $exceptionTrace
+     * @param list<array<string, mixed>>|null $expectedExceptionTrace
      */
     #[DataProvider('exceptionProvider')]
     public function testLogEntryExceptions(

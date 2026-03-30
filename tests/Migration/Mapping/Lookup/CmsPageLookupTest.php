@@ -22,7 +22,7 @@ class CmsPageLookupTest extends TestCase
     use KernelTestBehaviour;
 
     /**
-     * @param array<int, string> $names
+     * @param list<string> $names
      */
     #[DataProvider('getGetByNamesData')]
     public function testGetByNames(array $names, ?string $expectedResult): void
@@ -33,7 +33,7 @@ class CmsPageLookupTest extends TestCase
     }
 
     /**
-     * @param array<int, string> $names
+     * @param list<string> $names
      */
     #[DataProvider('getGetByNamesDatabaseData')]
     public function testGetByNamesShouldGetDataFromCache(array $names, ?string $expectedResult): void
@@ -79,7 +79,7 @@ class CmsPageLookupTest extends TestCase
     }
 
     /**
-     * @return array<array{names: array<string|null>, type: string, expectedResult: string|null}>
+     * @return array<array{names: list<string>, type: string, expectedResult: string|null}>
      */
     public static function getGetLockedByNamesAndTypeData(): array
     {
@@ -91,7 +91,7 @@ class CmsPageLookupTest extends TestCase
     }
 
     /**
-     * @return array<array{names: array<string|null>, type: string, expectedResult: string}>
+     * @return array<array{names: list<string>, type: string, expectedResult: string}>
      */
     public static function getGetLockedByNamesAndTypeDatabaseData(): array
     {
@@ -106,9 +106,12 @@ class CmsPageLookupTest extends TestCase
         foreach ($list as $cmsPage) {
             static::assertInstanceOf(CmsPageEntity::class, $cmsPage);
             $result = [];
+
+            static::assertNotNull($cmsPage->getName());
             $result[] = $cmsPage->getName();
 
             foreach ($cmsPage->getTranslations() ?? [] as $translation) {
+                static::assertNotNull($translation->getName());
                 $result[] = $translation->getName();
             }
 
@@ -119,7 +122,7 @@ class CmsPageLookupTest extends TestCase
     }
 
     /**
-     * @return array<array{names: array<string|null>, expectedResult: string|null}>
+     * @return array<array{names: list<string>, expectedResult: string|null}>
      */
     public static function getGetByNamesData(): array
     {
@@ -131,7 +134,7 @@ class CmsPageLookupTest extends TestCase
     }
 
     /**
-     * @return array<array{names: array<string|null>, expectedResult: string}>
+     * @return array<array{names: list<string>, expectedResult: string}>
      */
     public static function getGetByNamesDatabaseData(): array
     {
@@ -145,10 +148,14 @@ class CmsPageLookupTest extends TestCase
 
         foreach ($list as $cmsPage) {
             static::assertInstanceOf(CmsPageEntity::class, $cmsPage);
+
             $result = [];
+
+            static::assertNotNull($cmsPage->getName());
             $result[] = $cmsPage->getName();
 
             foreach ($cmsPage->getTranslations() ?? [] as $translation) {
+                static::assertNotNull($translation->getName());
                 $result[] = $translation->getName();
             }
 
