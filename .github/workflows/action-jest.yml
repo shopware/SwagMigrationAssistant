@@ -14,12 +14,6 @@ jobs:
         env:
             ARTIFACTS_PATH: ${{ github.workspace }}/development
         steps:
-            - name: Cache npm
-              uses: actions/cache@v4
-              with:
-                  path: ~/.npm
-                  key: ${{ runner.os }}-jest-${{ hashFiles('tests/Jest/package-lock.json') }}
-
             - name: Setup extension
               uses: shopware/github-actions/setup-extension@main
               with:
@@ -35,6 +29,12 @@ jobs:
                           "symlink": true
                         }
                       }
+
+            - name: Cache npm
+              uses: actions/cache@v4
+              with:
+                  path: ~/.npm
+                  key: ${{ runner.os }}-jest-${{ hashFiles(format('custom/plugins/{0}/tests/Jest/package-lock.json', inputs.extension_name)) }}
 
             - name: Install Jest dependencies
               working-directory: custom/plugins/${{ inputs.extension_name }}/tests/Jest
