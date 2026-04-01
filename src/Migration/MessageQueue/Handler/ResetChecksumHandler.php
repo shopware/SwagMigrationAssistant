@@ -56,7 +56,7 @@ final readonly class ResetChecksumHandler
         $affectedRows = $this->resetChecksums($connectionId);
         $newProcessedCount = $message->getProcessedMappings() + $affectedRows;
 
-        $isCompleted = $affectedRows < $this->migrationConfig->MIGRATION_DEFAULT_BATCH_SIZE;
+        $isCompleted = $affectedRows < $this->migrationConfig->migrationDefaultBatchSize;
 
         if ($isCompleted) {
             $this->handleCompletion($message);
@@ -115,7 +115,7 @@ final readonly class ResetChecksumHandler
             LIMIT :limit',
             [
                 'connectionId' => Uuid::fromHexToBytes($connectionId),
-                'limit' => $this->migrationConfig->MIGRATION_DEFAULT_BATCH_SIZE,
+                'limit' => $this->migrationConfig->migrationDefaultBatchSize,
             ],
             [
                 'connectionId' => ParameterType::BINARY,

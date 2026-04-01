@@ -50,7 +50,7 @@ final class MigrationProcessHandler
         $migrationContext = $this->migrationContextFactory->create(
             $run,
             $progress->getCurrentEntityProgress(),
-            $this->migrationConfig->MIGRATION_DEFAULT_BATCH_SIZE,
+            $this->migrationConfig->migrationDefaultBatchSize,
             $progress->getCurrentEntity()
         );
 

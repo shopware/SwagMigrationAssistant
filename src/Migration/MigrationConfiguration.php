@@ -19,13 +19,13 @@ final readonly class MigrationConfiguration
      * @internal
      */
     public function __construct(
-        public int $MIGRATION_LOG_BUFFER_SIZE = 50,
-        public int $MIGRATION_LOG_EXCEPTION_TRACE_ITEM_LIMIT = 10,
-        public int $MIGRATION_DEFAULT_BATCH_SIZE = 250,
-        public int $MIGRATION_MEDIA_PROCESSING_BATCH_SIZE = 10,
-        public int $MIGRATION_DEFAULT_EXCEPTION_THRESHOLD = 3,
-        public int $MIGRATION_DEFAULT_FETCH_SIZE = 50,
-        public int $MIGRATION_CONNECTION_TIMEOUT = 15,
+        public int $migrationLogBufferSize = 50,
+        public int $migrationLogExceptionTraceItemLimit = 10,
+        public int $migrationDefaultBatchSize = 250,
+        public int $migrationMediaProcessingBatchSize = 10,
+        public int $migrationDefaultExceptionThreshold = 3,
+        public int $migrationDefaultFetchSize = 50,
+        public int $migrationRequestTimeout = 15,
     ) {
     }
 }

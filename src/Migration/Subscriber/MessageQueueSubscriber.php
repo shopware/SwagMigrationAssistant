@@ -125,7 +125,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
          * if so, transition to aborting automatically.
          * else, just save the new exception count and retry.
          */
-        if ($progress->getExceptionCount() > $this->migrationConfig->MIGRATION_DEFAULT_EXCEPTION_THRESHOLD) {
+        if ($progress->getExceptionCount() > $this->migrationConfig->migrationDefaultExceptionThreshold) {
             $this->runTransitionService->forceTransitionToRunStep($run->getId(), MigrationStep::ABORTING);
             $this->updateRun($run->getId(), $progress, $message->getContext());
         } else {

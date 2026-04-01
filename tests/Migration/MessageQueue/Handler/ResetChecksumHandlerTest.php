@@ -164,7 +164,7 @@ class ResetChecksumHandlerTest extends TestCase
         );
 
         $this->mockTotalCount(500);
-        $this->mockResetChecksumsOnly($this->migrationConfiguration->MIGRATION_DEFAULT_BATCH_SIZE);
+        $this->mockResetChecksumsOnly($this->migrationConfiguration->migrationDefaultBatchSize);
         $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
@@ -174,7 +174,7 @@ class ResetChecksumHandlerTest extends TestCase
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
             }));
 
-        $batchSize = $this->migrationConfiguration->MIGRATION_DEFAULT_BATCH_SIZE;
+        $batchSize = $this->migrationConfiguration->migrationDefaultBatchSize;
 
         $this->messageBus
             ->expects($this->once())
@@ -200,8 +200,8 @@ class ResetChecksumHandlerTest extends TestCase
             $context,
         );
 
-        $this->mockTotalCount($this->migrationConfiguration->MIGRATION_DEFAULT_BATCH_SIZE);
-        $this->mockResetChecksumsOnly($this->migrationConfiguration->MIGRATION_DEFAULT_BATCH_SIZE);
+        $this->mockTotalCount($this->migrationConfiguration->migrationDefaultBatchSize);
+        $this->mockResetChecksumsOnly($this->migrationConfiguration->migrationDefaultBatchSize);
 
         $this->messageBus
             ->expects($this->once())
@@ -273,7 +273,7 @@ class ResetChecksumHandlerTest extends TestCase
         );
 
         $this->mockTotalCount(500);
-        $this->mockResetChecksumsOnly($this->migrationConfiguration->MIGRATION_DEFAULT_BATCH_SIZE);
+        $this->mockResetChecksumsOnly($this->migrationConfiguration->migrationDefaultBatchSize);
         $this->mockRunSearch($runId);
 
         $this->migrationRunRepo

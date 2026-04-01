@@ -118,7 +118,7 @@ class MediaProcessingProcessor extends AbstractProcessor
 
             ++$currentCount;
 
-            if ($currentCount > $this->migrationConfig->MIGRATION_MEDIA_PROCESSING_BATCH_SIZE) {
+            if ($currentCount > $this->migrationConfig->migrationMediaProcessingBatchSize) {
                 break;
             }
 
@@ -202,7 +202,7 @@ class MediaProcessingProcessor extends AbstractProcessor
         MediaFileProcessorInterface $processor,
         array $workload,
     ): void {
-        for ($i = 0; $i < $this->migrationConfig->MIGRATION_DEFAULT_EXCEPTION_THRESHOLD; ++$i) {
+        for ($i = 0; $i < $this->migrationConfig->migrationDefaultExceptionThreshold; ++$i) {
             $errorWorkload = [];
 
             foreach ($workload as $item) {

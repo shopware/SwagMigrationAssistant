@@ -62,10 +62,10 @@ final class TruncateMigrationHandler
         $currentTable = self::TABLE_TO_TRUNCATE[$currentStep];
 
         $affectedRows = (int) $this->connection->executeStatement(
-            'DELETE FROM ' . $currentTable . ' LIMIT ' . $this->migrationConfig->MIGRATION_DEFAULT_BATCH_SIZE
+            'DELETE FROM ' . $currentTable . ' LIMIT ' . $this->migrationConfig->migrationDefaultBatchSize
         );
 
-        if ($affectedRows >= $this->migrationConfig->MIGRATION_DEFAULT_BATCH_SIZE) {
+        if ($affectedRows >= $this->migrationConfig->migrationDefaultBatchSize) {
             $this->bus->dispatch(new TruncateMigrationMessage(
                 $currentTable,
             ));

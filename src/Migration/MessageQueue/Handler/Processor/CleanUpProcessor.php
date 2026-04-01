@@ -95,7 +95,7 @@ class CleanUpProcessor extends AbstractProcessor
     {
         return (int) $this->connection->createQueryBuilder()
             ->delete('swag_migration_data')
-            ->setMaxResults($this->migrationConfig->MIGRATION_DEFAULT_BATCH_SIZE)
+            ->setMaxResults($this->migrationConfig->migrationDefaultBatchSize)
             ->executeStatement();
     }
 

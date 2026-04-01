@@ -40,7 +40,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
 
         $options = [
             'base_uri' => \rtrim((string) $credentials['endpoint'], '/') . '/' . self::DEFAULT_API_ENDPOINT,
-            'timeout' => $this->migrationConfig->MIGRATION_CONNECTION_TIMEOUT,
+            'connect_timeout' => $this->migrationConfig->migrationRequestTimeout,
         ];
 
         return new AuthClient(

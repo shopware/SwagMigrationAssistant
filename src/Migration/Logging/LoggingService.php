@@ -78,8 +78,8 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
     {
         $trace = $logEntry->getExceptionTrace();
 
-        if ($trace !== null && \count($trace) > $this->migrationConfig->MIGRATION_LOG_EXCEPTION_TRACE_ITEM_LIMIT) {
-            $trace = \array_slice($trace, 0, $this->migrationConfig->MIGRATION_LOG_EXCEPTION_TRACE_ITEM_LIMIT);
+        if ($trace !== null && \count($trace) > $this->migrationConfig->migrationLogExceptionTraceItemLimit) {
+            $trace = \array_slice($trace, 0, $this->migrationConfig->migrationLogExceptionTraceItemLimit);
         }
 
         $this->buffer[] = [
@@ -99,7 +99,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
             'exceptionTrace' => $trace,
         ];
 
-        if (\count($this->buffer) >= $this->migrationConfig->MIGRATION_LOG_BUFFER_SIZE) {
+        if (\count($this->buffer) >= $this->migrationConfig->migrationLogBufferSize) {
             $this->flush();
         }
 

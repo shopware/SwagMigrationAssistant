@@ -118,7 +118,7 @@ class HistoryService implements HistoryServiceInterface
                     $this->printLogEntry($logEntry);
                 }
 
-                $offset += $this->migrationConfig->MIGRATION_DEFAULT_FETCH_SIZE;
+                $offset += $this->migrationConfig->migrationDefaultFetchSize;
             }
         };
     }
@@ -217,7 +217,7 @@ class HistoryService implements HistoryServiceInterface
         $criteria->addFilter(new EqualsFilter('userFixable', 0));
         $criteria->addSorting(new FieldSorting('autoIncrement', FieldSorting::ASCENDING));
         $criteria->setOffset($offset);
-        $criteria->setLimit($this->migrationConfig->MIGRATION_DEFAULT_FETCH_SIZE);
+        $criteria->setLimit($this->migrationConfig->migrationDefaultFetchSize);
 
         return $this->loggingRepo->search($criteria, $context)->getEntities();
     }

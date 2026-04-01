@@ -283,7 +283,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         $mappedWorkload->setAdditionalData($additionalData);
         $mappedWorkload->setErrorCount($mappedWorkload->getErrorCount() + 1);
 
-        if ($mappedWorkload->getErrorCount() > $this->migrationConfig->MIGRATION_DEFAULT_EXCEPTION_THRESHOLD) {
+        if ($mappedWorkload->getErrorCount() > $this->migrationConfig->migrationDefaultExceptionThreshold) {
             $failureUuids[] = $uuid;
             $mappedWorkload->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 

@@ -119,7 +119,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                 $work->setAdditionalData($additionalData);
                 $work->setErrorCount($work->getErrorCount() + 1);
 
-                if ($work->getErrorCount() > $this->migrationConfig->MIGRATION_DEFAULT_EXCEPTION_THRESHOLD) {
+                if ($work->getErrorCount() > $this->migrationConfig->migrationDefaultExceptionThreshold) {
                     $failureUuids[] = $uuid;
                     $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
