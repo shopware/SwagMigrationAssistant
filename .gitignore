@@ -4,6 +4,7 @@
 
 # llm
 .claude
+docs/superpowers
 
 # os
 .DS_Store

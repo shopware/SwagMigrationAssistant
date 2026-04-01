@@ -13,6 +13,7 @@ const originalShopware = Shopware;
 
 describe('src/main', () => {
     beforeAll(() => {
+        // eslint-disable-next-line no-global-assign
         Shopware = {
             ...originalShopware,
             Module: {
@@ -41,6 +42,7 @@ describe('src/main', () => {
     });
 
     afterAll(() => {
+        // eslint-disable-next-line no-global-assign
         Shopware = originalShopware;
     });
 

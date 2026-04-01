@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Test\integration\Migration\Validation;
 
-use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
@@ -43,7 +42,6 @@ use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-#[CoversClass(MigrationEntityValidationService::class)]
 class MigrationEntityValidationServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;

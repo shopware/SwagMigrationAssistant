@@ -1,7 +1,7 @@
 /* eslint-disable playwright/no-conditional-in-test */
 /* eslint-disable playwright/no-conditional-expect */
-import { test, expect } from '../fixtures/AcceptanceTest';
-import { getMask, waitForLoaders, withLargerViewport } from '../fixtures/TestHelpers';
+import { test, expect } from '@fixtures/AcceptanceTest';
+import { getMask, waitForLoaders, withLargerViewport } from '@fixtures/TestHelpers';
 
 test.describe('Migration Tests @migration @visual', () => {
     test.describe.configure({
@@ -12,6 +12,23 @@ test.describe('Migration Tests @migration @visual', () => {
     test('Perform migration from Shopware 5 to Shopware 6', async ({ ShopAdmin, EntityCounter, MigrationConnection: _ }) => {
         const page = ShopAdmin.page;
         const mask = getMask(page);
+
+        const baseline = await EntityCounter.buildBaseline({
+            product: 428,
+            product_review: 2,
+            category: 62,
+            property_group: 14,
+            property_group_option: 93,
+            product_manufacturer: 14,
+            order: 2,
+            customer: 3,
+            cms_page: 0,
+            media: 592,
+            media_folder: 14,
+            document: 8,
+            newsletter_recipient: 0,
+            promotion: 4,
+        });
 
         await page.goto('/admin');
         await waitForLoaders(page);
@@ -217,25 +234,9 @@ test.describe('Migration Tests @migration @visual', () => {
         });
 
         await test.step('Verify migrated entities', async () => {
-            await EntityCounter.checkEntityCount('swag_migration_logging', 702);
+            await EntityCounter.assert('swag_migration_logging', 702);
 
-            await EntityCounter.checkEntityCount('product', 428);
-            await EntityCounter.checkEntityCount('product_review', 2);
-            await EntityCounter.checkEntityCount('category', 63);
-            await EntityCounter.checkEntityCount('property_group', 14);
-            await EntityCounter.checkEntityCount('property_group_option', 93);
-            await EntityCounter.checkEntityCount('product_manufacturer', 15);
-
-            await EntityCounter.checkEntityCount('order', 2);
-            await EntityCounter.checkEntityCount('customer', 3);
-
-            await EntityCounter.checkEntityCount('cms_page', 11);
-            await EntityCounter.checkEntityCount('media', 595);
-            await EntityCounter.checkEntityCount('media_folder', 24);
-            await EntityCounter.checkEntityCount('document', 8);
-
-            await EntityCounter.checkEntityCount('newsletter_recipient', 0);
-            await EntityCounter.checkEntityCount('promotion', 4);
+            await EntityCounter.assertBaseline(baseline);
         });
 
         await test.step('Verify migration logs', async () => {

@@ -1,5 +1,5 @@
 import { test as base, expect } from '@shopware-ag/acceptance-test-suite';
-import type { FixtureTypes } from './AcceptanceTest';
+import type { FixtureTypes } from '@fixtures/AcceptanceTest';
 
 export interface MigrationConnectionStruct {
     id: string;
