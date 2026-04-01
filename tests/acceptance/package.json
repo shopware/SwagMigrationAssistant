@@ -3,12 +3,12 @@
     "author": "shopware AG",
     "version": "1.0.0",
     "scripts": {
-        "types": "tsc",
+        "lint:types": "tsc",
         "test": "npx playwright test",
         "test:ui": "npx playwright test --headed",
         "test:update": "UPDATE_SNAPSHOTS=1 npx playwright test",
-        "lint": "npx eslint ./",
-        "lint:fix": "npx eslint --fix ./",
+        "lint": "npx eslint \"playwright.config.ts\" \"fixtures/**/*.ts\" \"tests/**/*.ts\"",
+        "lint:fix": "npx eslint --fix \"playwright.config.ts\" \"fixtures/**/*.ts\" \"tests/**/*.ts\"",
         "format": "npx prettier --check \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache",
         "format:fix": "npx prettier --write \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache"
     },

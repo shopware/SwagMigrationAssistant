@@ -1,12 +1,18 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
+      "src/module/swag-migration/*": ["../../src/Resources/app/administration/src/module/swag-migration/*"],
+      "src/core/service/api/swag-migration.api.service": ["../../src/Resources/app/administration/src/core/service/api/swag-migration.api.service"],
       "src/*": ["../../../../../src/Administration/Resources/app/administration/src/*"],
+      "@administration/*": ["../../../../../src/Administration/Resources/app/administration/src/*"],
       "@/*": ["./src/*"]
     }
   },
   "files": [
-    "../../../../../src/Administration/Resources/app/administration/src/global.types.ts"
+    "../../src/Resources/app/administration/src/type/shopware-globals.d.ts",
+    "../../src/Resources/app/administration/src/type/global.types.ts",
+    "../../../../../src/Administration/Resources/app/administration/src/entity-schema-definition.d.ts"
   ],
   "include": [
     "**/*.ts",

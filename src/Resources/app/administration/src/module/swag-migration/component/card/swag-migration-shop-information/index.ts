@@ -1,12 +1,6 @@
 import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.scss';
-import type {
-    MigrationConnection,
-    MigrationProfile,
-    TEntity,
-    TEntityCollection,
-    TRepository,
-} from '../../../../../type/types';
+import type { MigrationConnection, MigrationProfile, TEntity, TEntityCollection, TRepository } from '../../../../../type/types';
 import { MIGRATION_API_SERVICE } from '../../../../../core/service/api/swag-migration.api.service';
 import { MIGRATION_STORE_ID, type MigrationStore } from '../../../store/migration.store';
 

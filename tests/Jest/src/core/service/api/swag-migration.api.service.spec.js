@@ -2,14 +2,17 @@
  * @sw-package after-sales
  */
 import MigrationApiService, { MIGRATION_STEP } from 'SwagMigrationAssistant/core/service/api/swag-migration.api.service';
-import createLoginService from 'src/core/service/login.service';
-import createHTTPClient from 'src/core/factory/http.factory';
 import MockAdapter from 'axios-mock-adapter';
+import axios from 'axios';
 
 function createMigrationApiService() {
-    const client = createHTTPClient();
+    const client = axios.create();
     const clientMock = new MockAdapter(client);
-    const loginService = createLoginService(client, Shopware.Context.api);
+    const loginService = {
+        getToken() {
+            return 'test-token';
+        },
+    };
     const migrationApiService = new MigrationApiService(client, loginService);
 
     clientMock.onAny().reply(200, {

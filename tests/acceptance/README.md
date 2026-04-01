@@ -84,7 +84,7 @@ npx playwright test --update-snapshots
 | `npm run lint:fix` | Fix linting errors |
 | `npm run format` | Check code formatting |
 | `npm run format:fix` | Fix code formatting |
-| `npm run types` | Type-check TypeScript files |
+| `npm run lint:types` | Type-check TypeScript files |
 
 ## Configuration
 

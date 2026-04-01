@@ -11,7 +11,6 @@
     "noEmit": true,
     "strict": false,
     "paths": {
-      "src/*": ["src/*"],
       "@administration/*": [
         "../../../../../../../src/Administration/Resources/app/administration/*"
       ]

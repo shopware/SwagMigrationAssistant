@@ -2,9 +2,22 @@
  * @sw-package fundamentals@after-sales
  * @private
  */
-export type { Entity as TEntity } from '@shopware-ag/meteor-admin-sdk/es/_internals/data/Entity';
-export type { default as TEntityCollection } from '@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection';
-export type { Repository as TRepository } from '@shopware-ag/meteor-admin-sdk/es/data/repository';
+import type Criteria from '@shopware-ag/meteor-admin-sdk/es/data/Criteria';
+import type { ApiContext } from '@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection';
+import type { Entity as MeteorEntity } from '@shopware-ag/meteor-admin-sdk/es/_internals/data/Entity';
+import type MeteorEntityCollection from '@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection';
+import type { Repository as MeteorRepository } from '@shopware-ag/meteor-admin-sdk/es/data/repository';
+
+export { MIGRATION_LOG_LEVEL } from '../module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-step';
+
+export type TEntity<EntityName extends keyof EntitySchema.Entities> = MeteorEntity<EntityName>;
+
+export type TEntityCollection<EntityName extends keyof EntitySchema.Entities> = MeteorEntityCollection<EntityName>;
+
+export type TRepository<EntityName extends keyof EntitySchema.Entities> = MeteorRepository<EntityName> & {
+    search(criteria: Criteria, context?: ApiContext): Promise<TEntityCollection<EntityName>>;
+    create(context?: ApiContext, entityId?: string): TEntity<EntityName>;
+};
 
 type MigrationStep =
     | 'idle'
@@ -124,7 +137,6 @@ type MigrationFix = {
  * @private
  */
 export {
-    MIGRATION_LOG_LEVEL,
     MigrationStep,
     MigrationState,
     MigrationProfile,
