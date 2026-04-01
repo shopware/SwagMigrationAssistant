@@ -1,0 +1,24 @@
+name: Reactivate Workflows
+
+on:
+    schedule:
+        - cron: '0 0 1 * *'
+    workflow_dispatch:
+
+permissions:
+    actions: write
+
+jobs:
+    reactivate_workflow:
+        name: Reactivate Workflow
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                WORKFLOW: ['nightly.yaml', 'reactivate-workflows.yml']
+        steps:
+            - name: Reactivate workflow
+              env:
+                  GH_TOKEN: ${{ github.token }}
+                  GH_REPO: ${{ github.repository }}
+              shell: bash
+              run: gh workflow enable "${{ matrix.WORKFLOW }}"
