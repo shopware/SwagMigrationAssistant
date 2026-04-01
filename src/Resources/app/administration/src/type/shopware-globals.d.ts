@@ -9,6 +9,7 @@ import type { ApiContext as MeteorApiContext } from '@shopware-ag/meteor-admin-s
 import type { Entity as MeteorEntity } from '@shopware-ag/meteor-admin-sdk/es/_internals/data/Entity';
 import type MeteorEntityCollection from '@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection';
 import type EntityDefinition from '@administration/src/core/data/entity-definition.data';
+import type { ApiResponse, ApiServiceBase } from './api-service.types';
 
 type AppContext = {
     config: {
@@ -19,21 +20,9 @@ type AppContext = {
 
 type ShopwareErrorConstructor = new (error: ShopwareError) => ShopwareError;
 
-type ShopwareApiServiceInstance = {
-    httpClient: AxiosInstance;
-    name: string;
-    getBasicHeaders(additionalHeaders?: Record<string, string>): Record<string, string>;
-    getApiBasePath(id?: string | number, prefix?: string): string;
-};
-
 type ShopwareApiServiceConstructor = {
-    new (
-        httpClient: AxiosInstance,
-        loginService: unknown,
-        apiEndpoint: string,
-        contentType?: string,
-    ): ShopwareApiServiceInstance;
-    handleResponse<T = unknown>(response: AxiosResponse<T>): T | AxiosResponse<T>;
+    new (httpClient: AxiosInstance, loginService: unknown, apiEndpoint: string, contentType?: string): ApiServiceBase;
+    handleResponse<T = unknown>(response: AxiosResponse<T>): ApiResponse<T>;
 };
 
 type ShopwareModuleInfo = {
