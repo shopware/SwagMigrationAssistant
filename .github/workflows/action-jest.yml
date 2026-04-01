@@ -31,7 +31,7 @@ jobs:
                       }
 
             - name: Cache npm
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                   path: ~/.npm
                   key: ${{ runner.os }}-jest-${{ hashFiles(format('custom/plugins/{0}/tests/Jest/package-lock.json', inputs.extension_name)) }}

@@ -36,7 +36,7 @@ jobs:
                   printf "parameters:\n  tmpDir: ${GITHUB_WORKSPACE}/var/phpstan\nincludes:\n  - phpstan.neon.dist" > phpstan.neon
 
             - name: PHPStan cache
-              uses: actions/cache@v4
+              uses: actions/cache@v5
               with:
                   path: ${{ github.workspace }}/var/phpstan
                   key: ${{ runner.os }}-${{ github.repository }}-phpstan-${{ github.sha }}
