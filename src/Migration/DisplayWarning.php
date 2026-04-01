@@ -13,8 +13,6 @@ use Shopware\Core\Framework\Struct\Struct;
 #[Package('fundamentals@after-sales')]
 class DisplayWarning extends Struct
 {
-    // test change
-
     /**
      * @param string[] $snippetArguments
      */
