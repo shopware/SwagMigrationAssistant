@@ -51,7 +51,7 @@ class NumberRangeLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{type: string|null, expectedResult: string|null}>
+     * @return array<int, array{type: string, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -63,7 +63,7 @@ class NumberRangeLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{type: string|null, expectedResult: string}>
+     * @return array<int, array{type: string, expectedResult: string}>
      */
     public static function getDatabaseData(): array
     {
@@ -77,8 +77,11 @@ class NumberRangeLookupTest extends TestCase
         foreach ($list->getEntities() as $numberRange) {
             static::assertInstanceOf(NumberRangeEntity::class, $numberRange);
 
+            $type = $numberRange->getType()?->getTechnicalName();
+            static::assertNotNull($type);
+
             $returnData[] = [
-                'type' => $numberRange->getType()?->getTechnicalName(),
+                'type' => $type,
                 'expectedResult' => $numberRange->getId(),
             ];
         }

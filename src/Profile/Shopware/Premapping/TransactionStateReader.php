@@ -109,7 +109,7 @@ class TransactionStateReader extends AbstractPremappingReader
                 $entityData[] = new PremappingEntityStruct($data['id'], $description, $uuid);
             }
         }
-        \usort($entityData, function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
+        \usort($entityData, static function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
             return \strcmp($item1->getDescription(), $item2->getDescription());
         });
 

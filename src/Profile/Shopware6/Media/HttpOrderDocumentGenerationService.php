@@ -13,6 +13,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Promise\Utils;
 use GuzzleHttp\Psr7\Response;
 use Shopware\Core\Checkout\Document\DocumentCollection;
+use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -88,8 +89,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($exception->getMessage())
-                    ->withExceptionTrace($exception->getTrace())
+                    ->withException($exception)
                     ->build(RunExceptionLog::class)
             );
 
@@ -110,7 +110,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
             $oldWorkloadSearchResult = \array_filter(
                 $workload,
-                function (MediaProcessWorkloadStruct $work) use ($uuid) {
+                static function (MediaProcessWorkloadStruct $work) use ($uuid) {
                     return $work->getMediaId() === $uuid;
                 }
             );
@@ -286,10 +286,12 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             $failureUuids[] = $uuid;
             $mappedWorkload->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
+            $exception = $clientException ?? new \Exception('Unknown error occurred');
+
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($clientException?->getMessage() ?? 'Unknown error occurred')
-                    ->withExceptionTrace($clientException?->getTrace() ?? [])
+                    ->withException($exception)
+                    ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->withSourceData($additionalData)
                     ->withEntityId($uuid)
                     ->build(MediaFileMissingLog::class)

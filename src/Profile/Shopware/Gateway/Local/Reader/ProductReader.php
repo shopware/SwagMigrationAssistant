@@ -160,7 +160,9 @@ class ProductReader extends AbstractReader implements ReaderInterface
                 }
             }
 
-            $product['shops'] = $productVisibility->getShops($product['id']);
+            if (!empty($product['id'])) {
+                $product['shops'] = $productVisibility->getShops($product['id']);
+            }
         }
         unset(
             $product, $categories, $seoMainCategories,

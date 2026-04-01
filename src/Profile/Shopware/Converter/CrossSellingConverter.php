@@ -7,10 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Product\Aggregate\ProductCrossSelling\ProductCrossSellingDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -54,22 +57,44 @@ abstract class CrossSellingConverter extends ShopwareConverter
         );
 
         $converted['id'] = $crossSellingMapping['entityId'];
+
         $sourceProductMapping = $this->getProductMapping($data['articleID']);
 
-        $sourceProductId = null;
+        if ($sourceProductMapping === null) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductCrossSellingDefinition::ENTITY_NAME)
+                    ->withFieldName('productId')
+                    ->withFieldSourcePath('articleID')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
 
-        if ($sourceProductMapping !== null) {
-            $this->mappingIds[] = $sourceProductMapping['id'];
-            $sourceProductId = $sourceProductMapping['entityId'];
+            return new ConvertStruct(null, $data);
         }
+
+        $this->mappingIds[] = $sourceProductMapping['id'];
+        $sourceProductId = $sourceProductMapping['entityId'];
 
         $relatedProductMapping = $this->getProductMapping($data['relatedarticle']);
-        $relatedProductId = null;
 
-        if ($relatedProductMapping !== null) {
-            $this->mappingIds[] = $relatedProductMapping['id'];
-            $relatedProductId = $relatedProductMapping['entityId'];
+        if ($relatedProductMapping === null) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductCrossSellingDefinition::ENTITY_NAME)
+                    ->withFieldName('assignedProducts.productId')
+                    ->withFieldSourcePath('relatedarticle')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
         }
+
+        $this->mappingIds[] = $relatedProductMapping['id'];
+        $relatedProductId = $relatedProductMapping['entityId'];
 
         if ($data['type'] === DefaultEntities::CROSS_SELLING_SIMILAR) {
             $converted['name'] = 'Similar Items';

@@ -202,7 +202,7 @@ class MigrationEntityValidationService implements ResetInterface
     {
         $storageToAssociation = $this->getStorageToAssociationMapping($entityName, $fields);
 
-        return array_values(array_filter($missingFields, function (string $fieldName) use ($fields, $convertedData, $storageToAssociation): bool {
+        return array_values(array_filter($missingFields, static function (string $fieldName) use ($fields, $convertedData, $storageToAssociation): bool {
             $field = $fields->get($fieldName);
 
             if (!$field instanceof FkField) {
@@ -457,7 +457,7 @@ class MigrationEntityValidationService implements ResetInterface
                 continue;
             }
 
-            if (!($field instanceof StorageAware)) {
+            if (!$field instanceof StorageAware) {
                 $requiredFields[$field->getPropertyName()] = true;
 
                 continue;
@@ -528,8 +528,7 @@ class MigrationEntityValidationService implements ResetInterface
                 ->withFieldName($fieldName)
                 ->withConvertedData($validationContext->getConvertedData())
                 ->withSourceData($validationContext->getSourceData())
-                ->withExceptionMessage($exception->getMessage())
-                ->withExceptionTrace($exception->getTrace())
+                ->withException($exception)
                 ->withEntityId($entityId)
                 ->build($logClass)
         );
@@ -545,8 +544,7 @@ class MigrationEntityValidationService implements ResetInterface
                 ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                 ->withSourceData($validationContext->getSourceData())
                 ->withConvertedData($convertedData)
-                ->withExceptionMessage($exception->getMessage())
-                ->withExceptionTrace($exception->getTrace())
+                ->withException($exception)
                 ->withEntityId($entityId)
                 ->build(MigrationValidationExceptionLog::class)
         );

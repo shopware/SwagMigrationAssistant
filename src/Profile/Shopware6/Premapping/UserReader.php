@@ -104,7 +104,7 @@ class UserReader extends AbstractPremappingReader
             $entityData[] = new PremappingEntityStruct($data['id'], $userSourceName, $uuid);
         }
 
-        \usort($entityData, function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
+        \usort($entityData, static function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
             return \strcmp($item1->getDescription(), $item2->getDescription());
         });
 

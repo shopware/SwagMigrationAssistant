@@ -1,6 +1,7 @@
 // For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { join, resolve } = require('path');
 
 const artifactsPath = process.env.ARTIFACTS_PATH ? join(process.env.ARTIFACTS_PATH, '/build/artifacts/jest') : 'coverage';
@@ -71,6 +72,11 @@ module.exports = {
         '^@/(.*)$': '<rootDir>/tests/Jest/src/$1',
         '^lodash-es$': 'lodash',
         '^lodash-es/(.*)$': 'lodash/$1',
+    },
+
+    transform: {
+        '^.+\\.[jt]s$': '<rootDir>/tests/Jest/babel-transform.js',
+        '^.+(\\.twig|\\.html)$': '<rootDir>/tests/Jest/node_modules/@shopware-ag/jest-preset-sw6-admin/@tool/twig-to-vue-transformer/index.js',
     },
 
     transformIgnorePatterns: [

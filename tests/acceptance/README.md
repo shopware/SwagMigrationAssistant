@@ -93,7 +93,7 @@ npx playwright test --update-snapshots
 Default viewport is `1440x1080`. For screenshots requiring more height, use the `withLargerViewport` helper:
 
 ```typescript
-import { withLargerViewport } from '../fixtures/TestHelpers';
+import { withLargerViewport } from '@fixtures/TestHelpers';
 
 const restoreViewport = await withLargerViewport(page);
 await expect(page).toHaveScreenshot('my-screenshot.png');

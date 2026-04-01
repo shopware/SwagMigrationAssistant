@@ -65,7 +65,7 @@ class MigrationFieldExampleGeneratorTest extends TestCase
             'field' => new PriceField('test', 'test'),
             'entityName' => 'product',
             'fieldName' => 'price',
-            'transform' => fn (mixed $example) => [[
+            'transform' => static fn (mixed $example) => [[
                 ...$example[0],
                 'currencyId' => Defaults::CURRENCY,
             ]],
@@ -75,7 +75,7 @@ class MigrationFieldExampleGeneratorTest extends TestCase
             'field' => new VariantListingConfigField('test', 'test'),
             'entityName' => 'product',
             'fieldName' => 'variantListingConfig',
-            'transform' => fn (mixed $example) => [
+            'transform' => static fn (mixed $example) => [
                 ...$example,
                 'mainVariantId' => Uuid::randomHex(),
             ],
@@ -106,7 +106,7 @@ class MigrationFieldExampleGeneratorTest extends TestCase
             'field' => new TaxFreeConfigField('test', 'test'),
             'entityName' => 'country',
             'fieldName' => 'customerTax',
-            'transform' => fn (mixed $example) => [
+            'transform' => static fn (mixed $example) => [
                 ...$example,
                 'currencyId' => Defaults::CURRENCY,
             ],

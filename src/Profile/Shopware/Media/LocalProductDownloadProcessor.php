@@ -138,8 +138,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
                             'source_path' => $sourcePath,
                             'media' => $mappedWorkload[$mediaId],
                         ])
-                        ->withExceptionMessage($e->getMessage())
-                        ->withExceptionTrace($e->getTrace())
+                        ->withException($e)
                         ->withEntityId($mediaId)
                         ->build(RunExceptionLog::class)
                 );

@@ -287,8 +287,7 @@ class RunService implements RunServiceInterface
                         $connection->getProfileName(),
                         $connection->getGatewayName(),
                     ))
-                        ->withExceptionMessage($exception->getMessage())
-                        ->withExceptionTrace($exception->getTrace())
+                        ->withException($exception)
                         ->withEntityName(ThemeDefinition::ENTITY_NAME)
                         ->withEntityId($defaultThemeId)
                         ->build(WriteThemeCompilingFailedLog::class)
@@ -470,7 +469,7 @@ class RunService implements RunServiceInterface
         $dataSetCollection = $this->calculateToBeFetchedTotals($environmentInformation, $dataSelectionCollection);
         $overallTotal = 0;
 
-        $dataSetCollection->map(function (ProgressDataSet $progressDataSet) use (&$overallTotal): void {
+        $dataSetCollection->map(static function (ProgressDataSet $progressDataSet) use (&$overallTotal): void {
             $overallTotal += $progressDataSet->getTotal();
         });
 

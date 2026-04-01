@@ -40,6 +40,7 @@ class MigrationLogBuilder
         protected ?array $convertedData = null,
         protected ?string $exceptionMessage = null,
         protected ?array $exceptionTrace = null,
+        protected ?\Throwable $exception = null,
     ) {
     }
 
@@ -100,6 +101,13 @@ class MigrationLogBuilder
         return $this;
     }
 
+    public function withException(\Throwable $exception): self
+    {
+        $this->exception = $exception;
+
+        return $this;
+    }
+
     public function withExceptionMessage(string $exceptionMessage): self
     {
         $this->exceptionMessage = $exceptionMessage;
@@ -138,8 +146,8 @@ class MigrationLogBuilder
             $this->fieldSourcePath,
             $this->sourceData,
             $this->convertedData,
-            $this->exceptionMessage,
-            $this->exceptionTrace,
+            $this->getExceptionMessage(),
+            $this->getExceptionTrace(),
         );
     }
 
@@ -154,5 +162,34 @@ class MigrationLogBuilder
         }
 
         return null;
+    }
+
+    private function getExceptionMessage(): ?string
+    {
+        if ($this->exceptionMessage !== null) {
+            return $this->exceptionMessage;
+        }
+
+        if ($this->exception !== null) {
+            return $this->exception->getMessage() . ' in ' . $this->exception->getFile() . ':' . $this->exception->getLine();
+        }
+
+        return null;
+    }
+
+    /**
+     * @return array<mixed>|null
+     */
+    private function getExceptionTrace(): ?array
+    {
+        $trace = $this->exceptionTrace ?? $this->exception?->getTrace();
+
+        if ($trace !== null) {
+            foreach ($trace as &$traceEntry) {
+                unset($traceEntry['args']);
+            }
+        }
+
+        return $trace;
     }
 }

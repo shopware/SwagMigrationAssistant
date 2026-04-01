@@ -52,7 +52,7 @@ class ProductSortingConverterTest extends ShopwareConverterTest
                 $productSortingLookup->method('get')->willReturn($mapping['newIdentifier']);
 
                 if ($mapping['oldIdentifier'] === 'is-locked') {
-                    $productSortingLookup->method('getIsLocked')->willReturnCallback(function () {
+                    $productSortingLookup->method('getIsLocked')->willReturnCallback(static function () {
                         return true;
                     });
                 }

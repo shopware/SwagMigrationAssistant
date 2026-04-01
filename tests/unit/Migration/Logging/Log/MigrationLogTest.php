@@ -86,7 +86,11 @@ class MigrationLogTest extends TestCase
             ->withSourceData(['test' => 'test4'])
             ->withConvertedData(['test' => 'test5'])
             ->withExceptionMessage('test7')
-            ->withExceptionTrace(['test' => 'test8'])
+            ->withExceptionTrace([[
+                'file' => 'test8',
+                'line' => 123,
+                'args' => ['something'],
+            ]])
             ->withEntityId($entityId)
             ->build($logClass);
 
@@ -100,7 +104,10 @@ class MigrationLogTest extends TestCase
         static::assertSame(['test' => 'test4'], $logEntry->getSourceData());
         static::assertSame(['test' => 'test5'], $logEntry->getConvertedData());
         static::assertSame('test7', $logEntry->getExceptionMessage());
-        static::assertSame(['test' => 'test8'], $logEntry->getExceptionTrace());
+        static::assertSame([[
+            'file' => 'test8',
+            'line' => 123,
+        ]], $logEntry->getExceptionTrace());
         static::assertSame($entityId, $logEntry->getEntityId());
     }
 
@@ -328,6 +335,104 @@ class MigrationLogTest extends TestCase
             'code' => 'SWAG_MIGRATION_MEDIA_DEFAULT_FOLDER_UNSUPPORTED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
+        ];
+    }
+
+    /**
+     * @param list<array<string, mixed>>|null $exceptionTrace
+     * @param list<array<string, mixed>>|null $expectedExceptionTrace
+     */
+    #[DataProvider('exceptionProvider')]
+    public function testLogEntryExceptions(
+        ?\Throwable $exception,
+        ?string $exceptionMessage,
+        ?array $exceptionTrace,
+        string $expectedExceptionMessage,
+        ?array $expectedExceptionTrace,
+    ): void {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setProfileName(Shopware54Profile::PROFILE_NAME);
+        $connection->setGatewayName(DummyLocalGateway::GATEWAY_NAME);
+
+        $context = new MigrationContext(
+            $connection,
+            new Shopware54Profile(),
+            new DummyLocalGateway(),
+            null,
+            Uuid::randomHex(),
+        );
+
+        $builder = MigrationLogBuilder::fromMigrationContext($context);
+
+        if ($exception !== null) {
+            $builder = $builder->withException($exception);
+        }
+
+        if ($exceptionMessage !== null) {
+            $builder = $builder->withExceptionMessage($exceptionMessage);
+        }
+
+        if ($exceptionTrace !== null) {
+            $builder = $builder->withExceptionTrace($exceptionTrace);
+        }
+
+        $logEntry = $builder->build(RunExceptionLog::class);
+
+        static::assertInstanceOf(RunExceptionLog::class, $logEntry);
+        static::assertSame($expectedExceptionMessage, $logEntry->getExceptionMessage());
+        static::assertSame($expectedExceptionTrace, $logEntry->getExceptionTrace());
+    }
+
+    public static function exceptionProvider(): \Generator
+    {
+        $exception = new \RuntimeException('Runtime exception occurred');
+        $file = $exception->getFile();
+        $line = $exception->getLine();
+        $trace = $exception->getTrace();
+
+        // unset args from trace for comparison, as they are removed in the log entry
+        foreach ($trace as &$traceEntry) {
+            unset($traceEntry['args']);
+        }
+
+        yield 'with exception' => [
+            'exception' => $exception,
+            'exceptionMessage' => null,
+            'exceptionTrace' => null,
+            'expectedExceptionMessage' => 'Runtime exception occurred in ' . $file . ':' . $line,
+            'expectedExceptionTrace' => $trace,
+        ];
+
+        yield 'with exception message and trace' => [
+            'exception' => null,
+            'exceptionMessage' => 'Test2',
+            'exceptionTrace' => [['test' => 'trace']],
+            'expectedExceptionMessage' => 'Test2',
+            'expectedExceptionTrace' => [['test' => 'trace']],
+        ];
+
+        yield 'with exception and message' => [
+            'exception' => $exception,
+            'exceptionMessage' => 'Test4',
+            'exceptionTrace' => null,
+            'expectedExceptionMessage' => 'Test4',
+            'expectedExceptionTrace' => $trace,
+        ];
+
+        yield 'with exception and trace' => [
+            'exception' => $exception,
+            'exceptionMessage' => null,
+            'exceptionTrace' => [['test' => 'trace2']],
+            'expectedExceptionMessage' => 'Runtime exception occurred in ' . $file . ':' . $line,
+            'expectedExceptionTrace' => [['test' => 'trace2']],
+        ];
+
+        yield 'with exception, message and trace' => [
+            'exception' => $exception,
+            'exceptionMessage' => 'Test5',
+            'exceptionTrace' => [['test' => 'trace3']],
+            'expectedExceptionMessage' => 'Test5',
+            'expectedExceptionTrace' => [['test' => 'trace3']],
         ];
     }
 }

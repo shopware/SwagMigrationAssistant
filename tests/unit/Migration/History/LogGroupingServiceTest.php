@@ -344,7 +344,7 @@ class LogGroupingServiceTest extends TestCase
 
         $capturedSql = '';
         $this->connection->method('executeQuery')
-            ->willReturnCallback(function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
+            ->willReturnCallback(static function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
                 if ($capturedSql === '') {
                     $capturedSql = $sql;
 
@@ -438,7 +438,7 @@ class LogGroupingServiceTest extends TestCase
 
         $capturedSql = '';
         $this->connection->method('executeQuery')
-            ->willReturnCallback(function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
+            ->willReturnCallback(static function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
                 if ($capturedSql === '') {
                     $capturedSql = $sql;
 
@@ -528,7 +528,7 @@ class LogGroupingServiceTest extends TestCase
 
         $capturedSql = '';
         $this->connection->method('executeQuery')
-            ->willReturnCallback(function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
+            ->willReturnCallback(static function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
                 if ($capturedSql === '') {
                     $capturedSql = $sql;
 
@@ -627,7 +627,7 @@ class LogGroupingServiceTest extends TestCase
 
         $capturedSql = '';
         $this->connection->method('executeQuery')
-            ->willReturnCallback(function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
+            ->willReturnCallback(static function (string $sql) use (&$capturedSql, $mainResult, $levelResult): Result {
                 if ($capturedSql === '') {
                     $capturedSql = $sql;
 
@@ -755,7 +755,7 @@ class LogGroupingServiceTest extends TestCase
         $result->method('fetchOne')->willReturn('1');
 
         $this->connection->method('executeQuery')
-            ->willReturnCallback(function (string $sql, array $params) use ($result, $connectionId) {
+            ->willReturnCallback(static function (string $sql, array $params) use ($result, $connectionId) {
                 static::assertStringContainsString(' AND f.connection_id = :connectionId', $sql);
                 static::assertArrayHasKey('connectionId', $params);
                 static::assertSame($connectionId, Uuid::fromBytesToHex($params['connectionId']));
@@ -780,7 +780,7 @@ class LogGroupingServiceTest extends TestCase
         $result->method('fetchOne')->willReturn('1');
 
         $this->connection->method('executeQuery')
-            ->willReturnCallback(function (string $sql, array $params) use ($result) {
+            ->willReturnCallback(static function (string $sql, array $params) use ($result) {
                 static::assertStringNotContainsString(' AND f.connection_id = :connectionId', $sql);
                 static::assertArrayNotHasKey('connectionId', $params);
 

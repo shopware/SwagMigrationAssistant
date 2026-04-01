@@ -51,7 +51,7 @@ class SalutationLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{salutationKey: string|null, expectedResult: string|null}>
+     * @return array<int, array{salutationKey: string, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -63,7 +63,7 @@ class SalutationLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{salutationKey: string|null, expectedResult: string}>
+     * @return array<int, array{salutationKey: string, expectedResult: string}>
      */
     public static function getDatabaseData(): array
     {
@@ -73,7 +73,14 @@ class SalutationLookupTest extends TestCase
         $returnData = [];
         foreach ($list as $mailTemplateType) {
             static::assertInstanceOf(SalutationEntity::class, $mailTemplateType);
-            $returnData[] = ['salutationKey' => $mailTemplateType->getSalutationKey(), 'expectedResult' => $mailTemplateType->getId()];
+
+            $salutationKey = $mailTemplateType->getSalutationKey();
+            static::assertNotNull($salutationKey);
+
+            $returnData[] = [
+                'salutationKey' => $salutationKey,
+                'expectedResult' => $mailTemplateType->getId(),
+            ];
         }
 
         return $returnData;

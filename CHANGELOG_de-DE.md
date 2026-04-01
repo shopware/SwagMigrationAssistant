@@ -1,3 +1,18 @@
+# NEXT
+
+- #15568 - Umstellung auf PHP-Symfony-Service-Definitionen
+
+# 16.1.1
+
+- #15318 - Fehlende Bereinigung der Tabelle `swag_migration_fix` beim Zurücksetzen einer Migration hinzugefügt
+- #15637 – Kompatibilität des Verbindungs-Fingerprints mit Versionen <6.7.2.0 behoben
+
+# 16.1.0
+
+- Log-Einträge wurden korrigiert, sodass der Dateipfad und die Zeilennummer nun in der Ausnahmemeldung enthalten sind.
+- Die Unterstützung für Magento 1.9 wurde entfernt.
+- Größe der Protokolldatei reduziert, indem Exception-Trace Argumente entfernt wurden
+
 # 16.0.0
 
 - #14517 - Fehler bei doppeltem Schlüssel beim erneuten Migrieren von Produkten mit SEO-Hauptkategorien nach dem Zurücksetzen der Prüfsummen behoben

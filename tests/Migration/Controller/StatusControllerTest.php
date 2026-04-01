@@ -629,14 +629,12 @@ class StatusControllerTest extends TestCase
 
     /**
      * @param array{
-     *      requestData: array{
-     *          connectionId?: string,
-     *          connectionName?: string,
-     *          profileName?: string,
-     *          gatewayName?: string,
-     *          credentialFields?: array<string, string>,
-     *     },
-     *     exceptionParameter: string} $requestData
+     *     connectionId?: string,
+     *     connectionName?: string,
+     *     profileName?: string,
+     *     gatewayName?: string,
+     *     credentialFields?: array<string, string>,
+     * } $requestData
      */
     #[DataProvider('provideParamsForCreateNewConnectionToTestExceptions')]
     public function testCreateNewConnectionWithMissingParameterShouldThrowException(
@@ -978,7 +976,7 @@ class StatusControllerTest extends TestCase
 
         $mockDataFetcher
             ->method('getEnvironmentInformation')
-            ->willReturnCallback(function (MigrationContextInterface $migrationContext, Context $context) use ($baseDataFetcher, $fingerprint): EnvironmentInformation {
+            ->willReturnCallback(static function (MigrationContextInterface $migrationContext, Context $context) use ($baseDataFetcher, $fingerprint): EnvironmentInformation {
                 $environmentInformation = $baseDataFetcher->getEnvironmentInformation($migrationContext, $context);
                 $environmentInformation->setFingerprint($fingerprint);
 

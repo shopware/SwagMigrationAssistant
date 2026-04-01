@@ -119,8 +119,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         } catch (MigrationException $writerNotFoundException) {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($writerNotFoundException->getMessage())
-                    ->withExceptionTrace($writerNotFoundException->getTrace())
+                    ->withException($writerNotFoundException)
                     ->withConvertedData([$converted])
                     ->withEntityName($dataSet::getEntity())
                     ->build(RunExceptionLog::class)
@@ -196,14 +195,13 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             $updateWrittenData[$dataId]['written'] = false;
             $updateWrittenData[$dataId]['writeFailure'] = true;
 
-            $currentData = $migrationData->firstWhere(function (SwagMigrationDataEntity $item) use ($dataId) {
+            $currentData = $migrationData->firstWhere(static function (SwagMigrationDataEntity $item) use ($dataId) {
                 return $item->getId() === $dataId;
             });
 
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($exception->getMessage())
-                    ->withExceptionTrace($exception->getTrace())
+                    ->withException($exception)
                     ->withEntityName($entityName)
                     ->withConvertedData($entity)
                     ->withEntityId($entity['id'] ?? null)
@@ -261,12 +259,11 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             } catch (\Throwable $exception) {
                 $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->withExceptionMessage($exception->getMessage())
-                        ->withExceptionTrace($exception->getTrace())
+                        ->withException($exception)
                         ->withEntityName($entityName)
                         ->withConvertedData([$entity])
                         ->withEntityId($entity['id'] ?? null)
-                        ->build(RunExceptionLog::class)
+                        ->build(WriteExceptionLog::class)
                 );
 
                 $updateWrittenData[$dataId]['written'] = false;

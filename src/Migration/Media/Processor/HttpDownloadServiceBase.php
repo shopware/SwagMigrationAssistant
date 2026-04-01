@@ -80,8 +80,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
 
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($exception->getMessage())
-                    ->withExceptionTrace($exception->getTrace())
+                    ->withException($exception)
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->build(RunExceptionLog::class)
             );
@@ -106,7 +105,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
 
             $oldWorkloadSearchResult = \array_filter(
                 $workload,
-                function (MediaProcessWorkloadStruct $work) use ($uuid) {
+                static function (MediaProcessWorkloadStruct $work) use ($uuid) {
                     return $work->getMediaId() === $uuid;
                 }
             );
@@ -188,8 +187,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                     $this->loggingService->log(
                         MigrationLogBuilder::fromMigrationContext($migrationContext)
-                            ->withExceptionMessage($e->getMessage())
-                            ->withExceptionTrace($e->getTrace())
+                            ->withException($e)
                             ->withEntityName(MediaDefinition::ENTITY_NAME)
                             ->withEntityId($uuid)
                             ->build(RunExceptionLog::class)
@@ -287,8 +285,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             // this should never happen because of Promises, but just in case something is wrong with request construction
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($exception->getMessage())
-                    ->withExceptionTrace($exception->getTrace())
+                    ->withException($exception)
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->build(RunExceptionLog::class)
             );
@@ -311,8 +308,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
 
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($exception->getMessage())
-                    ->withExceptionTrace($exception->getTrace())
+                    ->withException($exception)
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->build(RunExceptionLog::class)
             );
@@ -347,8 +343,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                 } else {
                     $this->loggingService->log(
                         MigrationLogBuilder::fromMigrationContext($migrationContext)
-                            ->withExceptionMessage($mediaException->getMessage())
-                            ->withExceptionTrace($mediaException->getTrace())
+                            ->withException($mediaException)
                             ->withEntityName(MediaDefinition::ENTITY_NAME)
                             ->build(RunExceptionLog::class)
                     );

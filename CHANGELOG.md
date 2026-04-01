@@ -1,3 +1,18 @@
+# NEXT
+
+- #15568 - Switched to PHP Symfony service definitions
+
+# 16.1.1
+
+- #15318 - Fixed missing cleanup of the `swag_migration_fix` table when truncating a migration
+- #15637 - Fixed connection fingerprint compatibility with <6.7.2.0
+
+# 16.1.0
+
+- Fixed log entries to have the file path and line number in the exception message
+- Remove support for Magento 1.9
+- Reduced log file size by removing exception trace args
+
 # 16.0.0
 
 - #14517 - Fixed duplicate key error when re-migrating products with SEO main categories after checksum reset

@@ -32,6 +32,11 @@ class ConverterRegistry implements ConverterRegistryInterface
             }
         }
 
-        throw MigrationException::converterNotFound($migrationContext->getProfile()->getName());
+        $dataSet = $migrationContext->getDataSet();
+        if ($dataSet === null) {
+            throw MigrationException::migrationContextPropertyMissing('DataSet');
+        }
+
+        throw MigrationException::converterNotFound($dataSet::getEntity());
     }
 }

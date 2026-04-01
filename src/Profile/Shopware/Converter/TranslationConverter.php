@@ -961,31 +961,30 @@ abstract class TranslationConverter extends ShopwareConverter
     protected function unserializeTranslation(array $data, string $entity): ?array
     {
         $objectDataSerialized = $data['objectdata'];
-        $exception = null;
 
         try {
             /** @phpstan-ignore shopware.unserializeUsage */
             $objectData = \unserialize($objectDataSerialized, ['allowed_classes' => false]);
+
+            if (\is_array($objectData)) {
+                return $objectData;
+            }
+
+            $error = new \UnexpectedValueException('Unserialized data is not an array');
         } catch (\Throwable $e) {
-            $objectData = null;
-            $exception = $e;
+            $error = $e;
         }
 
-        if (!\is_array($objectData)) {
-            $this->loggingService->log(
-                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->withEntityName($entity)
-                    ->withFieldSourcePath('objectdata')
-                    ->withSourceData($data)
-                    ->withExceptionMessage($exception?->getMessage() ?? 'Unserialization failed')
-                    ->withExceptionTrace($exception?->getTrace() ?? [])
-                    ->build(ConvertUnserializedDataInvalidLog::class)
-            );
+        $this->loggingService->log(
+            MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                ->withEntityName($entity)
+                ->withFieldSourcePath('objectdata')
+                ->withSourceData($data)
+                ->withException($error)
+                ->build(ConvertUnserializedDataInvalidLog::class)
+        );
 
-            return null;
-        }
-
-        return $objectData;
+        return null;
     }
 
     /**
