@@ -22,6 +22,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\Stub\MessageBus\CollectingMessageBus;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\Logging\Log\FetchDataSetMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\FetchProcessorMissingLog;
@@ -29,6 +30,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -37,6 +39,7 @@ use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSet;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
@@ -533,6 +536,11 @@ class MediaProcessingProcessorTest extends TestCase
         static::assertSame([['id, file_size, entity', null]], $orderByCalls);
     }
 
+    /**
+     * @param MockObject|EntityRepository<SwagMigrationRunCollection>|null $migrationRunRepo
+     * @param MockObject|EntityRepository<SwagMigrationDataCollection>|null $migrationDataRepo
+     * @param MockObject|EntityRepository<SwagMigrationMediaFileCollection>|null $migrationMediaFileRepo
+     */
     private function createMediaProcessor(
         MockObject|EntityRepository|null $migrationRunRepo = null,
         MockObject|EntityRepository|null $migrationDataRepo = null,
@@ -543,7 +551,7 @@ class MediaProcessingProcessorTest extends TestCase
         MockObject|Connection|null $dbalConnection = null,
         MockObject|MediaFileProcessorRegistryInterface|null $mediaFileProcessorRegistry = null,
         MockObject|DataSetRegistry|null $dataSetRegistry = null,
-    ) {
+    ): MediaProcessingProcessor {
         $migrationRunRepo ??= $this->createMock(EntityRepository::class);
         $migrationDataRepo ??= $this->createMock(EntityRepository::class);
         $migrationMediaFileRepo ??= $this->createMock(EntityRepository::class);
@@ -553,6 +561,16 @@ class MediaProcessingProcessorTest extends TestCase
         $dbalConnection ??= $this->createMock(Connection::class);
         $mediaFileProcessorRegistry ??= $this->createMock(MediaFileProcessorRegistryInterface::class);
         $dataSetRegistry ??= $this->createMock(DataSetRegistry::class);
+
+        static::assertInstanceOf(EntityRepository::class, $migrationRunRepo);
+        static::assertInstanceOf(EntityRepository::class, $migrationDataRepo);
+        static::assertInstanceOf(EntityRepository::class, $migrationMediaFileRepo);
+        static::assertInstanceOf(RunTransitionServiceInterface::class, $runTransitionService);
+        static::assertInstanceOf(MessageBusInterface::class, $bus);
+        static::assertInstanceOf(LoggingService::class, $loggingService);
+        static::assertInstanceOf(Connection::class, $dbalConnection);
+        static::assertInstanceOf(MediaFileProcessorRegistryInterface::class, $mediaFileProcessorRegistry);
+        static::assertInstanceOf(DataSetRegistry::class, $dataSetRegistry);
 
         return new MediaProcessingProcessor(
             $migrationRunRepo,
