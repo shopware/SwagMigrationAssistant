@@ -141,8 +141,7 @@ class MediaProcessingProcessor extends AbstractProcessor
             $this->migrationMediaFileRepo->update($skipped, $context);
         }
 
-
-        $skippedCount = count($skipped);
+        $skippedCount = \count($skipped);
         if ($currentDataSet === null || empty($workload)) {
             $this->finalizeProcessStep(
                 $context,
@@ -179,7 +178,7 @@ class MediaProcessingProcessor extends AbstractProcessor
             );
         }
 
-        $workloadCount = count($workload);
+        $workloadCount = \count($workload);
         $this->finalizeProcessStep(
             $context,
             $migrationContext,

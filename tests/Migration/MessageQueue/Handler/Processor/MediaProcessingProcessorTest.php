@@ -470,12 +470,12 @@ class MediaProcessingProcessorTest extends TestCase
         $queryBuilderMock->method('setMaxResults')->willReturnSelf();
         $queryBuilderMock->method('setParameter')->willReturnSelf();
 
-        $queryBuilderMock->method('andWhere')->willReturnCallback(function (string $condition) use (&$whereCalls, $queryBuilderMock) {
+        $queryBuilderMock->method('andWhere')->willReturnCallback(static function (string $condition) use (&$whereCalls, $queryBuilderMock) {
             $whereCalls[] = $condition;
 
             return $queryBuilderMock;
         });
-        $queryBuilderMock->method('orderBy')->willReturnCallback(function (string $sort, ?string $order = null) use (&$orderByCalls, $queryBuilderMock) {
+        $queryBuilderMock->method('orderBy')->willReturnCallback(static function (string $sort, ?string $order = null) use (&$orderByCalls, $queryBuilderMock) {
             $orderByCalls[] = [$sort, $order];
 
             return $queryBuilderMock;
