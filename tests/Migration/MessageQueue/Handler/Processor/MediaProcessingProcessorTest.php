@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Migration\MessageQueue\Handler\Processor;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
@@ -38,7 +39,9 @@ use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 #[Package('fundamentals@after-sales')]
 class MediaProcessingProcessorTest extends TestCase
@@ -108,16 +111,9 @@ class MediaProcessingProcessorTest extends TestCase
         $this->dbalConnection = $this->createMock(Connection::class);
         $this->dbalConnection->method('createQueryBuilder')->willReturn($queryBuilder);
 
-        $this->processor = new MediaProcessingProcessor(
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(RunTransitionServiceInterface::class),
-            $this->bus,
-            $this->createMock(LoggingService::class),
-            $this->dbalConnection,
-            $this->createMock(MediaFileProcessorRegistryInterface::class),
-            $this->createMock(DataSetRegistry::class),
+        $this->processor = $this->createMediaProcessor(
+            bus: $this->bus,
+            dbalConnection: $this->dbalConnection,
         );
     }
 
@@ -148,16 +144,9 @@ class MediaProcessingProcessorTest extends TestCase
                 MigrationStep::CLEANUP
             );
 
-        $this->processor = new MediaProcessingProcessor(
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $runTransitionService,
-            $this->bus,
-            $this->createMock(LoggingService::class),
-            $this->createMock(Connection::class),
-            $this->createMock(MediaFileProcessorRegistryInterface::class),
-            $this->createMock(DataSetRegistry::class),
+        $this->processor = $this->createMediaProcessor(
+            runTransitionService: $runTransitionService,
+            bus: $this->bus,
         );
 
         $this->processor->process(
@@ -193,16 +182,11 @@ class MediaProcessingProcessorTest extends TestCase
             static::isInstanceOf(FetchDataSetMissingLog::class)
         );
 
-        $processor = new MediaProcessingProcessor(
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(RunTransitionServiceInterface::class),
-            $this->bus,
-            $logging,
-            $this->dbalConnection,
-            $this->createMock(MediaFileProcessorRegistryInterface::class),
-            $dataSetRegistry
+        $processor = $this->createMediaProcessor(
+            bus: $this->bus,
+            loggingService: $logging,
+            dbalConnection: $this->dbalConnection,
+            dataSetRegistry: $dataSetRegistry
         );
 
         $processor->process(
@@ -244,16 +228,12 @@ class MediaProcessingProcessorTest extends TestCase
         $dataSetRegistry = $this->createMock(DataSetRegistry::class);
         $dataSetRegistry->method('getDataSet')->willReturn(new MediaDataSet());
 
-        $processor = new MediaProcessingProcessor(
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(RunTransitionServiceInterface::class),
-            $this->bus,
-            $logging,
-            $this->dbalConnection,
-            $registry,
-            $dataSetRegistry
+        $processor = $this->createMediaProcessor(
+            bus: $this->bus,
+            loggingService: $logging,
+            dbalConnection: $this->dbalConnection,
+            mediaFileProcessorRegistry: $registry,
+            dataSetRegistry: $dataSetRegistry
         );
 
         $processor->process(
@@ -301,16 +281,11 @@ class MediaProcessingProcessorTest extends TestCase
         $dataSetRegistry = $this->createMock(DataSetRegistry::class);
         $dataSetRegistry->method('getDataSet')->willReturn(new MediaDataSet());
 
-        $processor = new MediaProcessingProcessor(
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(RunTransitionServiceInterface::class),
-            $this->bus,
-            $this->createMock(LoggingService::class),
-            $this->dbalConnection,
-            $processorRegistry,
-            $dataSetRegistry
+        $processor = $this->createMediaProcessor(
+            bus: $this->bus,
+            dbalConnection: $this->dbalConnection,
+            mediaFileProcessorRegistry: $processorRegistry,
+            dataSetRegistry: $dataSetRegistry
         );
 
         $processor->process(
@@ -370,16 +345,11 @@ class MediaProcessingProcessorTest extends TestCase
         $dataSetRegistry = $this->createMock(DataSetRegistry::class);
         $dataSetRegistry->method('getDataSet')->willReturn(new MediaDataSet());
 
-        $processor = new MediaProcessingProcessor(
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $this->createMock(RunTransitionServiceInterface::class),
-            $this->bus,
-            $this->createMock(LoggingService::class),
-            $this->dbalConnection,
-            $processorRegistry,
-            $dataSetRegistry
+        $processor = $this->createMediaProcessor(
+            bus: $this->bus,
+            dbalConnection: $this->dbalConnection,
+            mediaFileProcessorRegistry: $processorRegistry,
+            dataSetRegistry: $dataSetRegistry
         );
 
         $processor->process(
@@ -448,16 +418,13 @@ class MediaProcessingProcessorTest extends TestCase
             )
         );
 
-        $processor = new MediaProcessingProcessor(
-            $this->createMock(EntityRepository::class),
-            $this->createMock(EntityRepository::class),
-            $migrationMediaFileRepository,
-            $runTransitionService,
-            $this->bus,
-            $this->createMock(LoggingService::class),
-            $this->dbalConnection,
-            $processorRegistry,
-            $dataSetRegistry
+        $processor = $this->createMediaProcessor(
+            migrationDataRepo: $migrationMediaFileRepository,
+            runTransitionService: $runTransitionService,
+            bus: $this->bus,
+            dbalConnection: $this->dbalConnection,
+            mediaFileProcessorRegistry: $processorRegistry,
+            dataSetRegistry: $dataSetRegistry
         );
 
         $processor->process(
@@ -470,5 +437,133 @@ class MediaProcessingProcessorTest extends TestCase
         static::assertCount(1, $this->bus->getMessages());
         static::assertSame(1, $this->progress->getProgress());
         static::assertSame(101, $this->progress->getCurrentEntityProgress());
+    }
+
+    public function testFetchOnlyUnprocessedDataWithoutOffset(): void
+    {
+        $mediaId = Uuid::randomHex();
+        $whereCalls = [];
+        $orderByCalls = [];
+
+        $this->mediaFiles = [
+            [
+                'id' => Uuid::randomBytes(),
+                'run_id' => Uuid::randomBytes(),
+                'media_id' => Uuid::fromHexToBytes($mediaId),
+                'entity' => 'order_document',
+                'written' => 1,
+                'processed' => 0,
+                'process_failure' => 0,
+                'file_size' => 0,
+            ],
+        ];
+
+        $result = $this->createMock(Result::class);
+        $result->method('fetchAllAssociative')->willReturn($this->mediaFiles);
+
+        $queryBuilderMock = $this->createMock(QueryBuilder::class);
+        $queryBuilderMock->expects($this->never())->method('setFirstResult');
+        $queryBuilderMock->method('executeQuery')->willReturn($result);
+        $queryBuilderMock->method('select')->willReturnSelf();
+        $queryBuilderMock->method('from')->willReturnSelf();
+        $queryBuilderMock->method('where')->willReturnSelf();
+        $queryBuilderMock->method('setMaxResults')->willReturnSelf();
+        $queryBuilderMock->method('setParameter')->willReturnSelf();
+
+        $queryBuilderMock->method('andWhere')->willReturnCallback(function (string $condition) use (&$whereCalls, $queryBuilderMock) {
+            $whereCalls[] = $condition;
+
+            return $queryBuilderMock;
+        });
+        $queryBuilderMock->method('orderBy')->willReturnCallback(function (string $sort, ?string $order = null) use (&$orderByCalls, $queryBuilderMock) {
+            $orderByCalls[] = [$sort, $order];
+
+            return $queryBuilderMock;
+        });
+
+        $dbalConnection = $this->createMock(Connection::class);
+        $dbalConnection->method('createQueryBuilder')->willReturn($queryBuilderMock);
+
+        $processorMock = $this->createMock(MediaFileProcessorInterface::class);
+        $processorMock->expects($this->once())
+            ->method('process')
+            ->willReturn([
+                new MediaProcessWorkloadStruct(
+                    $mediaId,
+                    $this->runEntity->getId(),
+                    MediaProcessWorkloadStruct::FINISH_STATE,
+                ),
+            ]);
+
+        $processorRegistry = $this->createMock(MediaFileProcessorRegistryInterface::class);
+        $processorRegistry->method('getProcessor')->willReturn($processorMock);
+
+        $dataSetRegistry = $this->createMock(DataSetRegistry::class);
+        $dataSetRegistry->method('getDataSet')->willReturn(new OrderDocumentDataSet());
+
+        $migrationMediaFileRepository = $this->createMock(EntityRepository::class);
+        $migrationMediaFileRepository->method('search')->willReturn(
+            new EntitySearchResult(
+                SwagMigrationMediaFileEntity::class,
+                1,
+                new EntityCollection(),
+                null,
+                new Criteria(),
+                Context::createDefaultContext()
+            )
+        );
+
+        $processor = $this->createMediaProcessor(
+            bus: $this->bus,
+            dbalConnection: $dbalConnection,
+            mediaFileProcessorRegistry: $processorRegistry,
+            dataSetRegistry: $dataSetRegistry,
+        );
+
+        $processor->process(
+            $this->migrationContext,
+            Context::createDefaultContext(),
+            $this->runEntity,
+            $this->progress
+        );
+
+        static::assertContains('written = 1', $whereCalls);
+        static::assertContains('processed = 0', $whereCalls);
+        static::assertContains('process_failure = 0', $whereCalls);
+        static::assertSame([['id, file_size, entity', null]], $orderByCalls);
+    }
+
+    private function createMediaProcessor(
+        MockObject|EntityRepository|null $migrationRunRepo = null,
+        MockObject|EntityRepository|null $migrationDataRepo = null,
+        MockObject|EntityRepository|null $migrationMediaFileRepo = null,
+        MockObject|RunTransitionServiceInterface|null $runTransitionService = null,
+        MockObject|MessageBusInterface|null $bus = null,
+        MockObject|LoggingService|null $loggingService = null,
+        MockObject|Connection|null $dbalConnection = null,
+        MockObject|MediaFileProcessorRegistryInterface|null $mediaFileProcessorRegistry = null,
+        MockObject|DataSetRegistry|null $dataSetRegistry = null,
+    ) {
+        $migrationRunRepo ??= $this->createMock(EntityRepository::class);
+        $migrationDataRepo ??= $this->createMock(EntityRepository::class);
+        $migrationMediaFileRepo ??= $this->createMock(EntityRepository::class);
+        $runTransitionService ??= $this->createMock(RunTransitionServiceInterface::class);
+        $bus ??= $this->createMock(MessageBusInterface::class);
+        $loggingService ??= $this->createMock(LoggingService::class);
+        $dbalConnection ??= $this->createMock(Connection::class);
+        $mediaFileProcessorRegistry ??= $this->createMock(MediaFileProcessorRegistryInterface::class);
+        $dataSetRegistry ??= $this->createMock(DataSetRegistry::class);
+
+        return new MediaProcessingProcessor(
+            $migrationRunRepo,
+            $migrationDataRepo,
+            $migrationMediaFileRepo,
+            $runTransitionService,
+            $bus,
+            $loggingService,
+            $dbalConnection,
+            $mediaFileProcessorRegistry,
+            $dataSetRegistry
+        );
     }
 }
