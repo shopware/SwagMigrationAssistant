@@ -1,18 +1,16 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "target": "es2020",
-    "lib": [
-      "ES2020",
-      "DOM"
-    ],
-    "module": "commonjs",
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "sourceMap": true,
     "skipLibCheck": true,
+    "noEmit": true,
+    "strict": false,
     "paths": {
-      "src": ["src"],
       "@administration/*": [
         "../../../../../../../src/Administration/Resources/app/administration/*"
       ]
@@ -20,7 +18,6 @@
   },
   "include": [
     "src/**/*.ts",
-    "./scripts/**/*"
   ],
   "exclude": [
     "src/**/*.spec.ts",
@@ -28,8 +25,6 @@
   ],
   "files": [
     "../../../../../../../src/Administration/Resources/app/administration/src/html-shim.d.ts",
-    "../../../../../../../src/Administration/Resources/app/administration/src/global.types.ts",
-    "../../../../../../../src/Administration/Resources/app/administration/src/entity-schema-definition.d.ts",
-    "../../../../../../../src/Administration/Resources/app/administration/src/global.types.ts"
+    "../../../../../../../src/Administration/Resources/app/administration/src/entity-schema-definition.d.ts"
   ]
 }
