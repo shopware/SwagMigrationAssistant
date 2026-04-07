@@ -78,6 +78,7 @@ export default [
             'prefer-template': 'error',
             'prefer-rest-params': 'error',
             'prefer-spread': 'error',
+            'no-restricted-imports': ['error', { patterns: ['../**'] }],
             'no-shadow': 'off',
             '@typescript-eslint/no-shadow': 'error',
         },

@@ -2,16 +2,22 @@
  * @sw-package fundamentals@after-sales
  * @private
  */
-import type Repository from '@administration/src/core/data/repository.data';
+import type Criteria from '@shopware-ag/meteor-admin-sdk/es/data/Criteria';
+import type { ApiContext } from '@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection';
+import type { Entity as MeteorEntity } from '@shopware-ag/meteor-admin-sdk/es/_internals/data/Entity';
+import type MeteorEntityCollection from '@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection';
+import type { Repository as MeteorRepository } from '@shopware-ag/meteor-admin-sdk/es/data/repository';
 
-/**
- * @private
- */
-export type { Entity as TEntity } from '@shopware-ag/admin-extension-sdk/es/data/_internals/Entity';
-export type { default as TEntityCollection } from '@shopware-ag/admin-extension-sdk/es/data/_internals/EntityCollection';
-export type { default as TCriteria } from '@shopware-ag/admin-extension-sdk/es/data/Criteria';
+export { MIGRATION_LOG_LEVEL } from '../module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-step';
 
-type TRepository<T> = Repository<T>;
+export type TEntity<EntityName extends keyof EntitySchema.Entities> = MeteorEntity<EntityName>;
+
+export type TEntityCollection<EntityName extends keyof EntitySchema.Entities> = MeteorEntityCollection<EntityName>;
+
+export type TRepository<EntityName extends keyof EntitySchema.Entities> = MeteorRepository<EntityName> & {
+    search(criteria: Criteria, context?: ApiContext): Promise<TEntityCollection<EntityName>>;
+    create(context?: ApiContext, entityId?: string): TEntity<EntityName>;
+};
 
 type MigrationStep =
     | 'idle'
@@ -96,12 +102,7 @@ type MigrationPremapping = {
     mapping: MigrationPremappingEntity[];
 };
 
-type MigrationCredentials = {
-    endpoint: string;
-    apiUser?: string;
-    apiKey?: string;
-    apiPassword?: string;
-};
+type MigrationCredentials = Record<string, string | number | boolean | null>;
 
 type MigrationConnection = {
     id: string;
@@ -136,8 +137,6 @@ type MigrationFix = {
  * @private
  */
 export {
-    MIGRATION_LOG_LEVEL,
-    TRepository,
     MigrationStep,
     MigrationState,
     MigrationProfile,
