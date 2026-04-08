@@ -89,6 +89,8 @@
         ],
         "format:md": "@npm:admin run format:md",
         "format:md:fix": "@npm:admin run format:md:fix",
+        "format:yml": "@npm:admin run format:yml",
+        "format:yml:fix": "@npm:admin run format:yml:fix",
         "admin:unit": "@npm:jest run unit",
         "admin:unit:watch": "@npm:jest run unit-watch",
         "admin:acceptance": "@npm:acceptance run test",

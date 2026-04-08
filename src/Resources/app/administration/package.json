@@ -12,7 +12,9 @@
     "format": "npx prettier --check \"src/**/*.{js,ts}\" --config ../../../../.prettierrc.json --cache",
     "format:fix": "npx prettier --write \"src/**/*.{js,ts}\" --config ../../../../.prettierrc.json --cache",
     "format:md": "npx prettier --check \"../../../../*.md\" --config ../../../../.prettierrc.json --cache",
-    "format:md:fix": "npx prettier --write \"../../../../*.md\" --config ../../../../.prettierrc.json --cache"
+    "format:md:fix": "npx prettier --write \"../../../../*.md\" --config ../../../../.prettierrc.json --cache",
+    "format:yml": "npx prettier --check \"../../../../.github/**/*.{yml,yaml}\" --config ../../../../.prettierrc.json --cache",
+    "format:yml:fix": "npx prettier --write \"../../../../.github/**/*.{yml,yaml}\" --config ../../../../.prettierrc.json --cache"
   },
   "devDependencies": {
     "@eslint/js": "9.39.3",

@@ -1,84 +1,61 @@
 name: Admin
 
+env:
+    EXTENSION_NAME: ${{ github.event.repository.name }}
+
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - trunk
-  pull_request:
-    paths:
-      - src/Resources/app/administration/**
-      - tests/Jest/**
-      - .github/workflows/admin.yml
-  workflow_call:
+    workflow_dispatch:
+    push:
+        branches:
+            - trunk
+    pull_request:
+        paths:
+            - src/Resources/app/administration/**
+            - tests/Jest/**
+            - .github/workflows/**
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: shopware/github-actions/setup-extension@main
-        with:
-          extensionName: ${{ github.event.repository.name }}
-          install: true
-          install-admin: true
-          install-storefront: false
-          extraRepositories: |
-            {
-              "${{ github.event.repository.name }}": {
-                "type": "path",
-                "url": "custom/plugins/${{ github.event.repository.name }}",
-                "symlink": true
-              }
-            }
-      - run: |
-          composer -d custom/plugins/${{ github.event.repository.name }} run admin:install
-          composer -d custom/plugins/${{ github.event.repository.name }} run lint:admin
-          composer -d custom/plugins/${{ github.event.repository.name }} run format:admin
-          composer -d custom/plugins/${{ github.event.repository.name }} run format:md
+    lint:
+        name: Lint and formatting checks
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
 
-  stylelint:
-    name: Stylelint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: shopware/github-actions/setup-extension@main
-        with:
-          extensionName: ${{ github.event.repository.name }}
-          install: true
-          install-admin: true
-          install-storefront: false
-          extraRepositories: |
-            {
-              "${{ github.event.repository.name }}": {
-                "type": "path",
-                "url": "custom/plugins/${{ github.event.repository.name }}",
-                "symlink": true
-              }
-            }
-      - run: |
-          composer -d custom/plugins/${{ github.event.repository.name }} run admin:install
-          composer -d custom/plugins/${{ github.event.repository.name }} run lint:admin:scss
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: npm
+                  cache-dependency-path: |
+                      src/Resources/app/administration/package-lock.json
+                      tests/Jest/package-lock.json
+                      tests/acceptance/package-lock.json
 
-  jest:
-    name: Jest
-    runs-on: ubuntu-latest
-    env:
-      ARTIFACTS_PATH: ${{ github.workspace }}/development
-    steps:
-      - uses: shopware/github-actions/setup-extension@main
+            - name: Install admin dependencies
+              run: |
+                  npm ci --prefix src/Resources/app/administration
+                  npm ci --prefix tests/Jest
+                  npm ci --prefix tests/acceptance
+
+            - name: Run lint and formatting checks
+              run: |
+                  npm run lint --prefix tests/Jest
+                  npm run lint --prefix src/Resources/app/administration
+                  npm run lint --prefix tests/acceptance
+                  npm run lint:scss --prefix src/Resources/app/administration
+                  npm run format --prefix tests/Jest
+                  npm run format --prefix src/Resources/app/administration
+                  npm run format --prefix tests/acceptance
+                  npm run format:md --prefix src/Resources/app/administration
+                  npm run format:yml --prefix src/Resources/app/administration
+
+    jest:
+        name: Jest
+        uses: ./.github/workflows/action-jest.yml
         with:
-          extensionName: ${{ github.event.repository.name }}
-          install: true
-          install-admin: true
-          install-storefront: false
-          extraRepositories: |
-            {
-              "${{ github.event.repository.name }}": {
-                "type": "path",
-                "url": "custom/plugins/${{ github.event.repository.name }}",
-                "symlink": true
-              }
-            }
-      - run: |
-          composer -d custom/plugins/${{ github.event.repository.name }} run admin:install
-          composer -d custom/plugins/${{ github.event.repository.name }} run admin:unit -- --ci
+            extension_name: ${{ github.event.repository.name }}
