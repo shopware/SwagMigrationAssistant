@@ -1,0 +1,56 @@
+[
+    {
+        "label": "products",
+        "sourceQuery": "SELECT COUNT(*) FROM s_articles_details",
+        "targetEntity": "product",
+        "expectedTotal": 41
+    },
+    {
+        "label": "customers",
+        "sourceQuery": "SELECT COUNT(*) FROM s_user",
+        "targetEntity": "customer",
+        "expectedTotal": 2
+    },
+    {
+        "label": "orders",
+        "sourceQuery": "SELECT COUNT(*) FROM s_order",
+        "targetEntity": "order",
+        "expectedTotal": 1
+    },
+    {
+        "label": "manufacturers",
+        "sourceQuery": "SELECT COUNT(*) FROM s_articles_supplier",
+        "targetEntity": "product_manufacturer",
+        "expectedTotal": 3
+    },
+    {
+        "label": "categories",
+        "sourceQuery": "SELECT COUNT(*) FROM s_categories WHERE parent IS NOT NULL AND path IS NOT NULL",
+        "targetEntity": "category",
+        "expectedTotal": 18
+    },
+    {
+        "label": "property groups",
+        "sourceQuery": "SELECT COUNT(*) FROM s_filter",
+        "targetEntity": "property_group",
+        "expectedTotal": 14
+    },
+    {
+        "label": "property group options",
+        "sourceQuery": "SELECT COUNT(*) FROM s_filter_options",
+        "targetEntity": "property_group_option",
+        "expectedTotal": 93
+    },
+    {
+        "label": "product reviews",
+        "sourceQuery": "SELECT COUNT(*) FROM s_articles_vote",
+        "targetEntity": "product_review",
+        "expectedTotal": 2
+    },
+    {
+        "label": "seo urls",
+        "sourceQuery": "SELECT COUNT(*) FROM s_core_rewrite_urls",
+        "targetEntity": "seo_url",
+        "expectedTotal": 32
+    }
+]

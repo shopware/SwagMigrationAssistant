@@ -1,0 +1,101 @@
+name: Reusable Migration Proof
+
+on:
+    workflow_call:
+        inputs:
+            bootstrap_fixture:
+                required: false
+                type: boolean
+                default: false
+            source_shopware_version:
+                required: false
+                type: string
+                default: '5.7.14'
+            source_php_version:
+                required: false
+                type: string
+                default: '7.4'
+            source_node_version:
+                required: false
+                type: string
+                default: '12'
+            source_profile_name:
+                required: false
+                type: string
+                default: 'shopware57'
+            target_shopware_version:
+                required: false
+                type: string
+                default: '6.7.2.2'
+            target_php_version:
+                required: false
+                type: string
+                default: '8.4'
+            target_node_version:
+                required: false
+                type: string
+                default: '20'
+            artifact_name_suffix:
+                required: true
+                type: string
+
+jobs:
+    migration-proof:
+        name: Migration Proof
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        env:
+            MIGRATION_PROOF_DEBUG: 'true'
+            MIGRATION_PROOF_SOURCE_DOCKER_URL: 'http://source'
+            MIGRATION_PROOF_SOURCE_CONTAINER: 'migration-proof-source'
+            MIGRATION_PROOF_TARGET_CONTAINER: 'migration-proof-target'
+            MIGRATION_PROOF_SOURCE_HOST_PORT: '8081'
+            MIGRATION_PROOF_TARGET_HOST_PORT: '8080'
+            MIGRATION_PROOF_SOURCE_DB_NAME: 'shopware'
+            MIGRATION_PROOF_SOURCE_API_USERNAME: 'migration-proof-api'
+            MIGRATION_PROOF_SOURCE_API_PASSWORD: 'migration-proof-api-password'
+            MIGRATION_PROOF_SOURCE_API_KEY: 'migration-proof-api-key-1234567890abcdef'
+            MIGRATION_PROOF_SOURCE_CONNECTION_NAME: 'migration-proof-shopware-api'
+            MIGRATION_PROOF_SOURCE_GATEWAY_NAME: 'api'
+            MIGRATION_PROOF_SOURCE_PROFILE_NAME: ${{ inputs.source_profile_name }}
+            MIGRATION_PROOF_TARGET_ADMIN_USERNAME: 'admin'
+            MIGRATION_PROOF_TARGET_ADMIN_PASSWORD: 'shopware'
+            MIGRATION_PROOF_TARGET_PLUGIN_NAME: 'SwagMigrationAssistant'
+            SOURCE_SHOPWARE_VERSION: ${{ inputs.source_shopware_version }}
+            SOURCE_PHP_VERSION: ${{ inputs.source_php_version }}
+            SOURCE_NODE_VERSION: ${{ inputs.source_node_version }}
+            TARGET_SHOPWARE_VERSION: ${{ inputs.target_shopware_version }}
+            TARGET_PHP_VERSION: ${{ inputs.target_php_version }}
+            TARGET_NODE_VERSION: ${{ inputs.target_node_version }}
+            MIGRATION_PROOF_BOOTSTRAP: ${{ inputs.bootstrap_fixture }}
+            MIGRATION_PROOF_OUTPUT_DIR: '/tmp/migration-proof-output'
+            SOURCE_CONNECTOR_ZIP_URL: 'https://github.com/shopware/SwagMigrationConnector/archive/refs/tags/2.2.0.zip'
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+              with:
+                  bun-version: latest
+
+            - name: Install dependencies
+              working-directory: tests/migration-proof
+              run: bun install --frozen-lockfile
+
+            - name: Verify quality
+              working-directory: tests/migration-proof
+              run: bun run verify
+
+            - name: Run Migration Proof
+              working-directory: tests/migration-proof
+              run: bun run proof:ci
+
+            - name: Upload artifacts
+              if: always()
+              uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+              with:
+                  name: migration-proof-${{ github.run_id }}-${{ github.run_attempt }}-${{ inputs.artifact_name_suffix }}
+                  path: |
+                      /tmp/migration-proof-output/
+                  retention-days: 7

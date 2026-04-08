@@ -1,0 +1,30 @@
+name: migration-proof
+
+services:
+    source:
+        build:
+            context: ../..
+            dockerfile: migration-proof/docker/source.Dockerfile
+            args:
+                VERSION: ${SOURCE_SHOPWARE_VERSION:-5.7.14}
+                CONNECTOR_URL: ${SOURCE_CONNECTOR_ZIP_URL:-https://github.com/shopware/SwagMigrationConnector/archive/refs/tags/2.2.0.zip}
+        container_name: ${MIGRATION_PROOF_SOURCE_CONTAINER:-migration-proof-source}
+        environment:
+            MIGRATION_PROOF_SOURCE_API_USERNAME: ${MIGRATION_PROOF_SOURCE_API_USERNAME:-migration-proof-api}
+            MIGRATION_PROOF_SOURCE_API_PASSWORD: ${MIGRATION_PROOF_SOURCE_API_PASSWORD:-migration-proof-api-password}
+            MIGRATION_PROOF_SOURCE_API_KEY: ${MIGRATION_PROOF_SOURCE_API_KEY:-migration-proof-api-key-1234567890abcdef}
+            PHP_VERSION: '${SOURCE_PHP_VERSION:-7.4}'
+            NODE_VERSION: '${SOURCE_NODE_VERSION:-12}'
+        ports:
+            - '${MIGRATION_PROOF_SOURCE_HOST_PORT:-8081}:80'
+
+    target:
+        image: dockware/shopware:${TARGET_SHOPWARE_VERSION}
+        container_name: ${MIGRATION_PROOF_TARGET_CONTAINER:-migration-proof-target}
+        environment:
+            PHP_VERSION: '${TARGET_PHP_VERSION:-8.4}'
+            NODE_VERSION: '${TARGET_NODE_VERSION:-20}'
+        ports:
+            - '${MIGRATION_PROOF_TARGET_HOST_PORT:-8080}:80'
+        volumes:
+            - ../../../:/var/www/html/custom/plugins/SwagMigrationAssistant

@@ -18,6 +18,7 @@ jobs:
     playwright:
         name: Playwright
         runs-on: ubuntu-latest
+        timeout-minutes: 30
         services:
             mysql:
                 image: mysql:8.0
@@ -81,7 +82,7 @@ jobs:
 
             - name: Upload test artifacts
               if: always()
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
               with:
                   name: e2e-${{ inputs.extension_name }}-${{ github.sha }}-${{ inputs.platform_branch }}
                   path: |
@@ -91,7 +92,7 @@ jobs:
 
             - name: Upload updated snapshots
               if: inputs.update_snapshots
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
               with:
                   name: visual-snapshots-${{ inputs.platform_branch }}
                   path: custom/plugins/${{ inputs.extension_name }}/tests/acceptance/snapshots/

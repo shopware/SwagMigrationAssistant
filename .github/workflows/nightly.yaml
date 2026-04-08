@@ -37,6 +37,11 @@ jobs:
             platform_branch: trunk
             update_snapshots: false
 
+    compatibility:
+        name: Shopware 5 Compatibility
+        uses: ./.github/workflows/compatibility.yaml
+        secrets: inherit
+
     notify_slack_on_schedule_failure:
         name: Slack Notify
         runs-on: ubuntu-latest
@@ -45,6 +50,7 @@ jobs:
             - phpunit
             - jest
             - acceptance
+            - compatibility
         if: >-
             ${{
                 always() &&
@@ -53,7 +59,8 @@ jobs:
                     needs.phpstan.result == 'failure' ||
                     needs.phpunit.result == 'failure' ||
                     needs.jest.result == 'failure' ||
-                    needs.acceptance.result == 'failure'
+                    needs.acceptance.result == 'failure' ||
+                    needs.compatibility.result == 'failure'
                 )
             }}
         steps:
@@ -68,6 +75,7 @@ jobs:
                   PHPUNIT_RESULT: ${{ needs.phpunit.result }}
                   JEST_RESULT: ${{ needs.jest.result }}
                   ACCEPTANCE_RESULT: ${{ needs.acceptance.result }}
+                  COMPATIBILITY_RESULT: ${{ needs.compatibility.result }}
               run: |
                   set -euo pipefail
 
@@ -77,6 +85,7 @@ jobs:
                   [ "$PHPUNIT_RESULT" = "failure" ] && failed_jobs+=("PHPUnit")
                   [ "$JEST_RESULT" = "failure" ] && failed_jobs+=("Jest")
                   [ "$ACCEPTANCE_RESULT" = "failure" ] && failed_jobs+=("Playwright")
+                  [ "$COMPATIBILITY_RESULT" = "failure" ] && failed_jobs+=("Shopware 5 Compatibility")
 
                   failed_jobs_list=$(printf -- '- %s\n' "${failed_jobs[@]}")
                   failed_jobs_list=${failed_jobs_list%$'\n'}

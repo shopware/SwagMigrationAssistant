@@ -1,0 +1,38 @@
+name: Shopware 5 Compatibility
+
+on:
+    workflow_call:
+    pull_request:
+        branches:
+            - trunk
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    migration-proof-matrix:
+        name: Migration Proof (${{ matrix.profile_name }} / SW${{ matrix.source_shopware_version }})
+        strategy:
+            fail-fast: false
+            matrix:
+                include:
+                    - profile_name: shopware54
+                      source_shopware_version: '5.4.6'
+                      source_php_version: '7.2'
+                    - profile_name: shopware55
+                      source_shopware_version: '5.5.10'
+                      source_php_version: '7.2'
+                    - profile_name: shopware56
+                      source_shopware_version: '5.6.10'
+                      source_php_version: '7.3'
+                    - profile_name: shopware57
+                      source_shopware_version: '5.7.14'
+                      source_php_version: '7.4'
+        uses: ./.github/workflows/action-migration-proof.yml
+        with:
+            artifact_name_suffix: compatibility-${{ matrix.profile_name }}-${{ matrix.source_shopware_version }}
+            source_profile_name: ${{ matrix.profile_name }}
+            source_shopware_version: ${{ matrix.source_shopware_version }}
+            source_php_version: ${{ matrix.source_php_version }}

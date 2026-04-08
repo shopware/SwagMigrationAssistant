@@ -1,0 +1,29 @@
+{
+    "name": "swag-migration-assistant-proof",
+    "author": "shopware AG",
+    "version": "0.1.0",
+    "scripts": {
+        "lint": "eslint ./",
+        "lint:fix": "eslint --fix ./",
+        "lint:types": "tsc --noEmit",
+        "format": "prettier --check \"./**/*.{ts,json,mjs,yaml,yml}\" --config ../../.prettierrc.json --cache",
+        "format:fix": "prettier --write \"./**/*.{ts,json,mjs,yaml,yml}\" --config ../../.prettierrc.json --cache",
+        "docker:up": "docker compose --project-name migration-proof --env-file .env -f docker/compose.yaml up -d --force-recreate --renew-anon-volumes",
+        "docker:down": "docker compose --project-name migration-proof --env-file .env -f docker/compose.yaml down -v --remove-orphans",
+        "proof:dev": "bun --env-file=.env run src/workflow.ts",
+        "proof:ci": "bun run src/workflow.ts",
+        "verify": "bun run format && bun run lint && bun run lint:types"
+    },
+    "devDependencies": {
+        "@eslint/js": "9.39.3",
+        "@typescript-eslint/eslint-plugin": "8.56.1",
+        "@typescript-eslint/parser": "8.56.1",
+        "bun-types": "latest",
+        "eslint": "9.39.3",
+        "eslint-config-prettier": "9.1.0",
+        "globals": "15.15.0",
+        "prettier": "3.6.2",
+        "prettier-plugin-multiline-arrays": "3.0.6",
+        "typescript": "5.7.3"
+    }
+}

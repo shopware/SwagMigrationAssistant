@@ -64,9 +64,11 @@
             "@npm:jest run lint",
             "@npm:admin run lint",
             "@npm:admin run lint:types",
+            "@npm:admin run lint:scss",
             "@npm:acceptance run lint",
             "@npm:acceptance run lint:types",
-            "@npm:admin run lint:scss"
+            "@npm:proof run lint",
+            "@npm:proof run lint:types"
         ],
         "lint:admin:fix": [
             "@npm:jest run lint:fix",
@@ -80,12 +82,14 @@
         "format:admin": [
             "@npm:jest run format",
             "@npm:admin run format",
-            "@npm:acceptance run format"
+            "@npm:acceptance run format",
+            "@npm:proof run format"
         ],
         "format:admin:fix": [
             "@npm:jest run format:fix",
             "@npm:admin run format:fix",
-            "@npm:acceptance run format:fix"
+            "@npm:acceptance run format:fix",
+            "@npm:proof run format:fix"
         ],
         "format:md": "@npm:admin run format:md",
         "format:md:fix": "@npm:admin run format:md:fix",
@@ -97,6 +101,7 @@
         "npm:admin": "cd src/Resources/app/administration && npm",
         "npm:jest": "cd tests/Jest && npm",
         "npm:acceptance": "cd tests/acceptance && npm",
+        "npm:proof": "cd tests/migration-proof && npm",
         "npm:init": [
             "@npm:admin install",
             "@npm:jest install",
