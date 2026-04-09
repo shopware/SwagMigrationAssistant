@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "shopware/product-cc-after-sales"
+    commit-message:
+      prefix: "chore"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
