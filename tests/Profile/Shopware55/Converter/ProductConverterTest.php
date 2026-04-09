@@ -112,6 +112,8 @@ class ProductConverterTest extends TestCase
         );
         static::assertSame([], $converted['categories']);
         static::assertSame($productData[0]['assets'][0]['description'], $converted['media'][0]['media']['alt']);
+        static::assertSame($converted['media'][0]['media']['id'], $converted['media'][0]['mediaId']);
+        static::assertSame($converted['cover']['id'], $converted['coverId']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
@@ -250,6 +252,8 @@ class ProductConverterTest extends TestCase
         static::assertSame([], $converted['categories']);
         static::assertArrayNotHasKey('options', $converted);
         static::assertArrayHasKey('options', $converted['children'][0]);
+        static::assertSame($converted['children'][0]['cover']['id'], $converted['children'][0]['coverId']);
+        static::assertSame($converted['children'][0]['media'][0]['media']['id'], $converted['children'][0]['media'][0]['mediaId']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
@@ -275,11 +279,14 @@ class ProductConverterTest extends TestCase
         static::assertArrayHasKey('media', $converted);
         static::assertCount(2, $converted['media']);
         static::assertSame('hemd', $converted['media'][0]['media']['title']);
+        static::assertSame($converted['media'][0]['media']['id'], $converted['media'][0]['mediaId']);
         static::assertSame(2, $converted['media'][0]['position']);
         static::assertSame('hemd1', $converted['media'][1]['media']['title']);
+        static::assertSame($converted['media'][1]['media']['id'], $converted['media'][1]['mediaId']);
         static::assertSame(1, $converted['media'][1]['position']);
         static::assertArrayHasKey('cover', $converted);
         static::assertSame('hemd1', $converted['cover']['media']['title']);
+        static::assertSame($converted['cover']['id'], $converted['coverId']);
 
         static::assertSame($convertedContainer['id'], $converted['parentId']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -314,11 +321,14 @@ class ProductConverterTest extends TestCase
         static::assertArrayHasKey('media', $converted);
         static::assertCount(2, $converted['media']);
         static::assertSame('hemd', $converted['media'][0]['media']['title']);
+        static::assertSame($converted['media'][0]['media']['id'], $converted['media'][0]['mediaId']);
         static::assertSame(2, $converted['media'][0]['position']);
         static::assertSame('hemd1', $converted['media'][1]['media']['title']);
+        static::assertSame($converted['media'][1]['media']['id'], $converted['media'][1]['mediaId']);
         static::assertSame(1, $converted['media'][1]['position']);
         static::assertArrayHasKey('cover', $converted);
         static::assertSame('hemd', $converted['cover']['media']['title']);
+        static::assertSame($converted['cover']['id'], $converted['coverId']);
     }
 
     public function testConvertVariantProductWithoutParent(): void

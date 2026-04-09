@@ -83,7 +83,14 @@ readonly class MigrationErrorResolutionService
      */
     private function loadFixes(MigrationErrorResolutionContext $errorResolutionContext): void
     {
-        $itemIds = \array_column($errorResolutionContext->getData(), 'id');
+        $itemIds = \array_values(
+            array_filter(
+                \array_column($errorResolutionContext->getData(), 'id'),
+                static function ($itemId): bool {
+                    return \is_string($itemId) && $itemId !== '' && Uuid::isValid($itemId);
+                }
+            )
+        );
 
         if (empty($itemIds)) {
             $errorResolutionContext->setFixes([]);

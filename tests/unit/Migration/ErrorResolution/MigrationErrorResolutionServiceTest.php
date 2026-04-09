@@ -121,6 +121,24 @@ class MigrationErrorResolutionServiceTest extends TestCase
                     ],
                 ],
             ],
+            4 => [
+                'id' => null,
+                'name' => 'test',
+                'the' => ['path' => ['to' => ['value' => 'oldValue']]],
+                'other' => ['path' => ['to' => ['value' => 'oldValue']]],
+            ],
+            5 => [
+                'id' => '',
+                'name' => 'test',
+                'the' => ['path' => ['to' => ['value' => 'oldValue']]],
+                'other' => ['path' => ['to' => ['value' => 'oldValue']]],
+            ],
+            6 => [
+                'id' => 'notValidUuid',
+                'name' => 'test',
+                'the' => ['path' => ['to' => ['value' => 'oldValue']]],
+                'other' => ['path' => ['to' => ['value' => 'oldValue']]],
+            ],
         ];
 
         $eventClasses = [];
@@ -132,7 +150,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
                 return $event;
             });
 
-        $migrationFixApplier = new MigrationErrorResolutionService($this->createConnection($fixes), $eventDispatcher);
+        $migrationFixApplier = new MigrationErrorResolutionService($this->createConnection($fixes, [$dataIdOne, $dataIdTwo, $dataIdThree, $dataIdFour]), $eventDispatcher);
 
         $migrationFixApplier->applyFixes($data, Uuid::randomHex(), Uuid::randomHex(), Context::createDefaultContext());
 
@@ -166,11 +184,18 @@ class MigrationErrorResolutionServiceTest extends TestCase
 
     /**
      * @param array<int, array<string, string>> $fixes
+     * @param array<int, string> $allowedDataIds
      */
-    private function createConnection(array $fixes): Connection
+    private function createConnection(array $fixes, array $allowedDataIds): Connection
     {
         $connectionMock = $this->createMock(Connection::class);
-        $connectionMock->method('fetchAllAssociative')->willReturn($fixes);
+        $connectionMock->method('fetchAllAssociative')->willReturnCallback(
+            function (string $query, array $params = []) use ($fixes, $allowedDataIds) {
+                static::assertSame($params['ids'], Uuid::fromHexToBytesList($allowedDataIds));
+
+                return $fixes;
+            }
+        );
 
         return $connectionMock;
     }
