@@ -63,7 +63,9 @@
         "lint:admin": [
             "@npm:jest run lint",
             "@npm:admin run lint",
+            "@npm:admin run lint:types",
             "@npm:acceptance run lint",
+            "@npm:acceptance run lint:types",
             "@npm:admin run lint:scss"
         ],
         "lint:admin:fix": [
@@ -87,6 +89,8 @@
         ],
         "format:md": "@npm:admin run format:md",
         "format:md:fix": "@npm:admin run format:md:fix",
+        "format:yml": "@npm:admin run format:yml",
+        "format:yml:fix": "@npm:admin run format:yml:fix",
         "admin:unit": "@npm:jest run unit",
         "admin:unit:watch": "@npm:jest run unit-watch",
         "admin:acceptance": "@npm:acceptance run test",

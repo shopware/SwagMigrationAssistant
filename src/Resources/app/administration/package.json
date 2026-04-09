@@ -5,18 +5,23 @@
   "license": "MIT",
   "scripts": {
     "lint": "npx eslint .",
+    "lint:types": "tsc --noEmit",
     "lint:fix": "npm run lint -- --fix",
     "lint:scss": "npx stylelint ./**/*.scss",
     "lint:scss:fix": "npm run lint:scss -- --fix",
     "format": "npx prettier --check \"src/**/*.{js,ts}\" --config ../../../../.prettierrc.json --cache",
     "format:fix": "npx prettier --write \"src/**/*.{js,ts}\" --config ../../../../.prettierrc.json --cache",
     "format:md": "npx prettier --check \"../../../../*.md\" --config ../../../../.prettierrc.json --cache",
-    "format:md:fix": "npx prettier --write \"../../../../*.md\" --config ../../../../.prettierrc.json --cache"
+    "format:md:fix": "npx prettier --write \"../../../../*.md\" --config ../../../../.prettierrc.json --cache",
+    "format:yml": "npx prettier --check \"../../../../.github/**/*.{yml,yaml}\" --config ../../../../.prettierrc.json --cache",
+    "format:yml:fix": "npx prettier --write \"../../../../.github/**/*.{yml,yaml}\" --config ../../../../.prettierrc.json --cache"
   },
   "devDependencies": {
     "@eslint/js": "9.39.3",
+    "@shopware-ag/meteor-admin-sdk": "6.4.0",
     "@typescript-eslint/eslint-plugin": "8.56.1",
     "@typescript-eslint/parser": "8.56.1",
+    "axios": "0.30.3",
     "eslint": "9.39.3",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-file-progress": "1.5.0",

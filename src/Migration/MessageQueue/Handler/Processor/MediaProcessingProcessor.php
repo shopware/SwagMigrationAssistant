@@ -92,6 +92,7 @@ class MediaProcessingProcessor extends AbstractProcessor
         $currentDataSet = null;
         $currentCount = 0;
         $workload = [];
+        $skipped = [];
         foreach ($mediaFiles as $mediaFile) {
             if ($currentDataSet === null) {
                 try {
@@ -105,6 +106,12 @@ class MediaProcessingProcessor extends AbstractProcessor
                                 ->withEntityId($mediaFile['id'])
                                 ->build(FetchDataSetMissingLog::class)
                         );
+
+                        $skipped[] = [
+                            'id' => $mediaFile['id'],
+                            'processFailure' => true,
+                        ];
+
                         continue;
                     }
 
@@ -129,7 +136,22 @@ class MediaProcessingProcessor extends AbstractProcessor
             );
         }
 
-        \assert($currentDataSet !== null);
+        if (!empty($skipped)) {
+            $this->migrationMediaFileRepo->update($skipped, $context);
+        }
+
+        $skippedCount = \count($skipped);
+        if ($currentDataSet === null || empty($workload)) {
+            $this->finalizeProcessStep(
+                $context,
+                $migrationContext,
+                $run,
+                $progress,
+                $skippedCount
+            );
+
+            return;
+        }
 
         try {
             $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
@@ -155,15 +177,14 @@ class MediaProcessingProcessor extends AbstractProcessor
             );
         }
 
-        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($workload));
-        $progress->setProgress($progress->getProgress() + \count($workload));
-        $this->updateProgress($run->getId(), $progress, $context);
-
-        if ($this->isAllMediaProcessed($context, $migrationContext->getRunUuid())) {
-            $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);
-        }
-
-        $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
+        $workloadCount = \count($workload);
+        $this->finalizeProcessStep(
+            $context,
+            $migrationContext,
+            $run,
+            $progress,
+            $workloadCount + $skippedCount
+        );
     }
 
     /**
@@ -178,8 +199,9 @@ class MediaProcessingProcessor extends AbstractProcessor
             ->from('swag_migration_media_file')
             ->where('run_id = :runId')
             ->andWhere('written = 1')
-            ->orderBy('entity, file_size')
-            ->setFirstResult($migrationContext->getOffset())
+            ->andWhere('processed = 0')
+            ->andWhere('process_failure = 0')
+            ->orderBy('id, file_size, entity')
             ->setMaxResults($migrationContext->getLimit())
             ->setParameter('runId', Uuid::fromHexToBytes($migrationContext->getRunUuid()))
             ->executeQuery()
@@ -238,5 +260,26 @@ class MediaProcessingProcessor extends AbstractProcessor
         $unprocessedCount = $this->migrationMediaFileRepo->search($criteria, $context)->getTotal();
 
         return $unprocessedCount === 0;
+    }
+
+    private function finalizeProcessStep(
+        Context $context,
+        MigrationContextInterface $migrationContext,
+        SwagMigrationRunEntity $run,
+        MigrationProgress $progress,
+        int $itemCount,
+    ): void {
+        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + $itemCount);
+        $progress->setProgress($progress->getProgress() + $itemCount);
+        $this->updateProgress($run->getId(), $progress, $context);
+
+        if ($this->isAllMediaProcessed($context, $migrationContext->getRunUuid())) {
+            $this->runTransitionService->transitionToRunStep(
+                $migrationContext->getRunUuid(),
+                MigrationStep::CLEANUP
+            );
+        }
+
+        $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 }

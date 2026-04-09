@@ -1,0 +1,103 @@
+name: Nightly
+
+on:
+    schedule:
+        - cron: '0 1 * * *'
+    workflow_dispatch:
+
+concurrency:
+    group: nightly-${{ github.ref }}
+    cancel-in-progress: false
+
+jobs:
+    phpstan:
+        name: PHPStan
+        uses: ./.github/workflows/action-phpstan.yml
+        with:
+            extension_name: ${{ github.event.repository.name }}
+
+    phpunit:
+        name: PHPUnit
+        uses: ./.github/workflows/action-phpunit.yml
+        with:
+            extension_name: ${{ github.event.repository.name }}
+            platform_branch: trunk
+
+    jest:
+        name: Jest
+        uses: ./.github/workflows/action-jest.yml
+        with:
+            extension_name: ${{ github.event.repository.name }}
+
+    acceptance:
+        name: Playwright
+        uses: ./.github/workflows/action-acceptance.yml
+        with:
+            extension_name: ${{ github.event.repository.name }}
+            platform_branch: trunk
+            update_snapshots: false
+
+    notify_slack_on_schedule_failure:
+        name: Slack Notify
+        runs-on: ubuntu-latest
+        needs:
+            - phpstan
+            - phpunit
+            - jest
+            - acceptance
+        if: >-
+            ${{
+                always() &&
+                github.event_name == 'schedule' &&
+                (
+                    needs.phpstan.result == 'failure' ||
+                    needs.phpunit.result == 'failure' ||
+                    needs.jest.result == 'failure' ||
+                    needs.acceptance.result == 'failure'
+                )
+            }}
+        steps:
+            - name: Notify Slack
+              env:
+                  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+                  RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+                  RUN_ID: ${{ github.run_id }}
+                  REPOSITORY: ${{ github.repository }}
+                  BRANCH: ${{ github.ref_name }}
+                  PHPSTAN_RESULT: ${{ needs.phpstan.result }}
+                  PHPUNIT_RESULT: ${{ needs.phpunit.result }}
+                  JEST_RESULT: ${{ needs.jest.result }}
+                  ACCEPTANCE_RESULT: ${{ needs.acceptance.result }}
+              run: |
+                  set -euo pipefail
+
+                  failed_jobs=()
+
+                  [ "$PHPSTAN_RESULT" = "failure" ] && failed_jobs+=("PHPStan")
+                  [ "$PHPUNIT_RESULT" = "failure" ] && failed_jobs+=("PHPUnit")
+                  [ "$JEST_RESULT" = "failure" ] && failed_jobs+=("Jest")
+                  [ "$ACCEPTANCE_RESULT" = "failure" ] && failed_jobs+=("Playwright")
+
+                  failed_jobs_list=$(printf -- '- %s\n' "${failed_jobs[@]}")
+                  failed_jobs_list=${failed_jobs_list%$'\n'}
+
+                  payload=$(
+                    jq -nc \
+                      --arg repository "$REPOSITORY" \
+                      --arg branch "$BRANCH" \
+                      --arg run_id "$RUN_ID" \
+                      --arg failed_jobs_list "$failed_jobs_list" \
+                      --arg run_url "$RUN_URL" \
+                      '{
+                        repository: $repository,
+                        branch: $branch,
+                        run_id: $run_id,
+                        failed_jobs_list: $failed_jobs_list,
+                        run_url: $run_url
+                      }'
+                  )
+
+                  curl -fsSL -X POST \
+                    -H 'Content-type: application/json' \
+                    --data "$payload" \
+                    "$SLACK_WEBHOOK_URL"

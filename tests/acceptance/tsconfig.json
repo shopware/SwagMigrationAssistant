@@ -9,6 +9,7 @@
     "baseUrl": ".",
     "strict": true,
     "allowJs": true,
+    "noEmit": true,
     "paths": {
       "@fixtures/*": ["fixtures/*"],
     }
@@ -17,5 +18,10 @@
     "./**/*.js",
     "./**/*.ts",
     ".eslintrc.cjs"
+  ],
+  "exclude": [
+    "node_modules",
+    "playwright-report",
+    "test-results"
   ]
 }

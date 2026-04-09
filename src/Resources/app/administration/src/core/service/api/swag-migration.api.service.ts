@@ -1,6 +1,4 @@
-import type { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
-import type { LoginService } from '@administration/src/core/service/login.service';
-import type { ApiResponse } from '@administration/src/core/service/api.service';
+import type { AxiosInstance, AxiosResponse } from 'axios';
 import type {
     MigrationDataSelection,
     MigrationEnvironmentInformation,
@@ -11,8 +9,66 @@ import type {
     MigrationCredentials,
     MigrationError,
 } from '../../../type/types';
+import type { ActionResponse, AdditionalHeaders, ApiResponse, ApiServiceBase } from '../../../type/api-service.types';
 
-type AdditionalHeaders = Record<string, string>;
+type MigrationLogLevel = keyof LogLevelCounts;
+
+type GetLogGroupsFilter = {
+    code?: string | null;
+    status?: 'resolved' | 'unresolved' | null;
+    entity?: string | null;
+    field?: string | null;
+};
+
+type GetGroupedLogsOfRunResponse = {
+    total: number;
+    downloadUrl: string;
+    items: MigrationError[];
+};
+
+type LogGroup = {
+    code: string;
+    entityName: string | null;
+    fieldName: string | null;
+    profileName: string;
+    gatewayName: string;
+    count: number;
+    fixCount: number;
+};
+
+type LogLevelCounts = {
+    error: number;
+    warning: number;
+    info: number;
+};
+
+type GetLogGroupsResponse = {
+    total: number;
+    items: LogGroup[];
+    levelCounts: LogLevelCounts;
+};
+
+type GetUnresolvedLogsBatchInformationResponse = {
+    count: number;
+    limit: number;
+};
+
+type LogEntityIdsWithoutFixResponse = {
+    entityIds: string[];
+};
+
+type ValidateResolutionResponse = {
+    valid: boolean;
+    violations: Array<{
+        message: string;
+        propertyPath?: string;
+    }>;
+};
+
+type GetExampleFieldStructureResponse = {
+    fieldType: string;
+    example: string | null;
+};
 
 const ApiService = Shopware.Classes.ApiService;
 
@@ -39,38 +95,28 @@ export const MIGRATION_STEP = {
 
 /**
  * @private
- */
-export type LogGroup = {
-    code: string;
-    entityName: string | null;
-    fieldName: string | null;
-    count: number;
-};
-
-/**
- * @private
- */
-export type LogLevelCounts = {
-    error: number;
-    warning: number;
-    info: number;
-};
-
-/**
- * @private
  * @sw-package fundamentals@after-sales
  */
 export default class MigrationApiService extends ApiService {
-    private readonly basicConfig: AxiosRequestConfig & { version: string };
-
-    constructor(httpClient: AxiosInstance, loginService: LoginService, apiEndpoint = 'migration') {
+    constructor(httpClient: AxiosInstance, loginService: unknown, apiEndpoint = 'migration') {
         super(httpClient, loginService, apiEndpoint);
-        // @ts-ignore
-        this.name = MIGRATION_API_SERVICE;
-        this.basicConfig = {
-            timeout: 30000,
-            version: Shopware.Context.api.apiVersion,
-        };
+        this.apiService.name = MIGRATION_API_SERVICE;
+    }
+
+    private get apiService(): ApiServiceBase {
+        return this as ApiServiceBase;
+    }
+
+    private getHeaders(additionalHeaders: AdditionalHeaders = {}): AdditionalHeaders {
+        return this.apiService.getBasicHeaders(additionalHeaders);
+    }
+
+    private getActionPath(path: string): string {
+        return `_action/${this.apiService.getApiBasePath()}/${path}`;
+    }
+
+    private handleResponse<T>(response: AxiosResponse<T>): ApiResponse<T> {
+        return ApiService.handleResponse<T>(response) as ApiResponse<T>;
     }
 
     async createNewConnection(
@@ -78,422 +124,261 @@ export default class MigrationApiService extends ApiService {
         connectionName: string,
         profileName: string,
         gatewayName: string,
-        credentialFields: Record<string, MigrationCredentials>,
+        credentialFields: MigrationCredentials,
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<ApiResponse<unknown>> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
+    ): Promise<MigrationEnvironmentInformation> {
+        const response = await this.apiService.httpClient.post<MigrationEnvironmentInformation>(
+            this.getActionPath('create-new-connection'),
+            {
+                connectionId,
+                connectionName,
+                profileName,
+                gatewayName,
+                credentialFields,
+            },
+            {
+                headers: this.getHeaders(additionalHeaders),
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/create-new-connection`,
-                {
-                    connectionId,
-                    connectionName,
-                    profileName,
-                    gatewayName,
-                    credentialFields,
-                },
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response as AxiosResponse);
-            });
+        return this.handleResponse(response) as MigrationEnvironmentInformation;
     }
 
     async updateConnectionCredentials(
         connectionId: string,
-        credentialFields: Record<string, MigrationCredentials>,
+        credentialFields: MigrationCredentials,
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<ApiResponse<unknown>> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
+    ): Promise<ActionResponse> {
+        const response = await this.apiService.httpClient.post<null>(
+            this.getActionPath('update-connection-credentials'),
+            {
+                connectionId,
+                credentialFields,
+            },
+            {
+                headers: this.getHeaders(additionalHeaders),
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/update-connection-credentials`,
-                {
-                    connectionId,
-                    credentialFields,
-                },
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response as AxiosResponse);
-            });
+        return this.handleResponse(response);
     }
 
     async checkConnection(
         connectionId: string,
-        credentialFields?: Record<string, string>,
+        credentialFields?: MigrationCredentials,
         additionalHeaders: AdditionalHeaders = {},
     ): Promise<MigrationEnvironmentInformation> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
-
-        const payload: { connectionId: string; credentialFields?: Record<string, string> } = { connectionId };
+        const payload: { connectionId: string; credentialFields?: MigrationCredentials } = { connectionId };
 
         if (credentialFields) {
             payload.credentialFields = credentialFields;
         }
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/check-connection`,
-                payload,
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        const response = await this.apiService.httpClient.post<MigrationEnvironmentInformation>(
+            this.getActionPath('check-connection'),
+            payload,
+            {
+                headers: this.getHeaders(additionalHeaders),
+            },
+        );
+
+        return this.handleResponse(response) as MigrationEnvironmentInformation;
     }
 
     async getDataSelection(
         connectionId: string,
         additionalHeaders: AdditionalHeaders = {},
     ): Promise<MigrationDataSelection[]> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
-
-        return (
-            // @ts-ignore
-            this.httpClient
-                // @ts-ignore
-                .get(`_action/${this.getApiBasePath()}/data-selection`, {
-                    ...this.basicConfig,
-                    params: {
-                        connectionId,
-                    },
-                    headers,
-                })
-                .then((response: AxiosResponse) => {
-                    return ApiService.handleResponse(response);
-                })
+        const response = await this.apiService.httpClient.get<MigrationDataSelection[]>(
+            this.getActionPath('data-selection'),
+            {
+                headers: this.getHeaders(additionalHeaders),
+                params: {
+                    connectionId,
+                },
+            },
         );
+
+        return this.handleResponse(response) as MigrationDataSelection[];
     }
 
     async generatePremapping(dataSelectionIds: string[]): Promise<MigrationPremapping[]> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
+        const response = await this.apiService.httpClient.post<MigrationPremapping[]>(
+            this.getActionPath('generate-premapping'),
+            { dataSelectionIds },
+            {
+                headers: this.getHeaders(),
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/generate-premapping`,
-                { dataSelectionIds },
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return this.handleResponse(response) as MigrationPremapping[];
     }
 
-    async writePremapping(premapping: MigrationPremapping[]): Promise<ApiResponse<unknown>> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
+    async writePremapping(premapping: MigrationPremapping[]): Promise<ActionResponse> {
+        const response = await this.apiService.httpClient.post<null>(
+            this.getActionPath('write-premapping'),
+            { premapping },
+            {
+                headers: this.getHeaders(),
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/write-premapping`,
-                { premapping },
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return this.handleResponse(response);
     }
 
-    async startMigration(dataSelectionNames: string[]): Promise<ApiResponse<unknown>> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
+    async startMigration(dataSelectionNames: string[]): Promise<ActionResponse> {
+        const response = await this.apiService.httpClient.post<null>(
+            this.getActionPath('start-migration'),
+            { dataSelectionNames },
+            {
+                headers: this.getHeaders(),
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/start-migration`,
-                {
-                    dataSelectionNames,
-                },
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return this.handleResponse(response);
     }
 
     async getState(): Promise<MigrationState> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
+        const response = await this.apiService.httpClient.get<MigrationState>(this.getActionPath('get-state'), {
+            headers: this.getHeaders(),
+        });
 
-        return (
-            // @ts-ignore
-            this.httpClient
-                // @ts-ignore
-                .get(`_action/${this.getApiBasePath()}/get-state`, {
-                    ...this.basicConfig,
-                    headers,
-                })
-                .then((response: AxiosResponse) => {
-                    return ApiService.handleResponse(response);
-                })
+        return this.handleResponse(response) as MigrationState;
+    }
+
+    async approveFinishedMigration(): Promise<ActionResponse> {
+        const response = await this.apiService.httpClient.post<null>(
+            this.getActionPath('approve-finished'),
+            {},
+            {
+                headers: this.getHeaders(),
+            },
         );
+
+        return this.handleResponse(response);
     }
 
-    async approveFinishedMigration(): Promise<ApiResponse<unknown>> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
+    async abortMigration(): Promise<ActionResponse> {
+        const response = await this.apiService.httpClient.post<null>(
+            this.getActionPath('abort-migration'),
+            {},
+            {
+                headers: this.getHeaders(),
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/approve-finished`,
-                {},
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return this.handleResponse(response);
     }
 
-    async abortMigration(): Promise<ApiResponse<unknown>> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
+    async continueAfterErrorResolution(): Promise<ActionResponse> {
+        const response = await this.apiService.httpClient.post<null>(
+            this.getActionPath('resume-after-fixes'),
+            {},
+            {
+                headers: this.getHeaders(),
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/abort-migration`,
-                {},
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
-    }
-
-    async continueAfterErrorResolution(): Promise<ApiResponse<unknown>> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
-
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/resume-after-fixes`,
-                {},
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return this.handleResponse(response);
     }
 
     async getProfiles(): Promise<MigrationProfile[]> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
+        const response = await this.apiService.httpClient.get<MigrationProfile[]>(this.getActionPath('get-profiles'), {
+            headers: this.getHeaders(),
+        });
 
-        return (
-            // @ts-ignore
-            this.httpClient
-                // @ts-ignore
-                .get(`_action/${this.getApiBasePath()}/get-profiles`, {
-                    ...this.basicConfig,
-                    headers,
-                })
-                .then((response: AxiosResponse) => {
-                    return ApiService.handleResponse(response);
-                })
-        );
+        return this.handleResponse(response) as MigrationProfile[];
     }
 
     async getGateways(profileName: string): Promise<MigrationGateway[]> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
+        const response = await this.apiService.httpClient.get<MigrationGateway[]>(this.getActionPath('get-gateways'), {
+            headers: this.getHeaders(),
+            params: {
+                profileName,
+            },
+        });
 
-        return (
-            // @ts-ignore
-            this.httpClient
-                // @ts-ignore
-                .get(`_action/${this.getApiBasePath()}/get-gateways`, {
-                    ...this.basicConfig,
-                    params: {
-                        profileName,
-                    },
-                    headers,
-                })
-                .then((response: AxiosResponse) => {
-                    return ApiService.handleResponse(response);
-                })
-        );
+        return this.handleResponse(response) as MigrationGateway[];
     }
 
     async getProfileInformation(profileName: string, gatewayName: string): Promise<MigrationProfile> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
-
-        return (
-            // @ts-ignore
-            this.httpClient
-                // @ts-ignore
-                .get(`_action/${this.getApiBasePath()}/get-profile-information`, {
-                    ...this.basicConfig,
-                    params: {
-                        profileName,
-                        gatewayName,
-                    },
-                    headers,
-                })
-                .then((response: AxiosResponse) => {
-                    return ApiService.handleResponse(response);
-                })
-        );
-    }
-
-    async getGroupedLogsOfRun(runUuid: string): Promise<{
-        total: number;
-        downloadUrl: string;
-        items: MigrationError[];
-    }> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
-
-        return (
-            // @ts-ignore
-            this.httpClient
-                // @ts-ignore
-                .get(`_action/${this.getApiBasePath()}/get-grouped-logs-of-run`, {
-                    ...this.basicConfig,
-                    params: {
-                        runUuid,
-                    },
-                    headers,
-                })
-                .then((response: AxiosResponse) => {
-                    return ApiService.handleResponse(response);
-                })
-        );
-    }
-
-    async resetChecksums(connectionId: string, additionalHeaders: AdditionalHeaders = {}): Promise<ApiResponse<unknown>> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
-
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/reset-checksums`,
-                {
-                    connectionId,
-                },
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
-    }
-
-    async cleanupMigrationData(additionalHeaders: AdditionalHeaders = {}): Promise<ApiResponse<unknown>> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
-
-        // @ts-ignore
-        return this.httpClient.post(
-            // @ts-ignore
-            `_action/${this.getApiBasePath()}/cleanup-migration-data`,
-            {},
+        const response = await this.apiService.httpClient.get<MigrationProfile>(
+            this.getActionPath('get-profile-information'),
             {
-                ...this.basicConfig,
-                headers,
+                headers: this.getHeaders(),
+                params: {
+                    profileName,
+                    gatewayName,
+                },
             },
         );
+
+        return this.handleResponse(response) as MigrationProfile;
+    }
+
+    async getGroupedLogsOfRun(runUuid: string): Promise<GetGroupedLogsOfRunResponse> {
+        const response = await this.apiService.httpClient.get<GetGroupedLogsOfRunResponse>(
+            this.getActionPath('get-grouped-logs-of-run'),
+            {
+                headers: this.getHeaders(),
+                params: {
+                    runUuid,
+                },
+            },
+        );
+
+        return this.handleResponse(response) as GetGroupedLogsOfRunResponse;
+    }
+
+    async resetChecksums(connectionId: string, additionalHeaders: AdditionalHeaders = {}): Promise<ActionResponse> {
+        const response = await this.apiService.httpClient.post<null>(
+            this.getActionPath('reset-checksums'),
+            {
+                connectionId,
+            },
+            {
+                headers: this.getHeaders(additionalHeaders),
+            },
+        );
+
+        return this.handleResponse(response);
+    }
+
+    async cleanupMigrationData(additionalHeaders: AdditionalHeaders = {}): Promise<ActionResponse> {
+        const response = await this.apiService.httpClient.post<null>(
+            this.getActionPath('cleanup-migration-data'),
+            {},
+            {
+                headers: this.getHeaders(additionalHeaders),
+            },
+        );
+
+        return this.handleResponse(response);
     }
 
     async downloadLogsOfRun(runUuid: string, additionalHeaders: AdditionalHeaders = {}): Promise<Blob> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
+        const response = await this.apiService.httpClient.post<Blob>(
+            this.getActionPath('download-logs-of-run'),
+            { runUuid },
+            {
+                headers: this.getHeaders(additionalHeaders),
+                responseType: 'blob',
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/download-logs-of-run`,
-                { runUuid },
-                {
-                    ...this.basicConfig,
-                    headers,
-                    responseType: 'blob',
-                },
-            )
-            .then((response: AxiosResponse<Blob>) => {
-                return response.data;
-            });
+        return response.data;
     }
 
     async getLogGroups(
         runId: string,
-        level: string,
+        level: MigrationLogLevel,
         page: number,
         limit: number,
         sortBy: string,
         sortDirection: 'ASC' | 'DESC',
-        filter: {
-            code: string | null;
-            status: 'resolved' | 'unresolved' | null;
-            entity: string | null;
-            field: string | null;
-        },
+        filter: GetLogGroupsFilter = {},
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<{
-        total: number;
-        items: LogGroup[];
-        levelCounts: LogLevelCounts;
-    }> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
-
+    ): Promise<GetLogGroupsResponse> {
         const params: Record<string, string | number> = {
             runId,
             level,
@@ -519,55 +404,28 @@ export default class MigrationApiService extends ApiService {
             params.filterField = filter.field;
         }
 
-        return (
-            // @ts-ignore
-            this.httpClient
-                // @ts-ignore
-                .get(`_action/${this.getApiBasePath()}/get-log-groups`, {
-                    ...this.basicConfig,
-                    params,
-                    headers,
-                })
-                .then((response: AxiosResponse) => {
-                    return ApiService.handleResponse(response);
-                })
-        );
+        const response = await this.apiService.httpClient.get<GetLogGroupsResponse>(this.getActionPath('get-log-groups'), {
+            headers: this.getHeaders(additionalHeaders),
+            params,
+        });
+
+        return this.handleResponse(response) as GetLogGroupsResponse;
     }
 
     async isResettingChecksums(): Promise<boolean> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
+        const response = await this.apiService.httpClient.get<boolean>(this.getActionPath('is-resetting-checksums'), {
+            headers: this.getHeaders(),
+        });
 
-        return (
-            // @ts-ignore
-            this.httpClient
-                // @ts-ignore
-                .get(`_action/${this.getApiBasePath()}/is-resetting-checksums`, {
-                    ...this.basicConfig,
-                    headers,
-                })
-                .then((response: AxiosResponse) => {
-                    return ApiService.handleResponse(response);
-                })
-        );
+        return this.handleResponse(response) as boolean;
     }
 
     async isTruncatingMigrationData(): Promise<boolean> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
+        const response = await this.apiService.httpClient.get<boolean>(this.getActionPath('is-truncating-migration-data'), {
+            headers: this.getHeaders(),
+        });
 
-        return (
-            // @ts-ignore
-            this.httpClient
-                // @ts-ignore
-                .get(`_action/${this.getApiBasePath()}/is-truncating-migration-data`, {
-                    ...this.basicConfig,
-                    headers,
-                })
-                .then((response: AxiosResponse) => {
-                    return ApiService.handleResponse(response);
-                })
-        );
+        return this.handleResponse(response) as boolean;
     }
 
     async getUnresolvedLogsBatchInformation(
@@ -577,30 +435,22 @@ export default class MigrationApiService extends ApiService {
         fieldName: string,
         connectionId?: string,
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<{ count: int; limit: int }> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
+    ): Promise<GetUnresolvedLogsBatchInformationResponse> {
+        const response = await this.apiService.httpClient.post<GetUnresolvedLogsBatchInformationResponse>(
+            this.getActionPath('get-unresolved-logs-batch-information'),
+            {
+                runId,
+                code,
+                entityName,
+                fieldName,
+                connectionId,
+            },
+            {
+                headers: this.getHeaders(additionalHeaders),
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/get-unresolved-logs-batch-information`,
-                {
-                    runId,
-                    code,
-                    entityName,
-                    fieldName,
-                    connectionId,
-                },
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return this.handleResponse(response) as GetUnresolvedLogsBatchInformationResponse;
     }
 
     async getLogEntityIdsWithoutFix(
@@ -608,34 +458,26 @@ export default class MigrationApiService extends ApiService {
         code: string,
         entityName: string,
         fieldName: string,
-        limit?: int,
+        limit?: number,
         connectionId?: string,
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<{ entityIds: string[] }> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
+    ): Promise<LogEntityIdsWithoutFixResponse> {
+        const response = await this.apiService.httpClient.post<LogEntityIdsWithoutFixResponse>(
+            this.getActionPath('get-log-entity-ids-without-fix'),
+            {
+                runId,
+                code,
+                entityName,
+                fieldName,
+                limit,
+                connectionId,
+            },
+            {
+                headers: this.getHeaders(additionalHeaders),
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/get-log-entity-ids-without-fix`,
-                {
-                    runId,
-                    code,
-                    entityName,
-                    fieldName,
-                    limit,
-                    connectionId,
-                },
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return this.handleResponse(response) as LogEntityIdsWithoutFixResponse;
     }
 
     async validateResolution(
@@ -643,54 +485,38 @@ export default class MigrationApiService extends ApiService {
         fieldName: string,
         fieldValue: unknown,
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<{ isValid: boolean; violations: Array<{ message: string; propertyPath?: string }> }> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
+    ): Promise<ValidateResolutionResponse> {
+        const response = await this.apiService.httpClient.post<ValidateResolutionResponse>(
+            this.getActionPath('error-resolution/validate'),
+            {
+                entityName,
+                fieldName,
+                fieldValue,
+            },
+            {
+                headers: this.getHeaders(additionalHeaders),
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/error-resolution/validate`,
-                {
-                    entityName,
-                    fieldName,
-                    fieldValue,
-                },
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return this.handleResponse(response) as ValidateResolutionResponse;
     }
 
     async getExampleFieldStructure(
         entityName: string,
         fieldName: string,
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<{ fieldType: string; example: string | null }> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
+    ): Promise<GetExampleFieldStructureResponse> {
+        const response = await this.apiService.httpClient.post<GetExampleFieldStructureResponse>(
+            this.getActionPath('error-resolution/example-field-structure'),
+            {
+                entityName,
+                fieldName,
+            },
+            {
+                headers: this.getHeaders(additionalHeaders),
+            },
+        );
 
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/error-resolution/example-field-structure`,
-                {
-                    entityName,
-                    fieldName,
-                },
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return this.handleResponse(response) as GetExampleFieldStructureResponse;
     }
 }

@@ -1,81 +1,73 @@
 name: Integration
 
+env:
+    EXTENSION_NAME: ${{ github.event.repository.name }}
+    PLATFORM_BRANCH: trunk
+
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - trunk
-  pull_request:
+    workflow_dispatch:
+    push:
+        branches:
+            - trunk
+    pull_request:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+    cancel-in-progress: true
 
 jobs:
-  danger:
-    name: Danger Check
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-      - name: Run Danger PHP
-        uses: docker://ghcr.io/shyim/danger-php:latest
-        with:
-          args: ci
-        env:
-          GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
+    danger:
+        name: Danger Check
+        runs-on: ubuntu-latest
+        if: github.event_name == 'pull_request'
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
 
-  build_zip:
-    name: Build and validate zip
-    runs-on: ubuntu-latest
-    steps:
-      - name: Build
-        uses: shopware/github-actions/build-zip@main
-        with:
-          extensionName: ${{ github.event.repository.name }}
+            - name: Run Danger PHP
+              uses: docker://ghcr.io/shyim/danger-php:latest
+              with:
+                  args: ci
+              env:
+                  GITHUB_REPOSITORY: ${{ github.repository }}
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  GITHUB_PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
 
-  phpunit:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        PLATFORM_BRANCH: ["trunk"] # TODO add min version 6.7.0 here when trunk becomes > 6.7.0
-    steps:
-      - uses: shopware/github-actions/setup-extension@main
-        with:
-          extensionName: ${{ github.event.repository.name }}
-          install: true
-          shopwareVersion: ${{ matrix.PLATFORM_BRANCH }}
-          extraRepositories: |
-            {
-              "${{ github.event.repository.name }}": {
-                "type": "path",
-                "url": "custom/plugins/${{ github.event.repository.name }}",
-                "symlink": true
-              }
-            }
-      - name: Import SW5 TestData DB
-        working-directory: custom/plugins/${{ github.event.repository.name }}/tests
-        run: mysql -uroot < _fixtures/database/shopware55.sql
-      - name: Run PHPUnit
-        working-directory: custom/plugins/${{ github.event.repository.name }}
-        run: php -d pcov.enabled=1 -d pcov.directory=${PWD} -d pcov.exclude='~(vendor|tests|node_modules)~' ${GITHUB_WORKSPACE}/vendor/bin/phpunit --configuration phpunit.xml.dist
+    build_zip:
+        name: Build and validate zip
+        runs-on: ubuntu-latest
+        steps:
+            - name: Build
+              uses: shopware/github-actions/build-zip@main
+              with:
+                  extensionName: ${{ env.EXTENSION_NAME }}
 
-  smoke_test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: shopware/github-actions/setup-extension@main
+    phpunit:
+        name: PHPUnit
+        uses: ./.github/workflows/action-phpunit.yml
         with:
-          extensionName: ${{ github.event.repository.name }}
-          install: true
-          install-admin: true
-          install-storefront: true
-          extraRepositories: |
-            {
-              "${{ github.event.repository.name }}": {
-                "type": "path",
-                "url": "custom/plugins/${{ github.event.repository.name }}",
-                "symlink": true
-              }
-            }
-      - name: Uninstall Plugin
-        run: php bin/console plugin:uninstall ${{ github.event.repository.name }}
+            extension_name: ${{ github.event.repository.name }}
+            platform_branch: trunk
+
+    smoke_test:
+        name: Smoke test
+        runs-on: ubuntu-latest
+        steps:
+            - name: Setup extension
+              uses: shopware/github-actions/setup-extension@main
+              with:
+                  extensionName: ${{ env.EXTENSION_NAME }}
+                  install: true
+                  install-admin: true
+                  install-storefront: true
+                  extraRepositories: |
+                      {
+                        "${{ env.EXTENSION_NAME }}": {
+                          "type": "path",
+                          "url": "custom/plugins/${{ env.EXTENSION_NAME }}",
+                          "symlink": true
+                        }
+                      }
+
+            - name: Uninstall Plugin
+              run: php bin/console plugin:uninstall ${{ env.EXTENSION_NAME }}
