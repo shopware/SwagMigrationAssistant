@@ -10,9 +10,12 @@ on:
             - trunk
     pull_request:
         paths:
+            - '*.md'
             - src/Resources/app/administration/**
             - tests/Jest/**
-            - .github/workflows/**
+            - tests/acceptance/**
+            - .github/**/*.yml
+            - .github/**/*.yaml
 
 concurrency:
     group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -47,6 +50,8 @@ jobs:
                   npm run lint --prefix tests/Jest
                   npm run lint --prefix src/Resources/app/administration
                   npm run lint --prefix tests/acceptance
+                  npm run lint:types --prefix src/Resources/app/administration
+                  npm run lint:types --prefix tests/acceptance
                   npm run lint:scss --prefix src/Resources/app/administration
                   npm run format --prefix tests/Jest
                   npm run format --prefix src/Resources/app/administration

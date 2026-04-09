@@ -11,8 +11,7 @@
         "docker:up": "docker compose --project-name migration-proof --env-file .env -f docker/compose.yaml up -d --force-recreate --renew-anon-volumes",
         "docker:down": "docker compose --project-name migration-proof --env-file .env -f docker/compose.yaml down -v --remove-orphans",
         "proof:dev": "bun --env-file=.env run src/workflow.ts",
-        "proof:ci": "bun run src/workflow.ts",
-        "verify": "bun run format && bun run lint && bun run lint:types"
+        "proof:ci": "bun run src/workflow.ts"
     },
     "devDependencies": {
         "@eslint/js": "9.39.3",

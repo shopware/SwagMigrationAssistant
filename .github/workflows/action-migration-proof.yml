@@ -83,9 +83,12 @@ jobs:
               working-directory: tests/migration-proof
               run: bun install --frozen-lockfile
 
-            - name: Verify quality
+            - name: Lint
               working-directory: tests/migration-proof
-              run: bun run verify
+              run: |
+                  bun run format
+                  bun run lint
+                  bun run lint:types
 
             - name: Run Migration Proof
               working-directory: tests/migration-proof
