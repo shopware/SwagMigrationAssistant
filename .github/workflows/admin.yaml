@@ -14,6 +14,7 @@ on:
             - src/Resources/app/administration/**
             - tests/Jest/**
             - tests/acceptance/**
+            - tests/migration-proof/**
             - .github/**/*.yml
             - .github/**/*.yaml
 
@@ -23,41 +24,10 @@ concurrency:
 
 jobs:
     lint:
-        name: Lint and formatting checks
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-
-            - name: Setup Node.js
-              uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
-              with:
-                  node-version: 20
-                  cache: npm
-                  cache-dependency-path: |
-                      src/Resources/app/administration/package-lock.json
-                      tests/Jest/package-lock.json
-                      tests/acceptance/package-lock.json
-
-            - name: Install admin dependencies
-              run: |
-                  npm ci --prefix src/Resources/app/administration
-                  npm ci --prefix tests/Jest
-                  npm ci --prefix tests/acceptance
-
-            - name: Run lint and formatting checks
-              run: |
-                  npm run lint --prefix tests/Jest
-                  npm run lint --prefix src/Resources/app/administration
-                  npm run lint --prefix tests/acceptance
-                  npm run lint:types --prefix src/Resources/app/administration
-                  npm run lint:types --prefix tests/acceptance
-                  npm run lint:scss --prefix src/Resources/app/administration
-                  npm run format --prefix tests/Jest
-                  npm run format --prefix src/Resources/app/administration
-                  npm run format --prefix tests/acceptance
-                  npm run format:md --prefix src/Resources/app/administration
-                  npm run format:yml --prefix src/Resources/app/administration
+        uses: ./.github/workflows/action-lint.yml
+        with:
+            extension_name: ${{ github.event.repository.name }}
+            run_admin: true
 
     jest:
         name: Jest

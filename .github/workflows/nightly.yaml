@@ -10,11 +10,13 @@ concurrency:
     cancel-in-progress: false
 
 jobs:
-    phpstan:
-        name: PHPStan
-        uses: ./.github/workflows/action-phpstan.yml
+    lint:
+        name: Lint
+        uses: ./.github/workflows/action-lint.yml
         with:
             extension_name: ${{ github.event.repository.name }}
+            run_admin: true
+            run_php: true
 
     phpunit:
         name: PHPUnit
@@ -46,7 +48,7 @@ jobs:
         name: Slack Notify
         runs-on: ubuntu-latest
         needs:
-            - phpstan
+            - lint
             - phpunit
             - jest
             - acceptance
@@ -56,7 +58,7 @@ jobs:
                 always() &&
                 github.event_name == 'schedule' &&
                 (
-                    needs.phpstan.result == 'failure' ||
+                    needs.lint.result == 'failure' ||
                     needs.phpunit.result == 'failure' ||
                     needs.jest.result == 'failure' ||
                     needs.acceptance.result == 'failure' ||
@@ -71,7 +73,7 @@ jobs:
                   RUN_ID: ${{ github.run_id }}
                   REPOSITORY: ${{ github.repository }}
                   BRANCH: ${{ github.ref_name }}
-                  PHPSTAN_RESULT: ${{ needs.phpstan.result }}
+                  LINT_RESULT: ${{ needs.lint.result }}
                   PHPUNIT_RESULT: ${{ needs.phpunit.result }}
                   JEST_RESULT: ${{ needs.jest.result }}
                   ACCEPTANCE_RESULT: ${{ needs.acceptance.result }}
@@ -81,7 +83,7 @@ jobs:
 
                   failed_jobs=()
 
-                  [ "$PHPSTAN_RESULT" = "failure" ] && failed_jobs+=("PHPStan")
+                  [ "$LINT_RESULT" = "failure" ] && failed_jobs+=("Lint")
                   [ "$PHPUNIT_RESULT" = "failure" ] && failed_jobs+=("PHPUnit")
                   [ "$JEST_RESULT" = "failure" ] && failed_jobs+=("Jest")
                   [ "$ACCEPTANCE_RESULT" = "failure" ] && failed_jobs+=("Playwright")

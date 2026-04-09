@@ -1,0 +1,140 @@
+name: Reusable Lint
+
+on:
+    workflow_call:
+        inputs:
+            extension_name:
+                required: true
+                type: string
+            run_admin:
+                required: false
+                type: boolean
+                default: false
+            run_php:
+                required: false
+                type: boolean
+                default: false
+
+jobs:
+    admin:
+        if: inputs.run_admin
+        name: Lint and formatting checks
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        steps:
+            - name: Setup extension
+              uses: shopware/github-actions/setup-extension@main
+              with:
+                  extensionName: ${{ inputs.extension_name }}
+                  install: true
+                  install-admin: true
+                  install-storefront: false
+                  extraRepositories: |
+                      {
+                        "${{ inputs.extension_name }}": {
+                          "type": "path",
+                          "url": "custom/plugins/${{ inputs.extension_name }}",
+                          "symlink": true
+                        }
+                      }
+
+            - name: Setup Node.js
+              uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+              with:
+                  node-version: 20
+                  cache: npm
+                  cache-dependency-path: |
+                      custom/plugins/${{ inputs.extension_name }}/src/Resources/app/administration/package-lock.json
+                      custom/plugins/${{ inputs.extension_name }}/tests/Jest/package-lock.json
+                      custom/plugins/${{ inputs.extension_name }}/tests/acceptance/package-lock.json
+
+            - name: Install admin dependencies
+              run: |
+                  npm ci --prefix custom/plugins/${{ inputs.extension_name }}/src/Resources/app/administration
+                  npm ci --prefix custom/plugins/${{ inputs.extension_name }}/tests/Jest
+                  npm ci --prefix custom/plugins/${{ inputs.extension_name }}/tests/acceptance
+
+            - name: Run admin lint and formatting checks
+              run: |
+                  npm run lint --prefix custom/plugins/${{ inputs.extension_name }}/tests/Jest
+                  npm run lint --prefix custom/plugins/${{ inputs.extension_name }}/src/Resources/app/administration
+                  npm run lint --prefix custom/plugins/${{ inputs.extension_name }}/tests/acceptance
+                  npm run lint:types --prefix custom/plugins/${{ inputs.extension_name }}/src/Resources/app/administration
+                  npm run lint:types --prefix custom/plugins/${{ inputs.extension_name }}/tests/acceptance
+                  npm run lint:scss --prefix custom/plugins/${{ inputs.extension_name }}/src/Resources/app/administration
+                  npm run format --prefix custom/plugins/${{ inputs.extension_name }}/tests/Jest
+                  npm run format --prefix custom/plugins/${{ inputs.extension_name }}/src/Resources/app/administration
+                  npm run format --prefix custom/plugins/${{ inputs.extension_name }}/tests/acceptance
+                  npm run format:md --prefix custom/plugins/${{ inputs.extension_name }}/src/Resources/app/administration
+                  npm run format:yml --prefix custom/plugins/${{ inputs.extension_name }}/src/Resources/app/administration
+
+    migration-proof:
+        if: inputs.run_admin
+        name: Migration proof lint and formatting
+        runs-on: ubuntu-latest
+        timeout-minutes: 15
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2.2.0
+              with:
+                  bun-version: latest
+
+            - name: Install dependencies
+              working-directory: tests/migration-proof
+              run: bun install --frozen-lockfile
+
+            - name: Run migration proof lint and formatting checks
+              working-directory: tests/migration-proof
+              run: |
+                  bun run format
+                  bun run lint
+                  bun run lint:types
+
+    php:
+        if: inputs.run_php
+        name: PHP checks
+        runs-on: ubuntu-latest
+        timeout-minutes: 20
+        steps:
+            - name: Setup extension
+              uses: shopware/github-actions/setup-extension@main
+              env:
+                  DATABASE_URL: mysql://root@127.0.0.1/shopware
+              with:
+                  extensionName: ${{ inputs.extension_name }}
+                  install: true
+                  install-admin: true
+                  install-storefront: true
+                  extraRepositories: |
+                      {
+                        "${{ inputs.extension_name }}": {
+                          "type": "path",
+                          "url": "custom/plugins/${{ inputs.extension_name }}",
+                          "symlink": true
+                        }
+                      }
+
+            - name: Create phpstan.neon
+              working-directory: custom/plugins/${{ inputs.extension_name }}
+              run: |
+                  printf "parameters:\n  tmpDir: ${GITHUB_WORKSPACE}/var/phpstan\nincludes:\n  - phpstan.neon.dist" > phpstan.neon
+
+            - name: PHPStan cache
+              uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+              with:
+                  path: ${{ github.workspace }}/var/phpstan
+                  key: ${{ runner.os }}-${{ github.repository }}-phpstan-${{ github.sha }}
+                  restore-keys: |
+                      ${{ runner.os }}-${{ github.repository }}-phpstan-
+
+            - name: Build PHPStan bootstrap
+              run: php ${GITHUB_WORKSPACE}/src/Core/DevOps/StaticAnalyze/phpstan-bootstrap.php
+
+            - name: Run PHP checks
+              run: |
+                  composer -d custom/plugins/${{ inputs.extension_name }} dump-autoload --dev
+                  composer -d custom/plugins/${{ inputs.extension_name }} run ecs
+                  composer -d custom/plugins/${{ inputs.extension_name }} run phpstan

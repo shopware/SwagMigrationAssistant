@@ -17,16 +17,9 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
-    codestyle_php:
-        name: Codestyle PHP
-        runs-on: ubuntu-latest
-        steps:
-            - uses: shopware/github-actions/cs-fixer@main
-              with:
-                  rules: ''
-
-    phpstan:
-        name: PHPStan
-        uses: ./.github/workflows/action-phpstan.yml
+    lint:
+        name: PHP checks
+        uses: ./.github/workflows/action-lint.yml
         with:
             extension_name: ${{ github.event.repository.name }}
+            run_php: true
