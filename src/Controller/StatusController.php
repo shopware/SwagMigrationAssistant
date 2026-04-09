@@ -283,7 +283,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/check-connection',
         name: 'api.admin.migration.check-connection',
-        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']],
         methods: [Request::METHOD_POST]
     )]
     public function checkConnection(Request $request, Context $context): JsonResponse
