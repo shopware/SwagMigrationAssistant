@@ -1,7 +1,6 @@
 # NEXT
 
 - #15568 - Umstellung auf PHP-Symfony-Service-Definitionen
-- #14598 - `MigrationConfiguration` als zentrale Stelle für interne Konfigurationen eingeführt
 
 # 16.1.1
 
