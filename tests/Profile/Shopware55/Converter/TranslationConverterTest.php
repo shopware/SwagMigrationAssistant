@@ -393,14 +393,12 @@ class TranslationConverterTest extends TestCase
         static::assertArrayHasKey('translations', $converted);
         static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
 
-        /** @phpstan-ignore shopware.unserializeUsage */
-        $originalData = \unserialize($translationData['category']['objectdata'], ['allowed_classes' => false]);
         $translations = $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID];
 
-        static::assertSame($originalData['description'], $translations['name']);
-        static::assertSame($originalData['cmstext'], $translations['description']);
-        static::assertSame($originalData['external'], $translations['externalLink']);
-        static::assertSame($originalData['metatitle'], $translations['metaTitle']);
+        static::assertSame('Fashion', $translations['name']);
+        static::assertSame('<p>english category description</p>', $translations['description']);
+        static::assertSame('english external', $translations['externalLink']);
+        static::assertSame('english meta title', $translations['metaTitle']);
     }
 
     public function testConvertCategoryAttributeTranslation(): void
