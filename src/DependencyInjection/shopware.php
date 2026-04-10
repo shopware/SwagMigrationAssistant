@@ -35,6 +35,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
 use SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase;
+use SwagMigrationAssistant\Migration\Validation\ExternalResourceValidator;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 use SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware\Converter\CategoryAttributeConverter;
@@ -216,6 +217,7 @@ return static function (ContainerConfigurator $container): void {
             service(LoggingService::class),
             tagged_iterator('shopware.migration.media_strategy_resolver'),
             service(Connection::class),
+            service(ExternalResourceValidator::class),
         ])
         ->tag('shopware.migration.media_file_processor');
 
@@ -247,6 +249,7 @@ return static function (ContainerConfigurator $container): void {
             service(MediaService::class),
             service(LoggingService::class),
             service(Connection::class),
+            service(ExternalResourceValidator::class),
         ])
         ->tag('shopware.migration.media_file_processor');
 
@@ -296,6 +299,7 @@ return static function (ContainerConfigurator $container): void {
             service(MediaDefaultFolderLookup::class),
             service(LanguageLookup::class),
             service(DeliveryTimeLookup::class),
+            service(ExternalResourceValidator::class),
         ]);
 
     $services->set(ProductOptionRelationConverter::class)

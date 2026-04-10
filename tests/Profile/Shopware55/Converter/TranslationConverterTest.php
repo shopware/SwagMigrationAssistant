@@ -33,6 +33,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Validation\ExternalResourceValidator;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
@@ -163,7 +164,8 @@ class TranslationConverterTest extends TestCase
             static::getContainer()->get(TaxLookup::class),
             static::getContainer()->get(MediaDefaultFolderLookup::class),
             static::getContainer()->get(LanguageLookup::class),
-            static::getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(DeliveryTimeLookup::class),
+            new ExternalResourceValidator([], []),
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -224,7 +226,8 @@ class TranslationConverterTest extends TestCase
             static::getContainer()->get(TaxLookup::class),
             static::getContainer()->get(MediaDefaultFolderLookup::class),
             static::getContainer()->get(LanguageLookup::class),
-            static::getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(DeliveryTimeLookup::class),
+            new ExternalResourceValidator([], []),
         );
         $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -268,7 +271,8 @@ class TranslationConverterTest extends TestCase
             static::getContainer()->get(TaxLookup::class),
             static::getContainer()->get(MediaDefaultFolderLookup::class),
             static::getContainer()->get(LanguageLookup::class),
-            static::getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(DeliveryTimeLookup::class),
+            new ExternalResourceValidator([], []),
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -297,7 +301,8 @@ class TranslationConverterTest extends TestCase
             static::getContainer()->get(TaxLookup::class),
             static::getContainer()->get(MediaDefaultFolderLookup::class),
             static::getContainer()->get(LanguageLookup::class),
-            static::getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(DeliveryTimeLookup::class),
+            new ExternalResourceValidator([], []),
         );
         $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -342,7 +347,8 @@ class TranslationConverterTest extends TestCase
             static::getContainer()->get(TaxLookup::class),
             static::getContainer()->get(MediaDefaultFolderLookup::class),
             static::getContainer()->get(LanguageLookup::class),
-            static::getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(DeliveryTimeLookup::class),
+            new ExternalResourceValidator([], []),
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -605,7 +611,8 @@ class TranslationConverterTest extends TestCase
             static::getContainer()->get(TaxLookup::class),
             static::getContainer()->get(MediaDefaultFolderLookup::class),
             static::getContainer()->get(LanguageLookup::class),
-            static::getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(DeliveryTimeLookup::class),
+            new ExternalResourceValidator([], []),
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -632,7 +639,8 @@ class TranslationConverterTest extends TestCase
             static::getContainer()->get(TaxLookup::class),
             static::getContainer()->get(MediaDefaultFolderLookup::class),
             static::getContainer()->get(LanguageLookup::class),
-            static::getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(DeliveryTimeLookup::class),
+            new ExternalResourceValidator([], []),
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -768,7 +776,8 @@ class TranslationConverterTest extends TestCase
             static::getContainer()->get(TaxLookup::class),
             static::getContainer()->get(MediaDefaultFolderLookup::class),
             static::getContainer()->get(LanguageLookup::class),
-            static::getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(DeliveryTimeLookup::class),
+            new ExternalResourceValidator([], []),
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 

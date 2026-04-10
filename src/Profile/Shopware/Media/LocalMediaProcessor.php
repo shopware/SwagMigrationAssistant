@@ -27,6 +27,8 @@ use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Validation\Exception\MigrationValidationException;
+use SwagMigrationAssistant\Migration\Validation\ExternalResourceValidator;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Media\Strategy\StrategyResolverInterface;
@@ -45,6 +47,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         private readonly LoggingServiceInterface $loggingService,
         private readonly iterable $resolver,
         Connection $dbalConnection,
+        private readonly ExternalResourceValidator $externalResourceValidator,
     ) {
         parent::__construct($dbalConnection, $mediaFileRepo);
     }
@@ -78,6 +81,32 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
     private function getMediaPathMapping(array $media, array $mappedWorkload, MigrationContextInterface $migrationContext): array
     {
         foreach ($media as $mediaFile) {
+            try {
+                $installationRoot = $this->getInstallationRoot($migrationContext);
+
+                $this->externalResourceValidator->validatePath(
+                    $mediaFile['uri'],
+                    $installationRoot,
+                );
+            } catch (MigrationValidationException $e) {
+                $mappedWorkload[$mediaFile['media_id']]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
+
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(MediaDefinition::ENTITY_NAME)
+                        ->withSourceData([
+                            'media_id' => $mediaFile['media_id'],
+                            'uri' => $mediaFile['uri'],
+                            'media' => $mediaFile,
+                        ])
+                        ->withException($e)
+                        ->withEntityId($mediaFile['media_id'])
+                        ->build(RunExceptionLog::class)
+                );
+
+                continue;
+            }
+
             $resolver = $this->getResolver($mediaFile, $migrationContext);
 
             if (!$resolver) {
@@ -85,6 +114,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
 
                 continue;
             }
+
             $path = $resolver->resolve($mediaFile['uri'], $migrationContext);
             $mappedWorkload[$mediaFile['media_id']]->setAdditionalData(['path' => $path]);
         }
@@ -106,6 +136,17 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         return null;
     }
 
+    private function getInstallationRoot(MigrationContextInterface $migrationContext): string
+    {
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
+
+        if ($credentials === null) {
+            return '';
+        }
+
+        return (string) ($credentials['installationRoot'] ?? '');
+    }
+
     /**
      * @param list<array<string, mixed>> $media
      * @param array<MediaProcessWorkloadStruct> $mappedWorkload
@@ -123,7 +164,14 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
 
         foreach ($media as $mediaFile) {
             $mediaId = $mediaFile['media_id'];
-            $sourcePath = $mappedWorkload[$mediaId]->getAdditionalData()['path'];
+            $additionalData = $mappedWorkload[$mediaId]->getAdditionalData();
+
+            if (!isset($additionalData['path'])) {
+                $failedMedia[] = $mediaId;
+                continue;
+            }
+
+            $sourcePath = $additionalData['path'];
 
             if (!\is_file($sourcePath)) {
                 $resolver = $this->getResolver($mediaFile, $migrationContext);

@@ -24,6 +24,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Validation\ExternalResourceValidator;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CategoryConverter;
@@ -60,6 +61,7 @@ class ProductConverterTest extends TestCase
             static::getContainer()->get(MediaDefaultFolderLookup::class),
             static::getContainer()->get(LanguageLookup::class),
             static::getContainer()->get(DeliveryTimeLookup::class),
+            new ExternalResourceValidator([], []),
         );
 
         $runId = Uuid::randomHex();

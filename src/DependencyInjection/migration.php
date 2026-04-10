@@ -87,6 +87,7 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
+use SwagMigrationAssistant\Migration\Validation\ExternalResourceValidator;
 use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
 use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistry;
@@ -503,4 +504,10 @@ return static function (ContainerConfigurator $container): void {
     $services->set(MigrationFieldValidationService::class)
         ->args([service(DefinitionInstanceRegistry::class)])
         ->tag('kernel.reset', ['method' => 'reset']);
+
+    $services->set(ExternalResourceValidator::class)
+        ->args([
+            param('shopware.filesystem.allowed_extensions'),
+            param('shopware.filesystem.private_allowed_extensions'),
+        ]);
 };

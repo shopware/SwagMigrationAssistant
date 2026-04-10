@@ -31,6 +31,8 @@ class MigrationValidationException extends MigrationException
 
     final public const VALIDATION_ENTITY_FIELD_NOT_FOUND = 'SWAG_MIGRATION_VALIDATION__ENTITY_FIELD_NOT_FOUND';
 
+    final public const VALIDATION_INVALID_EXTERNAL_PATH = 'SWAG_MIGRATION_VALIDATION__INVALID_EXTERNAL_PATH';
+
     public static function unexpectedNullValue(string $fieldName): self
     {
         return new self(
@@ -101,6 +103,16 @@ class MigrationValidationException extends MigrationException
             self::VALIDATION_ENTITY_FIELD_NOT_FOUND,
             'Field "{{ fieldName }}" not found in entity "{{ entityName }}".',
             ['fieldName' => $fieldName, 'entityName' => $entityName]
+        );
+    }
+
+    public static function invalidExternalPath(string $path, string $violation): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::VALIDATION_INVALID_EXTERNAL_PATH,
+            'Invalid external path "{{ path }}": {{ violation }}',
+            ['path' => $path, 'violation' => $violation]
         );
     }
 }

@@ -54,6 +54,7 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationAssistant\Migration\Validation\ExternalResourceValidator;
 use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
 use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
@@ -179,6 +180,7 @@ trait MigrationServicesTrait
                         static::getContainer()->get(MediaDefaultFolderLookup::class),
                         static::getContainer()->get(LanguageLookup::class),
                         static::getContainer()->get(DeliveryTimeLookup::class),
+                        new ExternalResourceValidator([], []),
                     ),
                     new Shopware55TranslationConverter(
                         $mappingService,

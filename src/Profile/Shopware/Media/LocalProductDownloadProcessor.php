@@ -25,6 +25,7 @@ use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Validation\ExternalResourceValidator;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
@@ -40,6 +41,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
         private readonly MediaService $mediaService,
         private readonly LoggingServiceInterface $loggingService,
         Connection $dbalConnection,
+        private readonly ExternalResourceValidator $externalResourceValidator,
     ) {
         parent::__construct($dbalConnection, $mediaFileRepo);
     }
@@ -122,6 +124,8 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
             $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::FINISH_STATE);
 
             try {
+                $this->externalResourceValidator->validatePath($mediaFile['uri'], $installationRoot);
+
                 $this->persistFileToMedia($sourcePath, $mediaFile, $context);
 
                 $processedMedia[] = $mediaId;

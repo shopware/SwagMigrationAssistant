@@ -19,6 +19,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Validation\ExternalResourceValidator;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupOptionDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductConverter;
@@ -74,7 +75,8 @@ class PropertyGroupOptionConverterTest extends TestCase
             static::getContainer()->get(TaxLookup::class),
             static::getContainer()->get(MediaDefaultFolderLookup::class),
             static::getContainer()->get(LanguageLookup::class),
-            static::getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(DeliveryTimeLookup::class),
+            new ExternalResourceValidator([], []),
         );
 
         $this->optionRelationConverter = new Shopware55ProductOptionRelationConverter(

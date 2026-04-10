@@ -34,6 +34,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Validation\ExternalResourceValidator;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredFieldMissingLog;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
@@ -80,6 +81,7 @@ abstract class ProductConverter extends ShopwareConverter
         protected readonly MediaDefaultFolderLookup $mediaFolderLookup,
         protected readonly LanguageLookup $languageLookup,
         protected readonly DeliveryTimeLookup $deliveryTimeLookup,
+        protected readonly ExternalResourceValidator $externalResourceValidator,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -913,6 +915,9 @@ abstract class ProductConverter extends ShopwareConverter
             try {
                 /** @phpstan-ignore shopware.unserializeUsage */
                 $path = \unserialize($esdFile['path'], ['allowed_classes' => false]);
+
+                $this->externalResourceValidator->validatePath((string) $path);
+                $this->externalResourceValidator->validatePath($esdFile['name']);
             } catch (\Throwable $e) {
                 $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)

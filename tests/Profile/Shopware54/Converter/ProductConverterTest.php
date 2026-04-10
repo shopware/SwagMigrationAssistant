@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Validation\ExternalResourceValidator;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware54\Converter\Shopware54ProductConverter;
@@ -58,6 +59,7 @@ class ProductConverterTest extends TestCase
             static::getContainer()->get(MediaDefaultFolderLookup::class),
             static::getContainer()->get(LanguageLookup::class),
             static::getContainer()->get(DeliveryTimeLookup::class),
+            new ExternalResourceValidator([], []),
         );
 
         $data = require __DIR__ . '/_fixtures/product_with_seo_main_category.php';
