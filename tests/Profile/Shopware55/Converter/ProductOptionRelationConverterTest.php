@@ -155,4 +155,26 @@ class ProductOptionRelationConverterTest extends TestCase
         static::assertSame($this->propertyUuids[0], $converted['configuratorSettings'][0]['optionId']);
         static::assertSame($this->oldMappingId, $converted['configuratorSettings'][0]['id']);
     }
+
+    public function testConvertReturnsNullIfProductContainerMappingIsMissing(): void
+    {
+        $context = Context::createDefaultContext();
+        $mappingService = new DummyMappingService();
+        $converter = new Shopware55ProductOptionRelationConverter($mappingService, new DummyLoggingService());
+        $connectionId = $this->migrationContext->getConnection()->getId();
+        $data = require __DIR__ . '/../../../_fixtures/product_option_relation.php';
+
+        $mappingService->getOrCreateMapping(
+            $connectionId,
+            DefaultEntities::PROPERTY_GROUP_OPTION,
+            Hasher::hash(\mb_strtolower($data[0]['name'] . '_' . $data[0]['group']['name']), 'md5'),
+            $context
+        );
+
+        $convertResult = $converter->convert($data[0], $context, $this->migrationContext);
+
+        static::assertNull($convertResult->getConverted());
+        static::assertSame($data[0], $convertResult->getUnmapped());
+        static::assertNull($convertResult->getMappingUuid());
+    }
 }
