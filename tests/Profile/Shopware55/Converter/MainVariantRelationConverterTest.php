@@ -130,4 +130,26 @@ class MainVariantRelationConverterTest extends TestCase
         static::assertSame($this->productContainer2['entityId'], $converted['id']);
         static::assertSame($this->productVariant2['entityId'], $converted['variantListingConfig']['mainVariantId']);
     }
+
+    public function testConvertReturnsNullIfMainProductMappingIsMissing(): void
+    {
+        $context = Context::createDefaultContext();
+        $mappingService = new DummyMappingService();
+        $converter = new Shopware55MainVariantRelationConverter($mappingService, new DummyLoggingService());
+        $connectionId = $this->migrationContext->getConnection()->getId();
+        $data = require __DIR__ . '/../../../_fixtures/main_variant_relation.php';
+
+        $mappingService->getOrCreateMapping(
+            $connectionId,
+            DefaultEntities::PRODUCT,
+            $data[0]['ordernumber'],
+            $context
+        );
+
+        $convertResult = $converter->convert($data[0], $context, $this->migrationContext);
+
+        static::assertNull($convertResult->getConverted());
+        static::assertSame($data[0], $convertResult->getUnmapped());
+        static::assertNull($convertResult->getMappingUuid());
+    }
 }

@@ -12,6 +12,8 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -44,11 +46,24 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
             $context
         );
 
-        $productContainerId = null;
-        if ($productContainerMapping !== null) {
-            $this->mappingIds[] = $productContainerMapping['id'];
-            $productContainerId = $productContainerMapping['entityId'];
+        if (
+            $productContainerMapping === null
+            || !\is_string($productContainerMapping['entityId'] ?? null)
+            || $productContainerMapping['entityId'] === ''
+        ) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(DefaultEntities::PRODUCT_OPTION_RELATION)
+                    ->withFieldName('productId')
+                    ->withSourceData($data)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
         }
+
+        $this->mappingIds[] = $productContainerMapping['id'];
+        $productContainerId = $productContainerMapping['entityId'];
 
         $optionMapping = $this->mappingService->getMapping(
             $this->connectionId,

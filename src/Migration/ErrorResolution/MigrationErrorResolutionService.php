@@ -56,7 +56,11 @@ readonly class MigrationErrorResolutionService
         $data = $errorResolutionContext->getData();
 
         foreach ($data as &$item) {
-            $id = $item['id'];
+            $id = $item['id'] ?? null;
+
+            if (!\is_string($id) || $id === '' || !Uuid::isValid($id)) {
+                continue;
+            }
 
             if (!\array_key_exists($id, $fixes) || !\is_array($fixes[$id])) {
                 continue;
@@ -83,7 +87,12 @@ readonly class MigrationErrorResolutionService
      */
     private function loadFixes(MigrationErrorResolutionContext $errorResolutionContext): void
     {
-        $itemIds = \array_column($errorResolutionContext->getData(), 'id');
+        $itemIds = \array_values(
+            \array_filter(
+                \array_column($errorResolutionContext->getData(), 'id'),
+                static fn (mixed $itemId): bool => \is_string($itemId) && $itemId !== '' && Uuid::isValid($itemId)
+            )
+        );
 
         if (empty($itemIds)) {
             $errorResolutionContext->setFixes([]);
