@@ -1,4 +1,4 @@
-# NEXT
+# 16.2.0
 
 - #15568 - Switched to PHP Symfony service definitions
 
