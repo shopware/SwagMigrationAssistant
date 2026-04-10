@@ -190,7 +190,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
     {
         $connectionMock = $this->createMock(Connection::class);
         $connectionMock->method('fetchAllAssociative')->willReturnCallback(
-            function (string $query, array $params = []) use ($fixes, $allowedDataIds) {
+            static function (string $query, array $params = []) use ($fixes, $allowedDataIds) {
                 static::assertSame($params['ids'], Uuid::fromHexToBytesList($allowedDataIds));
 
                 return $fixes;
