@@ -71,6 +71,21 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
+        if (
+            !\is_string($productMapping['entityId'] ?? null)
+            || $productMapping['entityId'] === ''
+        ) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(PropertyGroupOptionDefinition::ENTITY_NAME)
+                    ->withFieldName('productId')
+                    ->withSourceData($data)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
         $this->mappingIds[] = $productMapping['id'];
 
         $optionMapping = $this->mappingService->getMapping(
@@ -92,7 +107,7 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
         );
 
         $converted = [];
-        $converted['id'] = $productMapping['entityId'] ?? null;
+        $converted['id'] = $productMapping['entityId'];
         $converted['properties'][] = [
             'id' => $optionMapping['entityId'] ?? null,
         ];

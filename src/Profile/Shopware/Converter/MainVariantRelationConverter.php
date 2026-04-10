@@ -13,6 +13,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertMainVariantRelationFailedLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -48,19 +49,35 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
+        $mainProductMapping = $this->mappingService->getMapping(
+            $this->connectionId,
+            DefaultEntities::PRODUCT_CONTAINER,
+            $data['id'],
+            $context
+        );
+
+        if (
+            $mainProductMapping === null
+            || !\is_string($mainProductMapping['entityId'] ?? null)
+            || $mainProductMapping['entityId'] === ''
+        ) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(DefaultEntities::MAIN_VARIANT_RELATION)
+                    ->withFieldName('id')
+                    ->withSourceData($data)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::MAIN_VARIANT_RELATION,
             $data['id'],
             $context,
             $this->checksum
-        );
-
-        $mainProductMapping = $this->mappingService->getMapping(
-            $this->connectionId,
-            DefaultEntities::PRODUCT_CONTAINER,
-            $data['id'],
-            $context
         );
 
         $variantProductMapping = $this->mappingService->getMapping(
@@ -70,12 +87,8 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
             $context
         );
 
-        $mainProductId = null;
-
-        if ($mainProductMapping !== null) {
-            $this->mappingIds[] = $mainProductMapping['id'];
-            $mainProductId = $mainProductMapping['entityId'];
-        }
+        $this->mappingIds[] = $mainProductMapping['id'];
+        $mainProductId = $mainProductMapping['entityId'];
 
         $variantProductId = null;
         if ($variantProductMapping !== null) {

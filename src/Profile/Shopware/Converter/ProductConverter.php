@@ -245,6 +245,7 @@ abstract class ProductConverter extends ShopwareConverter
 
                 if (isset($coverMediaUuid) && $media['media']['id'] === $coverMediaUuid) {
                     $converted['children'][0]['cover'] = $media;
+                    $converted['children'][0]['coverId'] = $media['id'];
                 }
             }
         }
@@ -410,6 +411,7 @@ abstract class ProductConverter extends ShopwareConverter
 
             if (isset($convertedMedia['cover'])) {
                 $converted['cover'] = $convertedMedia['cover'];
+                $converted['coverId'] = $convertedMedia['cover']['id'];
             }
 
             unset($data['assets'], $convertedMedia);
@@ -1022,6 +1024,7 @@ abstract class ProductConverter extends ShopwareConverter
             );
             $newMedia['id'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
+            $newProductMedia['mediaId'] = $newMedia['id'];
 
             if (empty($mediaData['media']['name'])) {
                 $mediaData['media']['name'] = $newMedia['id'];
