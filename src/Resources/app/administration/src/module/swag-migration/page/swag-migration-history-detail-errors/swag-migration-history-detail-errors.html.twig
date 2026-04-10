@@ -57,21 +57,6 @@
                 </p>
             {% endblock %}
 
-            {% block swag_migration_history_detail_errors_download_form %}
-                <form
-                    ref="downloadForm"
-                    class="swag-migration-history-detail-errors__download-form"
-                    :action="downloadUrl"
-                    method="POST"
-                >
-                    <input
-                        type="hidden"
-                        name="runUuid"
-                        :value="migrationRun.id"
-                    />
-                </form>
-            {% endblock %}
-
             {% block swag_migration_history_detail_errors_description %}
                 <p class="swag-migration-history-detail-errors__description">
                     <span>{{ $tc('swag-migration.history.detailPage.logDescription') }}</span>

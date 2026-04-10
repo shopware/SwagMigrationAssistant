@@ -16,7 +16,6 @@ export interface SwagMigrationHistoryDetailErrorsData {
     sortDirection: string;
     disableRouteParams: boolean;
     limit: number;
-    downloadUrl: string;
 }
 
 /**
@@ -32,6 +31,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     mixins: [
         Mixin.getByName('listing'),
+        Mixin.getByName('notification'),
     ],
 
     props: {
@@ -50,7 +50,6 @@ export default Shopware.Component.wrapComponentConfig({
             sortDirection: 'DESC',
             disableRouteParams: true,
             limit: 10,
-            downloadUrl: '',
         };
     },
 
@@ -123,7 +122,6 @@ export default Shopware.Component.wrapComponentConfig({
                     item.title = this.$tc(this.getErrorTitleSnippet(item), { entity: item.entity }, 0);
                 });
 
-                this.downloadUrl = response.downloadUrl;
                 return this.allMigrationErrors;
             });
         },
@@ -156,8 +154,27 @@ export default Shopware.Component.wrapComponentConfig({
             return 'swag-migration.index.error-resolution.codes.unknown';
         },
 
-        submitDownload() {
-            this.$refs.downloadForm.submit();
+        async submitDownload() {
+            try {
+                const blob = await this.migrationApiService.downloadLogsOfRun(this.migrationRun.id);
+
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+
+                link.href = url;
+                link.download = `migrationRunLog-${this.migrationRun.id}.txt`;
+
+                document.body.appendChild(link);
+
+                link.click();
+
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            } catch {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
+                });
+            }
         },
     },
 });

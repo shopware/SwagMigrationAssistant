@@ -24,8 +24,6 @@ export interface SwagMigrationHistoryData {
     isLoading: boolean;
     migrationRuns: TEntityCollection<'swag_migration_run'>;
     sortDirection: string;
-    logDownloadEndpoint: string | null;
-    runIdForLogDownload: string | null;
     oldParams: Record<
         string,
         {
@@ -73,8 +71,6 @@ export default Shopware.Component.wrapComponentConfig({
             sortDirection: 'DESC',
             oldParams: {},
             context: Shopware.Context.api,
-            logDownloadEndpoint: '',
-            runIdForLogDownload: '',
         };
     },
 
@@ -96,10 +92,6 @@ export default Shopware.Component.wrapComponentConfig({
         dateFilter() {
             return Shopware.Filter.getByName('date');
         },
-    },
-
-    created() {
-        this.logDownloadEndpoint = `/api/_action/${this.migrationApiService.getApiBasePath()}/download-logs-of-run`;
     },
 
     methods: {
@@ -201,11 +193,27 @@ export default Shopware.Component.wrapComponentConfig({
             return params;
         },
 
-        onContextDownloadLogFile(runId: string) {
-            this.runIdForLogDownload = runId;
-            this.$nextTick(() => {
-                this.$refs.downloadLogsOfRunForm.submit();
-            });
+        async onContextDownloadLogFile(runId: string) {
+            try {
+                const blob = await this.migrationApiService.downloadLogsOfRun(runId);
+
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+
+                link.href = url;
+                link.download = `migrationRunLog-${runId}.txt`;
+
+                document.body.appendChild(link);
+
+                link.click();
+
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            } catch {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
+                });
+            }
         },
     },
 });
