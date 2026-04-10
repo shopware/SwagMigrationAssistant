@@ -1,6 +1,7 @@
-# NEXT
+# 16.2.0
 
 - #15568 - Switched to PHP Symfony service definitions
+- Fixed a migration issue where malformed relation records with missing root IDs could abort the run during cleanup and leave it stuck
 
 # 16.1.1
 

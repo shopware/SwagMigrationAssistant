@@ -1,6 +1,7 @@
-# NEXT
+# 16.2.0
 
 - #15568 - Umstellung auf PHP-Symfony-Service-Definitionen
+- Ein Migrationsfehler wurde behoben, bei dem fehlerhafte Relationsdatensätze ohne Root-ID den Lauf während des Aufräumens abbrechen lassen und blockieren konnten
 
 # 16.1.1
 
