@@ -21,7 +21,7 @@ final readonly class MigrationConfiguration
     public function __construct(
         public int $migrationLogBufferSize = 50,
         public int $migrationLogExceptionTraceItemLimit = 10,
-        public int $migrationDefaultBatchSize = 250,
+        public int $migrationDefaultBatchSize = 100,
         public int $migrationMediaProcessingBatchSize = 10,
         public int $migrationDefaultExceptionThreshold = 3,
         public int $migrationDefaultFetchSize = 50,
