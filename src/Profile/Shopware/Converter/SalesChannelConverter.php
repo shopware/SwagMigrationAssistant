@@ -116,7 +116,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $this->filterDisabledPackLanguages($converted);
         }
 
-        if ($converted['languages'] === []) {
+        if (isset($converted['languages']) && $converted['languages'] === []) {
             unset($converted['languages']);
         }
 
