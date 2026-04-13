@@ -199,7 +199,7 @@ class HistoryServiceTest extends TestCase
         static::assertStringContainsString('Profile name: ' . ($run->getConnection()?->getProfileName() ?? '-'), $output);
         static::assertStringContainsString('Gateway name: ' . ($run->getConnection()?->getGatewayName() ?? '-'), $output);
 
-        if (!empty($run->getEnvironmentInformation())) {
+        if ($run->getEnvironmentInformation() !== null && $run->getEnvironmentInformation() !== []) {
             $env = \json_encode($run->getEnvironmentInformation(), \JSON_PRETTY_PRINT);
 
             static::assertNotFalse($env);
@@ -207,7 +207,7 @@ class HistoryServiceTest extends TestCase
             static::assertStringContainsString($env, $output);
         }
 
-        if (!empty($connection->getPremapping())) {
+        if ($connection->getPremapping() !== null && $connection->getPremapping() !== []) {
             $premapping = \json_encode($connection->getPremapping(), \JSON_PRETTY_PRINT);
 
             static::assertNotFalse($premapping);
@@ -217,7 +217,7 @@ class HistoryServiceTest extends TestCase
             static::assertStringContainsString('Associated connection not found', $output);
         }
 
-        if (empty($logs)) {
+        if ($logs === []) {
             static::assertStringContainsString('No log entries found for this migration run.', $output);
 
             return;
@@ -234,37 +234,37 @@ class HistoryServiceTest extends TestCase
             static::assertStringContainsString('Gateway name: ' . $log->getGatewayName(), $output);
             static::assertStringContainsString('Created at: ' . ($log->getCreatedAt()?->format(HistoryService::LOG_TIME_FORMAT) ?? '-'), $output);
 
-            if (!empty($log->getEntityName())) {
+            if ($log->getEntityName() !== null) {
                 static::assertStringContainsString('Entity: ' . $log->getEntityName(), $output);
             }
 
-            if (!empty($log->getFieldName())) {
+            if ($log->getFieldName() !== null) {
                 static::assertStringContainsString('Field: ' . $log->getFieldName(), $output);
             }
 
-            if (!empty($log->getFieldSourcePath())) {
+            if ($log->getFieldSourcePath() !== null) {
                 static::assertStringContainsString('Source path: ' . $log->getFieldSourcePath(), $output);
             }
 
-            if (!empty($log->getExceptionMessage())) {
+            if ($log->getExceptionMessage() !== null) {
                 static::assertStringContainsString('Exception message: ' . $log->getExceptionMessage(), $output);
             }
 
-            if (!empty($log->getSourceData())) {
+            if ($log->getSourceData() !== null) {
                 $sourceData = \json_encode($log->getSourceData(), \JSON_PRETTY_PRINT);
                 static::assertNotFalse($sourceData);
                 static::assertStringContainsString('Source data (JSON):', $output);
                 static::assertStringContainsString($sourceData, $output);
             }
 
-            if (!empty($log->getConvertedData())) {
+            if ($log->getConvertedData() !== null) {
                 $convertedData = \json_encode($log->getConvertedData(), \JSON_PRETTY_PRINT);
                 static::assertNotFalse($convertedData);
                 static::assertStringContainsString('Converted data (JSON):', $output);
                 static::assertStringContainsString($convertedData, $output);
             }
 
-            if (!empty($log->getExceptionTrace())) {
+            if ($log->getExceptionTrace() !== null) {
                 $exceptionTrace = \json_encode($log->getExceptionTrace(), \JSON_PRETTY_PRINT);
                 static::assertNotFalse($exceptionTrace);
                 static::assertStringContainsString('Exception trace (JSON):', $output);

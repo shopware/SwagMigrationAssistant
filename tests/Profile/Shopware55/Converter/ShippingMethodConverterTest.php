@@ -810,7 +810,7 @@ class ShippingMethodConverterTest extends TestCase
         $conditions = $availabilityRule['conditions'][0]['children'][0]['children'];
 
         foreach ($conditions as &$condition) {
-            if (isset($condition['children']) && !empty($condition['children'])) {
+            if (isset($condition['children']) && $condition['children'] !== []) {
                 foreach ($condition['children'] as &$child) {
                     unset(
                         $child['id'],
