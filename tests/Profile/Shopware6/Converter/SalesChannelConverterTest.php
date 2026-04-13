@@ -14,6 +14,8 @@ use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelConverter;
@@ -60,13 +62,71 @@ class SalesChannelConverterTest extends ShopwareConverterTest
         static::assertSame($expectedOutput, $output);
     }
 
+    public function testConvertAppendsMigrationSuffixForExistingStorefront(): void
+    {
+        $input = require __DIR__ . '/../../../_fixtures/Shopware6/SalesChannel/01-HappyCase/input.php';
+        $mappingArray = require __DIR__ . '/../../../_fixtures/Shopware6/SalesChannel/03-DefaultSalesChannelWithMapping/mapping.php';
+
+        $input['name'] = 'Storefront';
+        foreach ($input['translations'] as &$translation) {
+            $translation['name'] = 'Storefront';
+        }
+        unset($translation);
+
+        $salesChannelTypeLookup = $this->createMock(SalesChannelTypeLookup::class);
+        $salesChannelTypeLookup->method('get')->willReturn($input['typeId']);
+
+        $salesChannelLookup = $this->createMock(SalesChannelLookup::class);
+        $salesChannelLookup->method('hasSalesChannelWithTypeAndName')
+            ->with($input['typeId'], 'Storefront', static::anything())
+            ->willReturn(true);
+
+        $this->converter = new SalesChannelConverter(
+            $this->mappingService,
+            $this->loggingService,
+            $salesChannelTypeLookup,
+            $salesChannelLookup
+        );
+
+        $this->loadMapping($mappingArray);
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->converter->convert($input, $context, $this->migrationContext);
+
+        static::assertInstanceOf(ConvertStruct::class, $convertResult);
+
+        $output = $convertResult->getConverted();
+        static::assertNotNull($output);
+        static::assertSame('Storefront (Migration)', $output['name']);
+        static::assertSame('Storefront (Migration)', $output['translations'][0]['name']);
+    }
+
     protected function createConverter(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
         ?array $mappingArray = [],
     ): ConverterInterface {
-        return new SalesChannelConverter($mappingService, $loggingService);
+        $salesChannelTypeLookup = $this->createMock(SalesChannelTypeLookup::class);
+        $salesChannelTypeLookup->method('get')->willReturnCallback(
+            static function (string $salesChannelTypeId, mixed $context): ?string {
+                if ($salesChannelTypeId === 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa') {
+                    return null;
+                }
+
+                return $salesChannelTypeId;
+            }
+        );
+
+        $salesChannelLookup = $this->createMock(SalesChannelLookup::class);
+        $salesChannelLookup->method('hasSalesChannelWithTypeAndName')->willReturn(false);
+
+        return new SalesChannelConverter(
+            $mappingService,
+            $loggingService,
+            $salesChannelTypeLookup,
+            $salesChannelLookup
+        );
     }
 
     protected function createDataSet(): DataSet

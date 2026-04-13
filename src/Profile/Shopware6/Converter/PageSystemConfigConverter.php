@@ -38,7 +38,19 @@ class PageSystemConfigConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        $systemConfigUuid = $this->systemConfigLookup->get($data['configurationKey'], $data['salesChannelId'] ?? null, $this->context);
+        $mappedSalesChannelId = null;
+        if (isset($data['salesChannelId'])) {
+            $mappedSalesChannelId = $this->getMappingIdFacade(
+                DefaultEntities::SALES_CHANNEL,
+                $data['salesChannelId']
+            );
+
+            if ($mappedSalesChannelId === null) {
+                return new ConvertStruct(null, $data);
+            }
+        }
+
+        $systemConfigUuid = $this->systemConfigLookup->get($data['configurationKey'], $mappedSalesChannelId, $this->context);
         if ($systemConfigUuid !== null) {
             $converted['id'] = $systemConfigUuid;
         }
@@ -50,10 +62,7 @@ class PageSystemConfigConverter extends ShopwareConverter
         );
 
         if (isset($converted['salesChannelId'])) {
-            $converted['salesChannelId'] = $this->getMappingIdFacade(
-                DefaultEntities::SALES_CHANNEL,
-                $converted['salesChannelId']
-            );
+            $converted['salesChannelId'] = $mappedSalesChannelId;
         }
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);

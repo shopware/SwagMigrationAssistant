@@ -5,4 +5,10 @@
  * file that was distributed with this source code.
  */
 
-return null;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
+
+return [
+    [
+        'code' => ConvertObjectTypeUnsupportedLog::getCode(),
+    ],
+];

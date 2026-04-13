@@ -80,6 +80,10 @@ class SeoUrlConverter extends ShopwareConverter
                 DefaultEntities::SALES_CHANNEL,
                 $converted['salesChannelId']
             );
+
+            if ($converted['salesChannelId'] === null) {
+                return new ConvertStruct(null, $data);
+            }
         }
 
         if (isset($converted['languageId'])) {

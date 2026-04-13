@@ -59,6 +59,10 @@ class OrderConverter extends ShopwareConverter
             $converted['salesChannelId']
         );
 
+        if ($converted['salesChannelId'] === null) {
+            return new ConvertStruct(null, $data);
+        }
+
         $converted['orderCustomer']['salutationId'] = $this->getMappingIdFacade(
             DefaultEntities::SALUTATION,
             $converted['orderCustomer']['salutationId']

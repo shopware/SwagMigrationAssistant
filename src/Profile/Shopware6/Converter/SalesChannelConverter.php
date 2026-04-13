@@ -7,11 +7,18 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\TestDefaults;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelTypeLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -19,6 +26,15 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 #[Package('fundamentals@after-sales')]
 class SalesChannelConverter extends ShopwareConverter
 {
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly SalesChannelTypeLookup $salesChannelTypeLookup,
+        private readonly SalesChannelLookup $salesChannelLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -29,16 +45,33 @@ class SalesChannelConverter extends ShopwareConverter
     {
         $converted = $data;
 
+        if ($this->salesChannelTypeLookup->get($converted['typeId'], $this->context) === null) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(DefaultEntities::SALES_CHANNEL)
+                    ->withFieldName('typeId')
+                    ->withSourceData($data)
+                    ->build(ConvertObjectTypeUnsupportedLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
+        $shouldAppendMigrationSuffix = false;
+
         if ($converted['id'] === TestDefaults::SALES_CHANNEL) {
             $mapping = $this->getMappingIdFacade(DefaultEntities::SALES_CHANNEL, $data['id']);
             $converted['id'] = $mapping ?? Uuid::randomHex();
-            $converted['name'] .= ' (Migration)';
+            $shouldAppendMigrationSuffix = true;
+        } elseif (
+            $converted['typeId'] === Defaults::SALES_CHANNEL_TYPE_STOREFRONT
+            && $this->salesChannelLookup->hasSalesChannelWithTypeAndName($converted['typeId'], $converted['name'], $this->context)
+        ) {
+            $shouldAppendMigrationSuffix = true;
+        }
 
-            foreach ($converted['translations'] as &$translation) {
-                $translation['salesChannelId'] = $converted['id'];
-                $translation['name'] .= ' (Migration)';
-            }
-            unset($translation);
+        if ($shouldAppendMigrationSuffix) {
+            $this->appendMigrationSuffix($converted);
         }
 
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
@@ -135,5 +168,43 @@ class SalesChannelConverter extends ShopwareConverter
         }
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
+    }
+
+    /**
+     * @param array<string, mixed> $converted
+     */
+    private function appendMigrationSuffix(array &$converted): void
+    {
+        if (isset($converted['name'])) {
+            $converted['name'] = $this->createSuffixedName($converted['name']);
+        }
+
+        if (!isset($converted['translations']) || !\is_array($converted['translations'])) {
+            return;
+        }
+
+        foreach ($converted['translations'] as &$translation) {
+            if (!\is_array($translation)) {
+                continue;
+            }
+
+            if (isset($translation['salesChannelId'])) {
+                $translation['salesChannelId'] = $converted['id'];
+            }
+
+            if (isset($translation['name'])) {
+                $translation['name'] = $this->createSuffixedName($translation['name']);
+            }
+        }
+        unset($translation);
+    }
+
+    private function createSuffixedName(string $name): string
+    {
+        if (\str_ends_with($name, ' (Migration)')) {
+            return $name;
+        }
+
+        return $name .= ' (Migration)';
     }
 }

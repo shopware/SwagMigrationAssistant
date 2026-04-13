@@ -38,10 +38,20 @@ class SalesChannelDomainConverter extends ShopwareConverter
         $converted['snippetSetId'] = $this->getMappingIdFacade(DefaultEntities::SNIPPET_SET, $data['snippetSetId']);
         $converted['salesChannelId'] = $this->getMappingIdFacade(DefaultEntities::SALES_CHANNEL, $data['salesChannelId']);
 
+        if ($converted['salesChannelId'] === null) {
+            return new ConvertStruct(null, $data);
+        }
+
         if (isset($data['salesChannelDefaultHreflang'])) {
-            $converted['salesChannelDefaultHreflang'] = [
-                'id' => $this->getMappingIdFacade(DefaultEntities::SALES_CHANNEL, $data['salesChannelDefaultHreflang']['id']),
-            ];
+            $salesChannelDefaultHreflangId = $this->getMappingIdFacade(DefaultEntities::SALES_CHANNEL, $data['salesChannelDefaultHreflang']['id']);
+
+            if ($salesChannelDefaultHreflangId !== null) {
+                $converted['salesChannelDefaultHreflang'] = [
+                    'id' => $salesChannelDefaultHreflangId,
+                ];
+            } else {
+                unset($converted['salesChannelDefaultHreflang']);
+            }
         }
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);

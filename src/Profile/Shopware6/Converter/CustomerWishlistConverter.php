@@ -40,8 +40,10 @@ class CustomerWishlistConverter extends ShopwareConverter
 
         $salesChannelMapping = $this->getMappingIdFacade(DefaultEntities::SALES_CHANNEL, $converted['salesChannelId']);
         if ($salesChannelMapping === null) {
-            $converted['salesChannelId'] = null;
+            return new ConvertStruct(null, $data);
         }
+
+        $converted['salesChannelId'] = $salesChannelMapping;
 
         // products association could be empty and thus this array key might not be set
         if (!isset($data['products'])) {
