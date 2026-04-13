@@ -72,8 +72,8 @@ class MediaAlbumReader extends AbstractReader implements ReaderInterface
     {
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale($migrationContext);
-
         $albums = [];
+
         foreach ($mediaAlbums as $key => $mediaAlbum) {
             if ($mediaAlbum['parentID'] !== null) {
                 continue;
@@ -85,13 +85,14 @@ class MediaAlbumReader extends AbstractReader implements ReaderInterface
 
             $childAlbums = $this->getChildAlbums($mediaAlbums, $mediaAlbum['id'], $locale);
 
-            if (!empty($childAlbums)) {
+            if ($childAlbums !== []) {
                 $albums[] = $childAlbums;
             }
         }
+
         unset($mediaAlbum);
 
-        if (empty($albums)) {
+        if ($albums === []) {
             return $albums;
         }
 
@@ -101,6 +102,7 @@ class MediaAlbumReader extends AbstractReader implements ReaderInterface
     private function getChildAlbums(array &$mediaAlbums, string $id, string $locale): array
     {
         $albums = [];
+
         foreach ($mediaAlbums as $key => $mediaAlbum) {
             if ($mediaAlbum['parentID'] !== $id) {
                 continue;
@@ -112,12 +114,12 @@ class MediaAlbumReader extends AbstractReader implements ReaderInterface
 
             $childAlbums = $this->getChildAlbums($mediaAlbums, $mediaAlbum['id'], $locale);
 
-            if (!empty($childAlbums)) {
+            if ($childAlbums !== []) {
                 $albums[] = $childAlbums;
             }
         }
 
-        if (empty($albums)) {
+        if ($albums === []) {
             return $albums;
         }
 

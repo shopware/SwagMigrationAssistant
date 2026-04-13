@@ -173,7 +173,7 @@ class HistoryService implements HistoryServiceInterface
         if ($levelResult !== null) {
             $levelBuckets = $levelResult->getBuckets();
 
-            if (!empty($levelBuckets)) {
+            if ($levelBuckets !== []) {
                 $levelString = $levelBuckets[0]->getKey();
             }
         }

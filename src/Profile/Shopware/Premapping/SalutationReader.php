@@ -88,18 +88,20 @@ class SalutationReader extends AbstractPremappingReader
         }
 
         $result = $gateway->readTable($migrationContext, 's_core_config_elements', ['name' => 'shopsalutations']);
-        if (empty($result)) {
+
+        if ($result === []) {
             return [];
         }
 
         $salutations = [];
+
         /** @phpstan-ignore shopware.unserializeUsage */
         $salutations[] = \explode(',', \unserialize($result[0]['value'], ['allowed_classes' => false]));
         $salutations = \array_filter($salutations);
 
         $configuredSalutations = $gateway->readTable($migrationContext, 's_core_config_values', ['element_id' => $result[0]['id']]);
 
-        if (!empty($configuredSalutations)) {
+        if ($configuredSalutations !== []) {
             foreach ($configuredSalutations as $configuredSalutation) {
                 $salutations[] = \explode(
                     ',',

@@ -76,7 +76,7 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         $environmentDataArray = $environmentData['environmentInformation'];
         $profile = $migrationContext->getProfile();
 
-        if (empty($environmentDataArray)) {
+        if ($environmentDataArray === null || $environmentDataArray === []) {
             return new EnvironmentInformation(
                 $profile->getSourceSystemName(),
                 $profile->getVersion(),

@@ -44,11 +44,13 @@ class SalesChannelReader extends AbstractReader implements ReaderInterface
         foreach ($salesChannels as $key => &$salesChannel) {
             $salesChannel['locale'] = \str_replace('_', '-', $salesChannel['locale']);
             $salesChannel['_locale'] = \str_replace('_', '-', $locale);
-            if (!empty($salesChannel['main_id'])) {
+
+            if (isset($salesChannel['main_id']) && $salesChannel['main_id'] !== '') {
                 $salesChannels[$salesChannel['main_id']]['children'][] = $salesChannel;
                 unset($salesChannels[$key]);
             }
         }
+
         $salesChannels = \array_values($salesChannels);
 
         return $this->cleanupResultSet($salesChannels);

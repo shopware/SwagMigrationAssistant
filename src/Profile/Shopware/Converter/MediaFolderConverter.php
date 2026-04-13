@@ -125,10 +125,12 @@ abstract class MediaFolderConverter extends ShopwareConverter
 
         unset($data['position'], $data['garbage_collectable']);
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
@@ -154,7 +156,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
         $this->convertValue($configuration, 'createThumbnails', $setting, 'create_thumbnails', self::TYPE_BOOLEAN);
         $this->convertValue($configuration, 'thumbnailQuality', $setting, 'thumbnail_quality', self::TYPE_INTEGER);
 
-        if (!empty($setting['thumbnail_size'])) {
+        if (!isset($setting['thumbnail_size']) || $setting['thumbnail_size'] === '') {
             $thumbnailSizes = \explode(';', \mb_strtolower($setting['thumbnail_size']));
 
             $configuration['mediaThumbnailSizes'] = [];

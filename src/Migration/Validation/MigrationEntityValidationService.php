@@ -110,7 +110,7 @@ class MigrationEntityValidationService implements ResetInterface
         string $entityName,
         array $sourceData,
     ): ?MigrationValidationResult {
-        if (empty($convertedEntity)) {
+        if ($convertedEntity === null || $convertedEntity === []) {
             // silently skip validation for empty entities as this is not a validation failure
             // and indicates the data converter chose not to convert this entity
             return null;

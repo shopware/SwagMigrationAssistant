@@ -69,7 +69,7 @@ abstract class MediaConverter extends ShopwareConverter
         );
         $converted['id'] = $this->mainMapping['entityId'];
 
-        if (empty($data['name'])) {
+        if (!isset($data['name']) || $data['name'] === '') {
             $data['name'] = $converted['id'];
         }
 
@@ -115,10 +115,12 @@ abstract class MediaConverter extends ShopwareConverter
             $data['created']
         );
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);

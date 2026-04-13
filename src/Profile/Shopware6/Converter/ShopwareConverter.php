@@ -55,7 +55,7 @@ abstract class ShopwareConverter extends Converter
         $this->generateChecksum($data);
         $convertStructResult = $this->convertData($data);
 
-        if (!empty($this->mainMapping)) {
+        if ($this->mainMapping !== null && $this->mainMapping !== []) {
             $this->updateMainMapping($this->migrationContext, $this->context);
         }
 
@@ -76,7 +76,7 @@ abstract class ShopwareConverter extends Converter
             $this->context
         );
 
-        if (empty($mapping)) {
+        if ($mapping === null || $mapping === []) {
             return null;
         }
 
@@ -143,7 +143,7 @@ abstract class ShopwareConverter extends Converter
                 $oldAssociationId
             );
 
-            if (empty($newAssociationId)) {
+            if ($newAssociationId === null) {
                 if ($logMissing) {
                     $this->loggingService->log(
                         MigrationLogBuilder::fromMigrationContext($this->migrationContext)

@@ -106,7 +106,7 @@ class RunService implements RunServiceInterface
             throw MigrationException::migrationDisabledBySource();
         }
 
-        if (empty($dataSelectionIds)) {
+        if ($dataSelectionIds === []) {
             throw MigrationException::noDataToMigrate();
         }
 
@@ -445,7 +445,7 @@ class RunService implements RunServiceInterface
     ): void {
         $credentials = $connection->getCredentialFields();
 
-        if (empty($credentials)) {
+        if ($credentials === null) {
             $credentials = [];
         }
 
@@ -594,7 +594,7 @@ class RunService implements RunServiceInterface
             $context
         );
 
-        if (empty($salesChannelUuids)) {
+        if ($salesChannelUuids === []) {
             return [];
         }
 
@@ -608,7 +608,7 @@ class RunService implements RunServiceInterface
 
         $ids = $this->themeRepository->search($criteria, $context)->getIds();
 
-        if (empty($ids)) {
+        if ($ids === []) {
             return null;
         }
 

@@ -43,13 +43,13 @@ class Md5StrategyResolver implements StrategyResolverInterface
         $pathInfo = \pathinfo($path);
         $md5hash = Hasher::hash($path, 'md5');
 
-        if (empty($pathInfo['extension'])) {
+        if (isset($pathInfo['extension'])) {
             return '';
         }
 
         $split = \mb_str_split($md5hash, 2);
 
-        if (empty($split)) {
+        if ($split === []) {
             return '';
         }
 
@@ -82,7 +82,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
     {
         \preg_match("/(media\/(?:archive|image|model|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?\/.*)/", $path, $matches);
 
-        return empty($matches) ? null : $matches[0];
+        return $matches === [] ? null : $matches[0];
     }
 
     private function normalize(string $path): string
@@ -93,7 +93,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
         // remove everything before /media/...
         \preg_match("/.*((media\/(?:archive|image|model|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?).*\/((.+)\.(.+)))/", $path, $matches);
 
-        if (!empty($matches)) {
+        if ($matches !== []) {
             return $matches[2] . '/' . $matches[3];
         }
 

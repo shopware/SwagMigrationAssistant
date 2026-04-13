@@ -160,7 +160,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
                 }
             }
 
-            if (!empty($product['id'])) {
+            if (isset($product['id']) && $product['id'] !== '') {
                 $product['shops'] = $productVisibility->getShops($product['id']);
             }
         }
@@ -465,7 +465,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
             foreach ($productCategories as $category) {
                 foreach ($this->getParentCategoryIds($category) as $parentCategoryId) {
                     if ($mainCategoryShops->containsCategory($parentCategoryId)) {
-                        $productVisibility->add((string) $productId, $mainCategoryShops->getShopIds($parentCategoryId));
+                        $productVisibility->add($productId, $mainCategoryShops->getShopIds($parentCategoryId));
                     }
                 }
             }
@@ -481,7 +481,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
      */
     private function getParentCategoryIds(array $category): array
     {
-        if (empty($category['path'])) {
+        if (!isset($category['path']) || $category['path'] === '') {
             return [];
         }
 

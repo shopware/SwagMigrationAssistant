@@ -116,7 +116,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $this->filterDisabledPackLanguages($converted);
         }
 
-        if (empty($converted['languages'])) {
+        if ($converted['languages'] === []) {
             unset($converted['languages']);
         }
 
@@ -200,10 +200,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $data['children']
         );
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);

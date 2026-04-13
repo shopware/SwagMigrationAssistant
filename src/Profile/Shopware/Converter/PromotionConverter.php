@@ -106,10 +106,12 @@ abstract class PromotionConverter extends ShopwareConverter
             $data['shippingfree']
         );
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
@@ -196,7 +198,7 @@ abstract class PromotionConverter extends ShopwareConverter
         if (
             isset($data['strict'])
             && ((int) $data['strict']) === 1
-            && (!empty($this->productUuids) || isset($data['bindtosupplier']))
+            && ($this->productUuids !== [] || isset($data['bindtosupplier']))
         ) {
             $this->setDiscountRule($data, $discount);
         }
@@ -284,7 +286,7 @@ abstract class PromotionConverter extends ShopwareConverter
         ];
 
         $oneRuleAdded = false;
-        if (!empty($this->productUuids)) {
+        if ($this->productUuids !== []) {
             $conditionMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::PROMOTION_DISCOUNT_RULE . '_product_condition',
@@ -356,33 +358,37 @@ abstract class PromotionConverter extends ShopwareConverter
 
         $productNumbers = \array_filter(\explode(';', $data['restrictarticles']));
 
-        if (!empty($productNumbers)) {
-            $this->productUuids = [];
-            foreach ($productNumbers as $productNumber) {
-                $productMapping = $this->mappingService->getMapping(
-                    $this->connectionId,
-                    DefaultEntities::PRODUCT,
-                    $productNumber,
-                    $this->context
+        if ($productNumbers === []) {
+            return;
+        }
+
+        $this->productUuids = [];
+
+        foreach ($productNumbers as $productNumber) {
+            $productMapping = $this->mappingService->getMapping(
+                $this->connectionId,
+                DefaultEntities::PRODUCT,
+                $productNumber,
+                $this->context
+            );
+
+            if ($productMapping === null) {
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(PromotionDefinition::ENTITY_NAME)
+                        ->withFieldName('productId')
+                        ->withFieldSourcePath('restrictarticles')
+                        ->withSourceData($data)
+                        ->build(ConvertAssociationMissingLog::class)
                 );
 
-                if ($productMapping === null) {
-                    $this->loggingService->log(
-                        MigrationLogBuilder::fromMigrationContext($migrationContext)
-                            ->withEntityName(PromotionDefinition::ENTITY_NAME)
-                            ->withFieldName('productId')
-                            ->withFieldSourcePath('restrictarticles')
-                            ->withSourceData($data)
-                            ->build(ConvertAssociationMissingLog::class)
-                    );
-
-                    continue;
-                }
-
-                $this->productUuids[] = (string) $productMapping['entityId'];
-                $this->mappingIds[] = $productMapping['id'];
-                unset($data['restrictarticles']);
+                continue;
             }
+
+            $this->productUuids[] = (string) $productMapping['entityId'];
+            $this->mappingIds[] = $productMapping['id'];
+
+            unset($data['restrictarticles']);
         }
     }
 
@@ -392,7 +398,7 @@ abstract class PromotionConverter extends ShopwareConverter
      */
     private function setCartRule(array &$data, array &$converted, MigrationContextInterface $migrationContext): void
     {
-        if (empty($this->productUuids) && !isset($data['bindtosupplier']) && !isset($data['minimumcharge'])) {
+        if ($this->productUuids === [] && !isset($data['bindtosupplier']) && !isset($data['minimumcharge'])) {
             return;
         }
 
@@ -449,7 +455,7 @@ abstract class PromotionConverter extends ShopwareConverter
         ];
 
         $oneRuleAdded = false;
-        if (!empty($this->productUuids)) {
+        if ($this->productUuids !== []) {
             $conditionMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::PROMOTION . '_rule_product_condition',

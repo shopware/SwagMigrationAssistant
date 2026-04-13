@@ -179,14 +179,16 @@ abstract class ProductConverter extends ShopwareConverter
 
         unset($data['detail']['id'], $data['detail']['articleID']);
 
-        if (empty($data['detail'])) {
+        if (!isset($data['detail']) || $data['detail'] === []) {
             unset($data['detail']);
         }
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         $mainMapping = $this->mainMapping['id'] ?? null;
@@ -262,14 +264,16 @@ abstract class ProductConverter extends ShopwareConverter
         }
         unset($data['shops']);
 
-        if (empty($data['detail'])) {
+        if (!isset($data['detail']) || $data['detail'] === []) {
             unset($data['detail']);
         }
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
@@ -308,14 +312,16 @@ abstract class ProductConverter extends ShopwareConverter
         $converted = $this->getProductData($data, $converted);
         unset($data['detail']['id'], $data['detail']['articleID'], $data['categories']);
 
-        if (empty($data['detail'])) {
+        if (!isset($data['detail']) || $data['detail'] === []) {
             unset($data['detail']);
         }
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         $mainMapping = $this->mainMapping['id'] ?? null;
@@ -385,7 +391,7 @@ abstract class ProductConverter extends ShopwareConverter
             $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
         }
 
-        if (empty($converted['price'])) {
+        if (!isset($converted['price']) || $converted['price'] === []) {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(ProductDefinition::ENTITY_NAME)
@@ -405,7 +411,7 @@ abstract class ProductConverter extends ShopwareConverter
         if (isset($data['assets'])) {
             $convertedMedia = $this->getMedia($data['assets'], $data['detail']['id'], $converted);
 
-            if (!empty($convertedMedia['media'])) {
+            if (isset($convertedMedia['media']) && $convertedMedia['media'] !== []) {
                 $converted['media'] = $convertedMedia['media'];
             }
 
@@ -517,7 +523,7 @@ abstract class ProductConverter extends ShopwareConverter
             }
         }
 
-        if (empty($data['detail'])) {
+        if (!isset($data['detail']) || $data['detail'] === []) {
             unset($data['detail']);
         }
 
@@ -576,11 +582,11 @@ abstract class ProductConverter extends ShopwareConverter
         $deliveryTime = [];
         \preg_match('/([0-9]*)\s*-\s*([0-9]*)/', $shippingTime, $deliveryTime);
 
-        if (empty($deliveryTime)) {
+        if ($deliveryTime === []) {
             \preg_match('/([0-9]*)\s*/', $shippingTime, $deliveryTime);
         }
 
-        if (empty($deliveryTime)) {
+        if ($deliveryTime === []) {
             $deliveryTime['min'] = (int) $shippingTime;
         }
 
@@ -786,7 +792,7 @@ abstract class ProductConverter extends ShopwareConverter
     {
         $taxRate = (float) $taxData['tax'];
         $taxUuid = $this->taxLookup->get($taxRate, $this->context);
-        if (empty($taxUuid)) {
+        if ($taxUuid === null || $taxUuid === '') {
             $mapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::TAX,
@@ -898,7 +904,7 @@ abstract class ProductConverter extends ShopwareConverter
             $newMedia['id'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
 
-            if (empty($esdFile['name'])) {
+            if (!isset($esdFile['name']) || $esdFile['name'] === '') {
                 $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
@@ -1026,7 +1032,7 @@ abstract class ProductConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
             $newProductMedia['mediaId'] = $newMedia['id'];
 
-            if (empty($mediaData['media']['name'])) {
+            if (!isset($mediaData['media']['name']) || $mediaData['media']['name'] === '') {
                 $mediaData['media']['name'] = $newMedia['id'];
             }
 
@@ -1182,7 +1188,7 @@ abstract class ProductConverter extends ShopwareConverter
         $manufacturerMedia['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
-        if (empty($media['name'])) {
+        if (!isset($media['name']) || $media['name'] === '') {
             $media['name'] = $manufacturerMedia['id'];
         }
 
@@ -1383,7 +1389,7 @@ abstract class ProductConverter extends ShopwareConverter
 
             $priceArray = $this->getPrice($price, $converted['tax']['taxRate']);
 
-            if (empty($priceArray)) {
+            if ($priceArray === []) {
                 $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(ProductPriceDefinition::ENTITY_NAME)

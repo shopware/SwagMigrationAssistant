@@ -86,7 +86,7 @@ readonly class MigrationFieldExampleGenerator
         }
 
         if ($field instanceof JsonField) {
-            if (empty($field->getPropertyMapping())) {
+            if ($field->getPropertyMapping() === []) {
                 return [];
             }
 

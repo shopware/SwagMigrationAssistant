@@ -83,7 +83,8 @@ class MediaProcessingProcessor extends AbstractProcessor
         }
 
         $mediaFiles = $this->getMediaFiles($migrationContext);
-        if (empty($mediaFiles)) {
+
+        if ($mediaFiles === []) {
             $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);
             $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
 
@@ -137,12 +138,13 @@ class MediaProcessingProcessor extends AbstractProcessor
             );
         }
 
-        if (!empty($skipped)) {
+        if ($skipped !== []) {
             $this->migrationMediaFileRepo->update($skipped, $context);
         }
 
         $skippedCount = \count($skipped);
-        if ($currentDataSet === null || empty($workload)) {
+
+        if ($currentDataSet === null || $workload === []) {
             $this->finalizeProcessStep(
                 $context,
                 $migrationContext,
@@ -207,6 +209,7 @@ class MediaProcessingProcessor extends AbstractProcessor
             ->setParameter('runId', Uuid::fromHexToBytes($migrationContext->getRunUuid()))
             ->executeQuery()
             ->fetchAllAssociative();
+
         foreach ($result as &$media) {
             $media['id'] = Uuid::fromBytesToHex($media['id']);
             $media['run_id'] = Uuid::fromBytesToHex($media['run_id']);
@@ -234,7 +237,7 @@ class MediaProcessingProcessor extends AbstractProcessor
                 }
             }
 
-            if (empty($errorWorkload)) {
+            if ($errorWorkload === []) {
                 break;
             }
 

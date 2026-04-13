@@ -39,7 +39,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
 
     public function __destruct()
     {
-        if (empty($this->buffer)) {
+        if ($this->buffer === []) {
             return;
         }
 
@@ -60,7 +60,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
 
     public function flush(): void
     {
-        if (empty($this->buffer)) {
+        if ($this->buffer === []) {
             return;
         }
 
