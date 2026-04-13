@@ -128,7 +128,7 @@ class CategoryReader extends AbstractReader implements ReaderInterface
                 $category['parent'] = null;
             }
 
-            if (!isset($category['path']) || $category['path'] === '') {
+            if (isset($category['path']) && $category['path'] !== '') {
                 $parentCategoryIds = \array_values(
                     \array_filter(\explode('|', $category['path']))
                 );

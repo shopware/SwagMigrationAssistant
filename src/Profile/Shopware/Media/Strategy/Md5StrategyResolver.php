@@ -43,7 +43,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
         $pathInfo = \pathinfo($path);
         $md5hash = Hasher::hash($path, 'md5');
 
-        if (isset($pathInfo['extension'])) {
+        if (!isset($pathInfo['extension'])) {
             return '';
         }
 

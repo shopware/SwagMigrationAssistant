@@ -254,7 +254,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $newMedia['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
-        if (!isset($data['hash']) || $data['hash'] === '') {
+        if (isset($data['hash']) && $data['hash'] !== '') {
             $this->mediaFileService->saveMediaFile(
                 [
                     'runId' => $this->runId,

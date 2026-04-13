@@ -259,7 +259,7 @@ abstract class AttributeConverter extends Converter
             $options = [];
             $arrayStore = $data['configuration']['array_store'];
 
-            if ($arrayStore !== []) {
+            if ($arrayStore !== null && $arrayStore !== '') {
                 foreach (\json_decode($arrayStore, true, 512, \JSON_THROW_ON_ERROR) as $keyValue) {
                     $options[] = [
                         'value' => $keyValue['key'],

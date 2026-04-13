@@ -198,7 +198,7 @@ abstract class PromotionConverter extends ShopwareConverter
         if (
             isset($data['strict'])
             && ((int) $data['strict']) === 1
-            && ($this->productUuids !== [] || isset($data['bindtosupplier']))
+            && ((isset($this->productUuids) && $this->productUuids !== []) || isset($data['bindtosupplier']))
         ) {
             $this->setDiscountRule($data, $discount);
         }
@@ -286,7 +286,7 @@ abstract class PromotionConverter extends ShopwareConverter
         ];
 
         $oneRuleAdded = false;
-        if ($this->productUuids !== []) {
+        if (isset($this->productUuids) && $this->productUuids !== []) {
             $conditionMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::PROMOTION_DISCOUNT_RULE . '_product_condition',
@@ -398,7 +398,7 @@ abstract class PromotionConverter extends ShopwareConverter
      */
     private function setCartRule(array &$data, array &$converted, MigrationContextInterface $migrationContext): void
     {
-        if ($this->productUuids === [] && !isset($data['bindtosupplier']) && !isset($data['minimumcharge'])) {
+        if ((!isset($this->productUuids) || $this->productUuids === []) && !isset($data['bindtosupplier']) && !isset($data['minimumcharge'])) {
             return;
         }
 
@@ -455,7 +455,7 @@ abstract class PromotionConverter extends ShopwareConverter
         ];
 
         $oneRuleAdded = false;
-        if ($this->productUuids !== []) {
+        if (isset($this->productUuids) && $this->productUuids !== []) {
             $conditionMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::PROMOTION . '_rule_product_condition',

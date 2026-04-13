@@ -465,7 +465,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
             foreach ($productCategories as $category) {
                 foreach ($this->getParentCategoryIds($category) as $parentCategoryId) {
                     if ($mainCategoryShops->containsCategory($parentCategoryId)) {
-                        $productVisibility->add($productId, $mainCategoryShops->getShopIds($parentCategoryId));
+                        $productVisibility->add((string) $productId, $mainCategoryShops->getShopIds($parentCategoryId));
                     }
                 }
             }

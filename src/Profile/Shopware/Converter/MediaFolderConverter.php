@@ -156,7 +156,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
         $this->convertValue($configuration, 'createThumbnails', $setting, 'create_thumbnails', self::TYPE_BOOLEAN);
         $this->convertValue($configuration, 'thumbnailQuality', $setting, 'thumbnail_quality', self::TYPE_INTEGER);
 
-        if (!isset($setting['thumbnail_size']) || $setting['thumbnail_size'] === '') {
+        if (isset($setting['thumbnail_size']) && $setting['thumbnail_size'] !== '') {
             $thumbnailSizes = \explode(';', \mb_strtolower($setting['thumbnail_size']));
 
             $configuration['mediaThumbnailSizes'] = [];
