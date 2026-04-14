@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -23,8 +24,10 @@ class ConnectionFactory implements ConnectionFactoryInterface
     /**
      * @param EntityRepository<SwagMigrationConnectionCollection> $connectionRepository
      */
-    public function __construct(private readonly EntityRepository $connectionRepository)
-    {
+    public function __construct(
+        private readonly EntityRepository $connectionRepository,
+        private readonly MigrationConfiguration $migrationConfig,
+    ) {
     }
 
     public function createApiClient(MigrationContextInterface $migrationContext): ?HttpClientInterface
@@ -37,7 +40,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
 
         $options = [
             'base_uri' => \rtrim((string) $credentials['endpoint'], '/') . '/' . self::DEFAULT_API_ENDPOINT,
-            'connect_timeout' => 15.0,
+            'connect_timeout' => $this->migrationConfig->migrationRequestTimeout,
         ];
 
         return new AuthClient(

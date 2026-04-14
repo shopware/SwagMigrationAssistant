@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\History;
 
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -22,6 +23,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -29,9 +31,6 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 #[Package('fundamentals@after-sales')]
 class HistoryService implements HistoryServiceInterface
 {
-    public const LOG_FETCH_LIMIT = 50;
-    public const LOG_TIME_FORMAT = 'Y-m-d H:i:s T';
-
     /**
      * @param EntityRepository<SwagMigrationRunCollection> $runRepo
      * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
@@ -39,6 +38,7 @@ class HistoryService implements HistoryServiceInterface
     public function __construct(
         private readonly EntityRepository $loggingRepo,
         private readonly EntityRepository $runRepo,
+        private readonly MigrationConfiguration $migrationConfig,
     ) {
     }
 
@@ -118,7 +118,7 @@ class HistoryService implements HistoryServiceInterface
                     $this->printLogEntry($logEntry);
                 }
 
-                $offset += self::LOG_FETCH_LIMIT;
+                $offset += $this->migrationConfig->migrationDefaultFetchSize;
             }
         };
     }
@@ -131,7 +131,7 @@ class HistoryService implements HistoryServiceInterface
         \printf('Code: %s%s', $logEntry->getCode(), \PHP_EOL);
         \printf('Profile name: %s%s', $logEntry->getProfileName(), \PHP_EOL);
         \printf('Gateway name: %s%s', $logEntry->getGatewayName(), \PHP_EOL);
-        \printf('Created at: %s%s', $logEntry->getCreatedAt()?->format(self::LOG_TIME_FORMAT) ?? '-', \PHP_EOL);
+        \printf('Created at: %s%s', $logEntry->getCreatedAt()?->format(Defaults::STORAGE_DATE_TIME_FORMAT) ?? '-', \PHP_EOL);
 
         if ($logEntry->getEntityName()) {
             \printf('Entity: %s%s', $logEntry->getEntityName(), \PHP_EOL);
@@ -217,7 +217,7 @@ class HistoryService implements HistoryServiceInterface
         $criteria->addFilter(new EqualsFilter('userFixable', 0));
         $criteria->addSorting(new FieldSorting('autoIncrement', FieldSorting::ASCENDING));
         $criteria->setOffset($offset);
-        $criteria->setLimit(self::LOG_FETCH_LIMIT);
+        $criteria->setLimit($this->migrationConfig->migrationDefaultFetchSize);
 
         return $this->loggingRepo->search($criteria, $context)->getEntities();
     }
@@ -238,8 +238,8 @@ class HistoryService implements HistoryServiceInterface
             $premapping = $connection->getPremapping();
         }
 
-        $updatedAt = $run->getUpdatedAt()?->format(self::LOG_TIME_FORMAT) ?? '-';
-        $createdAt = $run->getCreatedAt()?->format(self::LOG_TIME_FORMAT) ?? '-';
+        $updatedAt = $run->getUpdatedAt()?->format(Defaults::STORAGE_DATE_TIME_FORMAT) ?? '-';
+        $createdAt = $run->getCreatedAt()?->format(Defaults::STORAGE_DATE_TIME_FORMAT) ?? '-';
 
         return \sprintf(
             '########## MIGRATION LOG ##########' . \PHP_EOL . \PHP_EOL
@@ -260,7 +260,7 @@ class HistoryService implements HistoryServiceInterface
             . 'Environment information (JSON):' . \PHP_EOL . '%s' . \PHP_EOL . \PHP_EOL
             . 'Pre-mapping (JSON):' . \PHP_EOL . '%s' . \PHP_EOL . \PHP_EOL
             . '########## LOG ENTRIES ##########' . \PHP_EOL,
-            \date(self::LOG_TIME_FORMAT),
+            \date(Defaults::STORAGE_DATE_TIME_FORMAT),
             $run->getId(),
             $run->getStepValue(),
             $createdAt,

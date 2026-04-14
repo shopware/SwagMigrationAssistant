@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\TruncateMigrationHandler;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\TruncateMigrationMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -41,7 +42,8 @@ class TruncateMigrationHandlerTest extends TestCase
 
         $this->handler = new TruncateMigrationHandler(
             $this->connection,
-            $this->messageBus
+            $this->messageBus,
+            new MigrationConfiguration(),
         );
     }
 
@@ -52,8 +54,8 @@ class TruncateMigrationHandlerTest extends TestCase
         $this->connection
             ->expects($this->once())
             ->method('executeStatement')
-            ->with('DELETE FROM swag_migration_mapping LIMIT 250')
-            ->willReturn(100);
+            ->with('DELETE FROM swag_migration_mapping LIMIT 100')
+            ->willReturn(50);
 
         $this->messageBus
             ->expects($this->once())
@@ -74,8 +76,8 @@ class TruncateMigrationHandlerTest extends TestCase
         $this->connection
             ->expects($this->once())
             ->method('executeStatement')
-            ->with('DELETE FROM swag_migration_mapping LIMIT 250')
-            ->willReturn(250);
+            ->with('DELETE FROM swag_migration_mapping LIMIT 100')
+            ->willReturn(100);
 
         $this->messageBus
             ->expects($this->once())
@@ -96,8 +98,8 @@ class TruncateMigrationHandlerTest extends TestCase
         $this->connection
             ->expects($this->once())
             ->method('executeStatement')
-            ->with('DELETE FROM swag_migration_mapping LIMIT 250')
-            ->willReturn(100);
+            ->with('DELETE FROM swag_migration_mapping LIMIT 100')
+            ->willReturn(50);
 
         $this->messageBus
             ->expects($this->once())
@@ -118,8 +120,8 @@ class TruncateMigrationHandlerTest extends TestCase
         $this->connection
             ->expects($this->once())
             ->method('executeStatement')
-            ->with('DELETE FROM swag_migration_data LIMIT 250')
-            ->willReturn(250);
+            ->with('DELETE FROM swag_migration_data LIMIT 100')
+            ->willReturn(100);
 
         $this->messageBus
             ->expects($this->once())
@@ -140,7 +142,7 @@ class TruncateMigrationHandlerTest extends TestCase
         $this->connection
             ->expects($this->once())
             ->method('executeStatement')
-            ->with('DELETE FROM swag_migration_data LIMIT 250')
+            ->with('DELETE FROM swag_migration_data LIMIT 100')
             ->willReturn(50);
 
         $this->messageBus
@@ -162,8 +164,8 @@ class TruncateMigrationHandlerTest extends TestCase
         $this->connection
             ->expects($this->once())
             ->method('executeStatement')
-            ->with('DELETE FROM swag_migration_connection LIMIT 250')
-            ->willReturn(250);
+            ->with('DELETE FROM swag_migration_connection LIMIT 100')
+            ->willReturn(100);
 
         $this->messageBus
             ->expects($this->once())
@@ -186,7 +188,7 @@ class TruncateMigrationHandlerTest extends TestCase
             ->method('executeStatement')
             ->willReturnCallback(static function ($sql) {
                 if (str_contains($sql, 'DELETE FROM swag_migration_connection')) {
-                    return 100;
+                    return 50;
                 }
                 if (str_contains($sql, 'UPDATE swag_migration_general_setting')) {
                     static::assertStringContainsString('`is_reset` = 0', $sql);
@@ -211,7 +213,7 @@ class TruncateMigrationHandlerTest extends TestCase
         $this->connection
             ->expects($this->once())
             ->method('executeStatement')
-            ->with('DELETE FROM swag_migration_logging LIMIT 250')
+            ->with('DELETE FROM swag_migration_logging LIMIT 100')
             ->willReturn(0);
 
         $this->messageBus
@@ -243,13 +245,17 @@ class TruncateMigrationHandlerTest extends TestCase
 
             $connection = $this->createMock(Connection::class);
             $messageBus = $this->createMock(MessageBusInterface::class);
-            $handler = new TruncateMigrationHandler($connection, $messageBus);
+            $handler = new TruncateMigrationHandler(
+                $connection,
+                $messageBus,
+                new MigrationConfiguration()
+            );
 
             if ($index < \count($expectedTables) - 1) {
                 $connection
                     ->expects($this->once())
                     ->method('executeStatement')
-                    ->with('DELETE FROM ' . $tableName . ' LIMIT 250')
+                    ->with('DELETE FROM ' . $tableName . ' LIMIT 100')
                     ->willReturn(10);
 
                 $nextTable = $expectedTables[$index + 1];
@@ -292,8 +298,8 @@ class TruncateMigrationHandlerTest extends TestCase
         $this->connection
             ->expects($this->once())
             ->method('executeStatement')
-            ->with('DELETE FROM swag_migration_run LIMIT 250')
-            ->willReturn(250);
+            ->with('DELETE FROM swag_migration_run LIMIT 100')
+            ->willReturn(100);
 
         $this->messageBus
             ->expects($this->once())
@@ -314,8 +320,8 @@ class TruncateMigrationHandlerTest extends TestCase
         $this->connection
             ->expects($this->once())
             ->method('executeStatement')
-            ->with('DELETE FROM swag_migration_media_file LIMIT 250')
-            ->willReturn(250);
+            ->with('DELETE FROM swag_migration_media_file LIMIT 100')
+            ->willReturn(100);
 
         $this->messageBus
             ->expects($this->once())

@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
@@ -25,8 +26,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[Package('fundamentals@after-sales')]
 class CleanUpProcessor extends AbstractProcessor
 {
-    public const BATCH_SIZE = 250;
-
     /**
      * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
      * @param EntityRepository<SwagMigrationDataCollection> $migrationDataRepo
@@ -39,6 +38,7 @@ class CleanUpProcessor extends AbstractProcessor
         RunTransitionServiceInterface $runTransitionService,
         private readonly Connection $connection,
         private readonly MessageBusInterface $bus,
+        private readonly MigrationConfiguration $migrationConfig,
     ) {
         parent::__construct(
             $migrationRunRepo,
@@ -95,7 +95,7 @@ class CleanUpProcessor extends AbstractProcessor
     {
         return (int) $this->connection->createQueryBuilder()
             ->delete('swag_migration_data')
-            ->setMaxResults(self::BATCH_SIZE)
+            ->setMaxResults($this->migrationConfig->migrationDefaultBatchSize)
             ->executeStatement();
     }
 

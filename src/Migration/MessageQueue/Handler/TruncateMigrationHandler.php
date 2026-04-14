@@ -16,6 +16,7 @@ use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\TruncateMigrationMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -37,11 +38,10 @@ final class TruncateMigrationHandler
         SwagMigrationConnectionDefinition::ENTITY_NAME,
     ];
 
-    private const BATCH_SIZE = 250;
-
     public function __construct(
         private readonly Connection $connection,
         private readonly MessageBusInterface $bus,
+        private readonly MigrationConfiguration $migrationConfig,
     ) {
     }
 
@@ -62,10 +62,10 @@ final class TruncateMigrationHandler
         $currentTable = self::TABLE_TO_TRUNCATE[$currentStep];
 
         $affectedRows = (int) $this->connection->executeStatement(
-            'DELETE FROM ' . $currentTable . ' LIMIT ' . self::BATCH_SIZE
+            'DELETE FROM ' . $currentTable . ' LIMIT ' . $this->migrationConfig->migrationDefaultBatchSize
         );
 
-        if ($affectedRows >= self::BATCH_SIZE) {
+        if ($affectedRows >= $this->migrationConfig->migrationDefaultBatchSize) {
             $this->bus->dispatch(new TruncateMigrationMessage(
                 $currentTable,
             ));

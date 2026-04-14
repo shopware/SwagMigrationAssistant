@@ -8,6 +8,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Run\RunTransitionService;
 use SwagMigrationAssistant\Migration\Subscriber\MediaDeletedSubscriber;
 use SwagMigrationAssistant\Migration\Subscriber\MessageQueueSubscriber;
@@ -25,6 +26,7 @@ return static function (ContainerConfigurator $container): void {
             service('swag_migration_run.repository'),
             service(LoggingService::class),
             service(RunTransitionService::class),
+            service(MigrationConfiguration::class),
         ])
         ->tag('kernel.event_subscriber');
 };
