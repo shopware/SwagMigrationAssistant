@@ -20,7 +20,7 @@ use Symfony\Contracts\Service\ResetInterface;
 class SalesChannelLookup implements ResetInterface
 {
     /**
-     * @var array<string, bool>
+     * @var array<string, string|null>
      */
     private array $cache = [];
 
@@ -37,7 +37,7 @@ class SalesChannelLookup implements ResetInterface
         $cacheKey = $typeId . '-' . $name;
 
         if (\array_key_exists($cacheKey, $this->cache)) {
-            return $this->cache[$cacheKey];
+            return $this->cache[$cacheKey] !== null;
         }
 
         $criteria = new Criteria();
@@ -50,7 +50,9 @@ class SalesChannelLookup implements ResetInterface
         ));
         $criteria->setLimit(1);
 
-        return $this->cache[$cacheKey] = $this->salesChannelRepository->searchIds($criteria, $context)->firstId() !== null;
+        $this->cache[$cacheKey] = $this->salesChannelRepository->searchIds($criteria, $context)->firstId();
+
+        return $this->cache[$cacheKey] !== null;
     }
 
     public function reset(): void
