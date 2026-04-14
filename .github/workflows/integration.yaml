@@ -22,7 +22,7 @@ jobs:
         if: github.event_name == 'pull_request'
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
 
             - name: Run Danger PHP
               uses: docker://ghcr.io/shyim/danger-php:latest
