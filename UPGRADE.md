@@ -1,11 +1,15 @@
 # NEXT
 - [BREAKING] [#178](https://github.com/shopware/SwagMigrationAssistant/pull/178) - fix!: unsupported sales channel migration
-- [BREAKING] Added required constructor parameter 
+  - [BREAKING] Added required constructor parameter:
+    - `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface`
+    - `SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface`
+    - `SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelTypeLookup`
+    - `SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelLookup`
+      to service `SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelConverter`
 - Added new lookup services `SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelLookup` and `SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelTypeLookup`
 - Changed Shopware 6 sales channel migration to read all source sales channel types. Sales channels with unsupported target types are skipped and logged with `SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog`
 - Changed Shopware 6 sales channel migration to append the suffix ` (Migration)` to storefront sales channels if the target system already contains a storefront sales channel with the same name
 - Changed Shopware 6 converters for `CustomerWishlist`, `NewsletterRecipient`, `Order`, `PageSystemConfig`, `Product`, `ProductReview`, `SalesChannelDomain`, `SeoUrl`, `SeoUrlTemplate` and `SystemConfig` to skip records if the referenced sales channel cannot be mapped
-
 
 - [BREAKING] - refactor!: centralize configuration into `MigrationConfiguration` service
     - [BREAKING] Added required constructor parameter `SwagMigrationAssistant\Migration\MigrationConfiguration $migrationConfig` to `SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase`

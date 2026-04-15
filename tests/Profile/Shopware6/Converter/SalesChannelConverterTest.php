@@ -77,9 +77,9 @@ class SalesChannelConverterTest extends ShopwareConverterTest
         $salesChannelTypeLookup->method('get')->willReturn($input['typeId']);
 
         $salesChannelLookup = $this->createMock(SalesChannelLookup::class);
-        $salesChannelLookup->method('hasSalesChannelWithTypeAndName')
+        $salesChannelLookup->method('getSalesChannelWithTypeAndName')
             ->with($input['typeId'], 'Storefront', static::anything())
-            ->willReturn(true);
+            ->willReturn('existing-sales-channel-id');
 
         $this->converter = new SalesChannelConverter(
             $this->mappingService,
@@ -119,7 +119,7 @@ class SalesChannelConverterTest extends ShopwareConverterTest
         );
 
         $salesChannelLookup = $this->createMock(SalesChannelLookup::class);
-        $salesChannelLookup->method('hasSalesChannelWithTypeAndName')->willReturn(false);
+        $salesChannelLookup->method('getSalesChannelWithTypeAndName')->willReturn(null);
 
         return new SalesChannelConverter(
             $mappingService,

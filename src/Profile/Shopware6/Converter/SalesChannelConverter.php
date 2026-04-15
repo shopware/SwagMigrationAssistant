@@ -65,7 +65,7 @@ class SalesChannelConverter extends ShopwareConverter
             $shouldAppendMigrationSuffix = true;
         } elseif (
             $converted['typeId'] === Defaults::SALES_CHANNEL_TYPE_STOREFRONT
-            && $this->salesChannelLookup->hasSalesChannelWithTypeAndName($converted['typeId'], $converted['name'], $this->context)
+            && $this->salesChannelLookup->getSalesChannelWithTypeAndName($converted['typeId'], $converted['name'], $this->context) !== null
         ) {
             $shouldAppendMigrationSuffix = true;
         }

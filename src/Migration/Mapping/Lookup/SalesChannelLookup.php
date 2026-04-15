@@ -32,12 +32,12 @@ class SalesChannelLookup implements ResetInterface
     ) {
     }
 
-    public function hasSalesChannelWithTypeAndName(string $typeId, string $name, Context $context): bool
+    public function getSalesChannelWithTypeAndName(string $typeId, string $name, Context $context): ?string
     {
         $cacheKey = $typeId . '-' . $name;
 
         if (\array_key_exists($cacheKey, $this->cache)) {
-            return $this->cache[$cacheKey] !== null;
+            return $this->cache[$cacheKey];
         }
 
         $criteria = new Criteria();
@@ -52,7 +52,7 @@ class SalesChannelLookup implements ResetInterface
 
         $this->cache[$cacheKey] = $this->salesChannelRepository->searchIds($criteria, $context)->firstId();
 
-        return $this->cache[$cacheKey] !== null;
+        return $this->cache[$cacheKey];
     }
 
     public function reset(): void
