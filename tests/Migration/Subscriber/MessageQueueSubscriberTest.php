@@ -18,6 +18,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use Shopware\Core\Test\Stub\MessageBus\CollectingMessageBus;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
@@ -83,6 +84,7 @@ class MessageQueueSubscriberTest extends TestCase
             $repository,
             $dummyLoggingService,
             $dummyRunTransitionService,
+            new MigrationConfiguration(),
         );
 
         $subscriber->onWorkerMessageFailed($event);
@@ -208,7 +210,8 @@ class MessageQueueSubscriberTest extends TestCase
             $busMock,
             $repository,
             $dummyLoggingService,
-            $dummyRunTransitionService
+            $dummyRunTransitionService,
+            new MigrationConfiguration(),
         );
 
         $subscriber->onWorkerMessageFailed($event);
@@ -268,7 +271,8 @@ class MessageQueueSubscriberTest extends TestCase
             $busMock,
             $repository,
             $dummyLoggingService,
-            $dummyRunTransitionService
+            $dummyRunTransitionService,
+            new MigrationConfiguration(),
         );
 
         $subscriber->onWorkerMessageHandled($event);

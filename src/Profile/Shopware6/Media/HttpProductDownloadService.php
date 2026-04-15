@@ -16,6 +16,7 @@ use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
@@ -33,6 +34,7 @@ class HttpProductDownloadService extends HttpDownloadServiceBase
         EntityRepository $mediaFileRepo,
         FileSaver $fileSaver,
         LoggingServiceInterface $loggingService,
+        MigrationConfiguration $migrationConfig,
         private readonly ConnectionFactoryInterface $connectionFactory,
     ) {
         parent::__construct(
@@ -40,6 +42,7 @@ class HttpProductDownloadService extends HttpDownloadServiceBase
             $mediaFileRepo,
             $fileSaver,
             $loggingService,
+            $migrationConfig,
         );
     }
 

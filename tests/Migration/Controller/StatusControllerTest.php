@@ -34,6 +34,7 @@ use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\History\LogGroupingService;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -936,7 +937,7 @@ class StatusControllerTest extends TestCase
                 static::getContainer()->get(ThemeService::class),
                 $mappingService,
                 static::getContainer()->get(Connection::class),
-                new LoggingService($loggingRepo, new NullLogger()),
+                new LoggingService($loggingRepo, new NullLogger(), new MigrationConfiguration()),
                 static::getContainer()->get(TrackingEventClient::class),
                 static::getContainer()->get('messenger.default_bus'),
                 $migrationContextFactory,

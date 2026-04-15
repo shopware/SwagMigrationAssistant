@@ -1,3 +1,18 @@
+# NEXT
+
+- [BREAKING] - refactor!: centralize configuration into `MigrationConfiguration` service
+    - [BREAKING] Added required constructor parameter `SwagMigrationAssistant\Migration\MigrationConfiguration $migrationConfig` to `SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase`
+    - [BREAKING] Added required constructor parameter `SwagMigrationAssistant\Migration\MigrationConfiguration $migrationConfig` to `SwagMigrationAssistant\Profile\Shopware6\Media\HttpOrderDocumentGenerationService`
+    - [BREAKING] Removed constant `BUFFER_SIZE` from `SwagMigrationAssistant\Migration\Logging\LoggingService`, use `migrationLogBufferSize` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `TRACE_ITEM_LIMIT` from `SwagMigrationAssistant\Migration\Logging\LoggingService`, use `migrationLogExceptionTraceItemLimit` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `LOG_FETCH_LIMIT` from `SwagMigrationAssistant\Migration\History\HistoryService`, use `migrationDefaultFetchSize` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `LOG_TIME_FORMAT` from `SwagMigrationAssistant\Migration\History\HistoryService`
+    - [BREAKING] Removed constant `BATCH_SIZE` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\ResetChecksumHandler`, use `migrationDefaultBatchSize` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `BATCH_SIZE` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\CleanUpProcessor`, use `migrationDefaultBatchSize` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `MEDIA_ERROR_THRESHOLD` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor`, use `migrationDefaultExceptionThreshold` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `MESSAGE_SIZE` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor`, use `migrationMediaProcessingBatchSize` from `MigrationConfiguration` instead
+    - Added `SwagMigrationAssistant\Migration\MigrationConfiguration` service
+
 # 16.0.0
 
 - [BREAKING] [#124](https://github.com/shopware/SwagMigrationAssistant/pull/124) - refactor!: refactored log classes naming pattern

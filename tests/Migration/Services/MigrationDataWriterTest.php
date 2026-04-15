@@ -64,6 +64,7 @@ use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
@@ -309,7 +310,7 @@ class MigrationDataWriterTest extends TestCase
             new DummyThemeService($this->themeSalesChannelRepo),
             $this->mappingService,
             $this->dbConnection,
-            new LoggingService($this->loggingRepo, new NullLogger()),
+            new LoggingService($this->loggingRepo, new NullLogger(), new MigrationConfiguration()),
             static::getContainer()->get(TrackingEventClient::class),
             static::getContainer()->get('messenger.default_bus'),
             $migrationContextFactoryMock,

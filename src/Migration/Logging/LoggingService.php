@@ -12,15 +12,12 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('fundamentals@after-sales')]
 class LoggingService implements LoggingServiceInterface, ResetInterface
 {
-    final public const BUFFER_SIZE = 50;
-
-    final public const TRACE_ITEM_LIMIT = 10;
-
     /**
      * @var array<array-key, array<string, mixed>>
      */
@@ -34,6 +31,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
     public function __construct(
         private readonly EntityRepository $loggingRepo,
         private readonly LoggerInterface $logger,
+        private readonly MigrationConfiguration $migrationConfig,
     ) {
     }
 
@@ -80,8 +78,8 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
     {
         $trace = $logEntry->getExceptionTrace();
 
-        if ($trace !== null && \count($trace) > self::TRACE_ITEM_LIMIT) {
-            $trace = \array_slice($trace, 0, self::TRACE_ITEM_LIMIT);
+        if ($trace !== null && \count($trace) > $this->migrationConfig->migrationLogExceptionTraceItemLimit) {
+            $trace = \array_slice($trace, 0, $this->migrationConfig->migrationLogExceptionTraceItemLimit);
         }
 
         $this->buffer[] = [
@@ -101,7 +99,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
             'exceptionTrace' => $trace,
         ];
 
-        if (\count($this->buffer) >= self::BUFFER_SIZE) {
+        if (\count($this->buffer) >= $this->migrationConfig->migrationLogBufferSize) {
             $this->flush();
         }
 

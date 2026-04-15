@@ -29,6 +29,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\MediaFileMissingLog;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -279,7 +280,8 @@ class HttpDownloadServiceBaseTest extends TestCase
             $mediaFileRepo,
             $fileSaverMock,
             $this->loggingService,
-            $this->createHttpClientMock($mediaFiles)
+            $this->createHttpClientMock($mediaFiles),
+            new MigrationConfiguration(),
         );
 
         $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $initialWorkload);
@@ -326,7 +328,8 @@ class HttpDownloadServiceBaseTest extends TestCase
             $mediaFileRepo,
             $fileSaver,
             $this->loggingService,
-            $httpClient
+            $httpClient,
+            new MigrationConfiguration()
         );
     }
 

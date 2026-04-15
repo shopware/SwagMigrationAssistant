@@ -23,6 +23,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\ResetChecksumHandler;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ResetChecksumMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
@@ -48,18 +49,22 @@ class ResetChecksumHandlerTest extends TestCase
 
     private ResetChecksumHandler $handler;
 
+    private MigrationConfiguration $migrationConfiguration;
+
     protected function setUp(): void
     {
         $this->connection = $this->createMock(Connection::class);
         $this->messageBus = $this->createMock(MessageBusInterface::class);
         $this->migrationRunRepo = $this->createMock(EntityRepository::class);
         $this->runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
+        $this->migrationConfiguration = new MigrationConfiguration();
 
         $this->handler = new ResetChecksumHandler(
             $this->connection,
             $this->messageBus,
             $this->migrationRunRepo,
-            $this->runTransitionService
+            $this->runTransitionService,
+            $this->migrationConfiguration,
         );
     }
 
@@ -159,7 +164,7 @@ class ResetChecksumHandlerTest extends TestCase
         );
 
         $this->mockTotalCount(500);
-        $this->mockResetChecksumsOnly(ResetChecksumHandler::BATCH_SIZE);
+        $this->mockResetChecksumsOnly($this->migrationConfiguration->migrationDefaultBatchSize);
         $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
@@ -169,13 +174,15 @@ class ResetChecksumHandlerTest extends TestCase
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
             }));
 
+        $batchSize = $this->migrationConfiguration->migrationDefaultBatchSize;
+
         $this->messageBus
             ->expects($this->once())
             ->method('dispatch')
-            ->with(static::callback(static function ($dispatchedMessage) use ($connectionId) {
+            ->with(static::callback(static function ($dispatchedMessage) use ($connectionId, $batchSize) {
                 return $dispatchedMessage instanceof ResetChecksumMessage
                     && $dispatchedMessage->getConnectionId() === $connectionId
-                    && $dispatchedMessage->getProcessedMappings() === ResetChecksumHandler::BATCH_SIZE
+                    && $dispatchedMessage->getProcessedMappings() === $batchSize
                     && $dispatchedMessage->getTotalMappings() === 500;
             }))
             ->willReturnCallback(static fn ($msg) => new Envelope($msg));
@@ -193,8 +200,8 @@ class ResetChecksumHandlerTest extends TestCase
             $context,
         );
 
-        $this->mockTotalCount(ResetChecksumHandler::BATCH_SIZE);
-        $this->mockResetChecksumsOnly(ResetChecksumHandler::BATCH_SIZE);
+        $this->mockTotalCount($this->migrationConfiguration->migrationDefaultBatchSize);
+        $this->mockResetChecksumsOnly($this->migrationConfiguration->migrationDefaultBatchSize);
 
         $this->messageBus
             ->expects($this->once())
@@ -266,7 +273,7 @@ class ResetChecksumHandlerTest extends TestCase
         );
 
         $this->mockTotalCount(500);
-        $this->mockResetChecksumsOnly(ResetChecksumHandler::BATCH_SIZE);
+        $this->mockResetChecksumsOnly($this->migrationConfiguration->migrationDefaultBatchSize);
         $this->mockRunSearch($runId);
 
         $this->migrationRunRepo

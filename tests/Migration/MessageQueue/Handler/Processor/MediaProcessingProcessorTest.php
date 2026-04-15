@@ -33,6 +33,7 @@ use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
@@ -581,7 +582,8 @@ class MediaProcessingProcessorTest extends TestCase
             $loggingService,
             $dbalConnection,
             $mediaFileProcessorRegistry,
-            $dataSetRegistry
+            $dataSetRegistry,
+            new MigrationConfiguration()
         );
     }
 }

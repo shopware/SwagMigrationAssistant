@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory;
@@ -35,7 +36,7 @@ class ConnectionFactoryTests extends TestCase
 
         /** @var StaticEntityRepository<SwagMigrationConnectionCollection> $connectionRepository */
         $connectionRepository = new StaticEntityRepository([]);
-        $connection = new ConnectionFactory($connectionRepository);
+        $connection = new ConnectionFactory($connectionRepository, new MigrationConfiguration());
         $result = $connection->createApiClient($migrationContext);
 
         if ($expectedToBeNull) {

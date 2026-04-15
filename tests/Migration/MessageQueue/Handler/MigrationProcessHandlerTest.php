@@ -21,6 +21,7 @@ use SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessHandle
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessorRegistry;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MigrationProcessorInterface;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
@@ -40,7 +41,8 @@ class MigrationProcessHandlerTest extends TestCase
         $this->migrationProcessHandler = new MigrationProcessHandler(
             $this->createMock(EntityRepository::class),
             $this->createMock(MigrationContextFactoryInterface::class),
-            $this->createMock(MigrationProcessorRegistry::class)
+            $this->createMock(MigrationProcessorRegistry::class),
+            new MigrationConfiguration(),
         );
     }
 
@@ -75,7 +77,8 @@ class MigrationProcessHandlerTest extends TestCase
         $this->migrationProcessHandler = new MigrationProcessHandler(
             $repository,
             $this->createMock(MigrationContextFactoryInterface::class),
-            $this->createMock(MigrationProcessorRegistry::class)
+            $this->createMock(MigrationProcessorRegistry::class),
+            new MigrationConfiguration(),
         );
 
         $message = new MigrationProcessMessage(Context::createDefaultContext(), Uuid::randomHex());
@@ -108,7 +111,8 @@ class MigrationProcessHandlerTest extends TestCase
         $this->migrationProcessHandler = new MigrationProcessHandler(
             $repository,
             $this->createMock(MigrationContextFactoryInterface::class),
-            $this->createMock(MigrationProcessorRegistry::class)
+            $this->createMock(MigrationProcessorRegistry::class),
+            new MigrationConfiguration(),
         );
 
         $message = new MigrationProcessMessage(Context::createDefaultContext(), Uuid::randomHex());
@@ -154,7 +158,8 @@ class MigrationProcessHandlerTest extends TestCase
         $this->migrationProcessHandler = new MigrationProcessHandler(
             $repository,
             $migrationContextFactory,
-            $processorRegistry
+            $processorRegistry,
+            new MigrationConfiguration(),
         );
 
         $message = new MigrationProcessMessage(Context::createDefaultContext(), Uuid::randomHex());

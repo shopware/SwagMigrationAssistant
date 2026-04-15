@@ -35,6 +35,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
 use SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 use SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware\Converter\CategoryAttributeConverter;
@@ -227,7 +228,10 @@ return static function (ContainerConfigurator $container): void {
 
     $services->set(HttpOrderDocumentDownloadService::class)
         ->parent(HttpDownloadServiceBase::class)
-        ->args([service(ConnectionFactory::class)])
+        ->args([
+            service(ConnectionFactory::class),
+            service(MigrationConfiguration::class),
+        ])
         ->tag('shopware.migration.media_file_processor');
 
     $services->set(LocalOrderDocumentProcessor::class)
@@ -252,7 +256,10 @@ return static function (ContainerConfigurator $container): void {
 
     $services->set(HttpEsdFileDownloadService::class)
         ->parent(HttpDownloadServiceBase::class)
-        ->args([service(ConnectionFactory::class)])
+        ->args([
+            service(ConnectionFactory::class),
+            service(MigrationConfiguration::class),
+        ])
         ->tag('shopware.migration.media_file_processor');
 
     $services->set(ShopwareConverter::class)

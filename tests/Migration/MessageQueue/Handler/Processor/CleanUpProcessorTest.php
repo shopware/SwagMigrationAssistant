@@ -21,6 +21,7 @@ use Shopware\Core\Test\Stub\MessageBus\CollectingMessageBus;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\CleanUpProcessor;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
@@ -58,7 +59,8 @@ class CleanUpProcessorTest extends TestCase
             $this->createMock(EntityRepository::class),
             $this->runTransitionService,
             $this->dbalConnection,
-            $this->bus
+            $this->bus,
+            new MigrationConfiguration(),
         );
     }
 
