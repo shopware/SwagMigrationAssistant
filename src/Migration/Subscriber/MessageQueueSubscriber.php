@@ -16,6 +16,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\RunAbortedLog;
 use SwagMigrationAssistant\Migration\Logging\Log\RunMessageQueueExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
@@ -29,8 +30,6 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[Package('fundamentals@after-sales')]
 class MessageQueueSubscriber implements EventSubscriberInterface
 {
-    private const MAX_EXCEPTION_COUNT = 3;
-
     /**
      * @param EntityRepository<SwagMigrationRunCollection> $runRepo
      */
@@ -39,6 +38,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
         private EntityRepository $runRepo,
         private LoggingServiceInterface $loggingService,
         private readonly RunTransitionServiceInterface $runTransitionService,
+        private readonly MigrationConfiguration $migrationConfig,
     ) {
     }
 
@@ -125,7 +125,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
          * if so, transition to aborting automatically.
          * else, just save the new exception count and retry.
          */
-        if ($progress->getExceptionCount() > self::MAX_EXCEPTION_COUNT) {
+        if ($progress->getExceptionCount() > $this->migrationConfig->migrationDefaultExceptionThreshold) {
             $this->runTransitionService->forceTransitionToRunStep($run->getId(), MigrationStep::ABORTING);
             $this->updateRun($run->getId(), $progress, $message->getContext());
         } else {

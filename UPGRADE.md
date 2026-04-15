@@ -1,9 +1,24 @@
-# 16.2.0
-
+# NEXT
+- [BREAKING] [#178](https://github.com/shopware/SwagMigrationAssistant/pull/178) - fix!: unsupported sales channel migration
+- [BREAKING] Added required constructor parameter 
 - Added new lookup services `SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelLookup` and `SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelTypeLookup`
 - Changed Shopware 6 sales channel migration to read all source sales channel types. Sales channels with unsupported target types are skipped and logged with `SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog`
 - Changed Shopware 6 sales channel migration to append the suffix ` (Migration)` to storefront sales channels if the target system already contains a storefront sales channel with the same name
 - Changed Shopware 6 converters for `CustomerWishlist`, `NewsletterRecipient`, `Order`, `PageSystemConfig`, `Product`, `ProductReview`, `SalesChannelDomain`, `SeoUrl`, `SeoUrlTemplate` and `SystemConfig` to skip records if the referenced sales channel cannot be mapped
+
+
+- [BREAKING] - refactor!: centralize configuration into `MigrationConfiguration` service
+    - [BREAKING] Added required constructor parameter `SwagMigrationAssistant\Migration\MigrationConfiguration $migrationConfig` to `SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase`
+    - [BREAKING] Added required constructor parameter `SwagMigrationAssistant\Migration\MigrationConfiguration $migrationConfig` to `SwagMigrationAssistant\Profile\Shopware6\Media\HttpOrderDocumentGenerationService`
+    - [BREAKING] Removed constant `BUFFER_SIZE` from `SwagMigrationAssistant\Migration\Logging\LoggingService`, use `migrationLogBufferSize` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `TRACE_ITEM_LIMIT` from `SwagMigrationAssistant\Migration\Logging\LoggingService`, use `migrationLogExceptionTraceItemLimit` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `LOG_FETCH_LIMIT` from `SwagMigrationAssistant\Migration\History\HistoryService`, use `migrationDefaultFetchSize` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `LOG_TIME_FORMAT` from `SwagMigrationAssistant\Migration\History\HistoryService`
+    - [BREAKING] Removed constant `BATCH_SIZE` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\ResetChecksumHandler`, use `migrationDefaultBatchSize` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `BATCH_SIZE` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\CleanUpProcessor`, use `migrationDefaultBatchSize` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `MEDIA_ERROR_THRESHOLD` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor`, use `migrationDefaultExceptionThreshold` from `MigrationConfiguration` instead
+    - [BREAKING] Removed constant `MESSAGE_SIZE` from `SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor`, use `migrationMediaProcessingBatchSize` from `MigrationConfiguration` instead
+    - Added `SwagMigrationAssistant\Migration\MigrationConfiguration` service
 
 # 16.0.0
 

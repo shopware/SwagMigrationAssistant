@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
@@ -27,6 +28,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEnt
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
@@ -192,8 +194,8 @@ class HistoryServiceTest extends TestCase
         static::assertStringContainsString('Generated at: ', $output);
         static::assertStringContainsString('Run ID: ' . $run->getId(), $output);
         static::assertStringContainsString('Status: ' . $run->getStepValue(), $output);
-        static::assertStringContainsString('Created at: ' . ($run->getCreatedAt()?->format(HistoryService::LOG_TIME_FORMAT) ?? '-'), $output);
-        static::assertStringContainsString('Updated at: ' . ($run->getUpdatedAt()?->format(HistoryService::LOG_TIME_FORMAT) ?? '-'), $output);
+        static::assertStringContainsString('Created at: ' . ($run->getCreatedAt()?->format(Defaults::STORAGE_DATE_TIME_FORMAT) ?? '-'), $output);
+        static::assertStringContainsString('Updated at: ' . ($run->getUpdatedAt()?->format(Defaults::STORAGE_DATE_TIME_FORMAT) ?? '-'), $output);
         static::assertStringContainsString('Connection ID: ' . ($run->getConnectionId() ?? '-'), $output);
         static::assertStringContainsString('Connection name: ' . ($run->getConnection()?->getName() ?? '-'), $output);
         static::assertStringContainsString('Profile name: ' . ($run->getConnection()?->getProfileName() ?? '-'), $output);
@@ -232,7 +234,7 @@ class HistoryServiceTest extends TestCase
             static::assertStringContainsString('Code: ' . $log->getCode(), $output);
             static::assertStringContainsString('Profile name: ' . $log->getProfileName(), $output);
             static::assertStringContainsString('Gateway name: ' . $log->getGatewayName(), $output);
-            static::assertStringContainsString('Created at: ' . ($log->getCreatedAt()?->format(HistoryService::LOG_TIME_FORMAT) ?? '-'), $output);
+            static::assertStringContainsString('Created at: ' . ($log->getCreatedAt()?->format(Defaults::STORAGE_DATE_TIME_FORMAT) ?? '-'), $output);
 
             if (!empty($log->getEntityName())) {
                 static::assertStringContainsString('Entity: ' . $log->getEntityName(), $output);
@@ -313,6 +315,7 @@ class HistoryServiceTest extends TestCase
         return new HistoryService(
             $loggingRepo,
             $runRepo,
+            new MigrationConfiguration(),
         );
     }
 

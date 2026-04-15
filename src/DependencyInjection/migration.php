@@ -80,6 +80,7 @@ use SwagMigrationAssistant\Migration\MessageQueue\Handler\ResetChecksumHandler;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\ThemeAssignHandler;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\TruncateMigrationHandler;
 use SwagMigrationAssistant\Migration\MessageQueue\OrderCountIndexer;
+use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
@@ -97,10 +98,13 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 return static function (ContainerConfigurator $container): void {
     $services = $container->services();
 
+    $services->set(MigrationConfiguration::class);
+
     $services->set(LoggingService::class)
         ->args([
             service('swag_migration_logging.repository'),
             service('logger'),
+            service(MigrationConfiguration::class),
         ])
         ->tag('kernel.reset', ['method' => 'reset']);
 
@@ -285,6 +289,7 @@ return static function (ContainerConfigurator $container): void {
         ->args([
             service('swag_migration_logging.repository'),
             service('swag_migration_run.repository'),
+            service(MigrationConfiguration::class),
         ]);
 
     $services->set(MigrationDataFetcher::class)
@@ -332,6 +337,7 @@ return static function (ContainerConfigurator $container): void {
             service('swag_migration_media_file.repository'),
             service(FileSaver::class),
             service(LoggingService::class),
+            service(MigrationConfiguration::class),
         ]);
 
     $services->set(PremappingController::class)
@@ -403,6 +409,7 @@ return static function (ContainerConfigurator $container): void {
         ->args([
             service(Connection::class),
             service('messenger.default_bus'),
+            service(MigrationConfiguration::class),
         ])
         ->tag('messenger.message_handler');
 
@@ -415,6 +422,7 @@ return static function (ContainerConfigurator $container): void {
             service('swag_migration_run.repository'),
             service(MigrationContextFactory::class),
             service(MigrationProcessorRegistry::class),
+            service(MigrationConfiguration::class),
         ])
         ->tag('messenger.message_handler');
 
@@ -424,6 +432,7 @@ return static function (ContainerConfigurator $container): void {
             service('messenger.default_bus'),
             service('swag_migration_run.repository'),
             service(RunTransitionService::class),
+            service(MigrationConfiguration::class),
         ])
         ->tag('messenger.message_handler');
 
@@ -473,6 +482,7 @@ return static function (ContainerConfigurator $container): void {
         ->args([
             service(Connection::class),
             service('messenger.default_bus'),
+            service(MigrationConfiguration::class),
         ])
         ->tag('shopware.migration.processor');
 
@@ -493,6 +503,7 @@ return static function (ContainerConfigurator $container): void {
             service(Connection::class),
             service(MediaFileProcessorRegistry::class),
             service(DataSetRegistry::class),
+            service(MigrationConfiguration::class),
         ])
         ->tag('shopware.migration.processor');
 
