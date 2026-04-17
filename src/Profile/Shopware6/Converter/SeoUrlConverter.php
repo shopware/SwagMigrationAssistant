@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlDataSet;
@@ -82,6 +83,14 @@ class SeoUrlConverter extends ShopwareConverter
             );
 
             if ($converted['salesChannelId'] === null) {
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->withEntityName(DefaultEntities::SEO_URL)
+                        ->withFieldName('salesChannelId')
+                        ->withSourceData($data)
+                        ->build(ConvertAssociationMissingLog::class)
+                );
+
                 return new ConvertStruct(null, $data);
             }
         }

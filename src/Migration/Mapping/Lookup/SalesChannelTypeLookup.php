@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\Mapping\Lookup;
 
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -18,9 +19,9 @@ use Symfony\Contracts\Service\ResetInterface;
 class SalesChannelTypeLookup implements ResetInterface
 {
     /**
-     * @var array<string, string|null>
+     * @var array<string, bool>
      */
-    private array $cache = [];
+    private array $existsCache = [];
 
     /**
      * @param EntityRepository<SalesChannelTypeCollection> $salesChannelTypeRepository
@@ -30,20 +31,45 @@ class SalesChannelTypeLookup implements ResetInterface
     ) {
     }
 
-    public function get(string $salesChannelTypeId, Context $context): ?string
+    /**
+     * Uses the provided Sales Channel Type UUID as lookup ID
+     * as these UUIDs are hard-coded and remain unchanged across systems.
+     */
+    public function isDefaultSalesChannelType(string $salesChannelTypeId, Context $context): bool
     {
-        if (\array_key_exists($salesChannelTypeId, $this->cache)) {
-            return $this->cache[$salesChannelTypeId];
+        return \in_array($salesChannelTypeId, self::getCoreDefaultSalesChannelTypeIds(), true)
+            && $this->hasSalesChannelType($salesChannelTypeId, $context);
+    }
+
+    public function hasSalesChannelType(string $salesChannelTypeId, Context $context): bool
+    {
+        if (\array_key_exists($salesChannelTypeId, $this->existsCache)) {
+            return $this->existsCache[$salesChannelTypeId];
         }
 
         $criteria = new Criteria([$salesChannelTypeId]);
         $criteria->setLimit(1);
 
-        return $this->cache[$salesChannelTypeId] = $this->salesChannelTypeRepository->searchIds($criteria, $context)->firstId();
+        $this->existsCache[$salesChannelTypeId] = $this->salesChannelTypeRepository->searchIds($criteria, $context)->firstId() !== null;
+
+        return $this->existsCache[$salesChannelTypeId];
     }
 
     public function reset(): void
     {
-        $this->cache = [];
+        $this->existsCache = [];
+    }
+
+    /**
+     * @return list<string>
+     */
+    private static function getCoreDefaultSalesChannelTypeIds(): array
+    {
+        return [
+            Defaults::SALES_CHANNEL_TYPE_API,
+            Defaults::SALES_CHANNEL_TYPE_STOREFRONT,
+            Defaults::SALES_CHANNEL_TYPE_PRODUCT_COMPARISON,
+            Defaults::SALES_CHANNEL_TYPE_AGENTIC_COMMERCE,
+        ];
     }
 }

@@ -45,16 +45,36 @@ class SalesChannelConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        if ($this->salesChannelTypeLookup->get($converted['typeId'], $this->context) === null) {
+        if (!$this->salesChannelTypeLookup->hasSalesChannelType($converted['typeId'], $this->context)) {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(DefaultEntities::SALES_CHANNEL)
                     ->withFieldName('typeId')
                     ->withSourceData($data)
+                    ->withExceptionMessage('Sales channels with unknown type are skipped')
                     ->build(ConvertObjectTypeUnsupportedLog::class)
             );
 
             return new ConvertStruct(null, $data);
+        }
+
+        $existingSalesChannelId = $this->salesChannelLookup->getSalesChannelWithTypeAndName(
+            $converted['typeId'],
+            $converted['name'],
+            $this->context
+        );
+
+        if (
+            $existingSalesChannelId !== null
+            && $converted['typeId'] !== Defaults::SALES_CHANNEL_TYPE_STOREFRONT
+        ) {
+            $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
+                DefaultEntities::SALES_CHANNEL,
+                $data['id'],
+                $existingSalesChannelId
+            );
+
+            return new ConvertStruct(null, $data, $this->mainMapping['id']);
         }
 
         $shouldAppendMigrationSuffix = false;
@@ -65,7 +85,7 @@ class SalesChannelConverter extends ShopwareConverter
             $shouldAppendMigrationSuffix = true;
         } elseif (
             $converted['typeId'] === Defaults::SALES_CHANNEL_TYPE_STOREFRONT
-            && $this->salesChannelLookup->getSalesChannelWithTypeAndName($converted['typeId'], $converted['name'], $this->context) !== null
+            && $existingSalesChannelId !== null
         ) {
             $shouldAppendMigrationSuffix = true;
         }
