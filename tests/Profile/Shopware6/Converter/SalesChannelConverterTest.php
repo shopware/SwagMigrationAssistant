@@ -75,7 +75,7 @@ class SalesChannelConverterTest extends ShopwareConverterTest
         unset($translation);
 
         $salesChannelTypeLookup = $this->createMock(SalesChannelTypeLookup::class);
-        $salesChannelTypeLookup->method('hasType')->willReturn(true);
+        $salesChannelTypeLookup->method('hasSalesChannelType')->willReturn(true);
 
         $salesChannelLookup = $this->createMock(SalesChannelLookup::class);
         $salesChannelLookup->method('getSalesChannelWithTypeAndName')
@@ -110,7 +110,7 @@ class SalesChannelConverterTest extends ShopwareConverterTest
         $existingSalesChannelId = '11111111111111111111111111111111';
 
         $salesChannelTypeLookup = $this->createMock(SalesChannelTypeLookup::class);
-        $salesChannelTypeLookup->method('hasType')->with($input['typeId'], static::anything())->willReturn(true);
+        $salesChannelTypeLookup->method('hasSalesChannelType')->with($input['typeId'], static::anything())->willReturn(true);
 
         $salesChannelLookup = $this->createMock(SalesChannelLookup::class);
         $salesChannelLookup->method('getSalesChannelWithTypeAndName')
@@ -152,7 +152,7 @@ class SalesChannelConverterTest extends ShopwareConverterTest
         $expectedOutput['typeId'] = '9ce0868f406d47d98cfe4b281e62f098';
 
         $salesChannelTypeLookup = $this->createMock(SalesChannelTypeLookup::class);
-        $salesChannelTypeLookup->method('hasType')->with($input['typeId'], static::anything())->willReturn(true);
+        $salesChannelTypeLookup->method('hasSalesChannelType')->with($input['typeId'], static::anything())->willReturn(true);
 
         $salesChannelLookup = $this->createMock(SalesChannelLookup::class);
         $salesChannelLookup->method('getSalesChannelWithTypeAndName')
@@ -195,7 +195,7 @@ class SalesChannelConverterTest extends ShopwareConverterTest
         ?array $mappingArray = [],
     ): ConverterInterface {
         $salesChannelTypeLookup = $this->createMock(SalesChannelTypeLookup::class);
-        $salesChannelTypeLookup->method('hasType')->willReturnCallback(
+        $salesChannelTypeLookup->method('hasSalesChannelType')->willReturnCallback(
             static function (string $salesChannelTypeId, mixed $context): bool {
                 if ($salesChannelTypeId === 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa') {
                     return false;
