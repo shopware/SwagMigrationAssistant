@@ -81,7 +81,7 @@ jobs:
 
             - name: Upload test artifacts
               if: always()
-              uses: actions/upload-artifact@v7
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: e2e-${{ inputs.extension_name }}-${{ github.sha }}-${{ inputs.platform_branch }}
                   path: |
@@ -91,7 +91,7 @@ jobs:
 
             - name: Upload updated snapshots
               if: inputs.update_snapshots
-              uses: actions/upload-artifact@v7
+              uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
               with:
                   name: visual-snapshots-${{ inputs.platform_branch }}
                   path: custom/plugins/${{ inputs.extension_name }}/tests/acceptance/snapshots/
