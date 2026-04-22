@@ -104,9 +104,10 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         ];
         unset($data['id'], $data['ordernumber']);
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
 
         $this->updateMainMapping($migrationContext, $context);

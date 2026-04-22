@@ -89,26 +89,31 @@ class OrderDeliveryStateReader extends AbstractPremappingReader
 
         $entityData = [];
         foreach ($preMappingData as $data) {
-            if ($data['group'] === 'state') {
-                $uuid = '';
-                if (isset($this->connectionPremappingDictionary[$data['id']])) {
-                    $uuid = $this->connectionPremappingDictionary[$data['id']]->getDestinationUuid();
-
-                    if (!isset($this->choiceUuids[$uuid])) {
-                        $uuid = '';
-                    }
-                }
-                if (!empty($data['description'])) {
-                    $description = $data['description'];
-                } elseif (!empty($data['name'])) {
-                    $description = $data['name'];
-                } else {
-                    $description = $data['id'];
-                }
-
-                $entityData[] = new PremappingEntityStruct($data['id'], $description, $uuid);
+            if ($data['group'] !== 'state') {
+                continue;
             }
+
+            $uuid = '';
+
+            if (isset($this->connectionPremappingDictionary[$data['id']])) {
+                $uuid = $this->connectionPremappingDictionary[$data['id']]->getDestinationUuid();
+
+                if (!isset($this->choiceUuids[$uuid])) {
+                    $uuid = '';
+                }
+            }
+
+            if (isset($data['description']) && $data['description'] !== '') {
+                $description = $data['description'];
+            } elseif (isset($data['name']) && $data['name'] !== '') {
+                $description = $data['name'];
+            } else {
+                $description = $data['id'];
+            }
+
+            $entityData[] = new PremappingEntityStruct($data['id'], $description, $uuid);
         }
+
         \usort($entityData, static function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
             return \strcmp($item1->getDescription(), $item2->getDescription());
         });

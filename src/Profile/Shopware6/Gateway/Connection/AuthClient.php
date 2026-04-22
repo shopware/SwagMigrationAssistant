@@ -89,7 +89,7 @@ class AuthClient implements HttpClientInterface
 
     private function setupBearerTokenIfNeeded(): void
     {
-        if (empty($this->bearerToken)) {
+        if ($this->bearerToken === '') {
             $this->loadBearerToken();
         }
     }
@@ -112,7 +112,7 @@ class AuthClient implements HttpClientInterface
 
         $result = \json_decode($response->getBody()->getContents(), true);
 
-        if (!empty($result['access_token'])) {
+        if (isset($result['access_token']) && $result['access_token'] !== '') {
             $this->bearerToken = $result['access_token'];
             $this->saveBearerToken();
         }
@@ -140,7 +140,7 @@ class AuthClient implements HttpClientInterface
                     ],
                 ], $context);
             });
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             // ignore failures here because
             // the connection might not be persisted to the DB yet
         }
@@ -156,7 +156,7 @@ class AuthClient implements HttpClientInterface
             return;
         }
 
-        if (empty($credentials['bearer_token'])) {
+        if (!isset($credentials['bearer_token']) || $credentials['bearer_token'] === '') {
             $this->renewBearerToken();
 
             return;

@@ -66,7 +66,7 @@ class OrderProvider extends AbstractProvider
                 $row['positionPrice']
             );
 
-            if (!empty($row['lineItems'])) {
+            if (isset($row['lineItems']) && $row['lineItems'] !== []) {
                 foreach ($row['lineItems'] as &$lineItem) {
                     unset($lineItem['promotionId']);
                 }

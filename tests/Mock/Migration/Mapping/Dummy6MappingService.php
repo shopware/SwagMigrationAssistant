@@ -84,7 +84,7 @@ class Dummy6MappingService extends MappingService
 
     public function writeMapping(): void
     {
-        if (empty($this->writeArray)) {
+        if ($this->writeArray === []) {
             return;
         }
 

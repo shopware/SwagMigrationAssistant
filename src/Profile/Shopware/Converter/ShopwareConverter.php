@@ -148,7 +148,7 @@ abstract class ShopwareConverter extends Converter
             $result['migration_' . $connectionName . '_' . $entityName . '_' . $attribute] = $value;
         }
 
-        if (empty($result)) {
+        if ($result === []) {
             return null;
         }
 

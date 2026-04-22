@@ -35,7 +35,7 @@ class OrderCountIndexer extends CustomerIndexer
         $ids = $message->getData();
         $ids = \array_unique(\array_filter($ids));
 
-        if (empty($ids)) {
+        if ($ids === []) {
             return;
         }
 
@@ -98,7 +98,7 @@ class OrderCountIndexer extends CustomerIndexer
 
         $orderTotalAmounts = $this->connection->fetchAllAssociative($select, $parameters, $types);
 
-        if (empty($orderTotalAmounts)) {
+        if ($orderTotalAmounts === []) {
             return;
         }
 

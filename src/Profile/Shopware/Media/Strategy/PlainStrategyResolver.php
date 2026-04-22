@@ -31,14 +31,15 @@ class PlainStrategyResolver implements StrategyResolverInterface
         $path = \ltrim($path, '/');
         $pathInfo = \pathinfo($path);
 
-        if (empty($pathInfo['extension'])) {
+        if (!isset($pathInfo['extension'])) {
             return '';
         }
 
         \preg_match('/.*((media\/(?:archive|image|model|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?).*\/((.+)\.(.+)))/', $path, $matches);
 
-        if (!empty($matches)) {
+        if ($matches !== []) {
             $path = $matches[2] . '/' . $matches[3];
+
             if (\preg_match('/.*(_[\d]+x[\d]+(@2x)?).(?:.*)$/', $path) && \mb_strpos($matches[2], '/thumbnail') === false) {
                 $path = $matches[2] . '/thumbnail/' . $matches[3];
             }
@@ -57,7 +58,7 @@ class PlainStrategyResolver implements StrategyResolverInterface
         // remove everything before /media/...
         \preg_match('/.*((media\/(?:archive|image|music|pdf|temp|unknown|video|vector)(?:\/thumbnail)?).*\/((.+)\.(.+)))/', $path, $matches);
 
-        if (!empty($matches)) {
+        if ($matches !== []) {
             return $matches[2] . '/' . $matches[3];
         }
 

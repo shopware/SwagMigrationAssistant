@@ -31,7 +31,7 @@ readonly class MigrationFingerprintService implements MigrationFingerprintServic
 
     public function searchDuplicates(?string $fingerprint, Context $context, ?string $excludeConnectionId): bool
     {
-        if (empty($fingerprint)) {
+        if ($fingerprint === null || $fingerprint === '') {
             return false;
         }
 

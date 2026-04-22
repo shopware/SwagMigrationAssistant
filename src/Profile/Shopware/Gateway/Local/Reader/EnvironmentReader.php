@@ -112,7 +112,7 @@ class EnvironmentReader extends AbstractReader implements EnvironmentReaderInter
         $shops = $this->mapData($fetchedShops, [], ['shop']);
 
         foreach ($shops as $key => &$shop) {
-            if (!empty($shop['main_id'])) {
+            if (isset($shop['main_id']) && $shop['main_id'] !== '') {
                 $shops[$shop['main_id']]['children'][] = $shop;
                 unset($shops[$key]);
             }

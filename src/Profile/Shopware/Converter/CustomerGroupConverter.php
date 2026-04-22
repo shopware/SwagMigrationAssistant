@@ -73,10 +73,12 @@ abstract class CustomerGroupConverter extends ShopwareConverter
 
         unset($data['id'], $data['groupkey'], $data['discounts']);
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);

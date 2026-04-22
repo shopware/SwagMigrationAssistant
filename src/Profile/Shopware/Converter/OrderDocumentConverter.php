@@ -168,9 +168,10 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $data['amount']
         );
 
-        if (empty($data)) {
+        if ($data === []) {
             $data = null;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $data, $this->mainMapping['id'] ?? null);
@@ -253,7 +254,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $newMedia['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
-        if (!empty($data['hash'])) {
+        if (isset($data['hash']) && $data['hash'] !== '') {
             $this->mediaFileService->saveMediaFile(
                 [
                     'runId' => $this->runId,

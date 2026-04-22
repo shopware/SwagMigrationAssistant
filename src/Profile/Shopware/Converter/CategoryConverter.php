@@ -161,13 +161,15 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->convertValue($converted, 'metaDescription', $data, 'metadescription');
         $this->convertValue($converted, 'keywords', $data, 'metakeywords');
 
-        if (!empty($converted['externalLink'])) {
+        if (isset($converted['externalLink']) && $converted['externalLink'] !== '') {
             $converted['type'] = CategoryDefinition::TYPE_LINK;
         }
+
         if (isset($converted['metaDescription'])) {
             // meta description has a limit of 255 characters in SW6
             $converted['metaDescription'] = \mb_substr($converted['metaDescription'], 0, 255);
         }
+
         if (isset($converted['keywords'])) {
             // keywords has a limit of 255 characters in SW6
             $converted['keywords'] = \mb_substr($converted['keywords'], 0, 255);
@@ -219,9 +221,10 @@ abstract class CategoryConverter extends ShopwareConverter
             $data['_locale'],
         );
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
 
         $this->updateMainMapping($migrationContext, $context);
@@ -301,7 +304,7 @@ abstract class CategoryConverter extends ShopwareConverter
         $categoryMedia['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
-        if (empty($media['name'])) {
+        if (!isset($media['name']) || $media['name'] === '') {
             $media['name'] = $categoryMedia['id'];
         }
 
