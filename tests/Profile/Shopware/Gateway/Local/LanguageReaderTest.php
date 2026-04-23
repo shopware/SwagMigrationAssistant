@@ -50,6 +50,7 @@ class LanguageReaderTest extends TestCase
         );
 
         $this->migrationContext->setGateway(new DummyLocalGateway());
+
         $this->dbConnection = $connectionFactory->createDatabaseConnection($this->migrationContext);
         $this->dbConnection->executeStatement('UPDATE s_user SET language = :language WHERE id = :id', [
             'language' => 1,
@@ -63,6 +64,7 @@ class LanguageReaderTest extends TestCase
             'language' => 1,
             'id' => 1,
         ]);
+
         if ($this->customerLocaleInserted) {
             $this->dbConnection->executeStatement('DELETE FROM s_core_locales WHERE id = :id', ['id' => $this->customerLocaleId]);
         }
@@ -105,6 +107,7 @@ class LanguageReaderTest extends TestCase
                     'territory' => 'Egypt',
                 ]
             );
+
             $this->customerLocaleInserted = true;
         } else {
             $this->customerLocaleId = (int) $existingLocaleId;

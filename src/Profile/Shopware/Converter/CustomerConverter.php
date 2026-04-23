@@ -218,7 +218,12 @@ abstract class CustomerConverter extends ShopwareConverter
         unset($data['attributes']);
 
         if (isset($data['customerlanguage']['locale'])) {
-            $languageUuid = $this->resolveLanguageId($data['customerlanguage']['locale'], $context, $this->languageLookup);
+            $languageUuid = $this->resolveLanguageId(
+                $data['customerlanguage']['locale'],
+                $this->languageLookup,
+                $context,
+            );
+
             if ($languageUuid !== null) {
                 $converted['languageId'] = $languageUuid;
             }
@@ -331,8 +336,10 @@ abstract class CustomerConverter extends ShopwareConverter
                 $address['id'],
                 $this->context
             );
+
             $newAddress['id'] = $addressMapping['entityId'];
             $this->mappingIds[] = $addressMapping['id'];
+
             if ($salutationUuid !== null) {
                 $newAddress['salutationId'] = $salutationUuid;
             }

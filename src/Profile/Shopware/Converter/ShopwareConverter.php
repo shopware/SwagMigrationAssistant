@@ -32,7 +32,7 @@ abstract class ShopwareConverter extends Converter
         return $data['id'];
     }
 
-    protected function resolveLanguageId(string $locale, Context $context, LanguageLookup $languageLookup): ?string
+    protected function resolveLanguageId(string $locale, LanguageLookup $languageLookup, Context $context): ?string
     {
         $mapping = $this->mappingService->getMapping(
             $this->migrationContext->getConnection()->getId(),

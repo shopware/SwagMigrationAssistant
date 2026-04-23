@@ -44,6 +44,7 @@ class LanguageReader extends AbstractReader implements ReaderInterface
             $this->fetchShopLocaleIds($migrationContext),
             $this->fetchCustomerLocaleIds($migrationContext)
         ));
+
         $locales = $this->fetchLocales($fetchedShopLocaleIds, $migrationContext);
 
         return $this->appendAssociatedData($locales, $migrationContext);
