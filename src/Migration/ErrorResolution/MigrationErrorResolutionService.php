@@ -44,7 +44,7 @@ readonly class MigrationErrorResolutionService
 
         $this->loadFixes($errorResolutionContext);
 
-        if (empty($errorResolutionContext->getFixes())) {
+        if ($errorResolutionContext->getFixes() === []) {
             return;
         }
 
@@ -94,7 +94,7 @@ readonly class MigrationErrorResolutionService
             )
         );
 
-        if (empty($itemIds)) {
+        if ($itemIds === []) {
             $errorResolutionContext->setFixes([]);
 
             return;

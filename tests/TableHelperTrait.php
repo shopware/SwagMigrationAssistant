@@ -24,21 +24,21 @@ trait TableHelperTrait
     {
         $exists = $connection->fetchAssociative('SHOW INDEX FROM `' . $table . '` WHERE Key_name = :indexName', ['indexName' => $indexName]);
 
-        return !empty($exists);
+        return $exists !== false;
     }
 
     protected function columnExists(Connection $connection, string $table, string $column): bool
     {
         $exists = $connection->fetchOne('SHOW COLUMNS FROM `' . $table . '` LIKE :columnName', ['columnName' => $column]);
 
-        return !empty($exists);
+        return $exists !== false;
     }
 
     protected function tableExists(Connection $connection, string $table): bool
     {
         $exists = $connection->fetchOne('SHOW TABLES LIKE :tableName', ['tableName' => $table]);
 
-        return !empty($exists);
+        return $exists !== false;
     }
 
     protected function dropTableIfExists(Connection $connection, string $table): void
@@ -77,7 +77,7 @@ trait TableHelperTrait
             ]
         );
 
-        return !empty($exists);
+        return $exists !== false;
     }
 
     protected function addForeignKey(

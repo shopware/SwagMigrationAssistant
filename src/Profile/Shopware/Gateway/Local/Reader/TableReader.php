@@ -22,7 +22,7 @@ class TableReader extends AbstractReader implements TableReaderInterface
         $query->select('*');
         $query->from($tableName);
 
-        if (!empty($filter)) {
+        if ($filter !== []) {
             foreach ($filter as $property => $value) {
                 $query->andWhere($property . ' = :value');
                 $query->setParameter('value', $value);

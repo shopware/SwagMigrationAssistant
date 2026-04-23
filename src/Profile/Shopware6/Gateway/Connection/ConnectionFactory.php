@@ -34,7 +34,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
     {
         $credentials = $migrationContext->getConnection()->getCredentialFields();
 
-        if (empty($credentials) || !isset($credentials['endpoint'])) {
+        if ($credentials === null || !isset($credentials['endpoint'])) {
             return null;
         }
 

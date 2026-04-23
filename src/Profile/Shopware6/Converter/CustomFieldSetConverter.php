@@ -28,7 +28,7 @@ class CustomFieldSetConverter extends ShopwareConverter
 
     protected function convertData(array $data): ConvertStruct
     {
-        if (!empty($data['appId'])) {
+        if (isset($data['appId']) && $data['appId'] !== '') {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(CustomFieldSetDefinition::ENTITY_NAME)

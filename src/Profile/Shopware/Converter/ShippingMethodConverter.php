@@ -88,7 +88,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
 
-        if (empty($data['id'])) {
+        if (!isset($data['id']) || $data['id'] === '') {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(ShippingMethodDefinition::ENTITY_NAME)
@@ -232,10 +232,12 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $data['shippingfree']
         );
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         if (!\is_array($this->mainMapping) || !\array_key_exists('id', $this->mainMapping)) {
@@ -644,7 +646,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
         $convertedCosts = [];
         foreach ($shippingCosts as $key => $shippingCost) {
-            if (empty($shippingCost['id'])) {
+            if (!isset($shippingCost['id']) || $shippingCost['id'] === '') {
                 $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(ShippingMethodPriceDefinition::ENTITY_NAME)
@@ -1082,7 +1084,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
      */
     private function setShippingCountries(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
-        if (!isset($ruleData['shippingCountries']) || empty($ruleData['shippingCountries'])) {
+        if (!isset($ruleData['shippingCountries']) || $ruleData['shippingCountries'] === []) {
             return;
         }
 
@@ -1105,7 +1107,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $countries[] = $countryUuid;
         }
 
-        if (empty($countries)) {
+        if ($countries === []) {
             return;
         }
 
@@ -1132,7 +1134,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
      */
     private function setPaymentMethods(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
-        if (!isset($ruleData['paymentMethods']) || empty($ruleData['paymentMethods'])) {
+        if (!isset($ruleData['paymentMethods']) || $ruleData['paymentMethods'] === []) {
             return;
         }
 
@@ -1162,7 +1164,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $paymentMethods[] = $paymentMethodMapping['entityId'];
         }
 
-        if (empty($paymentMethods)) {
+        if ($paymentMethods === []) {
             return;
         }
 
@@ -1189,7 +1191,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
      */
     private function setExcludedCategories(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
-        if (!isset($ruleData['excludedCategories']) || empty($ruleData['excludedCategories'])) {
+        if (!isset($ruleData['excludedCategories']) || $ruleData['excludedCategories'] === []) {
             return;
         }
 
@@ -1219,7 +1221,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $excludedCategories[] = $categoryMapping['entityId'];
         }
 
-        if (empty($excludedCategories)) {
+        if ($excludedCategories === []) {
             return;
         }
 

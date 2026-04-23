@@ -106,7 +106,7 @@ abstract class AbstractProvider implements ProviderInterface
             }
 
             if (\is_array($value) && !\in_array($key, $doNotTouchKeys, true)) {
-                if (empty(\array_filter($value))) {
+                if (\array_filter($value) === []) {
                     // if all entries of the array equal to FALSE this key will be removed (for example null or '' entries).
                     unset($cleanResult[$key]);
 

@@ -53,7 +53,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
     public function reset(): void
     {
-        if (!empty($this->writeArray)) {
+        if ($this->writeArray !== []) {
             $this->logger->error('SwagMigrationAssistant: Migration mapping was not empty on calling reset.');
         }
 
@@ -134,7 +134,8 @@ class MappingService implements MappingServiceInterface, ResetInterface
         $mapping['id'] = Uuid::fromBytesToHex($mapping['id']);
         $mapping['connectionId'] = Uuid::fromBytesToHex($mapping['connectionId']);
         $mapping['entityId'] = $mapping['entityId'] === null ? null : Uuid::fromBytesToHex($mapping['entityId']);
-        if (!empty($mapping['additionalData'])) {
+
+        if ($mapping['additionalData'] !== null && $mapping['additionalData'] !== '') {
             $mapping['additionalData'] = \json_decode($mapping['additionalData'], true, 512, \JSON_THROW_ON_ERROR);
         } else {
             $mapping['additionalData'] = null;
@@ -214,7 +215,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
     public function preloadMappings(array $mappingIds, Context $context): void
     {
-        if (empty($mappingIds)) {
+        if ($mappingIds === []) {
             return;
         }
 
@@ -329,7 +330,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
     public function writeMapping(): void
     {
-        if (empty($this->writeArray)) {
+        if ($this->writeArray === []) {
             return;
         }
 

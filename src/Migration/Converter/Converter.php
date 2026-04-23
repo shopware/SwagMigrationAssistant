@@ -67,7 +67,7 @@ abstract class Converter implements ConverterInterface
      */
     protected function updateMainMapping(MigrationContextInterface $migrationContext, Context $context): void
     {
-        if (empty($this->mainMapping)) {
+        if ($this->mainMapping === null || $this->mainMapping === []) {
             return;
         }
 

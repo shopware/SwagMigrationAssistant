@@ -132,7 +132,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
         unset($data['shop']);
 
-        if (empty($converted['salesChannelId'])) {
+        if (!isset($converted['salesChannelId']) || $converted['salesChannelId'] === '') {
             $criteria = new Criteria();
             $criteria->setLimit(1);
             $criteria->addFilter(new EqualsFilter('typeId', Defaults::SALES_CHANNEL_TYPE_STOREFRONT));
@@ -248,9 +248,10 @@ abstract class CustomerConverter extends ShopwareConverter
             $data['customerlanguage']
         );
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
 
         $this->updateMainMapping($migrationContext, $context);
@@ -347,7 +348,8 @@ abstract class CustomerConverter extends ShopwareConverter
             if (isset($originalData['default_billing_address_id']) && $address['id'] === $originalData['default_billing_address_id']) {
                 $converted['defaultBillingAddressId'] = $newAddress['id'];
                 unset($originalData['default_billing_address_id']);
-                if (empty($mainVatId) && isset($address['ustid']) && $address['ustid'] !== '') {
+
+                if ($mainVatId === null && isset($address['ustid']) && $address['ustid'] !== '') {
                     $mainVatId = $address['ustid'];
                 }
             }
@@ -368,7 +370,7 @@ abstract class CustomerConverter extends ShopwareConverter
             $newAddress['country'] = $this->getCountry($address['country']);
 
             $countryState = $this->getCountryState($address, $newAddress['country']['id']);
-            if (!empty($countryState)) {
+            if ($countryState !== []) {
                 $newAddress['countryState'] = $countryState;
             }
 
@@ -390,7 +392,7 @@ abstract class CustomerConverter extends ShopwareConverter
             $addresses[] = $newAddress;
         }
 
-        if (empty($addresses)) {
+        if ($addresses === []) {
             return;
         }
 

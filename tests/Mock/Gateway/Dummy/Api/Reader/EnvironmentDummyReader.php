@@ -132,7 +132,7 @@ class EnvironmentDummyReader extends EnvironmentReader
      */
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
-        if (empty($this->dummyData)) {
+        if ($this->dummyData === []) {
             $this->setDummyData([]);
         }
 

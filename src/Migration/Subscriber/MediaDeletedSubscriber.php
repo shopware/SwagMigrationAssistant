@@ -45,6 +45,7 @@ class MediaDeletedSubscriber implements EventSubscriberInterface
         if ($event->getEntityName() !== MediaDefinition::ENTITY_NAME) {
             return;
         }
+
         $context = $event->getContext();
         $deletedMediaIds = $event->getIds();
 
@@ -54,9 +55,10 @@ class MediaDeletedSubscriber implements EventSubscriberInterface
         $result = $this->mediaFileRepository->searchIds($criteria, $context);
         $mediaFileIds = $result->getIds();
 
-        if (empty($mediaFileIds)) {
+        if ($mediaFileIds === []) {
             return;
         }
+
         $mediaFileDeletions = [];
 
         foreach ($mediaFileIds as $mediaFileId) {
@@ -64,6 +66,7 @@ class MediaDeletedSubscriber implements EventSubscriberInterface
                 'id' => $mediaFileId,
             ];
         }
+
         $this->mediaFileRepository->delete($mediaFileDeletions, $context);
     }
 }

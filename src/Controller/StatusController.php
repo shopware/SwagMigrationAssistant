@@ -263,7 +263,7 @@ class StatusController extends AbstractController
             throw RoutingException::missingRequestParameter('gatewayName');
         }
 
-        if (empty($credentialFields)) {
+        if ($credentialFields === []) {
             throw RoutingException::missingRequestParameter('credentialFields');
         }
 
@@ -302,7 +302,7 @@ class StatusController extends AbstractController
 
         $credentialFields = $request->request->all('credentialFields');
 
-        if (!empty($credentialFields)) {
+        if ($credentialFields !== []) {
             $connection->setCredentialFields($credentialFields);
         }
 
@@ -327,7 +327,7 @@ class StatusController extends AbstractController
     {
         $dataSelectionNames = $request->request->all('dataSelectionNames');
 
-        if (empty($dataSelectionNames)) {
+        if ($dataSelectionNames === []) {
             throw RoutingException::missingRequestParameter('dataSelectionNames');
         }
 

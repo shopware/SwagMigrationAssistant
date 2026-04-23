@@ -42,7 +42,8 @@ class PremappingController extends AbstractController
     public function generatePremapping(Request $request, Context $context): JsonResponse
     {
         $dataSelectionIds = $request->request->all('dataSelectionIds');
-        if (empty($dataSelectionIds)) {
+
+        if ($dataSelectionIds === []) {
             throw RoutingException::missingRequestParameter('dataSelectionIds');
         }
 
@@ -61,7 +62,7 @@ class PremappingController extends AbstractController
     {
         $premapping = $request->request->all('premapping');
 
-        if (empty($premapping)) {
+        if ($premapping === []) {
             throw RoutingException::missingRequestParameter('premapping');
         }
 

@@ -55,14 +55,16 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             $preloadIds = $result->getPreloadIds();
 
             if (\count($data) > 0) {
-                if (!empty($preloadIds)) {
+                if ($preloadIds !== []) {
                     $this->mappingService->preloadMappings($preloadIds, $context);
                 }
+
                 $createData = $this->convertData($context, $data, $converter, $migrationContext, $dataSet);
 
                 if (\count($createData) === 0) {
                     return;
                 }
+
                 $this->entityWriter->upsert(
                     $this->dataDefinition,
                     $createData,
@@ -94,6 +96,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
         foreach ($data as $item) {
             try {
                 $convertStruct = $converter->convert($item, $context, $migrationContext);
+
                 if (!$convertStruct instanceof ConvertStruct) {
                     $this->loggingService->log(
                         MigrationLogBuilder::fromMigrationContext($migrationContext)
@@ -105,7 +108,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     continue;
                 }
 
-                $convertFailureFlag = empty($convertStruct->getConverted());
+                $convertFailureFlag = $convertStruct->getConverted() === null || $convertStruct->getConverted() === [];
 
                 $this->validationService->validate(
                     $migrationContext,

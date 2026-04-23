@@ -88,11 +88,14 @@ class MigrationDataWriter implements MigrationDataWriterInterface
 
         foreach ($migrationData->getEntities() as $data) {
             $value = $data->getConverted();
+
             if ($value !== null) {
                 $converted[$data->getId()] = $value;
+
                 if ($data->getMappingUuid() !== null) {
                     $mappingIds[$data->getId()] = $data->getMappingUuid();
                 }
+
                 $updateWrittenData[$data->getId()] = [
                     'id' => $data->getId(),
                     'written' => true,
@@ -101,7 +104,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             }
         }
 
-        if (empty($converted)) {
+        if ($converted === []) {
             return 0;
         }
 
@@ -212,7 +215,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             ++$index;
         }
 
-        if (empty($newData)) {
+        if ($newData === []) {
             return;
         }
 
@@ -296,7 +299,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             }
         }
 
-        if (empty($mappingsRequireUpdate)) {
+        if ($mappingsRequireUpdate === []) {
             return;
         }
 
@@ -306,7 +309,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             return \in_array($update['id'], $existingMappingIds, true);
         });
 
-        if (empty($mappingsRequireUpdate)) {
+        if ($mappingsRequireUpdate === []) {
             return;
         }
 

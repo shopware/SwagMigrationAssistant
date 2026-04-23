@@ -78,7 +78,7 @@ class DummyLocalGateway implements GatewayInterface
         $environmentDataArray = $environmentData['environmentInformation'];
         $profile = $migrationContext->getProfile();
 
-        if (empty($environmentDataArray)) {
+        if ($environmentDataArray === null || $environmentDataArray === []) {
             return new EnvironmentInformation(
                 $profile->getSourceSystemName(),
                 $profile->getVersion(),

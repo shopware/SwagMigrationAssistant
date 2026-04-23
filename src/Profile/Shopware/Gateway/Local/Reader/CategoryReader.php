@@ -123,13 +123,16 @@ class CategoryReader extends AbstractReader implements ReaderInterface
 
         foreach ($categories as $category) {
             $locale = '';
+
             if (\in_array($category['parent'], $ignoredCategories, true)) {
                 $category['parent'] = null;
             }
-            if (!empty($category['path'])) {
+
+            if (isset($category['path']) && $category['path'] !== '') {
                 $parentCategoryIds = \array_values(
                     \array_filter(\explode('|', $category['path']))
                 );
+
                 foreach ($parentCategoryIds as $parentCategoryId) {
                     if (isset($mainCategoryLocales[$parentCategoryId])) {
                         $locale = \str_replace('_', '-', $mainCategoryLocales[$parentCategoryId]);
@@ -139,9 +142,10 @@ class CategoryReader extends AbstractReader implements ReaderInterface
                 }
             }
 
-            if (empty($locale)) {
+            if ($locale === '') {
                 $locale = $defaultLocale;
             }
+
             $category['_locale'] = $locale;
             $resultSet[] = $category;
         }
