@@ -40,7 +40,10 @@ class LanguageReader extends AbstractReader implements ReaderInterface
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $fetchedShopLocaleIds = \array_unique($this->fetchShopLocaleIds($migrationContext));
+        $fetchedShopLocaleIds = \array_unique(\array_merge(
+            $this->fetchShopLocaleIds($migrationContext),
+            $this->fetchCustomerLocaleIds($migrationContext)
+        ));
         $locales = $this->fetchLocales($fetchedShopLocaleIds, $migrationContext);
 
         return $this->appendAssociatedData($locales, $migrationContext);
@@ -74,6 +77,17 @@ class LanguageReader extends AbstractReader implements ReaderInterface
         $query = $query->executeQuery();
 
         return $query->fetchFirstColumn();
+    }
+
+    private function fetchCustomerLocaleIds(MigrationContextInterface $migrationContext): array
+    {
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
+        $query->from('s_user', 'customer');
+        $query->addSelect('customer.language');
+        $query->where('customer.language IS NOT NULL');
+
+        return $query->executeQuery()->fetchFirstColumn();
     }
 
     private function fetchLocales(array $fetchedShopLocaleIds, MigrationContextInterface $migrationContext): array

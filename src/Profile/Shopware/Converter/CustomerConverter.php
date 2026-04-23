@@ -325,10 +325,6 @@ abstract class CustomerConverter extends ShopwareConverter
             $newAddress = [];
             $salutationUuid = $this->getSalutation($address['salutation']);
 
-            if ($salutationUuid === null) {
-                continue;
-            }
-
             $addressMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::CUSTOMER_ADDRESS,
@@ -337,7 +333,9 @@ abstract class CustomerConverter extends ShopwareConverter
             );
             $newAddress['id'] = $addressMapping['entityId'];
             $this->mappingIds[] = $addressMapping['id'];
-            $newAddress['salutationId'] = $salutationUuid;
+            if ($salutationUuid !== null) {
+                $newAddress['salutationId'] = $salutationUuid;
+            }
 
             if (isset($originalData['default_billing_address_id']) && $address['id'] === $originalData['default_billing_address_id']) {
                 $converted['defaultBillingAddressId'] = $newAddress['id'];

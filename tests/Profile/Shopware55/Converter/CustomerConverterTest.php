@@ -372,4 +372,29 @@ class CustomerConverterTest extends TestCase
         static::assertSame('Shopware AG', $converted['company']);
         static::assertSame(CustomerEntity::ACCOUNT_TYPE_BUSINESS, $converted['accountType']);
     }
+
+    public function testConvertKeepsDefaultAddressesWhenAddressSalutationIsUnknown(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        $customerData['addresses'][0]['salutation'] = 'unknown-salutation';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+        static::assertCount(3, $converted['addresses']);
+        static::assertArrayNotHasKey('salutationId', $converted['addresses'][0]);
+        static::assertSame($converted['addresses'][0]['id'], $converted['defaultBillingAddressId']);
+        static::assertSame($converted['addresses'][1]['id'], $converted['defaultShippingAddressId']);
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(1, $logs);
+        static::assertSame(ConvertEntityUnknownLog::getCode(), $logs[0]['code']);
+    }
 }
