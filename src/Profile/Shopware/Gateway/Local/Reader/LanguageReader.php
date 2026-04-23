@@ -81,7 +81,7 @@ class LanguageReader extends AbstractReader implements ReaderInterface
     }
 
     /**
-     * @return list<mixed>
+     * @return list<string>
      */
     private function fetchCustomerLocaleIds(MigrationContextInterface $migrationContext): array
     {
@@ -89,6 +89,7 @@ class LanguageReader extends AbstractReader implements ReaderInterface
         $query = $connection->createQueryBuilder();
         $query->from('s_user', 'customer');
         $query->addSelect('customer.language');
+        $query->distinct();
         $query->where('customer.language IS NOT NULL');
 
         return $query->executeQuery()->fetchFirstColumn();

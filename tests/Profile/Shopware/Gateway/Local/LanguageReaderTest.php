@@ -60,6 +60,7 @@ class LanguageReaderTest extends TestCase
 
     protected function tearDown(): void
     {
+        // reset customer to the fixture default locale
         $this->dbConnection->executeStatement('UPDATE s_user SET language = :language WHERE id = :id', [
             'language' => 1,
             'id' => 1,
