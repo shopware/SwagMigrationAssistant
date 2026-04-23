@@ -79,6 +79,9 @@ class LanguageReader extends AbstractReader implements ReaderInterface
         return $query->fetchFirstColumn();
     }
 
+    /**
+     * @return list<mixed>
+     */
     private function fetchCustomerLocaleIds(MigrationContextInterface $migrationContext): array
     {
         $connection = $this->getConnection($migrationContext);

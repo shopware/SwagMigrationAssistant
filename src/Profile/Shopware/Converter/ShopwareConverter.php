@@ -11,6 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
 use SwagMigrationAssistant\Migration\Converter\Converter;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -28,6 +30,24 @@ abstract class ShopwareConverter extends Converter
     public function getSourceIdentifier(array $data): string
     {
         return $data['id'];
+    }
+
+    protected function resolveLanguageId(string $locale, Context $context, LanguageLookup $languageLookup): ?string
+    {
+        $mapping = $this->mappingService->getMapping(
+            $this->migrationContext->getConnection()->getId(),
+            DefaultEntities::LANGUAGE,
+            $locale,
+            $context
+        );
+
+        if (isset($mapping['entityId'])) {
+            $this->mappingIds[] = $mapping['id'];
+
+            return $mapping['entityId'];
+        }
+
+        return $languageLookup->get($locale, $context);
     }
 
     /**

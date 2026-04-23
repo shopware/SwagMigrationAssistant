@@ -218,7 +218,7 @@ abstract class CustomerConverter extends ShopwareConverter
         unset($data['attributes']);
 
         if (isset($data['customerlanguage']['locale'])) {
-            $languageUuid = $this->languageLookup->get($data['customerlanguage']['locale'], $context);
+            $languageUuid = $this->resolveLanguageId($data['customerlanguage']['locale'], $context, $this->languageLookup);
             if ($languageUuid !== null) {
                 $converted['languageId'] = $languageUuid;
             }

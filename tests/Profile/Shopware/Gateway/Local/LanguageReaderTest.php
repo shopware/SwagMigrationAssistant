@@ -30,6 +30,8 @@ class LanguageReaderTest extends TestCase
 
     private int $customerLocaleId = 9999;
 
+    private bool $customerLocaleInserted = false;
+
     protected function setUp(): void
     {
         $this->connectionSetup();
@@ -49,6 +51,10 @@ class LanguageReaderTest extends TestCase
 
         $this->migrationContext->setGateway(new DummyLocalGateway());
         $this->dbConnection = $connectionFactory->createDatabaseConnection($this->migrationContext);
+        $this->dbConnection->executeStatement('UPDATE s_user SET language = :language WHERE id = :id', [
+            'language' => 1,
+            'id' => 1,
+        ]);
     }
 
     protected function tearDown(): void
@@ -57,7 +63,9 @@ class LanguageReaderTest extends TestCase
             'language' => 1,
             'id' => 1,
         ]);
-        $this->dbConnection->executeStatement('DELETE FROM s_core_locales WHERE id = :id', ['id' => $this->customerLocaleId]);
+        if ($this->customerLocaleInserted) {
+            $this->dbConnection->executeStatement('DELETE FROM s_core_locales WHERE id = :id', ['id' => $this->customerLocaleId]);
+        }
     }
 
     public function testRead(): void
@@ -82,15 +90,26 @@ class LanguageReaderTest extends TestCase
 
     public function testReadIncludesCustomerLocalesOutsideShopLocales(): void
     {
-        $this->dbConnection->executeStatement(
-            'INSERT INTO s_core_locales (id, locale, language, territory) VALUES (:id, :locale, :language, :territory)',
-            [
-                'id' => $this->customerLocaleId,
-                'locale' => 'ar_EG',
-                'language' => 'Arabic',
-                'territory' => 'Egypt',
-            ]
+        $existingLocaleId = $this->dbConnection->fetchOne(
+            'SELECT id FROM s_core_locales WHERE locale = :locale',
+            ['locale' => 'ar_EG']
         );
+
+        if ($existingLocaleId === false) {
+            $this->dbConnection->executeStatement(
+                'INSERT INTO s_core_locales (id, locale, language, territory) VALUES (:id, :locale, :language, :territory)',
+                [
+                    'id' => $this->customerLocaleId,
+                    'locale' => 'ar_EG',
+                    'language' => 'Arabic',
+                    'territory' => 'Egypt',
+                ]
+            );
+            $this->customerLocaleInserted = true;
+        } else {
+            $this->customerLocaleId = (int) $existingLocaleId;
+        }
+
         $this->dbConnection->executeStatement('UPDATE s_user SET language = :language WHERE id = :id', [
             'language' => $this->customerLocaleId,
             'id' => 1,
@@ -99,6 +118,6 @@ class LanguageReaderTest extends TestCase
         $data = $this->languageReader->read($this->migrationContext);
 
         static::assertCount(3, $data);
-        static::assertSame('ar-EG', $data[0]['locale']);
+        static::assertContains('ar-EG', \array_column($data, 'locale'));
     }
 }

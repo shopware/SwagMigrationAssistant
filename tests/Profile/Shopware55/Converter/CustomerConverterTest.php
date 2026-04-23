@@ -397,4 +397,49 @@ class CustomerConverterTest extends TestCase
         static::assertCount(1, $logs);
         static::assertSame(ConvertEntityUnknownLog::getCode(), $logs[0]['code']);
     }
+
+    public function testConvertUsesLanguageMappingWhenLanguageDoesNotExistYet(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        $customerData['customerlanguage']['locale'] = 'ar-EG';
+
+        $languageId = Uuid::randomHex();
+        $context = Context::createDefaultContext();
+        $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::LANGUAGE,
+            'ar-EG',
+            $context,
+            null,
+            [],
+            $languageId
+        );
+
+        $languageLookup = $this->createMock(LanguageLookup::class);
+        $languageLookup->expects($this->never())->method('get');
+
+        $validator = static::getContainer()->get('validator');
+        $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
+
+        $customerConverter = new Shopware55CustomerConverter(
+            $this->mappingService,
+            $this->loggingService,
+            $validator,
+            $salesChannelRepo,
+            static::getContainer()->get(CountryLookup::class),
+            $languageLookup,
+            static::getContainer()->get(CountryStateLookup::class),
+        );
+
+        $convertResult = $customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+        static::assertSame($languageId, $converted['languageId']);
+    }
 }
