@@ -55,6 +55,10 @@ abstract class OrderConverter extends ShopwareConverter
 
     private const SHIPPING_ADDRESS = 'shipping';
 
+    private const SOURCE_TIMEZONE_FIELD = '_timezone';
+
+    private const UTC_TIMEZONE = 'UTC';
+
     protected string $mainLocale;
 
     protected Context $context;
@@ -187,7 +191,7 @@ abstract class OrderConverter extends ShopwareConverter
         ];
         $converted['totalRounding'] = $converted['itemRounding'];
 
-        $this->convertValue($converted, 'orderDateTime', $data, 'ordertime', self::TYPE_DATETIME);
+        $this->convertOrderDateTime($converted, $data);
 
         if (isset($data['status'])) {
             $stateMapping = $this->mappingService->getMapping(
@@ -1001,6 +1005,56 @@ abstract class OrderConverter extends ShopwareConverter
         $this->mappingIds[] = $salutationMapping['id'];
 
         return $salutationMapping['entityId'];
+    }
+
+    /**
+     * @param array<string, mixed> $converted
+     * @param array<string, mixed> $data
+     */
+    private function convertOrderDateTime(array &$converted, array &$data): void
+    {
+        $sourceTimezone = $this->getSourceTimezone($data);
+
+        if ($sourceTimezone === null) {
+            $this->convertValue($converted, 'orderDateTime', $data, 'ordertime', self::TYPE_DATETIME);
+            unset($data[self::SOURCE_TIMEZONE_FIELD]);
+
+            return;
+        }
+
+        if (!isset($data['ordertime']) || !\is_string($data['ordertime']) || $data['ordertime'] === '') {
+            unset($data['ordertime'], $data[self::SOURCE_TIMEZONE_FIELD]);
+
+            return;
+        }
+
+        try {
+            $orderDateTime = new \DateTimeImmutable($data['ordertime'], new \DateTimeZone($sourceTimezone));
+            $converted['orderDateTime'] = $orderDateTime
+                ->setTimezone(new \DateTimeZone(self::UTC_TIMEZONE))
+                ->format(\DATE_ATOM);
+        } catch (\Throwable) {
+            $this->convertValue($converted, 'orderDateTime', $data, 'ordertime', self::TYPE_DATETIME);
+            unset($data[self::SOURCE_TIMEZONE_FIELD]);
+
+            return;
+        }
+
+        unset($data['ordertime'], $data[self::SOURCE_TIMEZONE_FIELD]);
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function getSourceTimezone(array $data): ?string
+    {
+        $sourceTimezone = $data[self::SOURCE_TIMEZONE_FIELD] ?? null;
+
+        if (!\is_string($sourceTimezone) || $sourceTimezone === '') {
+            return null;
+        }
+
+        return $sourceTimezone;
     }
 
     /**

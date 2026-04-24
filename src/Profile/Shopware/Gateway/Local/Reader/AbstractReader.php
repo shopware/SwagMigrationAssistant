@@ -156,6 +156,32 @@ abstract class AbstractReader implements ResetInterface
         return $result ?: '';
     }
 
+    final protected function getDatabaseTimezone(MigrationContextInterface $migrationContext): ?string
+    {
+        try {
+            $timezone = $this->getConnection($migrationContext)->executeQuery(
+                <<<'SQL'
+                    SELECT timeZones.timeZone
+                    FROM (
+                        SELECT @@SESSION.time_zone AS timeZone
+                        UNION
+                        SELECT @@system_time_zone AS timeZone
+                    ) AS timeZones
+                    WHERE timeZone != 'SYSTEM'
+                    LIMIT 1
+                SQL
+            )->fetchOne();
+        } catch (\Throwable) {
+            return null;
+        }
+
+        if (!\is_string($timezone) || $timezone === '') {
+            return null;
+        }
+
+        return $timezone;
+    }
+
     /**
      * @param array<mixed> $data
      * @param array<mixed> $result

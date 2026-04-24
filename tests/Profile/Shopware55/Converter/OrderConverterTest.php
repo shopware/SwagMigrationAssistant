@@ -349,6 +349,33 @@ class OrderConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
+    public function testConvertNormalizesOrderDateTimeToUtc(): void
+    {
+        [$customerData, $orderData] = $this->getFixtureData();
+        $orderData[0]['_timezone'] = '+02:00';
+        $context = Context::createDefaultContext();
+
+        $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $convertResult = $this->orderConverter->convert(
+            $orderData[0],
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
+        static::assertSame('2018-10-09T09:48:06+00:00', $converted['orderDateTime']);
+        static::assertSame($converted['orderDateTime'], $converted['deliveries'][0]['shippingDateEarliest']);
+        static::assertSame($converted['orderDateTime'], $converted['deliveries'][0]['shippingDateLatest']);
+
+        static::assertNull($convertResult->getUnmapped());
+    }
+
     public function testConvertTaxFreeOrder(): void
     {
         [$customerData, $orderData] = $this->getFixtureData();

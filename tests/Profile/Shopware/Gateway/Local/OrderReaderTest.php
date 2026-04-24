@@ -49,6 +49,8 @@ class OrderReaderTest extends TestCase
         static::assertSame('1', $data[0]['subshopID']);
         static::assertSame('2', $data[0]['customer']['id']);
         static::assertSame('de-DE', $data[0]['_locale']);
+        static::assertArrayHasKey('_timezone', $data[0]);
+        static::assertNotSame('', $data[0]['_timezone']);
 
         static::assertSame('57', $data[1]['id']);
         static::assertSame('20002', $data[1]['ordernumber']);
@@ -60,6 +62,8 @@ class OrderReaderTest extends TestCase
         static::assertSame('1', $data[1]['subshopID']);
         static::assertSame('1', $data[1]['customer']['id']);
         static::assertSame('de-DE', $data[1]['_locale']);
+        static::assertArrayHasKey('_timezone', $data[1]);
+        static::assertNotSame('', $data[1]['_timezone']);
 
         static::assertArrayHasKey('esd', $data[0]['details']['0']);
         static::assertArrayHasKey('downloadAvailablePaymentStatus', $data[0]['details']['0']['esd']);

@@ -151,12 +151,16 @@ class OrderReader extends AbstractReader implements ReaderInterface
         $orderEsd = $this->getOrderEsd($migrationContext);
         $orderDetails = $this->getOrderDetails($migrationContext);
         $orderDocuments = $this->getOrderDocuments($migrationContext);
+        $timezone = $this->getDatabaseTimezone($migrationContext);
 
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($orders as &$order) {
             $order['_locale'] = \str_replace('_', '-', $locale);
+            if ($timezone !== null) {
+                $order['_timezone'] = $timezone;
+            }
             if (isset($orderDetails[$order['id']])) {
                 $order['details'] = $orderDetails[$order['id']];
                 if (isset($orderEsd[$order['id']])) {
