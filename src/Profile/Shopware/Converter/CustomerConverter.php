@@ -218,7 +218,12 @@ abstract class CustomerConverter extends ShopwareConverter
         unset($data['attributes']);
 
         if (isset($data['customerlanguage']['locale'])) {
-            $languageUuid = $this->languageLookup->get($data['customerlanguage']['locale'], $context);
+            $languageUuid = $this->resolveLanguageId(
+                $data['customerlanguage']['locale'],
+                $this->languageLookup,
+                $context,
+            );
+
             if ($languageUuid !== null) {
                 $converted['languageId'] = $languageUuid;
             }
@@ -326,19 +331,19 @@ abstract class CustomerConverter extends ShopwareConverter
             $newAddress = [];
             $salutationUuid = $this->getSalutation($address['salutation']);
 
-            if ($salutationUuid === null) {
-                continue;
-            }
-
             $addressMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::CUSTOMER_ADDRESS,
                 $address['id'],
                 $this->context
             );
+
             $newAddress['id'] = $addressMapping['entityId'];
             $this->mappingIds[] = $addressMapping['id'];
-            $newAddress['salutationId'] = $salutationUuid;
+
+            if ($salutationUuid !== null) {
+                $newAddress['salutationId'] = $salutationUuid;
+            }
 
             if (isset($originalData['default_billing_address_id']) && $address['id'] === $originalData['default_billing_address_id']) {
                 $converted['defaultBillingAddressId'] = $newAddress['id'];

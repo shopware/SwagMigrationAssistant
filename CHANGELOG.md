@@ -1,3 +1,7 @@
+# NEXT
+
+- Fixed Shopware 5 customer migration with custom locales by resolving `languageId` from existing migration mappings during the same run
+
 # 16.2.0
 
 - #15568 - Switched to PHP Symfony service definitions
