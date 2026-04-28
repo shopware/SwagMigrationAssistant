@@ -1,5 +1,7 @@
 # 17.0.0
 
+- Fehler bei der Migration von Shopware-5-Kunden mit benutzerdefinierten Sprachen behoben, indem die `languageId` im selben Lauf aus vorhandenen Migrations-Mappings aufgelöst wird
+
 # 16.2.0
 
 - #15568 - Umstellung auf PHP-Symfony-Service-Definitionen
