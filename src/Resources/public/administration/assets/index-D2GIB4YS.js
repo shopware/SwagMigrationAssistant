@@ -1,0 +1,2 @@
+const e=Shopware.Component.wrapComponentConfig({props:{customSelectionCount:{type:Number,required:!1,default:null}},data(){return{lastSelectionCount:0}},computed:{selectionCount(){return this.isLoading&&this.lastSelectionCount>0?this.lastSelectionCount:this.customSelectionCount!==null?this.customSelectionCount:Object.values(this.selection).length}},watch:{customSelectionCount:{handler(t){!this.isLoading&&t!==null&&t>0&&(this.lastSelectionCount=t)},immediate:!0}}});export{e as default};
+//# sourceMappingURL=index-D2GIB4YS.js.map

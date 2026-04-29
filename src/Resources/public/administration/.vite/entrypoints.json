@@ -1,0 +1,66 @@
+{
+  "base": "/bundles/swagmigrationassistant/administration/",
+  "entryPoints": {
+    "swag-migration-assistant": {
+      "css": [],
+      "dynamic": [
+        "/bundles/swagmigrationassistant/administration/assets/index-B0w_QZPC.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-D9U9PNxy.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-pD82aeHI.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-C8L92sZh.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-FksfSad2.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-BnZEYhUh.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-ZpHf7IWs.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-DkWOKJ-n.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-Dahixbpz.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-DRusSH_l.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-JhSVvHdo.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-DWvKdBr3.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-BzHox9D-.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-Cey9KwwK.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-DCo7l9IG.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-DNZVnlin.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-D2GIB4YS.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-FRzPQX54.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-qaXF09jY.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-iULDXE3f.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-Cp7hG_bx.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-CJ7_AY1c.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-Dc3btN5L.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-NwRK1_Hs.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-CqOYv4HO.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-JSWmhmP2.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-DRIt38S1.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-Bnx1_Jjd.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-De4WQEjf.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-DAThSPjg.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-D-YF4rTT.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-B26xXEIE.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-brFSLUvH.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-BQ0OdzfC.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-QXgdrhF7.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-Cku7Tsp9.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-B9Y6Z-bC.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-DmzhH6B_.js",
+        "/bundles/swagmigrationassistant/administration/assets/index--5WU3sqx.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-CThCSNBO.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-CTRedija.js",
+        "/bundles/swagmigrationassistant/administration/assets/index-DfcEwnKP.js"
+      ],
+      "js": [
+        "/bundles/swagmigrationassistant/administration/assets/swag-migration-assistant-CjgOj9KW.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.1.0",
+    7,
+    1,
+    0
+  ],
+  "viteServer": null
+}
