@@ -1,4 +1,4 @@
-# NEXT
+# 17.0.0
 
 - [BREAKING] - refactor!: centralize configuration into `MigrationConfiguration` service
     - [BREAKING] Added required constructor parameter `SwagMigrationAssistant\Migration\MigrationConfiguration $migrationConfig` to `SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase`

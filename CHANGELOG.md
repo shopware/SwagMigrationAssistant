@@ -1,4 +1,4 @@
-# NEXT
+# 17.0.0
 
 - Fixed Shopware 5 customer migration with custom locales by resolving `languageId` from existing migration mappings during the same run
 
