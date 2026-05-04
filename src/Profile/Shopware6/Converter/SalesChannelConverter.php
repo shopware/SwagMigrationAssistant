@@ -77,20 +77,9 @@ class SalesChannelConverter extends ShopwareConverter
             return new ConvertStruct(null, $data, $this->mainMapping['id']);
         }
 
-        $shouldAppendMigrationSuffix = false;
-
         if ($converted['id'] === TestDefaults::SALES_CHANNEL) {
             $mapping = $this->getMappingIdFacade(DefaultEntities::SALES_CHANNEL, $data['id']);
             $converted['id'] = $mapping ?? Uuid::randomHex();
-            $shouldAppendMigrationSuffix = true;
-        } elseif (
-            $converted['typeId'] === Defaults::SALES_CHANNEL_TYPE_STOREFRONT
-            && $existingSalesChannelId !== null
-        ) {
-            $shouldAppendMigrationSuffix = true;
-        }
-
-        if ($shouldAppendMigrationSuffix) {
             $this->appendMigrationSuffix($converted);
         }
 
