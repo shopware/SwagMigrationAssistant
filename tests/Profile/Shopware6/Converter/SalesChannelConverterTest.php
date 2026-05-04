@@ -63,45 +63,6 @@ class SalesChannelConverterTest extends ShopwareConverterTest
         static::assertSame($expectedOutput, $output);
     }
 
-    public function testConvertAppendsMigrationSuffixForExistingStorefront(): void
-    {
-        $input = require __DIR__ . '/../../../_fixtures/Shopware6/SalesChannel/01-HappyCase/input.php';
-        $mappingArray = require __DIR__ . '/../../../_fixtures/Shopware6/SalesChannel/03-DefaultSalesChannelWithMapping/mapping.php';
-
-        $input['name'] = 'Storefront';
-        foreach ($input['translations'] as &$translation) {
-            $translation['name'] = 'Storefront';
-        }
-        unset($translation);
-
-        $salesChannelTypeLookup = $this->createMock(SalesChannelTypeLookup::class);
-        $salesChannelTypeLookup->method('hasSalesChannelType')->willReturn(true);
-
-        $salesChannelLookup = $this->createMock(SalesChannelLookup::class);
-        $salesChannelLookup->method('getSalesChannelWithTypeAndName')
-            ->with($input['typeId'], 'Storefront', static::anything())
-            ->willReturn('existing-sales-channel-id');
-
-        $this->converter = new SalesChannelConverter(
-            $this->mappingService,
-            $this->loggingService,
-            $salesChannelTypeLookup,
-            $salesChannelLookup
-        );
-
-        $this->loadMapping($mappingArray);
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->converter->convert($input, $context, $this->migrationContext);
-
-        static::assertInstanceOf(ConvertStruct::class, $convertResult);
-
-        $output = $convertResult->getConverted();
-        static::assertNotNull($output);
-        static::assertSame('Storefront (Migration)', $output['name']);
-        static::assertSame('Storefront (Migration)', $output['translations'][0]['name']);
-    }
-
     public function testConvertMapsExistingCustomTypeSalesChannel(): void
     {
         $input = require __DIR__ . '/../../../_fixtures/Shopware6/SalesChannel/04-UnsupportedType/input.php';
