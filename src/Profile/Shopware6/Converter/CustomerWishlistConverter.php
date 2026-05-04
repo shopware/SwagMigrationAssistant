@@ -7,9 +7,12 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerWishlist\CustomerWishlistDefinition;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomerWishlistDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -40,8 +43,18 @@ class CustomerWishlistConverter extends ShopwareConverter
 
         $salesChannelMapping = $this->getMappingIdFacade(DefaultEntities::SALES_CHANNEL, $converted['salesChannelId']);
         if ($salesChannelMapping === null) {
-            $converted['salesChannelId'] = null;
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerWishlistDefinition::ENTITY_NAME)
+                    ->withFieldName('salesChannelId')
+                    ->withSourceData($data)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
         }
+
+        $converted['salesChannelId'] = $salesChannelMapping;
 
         // products association could be empty and thus this array key might not be set
         if (!isset($data['products'])) {

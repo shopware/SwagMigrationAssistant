@@ -55,6 +55,8 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\ProductSortingLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\SalutationLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\SeoUrlTemplateLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\StateMachineStateLookup;
@@ -407,6 +409,10 @@ return static function (ContainerConfigurator $container): void {
 
     $services->set(SalesChannelConverter::class)
         ->parent(ShopwareConverter::class)
+        ->args([
+            service(SalesChannelTypeLookup::class),
+            service(SalesChannelLookup::class),
+        ])
         ->tag('shopware.migration.converter');
 
     $services->set(SalesChannelDomainConverter::class)

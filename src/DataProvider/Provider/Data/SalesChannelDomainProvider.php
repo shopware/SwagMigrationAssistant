@@ -7,11 +7,9 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelDomain\SalesChannelDomainCollection;
@@ -39,10 +37,6 @@ class SalesChannelDomainProvider extends AbstractProvider
         $criteria->setOffset($offset);
         $criteria->addAssociation('salesChannelDefaultHreflang');
         $criteria->addSorting(new FieldSorting('id'));
-        $criteria->addFilter(new EqualsAnyFilter('salesChannel.typeId', [
-            Defaults::SALES_CHANNEL_TYPE_STOREFRONT,
-            Defaults::SALES_CHANNEL_TYPE_API,
-        ]));
         $result = $this->salesChannelDomainRepo->search($criteria, $context);
 
         return $this->cleanupSearchResult($result);
@@ -50,12 +44,6 @@ class SalesChannelDomainProvider extends AbstractProvider
 
     public function getProvidedTotal(Context $context): int
     {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsAnyFilter('salesChannel.typeId', [
-            Defaults::SALES_CHANNEL_TYPE_STOREFRONT,
-            Defaults::SALES_CHANNEL_TYPE_API,
-        ]));
-
-        return $this->readTotalFromRepo($this->salesChannelDomainRepo, $context, $criteria);
+        return $this->readTotalFromRepo($this->salesChannelDomainRepo, $context);
     }
 }

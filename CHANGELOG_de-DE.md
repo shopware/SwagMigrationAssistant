@@ -1,3 +1,8 @@
+# NEXT
+
+- #14435 - Die Migration von Shopware 6 Sales Channel wurde korrigiert, sodass zusätzliche Sales Channel wie Social Shopping jetzt korrekt migriert werden, wenn ihre Sales-Channel-Typen vor dem Start der Migration im Zielshop vorhanden sind.
+- #14435 - Sales Channel, deren Sales-Channel-Typen im Zielshop nicht verfügbar sind, werden nun übersprungen, anstatt Folgefehler in der Migration zu verursachen.
+
 # 17.0.0
 
 - Fehler bei der Migration von Shopware-5-Kunden mit benutzerdefinierten Sprachen behoben, indem die `languageId` im selben Lauf aus vorhandenen Migrations-Mappings aufgelöst wird

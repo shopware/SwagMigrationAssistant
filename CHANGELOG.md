@@ -1,3 +1,8 @@
+# NEXT
+
+- Fixed Shopware 6 sales channel migration so additional sales channels, such as Social Shopping, are now migrated correctly when their sales channel types already exist in the target shop before the migration starts
+- Sales channels with types that are not available in the target shop are now skipped instead of causing follow-up issues
+
 # 17.0.0
 
 - Fixed Shopware 5 customer migration with custom locales by resolving `languageId` from existing migration mappings during the same run

@@ -51,6 +51,8 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\ProductSortingLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SalesChannelTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\SalutationLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\SeoUrlTemplateLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\StateMachineStateLookup;
@@ -218,6 +220,14 @@ return static function (ContainerConfigurator $container): void {
 
     $services->set(SalutationLookup::class)
         ->args([service('salutation.repository')])
+        ->tag('kernel.reset', ['method' => 'reset']);
+
+    $services->set(SalesChannelTypeLookup::class)
+        ->args([service('sales_channel_type.repository')])
+        ->tag('kernel.reset', ['method' => 'reset']);
+
+    $services->set(SalesChannelLookup::class)
+        ->args([service('sales_channel.repository')])
         ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(StateMachineStateLookup::class)

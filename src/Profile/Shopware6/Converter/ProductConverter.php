@@ -201,13 +201,31 @@ class ProductConverter extends ShopwareMediaConverter
         }
 
         if (isset($converted['visibilities'])) {
-            $this->updateAssociationIds(
-                $converted['visibilities'],
-                DefaultEntities::SALES_CHANNEL,
-                'salesChannelId',
-                DefaultEntities::PRODUCT,
-                false
-            );
+            $visibilities = [];
+
+            foreach ($converted['visibilities'] as $visibility) {
+                if (!isset($visibility['salesChannelId'])) {
+                    continue;
+                }
+
+                $salesChannelId = $this->getMappingIdFacade(
+                    DefaultEntities::SALES_CHANNEL,
+                    $visibility['salesChannelId']
+                );
+
+                if ($salesChannelId === null) {
+                    continue;
+                }
+
+                $visibility['salesChannelId'] = $salesChannelId;
+                $visibilities[] = $visibility;
+            }
+
+            if ($visibilities === []) {
+                unset($converted['visibilities']);
+            } else {
+                $converted['visibilities'] = $visibilities;
+            }
         }
 
         $this->convertStatesToType($converted);
