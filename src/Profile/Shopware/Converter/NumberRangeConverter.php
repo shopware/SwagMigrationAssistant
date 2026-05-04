@@ -111,9 +111,10 @@ abstract class NumberRangeConverter extends ShopwareConverter
             $data['desc']
         );
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
 
         $this->updateMainMapping($migrationContext, $context);

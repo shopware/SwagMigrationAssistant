@@ -158,7 +158,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $newMedia['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
-        if (empty($data['media']['name'])) {
+        if (!isset($data['media']['name']) || $data['media']['name'] === '') {
             $data['media']['name'] = $newMedia['id'];
         }
 

@@ -175,10 +175,11 @@ class OrderConverter extends ShopwareConverter
             $converted['updatedById'] = $this->getMappingIdFacade(DefaultEntities::USER, $data['updatedById']);
         }
 
-        if (!isset($converted['primaryOrderDeliveryId']) && !empty($converted['deliveries'])) {
+        if (!isset($converted['primaryOrderDeliveryId']) && $converted['deliveries'] !== []) {
             $converted['primaryOrderDeliveryId'] = $converted['deliveries'][0]['id'];
         }
-        if (!isset($converted['primaryOrderTransactionId']) && !empty($converted['transactions'])) {
+
+        if (!isset($converted['primaryOrderTransactionId']) && $converted['transactions'] !== []) {
             $converted['primaryOrderTransactionId'] = $converted['transactions'][0]['id'];
         }
 

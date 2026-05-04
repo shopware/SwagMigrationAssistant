@@ -26,7 +26,7 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
     {
         $credentials = $migrationContext->getConnection()->getCredentialFields();
 
-        if (empty($credentials)) {
+        if ($credentials === null || $credentials === []) {
             throw MigrationException::invalidConnectionCredentials();
         }
 

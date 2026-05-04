@@ -91,6 +91,7 @@ class TransactionStateReader extends AbstractPremappingReader
         foreach ($preMappingData as $data) {
             if ($data['group'] === 'payment') {
                 $uuid = '';
+
                 if (isset($this->connectionPremappingDictionary[$data['id']])) {
                     $uuid = $this->connectionPremappingDictionary[$data['id']]->getDestinationUuid();
 
@@ -98,9 +99,10 @@ class TransactionStateReader extends AbstractPremappingReader
                         $uuid = '';
                     }
                 }
-                if (!empty($data['description'])) {
+
+                if (isset($data['description']) && $data['description'] !== '') {
                     $description = $data['description'];
-                } elseif (!empty($data['name'])) {
+                } elseif (isset($data['name']) && $data['name'] !== '') {
                     $description = $data['name'];
                 } else {
                     $description = $data['id'];
@@ -109,6 +111,7 @@ class TransactionStateReader extends AbstractPremappingReader
                 $entityData[] = new PremappingEntityStruct($data['id'], $description, $uuid);
             }
         }
+
         \usort($entityData, static function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
             return \strcmp($item1->getDescription(), $item2->getDescription());
         });

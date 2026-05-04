@@ -73,14 +73,14 @@ readonly class MigrationFix
      */
     private function applyToPath(array &$data, array $path, mixed $value): void
     {
-        if (empty($path)) {
+        if ($path === []) {
             return;
         }
 
         $nextSegment = \array_shift($path);
 
         // last segment of the path, "normal" set operation
-        if (empty($path)) {
+        if ($path === []) {
             $data[$nextSegment] = $value;
 
             return;

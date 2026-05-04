@@ -56,9 +56,6 @@ parameters:
         - identifier: parameterByRef.type
           path: src/Profile/Shopware/Converter/ShippingMethodConverter.php
 
-        # TODO: https://github.com/shopware/shopware/issues/16031
-        - identifier: empty.notAllowed
-
 rules:
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\CoversAttributeRule

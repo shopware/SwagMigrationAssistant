@@ -43,7 +43,7 @@ class MediaFileService implements MediaFileServiceInterface, ResetInterface
 
     public function reset(): void
     {
-        if (!empty($this->writeArray)) {
+        if ($this->writeArray !== []) {
             $this->logger->error('SwagMigrationAssistant: Migration media file service was not empty on calling reset.');
         }
 
@@ -55,7 +55,7 @@ class MediaFileService implements MediaFileServiceInterface, ResetInterface
     {
         $this->checkMediaIdsForDuplicates($context);
 
-        if (empty($this->writeArray)) {
+        if ($this->writeArray === []) {
             return;
         }
 
@@ -107,7 +107,7 @@ class MediaFileService implements MediaFileServiceInterface, ResetInterface
         $converter = $this->converterRegistry->getConverter($migrationContext);
         $mediaUuids = $converter->getMediaUuids($converted);
 
-        if (empty($mediaUuids)) {
+        if ($mediaUuids === null || $mediaUuids === []) {
             return;
         }
 
@@ -116,7 +116,7 @@ class MediaFileService implements MediaFileServiceInterface, ResetInterface
 
     private function checkMediaIdsForDuplicates(Context $context): void
     {
-        if (empty($this->writeArray)) {
+        if ($this->writeArray === []) {
             return;
         }
 
@@ -179,7 +179,7 @@ class MediaFileService implements MediaFileServiceInterface, ResetInterface
             ];
         }
 
-        if (empty($updateWrittenMediaFiles)) {
+        if ($updateWrittenMediaFiles === []) {
             return;
         }
 

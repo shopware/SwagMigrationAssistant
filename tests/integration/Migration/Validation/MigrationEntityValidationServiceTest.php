@@ -360,7 +360,7 @@ class MigrationEntityValidationServiceTest extends TestCase
     #[DataProvider('associationProvider')]
     public function testValidateAssociations(array $convertedData, array $mappings, array $expectedLogs): void
     {
-        if (!empty($mappings)) {
+        if ($mappings !== []) {
             $this->mappingRepo->create($mappings, $this->context);
         }
 

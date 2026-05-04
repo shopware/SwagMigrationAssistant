@@ -13,3 +13,13 @@ jobs:
                   clientId: ${{ secrets.SHOPWARE_CLI_ACCOUNT_CLIENT_ID }}
                   clientSecret: ${{ secrets.SHOPWARE_CLI_ACCOUNT_CLIENT_SECRET }}
                   ghToken: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Get version
+              run: echo "VERSION=$(shopware-cli extension get-version .)" >> $GITHUB_ENV
+
+            - name: Create release branch
+              run: |
+                  git checkout -b release/${VERSION}
+                  git push origin release/${VERSION}
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

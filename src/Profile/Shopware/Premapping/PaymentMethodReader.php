@@ -107,9 +107,10 @@ class PaymentMethodReader extends AbstractPremappingReader
             if (isset($this->connectionPremappingDictionary[$data['id']])) {
                 $uuid = $this->connectionPremappingDictionary[$data['id']]->getDestinationUuid();
             }
-            if (!empty($data['description'])) {
+
+            if (isset($data['description']) && $data['description'] !== '') {
                 $description = $data['description'];
-            } elseif (!empty($data['name'])) {
+            } elseif (isset($data['name']) && $data['name'] !== '') {
                 $description = $data['name'];
             } else {
                 $description = $data['id'];

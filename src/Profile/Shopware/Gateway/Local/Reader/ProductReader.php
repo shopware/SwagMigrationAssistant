@@ -160,7 +160,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
                 }
             }
 
-            if (!empty($product['id'])) {
+            if (isset($product['id']) && $product['id'] !== '') {
                 $product['shops'] = $productVisibility->getShops($product['id']);
             }
         }
@@ -481,7 +481,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
      */
     private function getParentCategoryIds(array $category): array
     {
-        if (empty($category['path'])) {
+        if (!isset($category['path']) || $category['path'] === '') {
             return [];
         }
 

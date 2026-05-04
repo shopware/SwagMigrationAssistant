@@ -95,7 +95,7 @@ abstract class BaseMediaService
             }
         }
 
-        if (!empty($failureUuids)) {
+        if ($failureUuids !== []) {
             $mediaFiles = $this->getMediaFiles($failureUuids, $runId);
 
             foreach ($mediaFiles as $mediaFile) {
@@ -106,7 +106,7 @@ abstract class BaseMediaService
             }
         }
 
-        if (empty($mediaEntitiesToUpdate)) {
+        if ($mediaEntitiesToUpdate === []) {
             return;
         }
 

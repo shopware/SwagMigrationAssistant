@@ -266,10 +266,10 @@ abstract class OrderConverter extends ShopwareConverter
         $this->applyTransactions($data, $converted);
         unset($data['cleared'], $data['paymentstatus']);
 
-        if (!empty($converted['deliveries'])) {
+        if (isset($converted['deliveries']) && $converted['deliveries'] !== []) {
             $converted['primaryOrderDeliveryId'] = $converted['deliveries'][0]['id'];
         }
-        if (!empty($converted['transactions'])) {
+        if (isset($converted['transactions']) && $converted['transactions'] !== []) {
             $converted['primaryOrderTransactionId'] = $converted['transactions'][0]['id'];
         }
 
@@ -278,7 +278,7 @@ abstract class OrderConverter extends ShopwareConverter
             if (isset($data['billingaddress']['ustid']) && $data['billingaddress']['ustid'] !== '') {
                 $converted['orderCustomer']['vatIds'][] = $data['billingaddress']['ustid'];
             }
-            if (!empty($billingAddress)) {
+            if ($billingAddress !== []) {
                 $converted['billingAddressId'] = $billingAddress['id'];
                 $converted['addresses'][] = $billingAddress;
             }
@@ -301,7 +301,7 @@ abstract class OrderConverter extends ShopwareConverter
             }
         }
 
-        if (empty($converted['salesChannelId'])) {
+        if (!isset($converted['salesChannelId']) || $converted['salesChannelId'] === '') {
             $criteria = new Criteria();
             $criteria->setLimit(1);
             $criteria->addFilter(new EqualsFilter('typeId', Defaults::SALES_CHANNEL_TYPE_STOREFRONT));
@@ -347,10 +347,12 @@ abstract class OrderConverter extends ShopwareConverter
             $data['documents']
         );
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
@@ -488,7 +490,7 @@ abstract class OrderConverter extends ShopwareConverter
         $address['country'] = $this->getCountry($originalData['country']);
 
         $countryState = $this->getCountryState($originalData, $address['country']['id']);
-        if (!empty($countryState)) {
+        if ($countryState !== []) {
             $address['countryState'] = $countryState;
         }
 

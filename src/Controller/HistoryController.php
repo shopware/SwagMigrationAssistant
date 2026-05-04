@@ -108,13 +108,13 @@ class HistoryController extends AbstractController
     {
         $runId = $request->query->getAlnum('runId');
 
-        if (empty($runId)) {
+        if ($runId === '') {
             throw RoutingException::missingRequestParameter('runId');
         }
 
         $level = $request->query->getAlpha('level');
 
-        if (empty($level)) {
+        if ($level === '') {
             throw RoutingException::missingRequestParameter('level');
         }
 
@@ -140,10 +140,10 @@ class HistoryController extends AbstractController
             $limit,
             $sortBy,
             \strtoupper($sortDirection),
-            \is_string($filterCode) && !empty($filterCode) ? $filterCode : null,
-            \is_string($filterStatus) && !empty($filterStatus) ? $filterStatus : null,
-            \is_string($filterEntity) && !empty($filterEntity) ? $filterEntity : null,
-            \is_string($filterField) && !empty($filterField) ? $filterField : null,
+            \is_string($filterCode) && $filterCode !== '' ? $filterCode : null,
+            \is_string($filterStatus) && $filterStatus !== '' ? $filterStatus : null,
+            \is_string($filterEntity) && $filterEntity !== '' ? $filterEntity : null,
+            \is_string($filterField) && $filterField !== '' ? $filterField : null,
         );
 
         return new JsonResponse($result);
@@ -159,25 +159,25 @@ class HistoryController extends AbstractController
     {
         $runId = $request->request->getAlnum('runId');
 
-        if (empty($runId)) {
+        if ($runId === '') {
             throw RoutingException::missingRequestParameter('runId');
         }
 
         $code = $request->request->get('code');
 
-        if (!\is_string($code) || empty($code)) {
+        if (!\is_string($code) || $code === '') {
             throw RoutingException::missingRequestParameter('code');
         }
 
         $entityName = $request->request->get('entityName');
 
-        if (!\is_string($entityName) || empty($entityName)) {
+        if (!\is_string($entityName) || $entityName === '') {
             throw RoutingException::missingRequestParameter('entityName');
         }
 
         $fieldName = $request->request->get('fieldName');
 
-        if (!\is_string($fieldName) || empty($fieldName)) {
+        if (!\is_string($fieldName) || $fieldName === '') {
             throw RoutingException::missingRequestParameter('fieldName');
         }
 
@@ -188,7 +188,7 @@ class HistoryController extends AbstractController
             $code,
             $entityName,
             $fieldName,
-            !empty($connectionId) ? $connectionId : null,
+            $connectionId !== '' ? $connectionId : null,
         );
 
         return new JsonResponse([
@@ -207,25 +207,25 @@ class HistoryController extends AbstractController
     {
         $runId = $request->request->getAlnum('runId');
 
-        if (empty($runId)) {
+        if ($runId === '') {
             throw RoutingException::missingRequestParameter('runId');
         }
 
         $code = $request->request->get('code');
 
-        if (!\is_string($code) || empty($code)) {
+        if (!\is_string($code) || $code === '') {
             throw RoutingException::missingRequestParameter('code');
         }
 
         $entityName = $request->request->get('entityName');
 
-        if (!\is_string($entityName) || empty($entityName)) {
+        if (!\is_string($entityName) || $entityName === '') {
             throw RoutingException::missingRequestParameter('entityName');
         }
 
         $fieldName = $request->request->get('fieldName');
 
-        if (!\is_string($fieldName) || empty($fieldName)) {
+        if (!\is_string($fieldName) || $fieldName === '') {
             throw RoutingException::missingRequestParameter('fieldName');
         }
 
@@ -242,7 +242,7 @@ class HistoryController extends AbstractController
             $entityName,
             $fieldName,
             $limit,
-            !empty($connectionId) ? $connectionId : null,
+            $connectionId !== '' ? $connectionId : null,
         );
 
         return new JsonResponse([

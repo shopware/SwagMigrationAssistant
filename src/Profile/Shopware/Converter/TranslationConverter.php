@@ -196,7 +196,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->addAttribute(DefaultEntities::PRODUCT, $key, $value, $productTranslation, $objectData);
         }
 
-        if (empty($objectData)) {
+        if ($objectData === []) {
             unset($data['objectdata']);
         } else {
             $data['objectdata'] = \serialize($objectData);
@@ -223,10 +223,12 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale']);
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         return new ConvertStruct($product, $returnData, $this->mainMapping['id'] ?? null);
@@ -277,7 +279,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->addAttribute(DefaultEntities::PRODUCT, $key, $value, $productTranslation, $objectData);
         }
 
-        if (empty($objectData)) {
+        if ($objectData === []) {
             unset($data['objectdata']);
         } else {
             $data['objectdata'] = \serialize($objectData);
@@ -304,10 +306,12 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale']);
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         return new ConvertStruct($product, $returnData, $this->mainMapping['id'] ?? null);
@@ -370,7 +374,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->addAttribute(DefaultEntities::PRODUCT_MANUFACTURER, $key, $value, $manufacturerTranslation, $objectData);
         }
 
-        if (empty($objectData)) {
+        if ($objectData === []) {
             unset($data['objectdata']);
         } else {
             $data['objectdata'] = \serialize($objectData);
@@ -386,10 +390,12 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['locale']);
 
-        $returnData = $data;
-        if (empty($returnData)) {
-            $returnData = null;
+        $returnData = null;
+
+        if ($data !== []) {
+            $returnData = $data;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         return new ConvertStruct($manufacturer, $returnData, $this->mainMapping['id'] ?? null);
@@ -459,7 +465,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->addAttribute(DefaultEntities::UNIT, $key, $value, $unitTranslation, $objectData);
         }
 
-        if (empty($objectData)) {
+        if ($objectData === []) {
             unset($data['objectdata']);
         } else {
             $data['objectdata'] = \serialize($objectData);
@@ -475,9 +481,10 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale']);
 
-        if (empty($data)) {
+        if ($data === []) {
             $data = null;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         return new ConvertStruct($unit, $data, $this->mainMapping['id'] ?? null);
@@ -555,7 +562,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->addAttribute(DefaultEntities::CATEGORY, $key, $value, $categoryTranslation, $objectData);
         }
 
-        if (empty($objectData)) {
+        if ($objectData === []) {
             unset($data['objectdata']);
         } else {
             $data['objectdata'] = \serialize($objectData);
@@ -572,9 +579,10 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale']);
 
-        if (empty($data)) {
+        if ($data === []) {
             $data = null;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         return new ConvertStruct($category, $data, $this->mainMapping['id'] ?? null);
@@ -636,7 +644,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->addAttribute(DefaultEntities::PROPERTY_GROUP_OPTION, $key, $value, $propertyGroupOptionTranslation, $objectData);
         }
 
-        if (empty($objectData)) {
+        if ($objectData === []) {
             unset($data['objectdata']);
         } else {
             $data['objectdata'] = \serialize($objectData);
@@ -652,9 +660,10 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale']);
 
-        if (empty($data)) {
+        if ($data === []) {
             $data = null;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         return new ConvertStruct($configuratorOption, $data, $this->mainMapping['id'] ?? null);
@@ -719,7 +728,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->addAttribute(DefaultEntities::PROPERTY_GROUP, $key, $value, $propertyGroupTranslation, $objectData);
         }
 
-        if (empty($objectData)) {
+        if ($objectData === []) {
             unset($data['objectdata']);
         } else {
             $data['objectdata'] = \serialize($objectData);
@@ -735,9 +744,10 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale']);
 
-        if (empty($data)) {
+        if ($data === []) {
             $data = null;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         return new ConvertStruct($configuratorOptionGroup, $data, $this->mainMapping['id'] ?? null);
@@ -797,7 +807,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->addAttribute(DefaultEntities::PROPERTY_GROUP_OPTION, $key, $value, $propertyValueTranslation, $objectData);
         }
 
-        if (empty($objectData)) {
+        if ($objectData === []) {
             unset($data['objectdata']);
         } else {
             $data['objectdata'] = \serialize($objectData);
@@ -813,9 +823,10 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale']);
 
-        if (empty($data)) {
+        if ($data === []) {
             $data = null;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         return new ConvertStruct($propertyValue, $data, $this->mainMapping['id'] ?? null);
@@ -876,7 +887,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->addAttribute(DefaultEntities::PROPERTY_GROUP, $key, $value, $propertyOptionTranslation, $objectData);
         }
 
-        if (empty($objectData)) {
+        if ($objectData === []) {
             unset($data['objectdata']);
         } else {
             $data['objectdata'] = \serialize($objectData);
@@ -892,9 +903,10 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale']);
 
-        if (empty($data)) {
+        if ($data === []) {
             $data = null;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         return new ConvertStruct($propertyOption, $data, $this->mainMapping['id'] ?? null);
@@ -1044,7 +1056,7 @@ abstract class TranslationConverter extends ShopwareConverter
             }
         }
 
-        if (empty($objectData)) {
+        if ($objectData === []) {
             unset($data['objectdata']);
         } else {
             $data['objectdata'] = \serialize($objectData);
@@ -1060,9 +1072,10 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale'], $data['ordernumber']);
 
-        if (empty($data)) {
+        if ($data === []) {
             $data = null;
         }
+
         $this->updateMainMapping($this->migrationContext, $this->context);
 
         return new ConvertStruct($media, $data, $this->mainMapping['id'] ?? null);

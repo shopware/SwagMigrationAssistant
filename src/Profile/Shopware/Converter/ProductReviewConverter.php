@@ -120,9 +120,11 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $converted['languageId'] = $this->languageLookup->get($mainLocale, $context);
 
         $this->convertValue($converted, 'title', $data, 'headline');
-        if (empty($converted['title'])) {
+
+        if (!isset($converted['title']) || $converted['title'] === '') {
             $converted['title'] = \mb_substr($data['comment'], 0, 30) . '...';
         }
+
         $this->convertValue($converted, 'content', $data, 'comment');
         $this->convertValue($converted, 'points', $data, 'points', self::TYPE_FLOAT);
         $this->convertValue($converted, 'status', $data, 'active', self::TYPE_BOOLEAN);
@@ -136,9 +138,10 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $data['answer_date']
         );
 
-        $resultData = $data;
-        if (empty($resultData)) {
-            $resultData = null;
+        $resultData = null;
+
+        if ($data !== []) {
+            $resultData = $data;
         }
 
         return new ConvertStruct($converted, $resultData, $this->mainMapping['id'] ?? null);
