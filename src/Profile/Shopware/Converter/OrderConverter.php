@@ -318,9 +318,14 @@ abstract class OrderConverter extends ShopwareConverter
         unset($data['attributes']);
 
         if (isset($data['locale'])) {
-            $languageMapping = $this->languageLookup->get($data['locale'], $this->context);
-            if ($languageMapping !== null) {
-                $converted['languageId'] = $languageMapping;
+            $languageId = $this->resolveLanguageId(
+                $data['locale'],
+                $this->languageLookup,
+                $this->context,
+            );
+
+            if ($languageId !== null) {
+                $converted['languageId'] = $languageId;
             }
         }
 
@@ -495,10 +500,9 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         $salutationUuid = $this->getSalutation($originalData['salutation']);
-        if ($salutationUuid === null) {
-            return [];
+        if ($salutationUuid !== null) {
+            $address['salutationId'] = $salutationUuid;
         }
-        $address['salutationId'] = $salutationUuid;
 
         $this->convertValue($address, 'firstName', $originalData, 'firstname');
         $this->convertValue($address, 'lastName', $originalData, 'lastname');
