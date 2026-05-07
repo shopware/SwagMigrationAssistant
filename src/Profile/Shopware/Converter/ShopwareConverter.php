@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
@@ -23,9 +24,15 @@ abstract class ShopwareConverter extends Converter
     protected const TYPE_INVERT_BOOLEAN = 'invert_bool';
     protected const TYPE_INTEGER = 'int';
     protected const TYPE_FLOAT = 'float';
+    protected const TYPE_DATE = 'date';
     protected const TYPE_DATETIME = 'datetime';
 
     protected MigrationContextInterface $migrationContext;
+
+    /**
+     * @var array<string, string>
+     */
+    protected array $timezoneCache = [];
 
     public function getSourceIdentifier(array $data): string
     {
@@ -60,6 +67,7 @@ abstract class ShopwareConverter extends Converter
         array &$sourceData,
         string $sourceKey,
         string $castType = self::TYPE_STRING,
+        ?Context $context = null,
     ): void {
         if (isset($sourceData[$sourceKey]) && $sourceData[$sourceKey] !== '') {
             switch ($castType) {
@@ -79,9 +87,20 @@ abstract class ShopwareConverter extends Converter
                     $sourceValue = (float) $sourceData[$sourceKey];
 
                     break;
-                case self::TYPE_DATETIME:
+                case self::TYPE_DATE:
                     $sourceValue = $sourceData[$sourceKey];
                     if (!$this->validDate($sourceValue)) {
+                        return;
+                    }
+
+                    break;
+                case self::TYPE_DATETIME:
+                    if (!$context instanceof Context) {
+                        return;
+                    }
+
+                    $sourceValue = $this->convertDateTime((string) $sourceData[$sourceKey], $context);
+                    if ($sourceValue === null) {
                         return;
                     }
 
@@ -92,17 +111,6 @@ abstract class ShopwareConverter extends Converter
             $newData[$newKey] = $sourceValue;
         }
         unset($sourceData[$sourceKey]);
-    }
-
-    protected function validDate(string $value): bool
-    {
-        try {
-            new \DateTime($value);
-
-            return true;
-        } catch (\Exception) {
-            return false;
-        }
     }
 
     /**
@@ -162,6 +170,16 @@ abstract class ShopwareConverter extends Converter
                     if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'float') {
                         $value = (float) $value;
                     }
+
+                    if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'datetime') {
+                        $convertedValue = $this->convertDateTime((string) $value, $context);
+
+                        if ($convertedValue === null) {
+                            continue;
+                        }
+
+                        $value = $convertedValue;
+                    }
                 }
             }
 
@@ -173,5 +191,49 @@ abstract class ShopwareConverter extends Converter
         }
 
         return $result;
+    }
+
+    private function validDate(string $value): bool
+    {
+        try {
+            new \DateTime($value);
+
+            return true;
+        } catch (\Exception) {
+            return false;
+        }
+    }
+
+    private function convertDateTime(string $value, Context $context): ?string
+    {
+        if ($value === '') {
+            return null;
+        }
+
+        $connectionId = $this->migrationContext->getConnection()->getId();
+        if (!isset($this->timezoneCache[$connectionId])) {
+            $this->timezoneCache[$connectionId] = $this->mappingService->getValue(
+                $connectionId,
+                'source_timezone',
+                'timezone',
+                $context
+            ) ?? '';
+        }
+
+        try {
+            $timezone = $this->timezoneCache[$connectionId];
+
+            if ($timezone === '') {
+                return (new \DateTimeImmutable($value))->format(Defaults::STORAGE_DATE_TIME_FORMAT);
+            }
+
+            $date = new \DateTimeImmutable($value, new \DateTimeZone($timezone));
+
+            return $date
+                ->setTimezone(new \DateTimeZone('UTC'))
+                ->format(Defaults::STORAGE_DATE_TIME_FORMAT);
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }

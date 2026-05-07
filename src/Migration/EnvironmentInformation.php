@@ -32,6 +32,7 @@ class EnvironmentInformation extends Struct
         protected string $sourceSystemLocale = '',
         protected string $targetSystemLocale = '',
         protected ?string $fingerprint = null,
+        protected ?string $timezone = null,
     ) {
     }
 
@@ -122,5 +123,15 @@ class EnvironmentInformation extends Struct
     public function setFingerprint(?string $fingerprint): void
     {
         $this->fingerprint = $fingerprint;
+    }
+
+    public function getTimezone(): ?string
+    {
+        return $this->timezone;
+    }
+
+    public function setTimezone(?string $timezone): void
+    {
+        $this->timezone = $timezone;
     }
 }

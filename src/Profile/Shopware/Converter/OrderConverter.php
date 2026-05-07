@@ -187,7 +187,7 @@ abstract class OrderConverter extends ShopwareConverter
         ];
         $converted['totalRounding'] = $converted['itemRounding'];
 
-        $this->convertValue($converted, 'orderDateTime', $data, 'ordertime', self::TYPE_DATETIME);
+        $this->convertValue($converted, 'orderDateTime', $data, 'ordertime', self::TYPE_DATETIME, $this->context);
 
         if (isset($data['status'])) {
             $stateMapping = $this->mappingService->getMapping(

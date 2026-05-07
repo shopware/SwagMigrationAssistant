@@ -371,7 +371,8 @@
           "salesChannel": "Newsletter Sales Channel",
           "newsletter_status": "Newsletter status",
           "shipping_availability_rule": "Shipping method availability",
-          "user": "Administration user"
+          "user": "Administration user",
+          "source_timezone": "Timezone"
         }
       },
       "loadingScreenCard": {

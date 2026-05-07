@@ -9,31 +9,30 @@ namespace SwagMigrationAssistant\Profile\Shopware\Premapping;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
+use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TimezoneReader as ApiTimezoneReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TimezoneReader as LocalTimezoneReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('fundamentals@after-sales')]
+#[Package('after-sales')]
 class TimezoneReader extends AbstractPremappingReader
 {
     private const MAPPING_NAME = 'source_timezone';
 
     private const SOURCE_ID = 'timezone';
 
+    /**
+     * @var array<string, int>
+     */
     private array $validTimezones;
 
     public function __construct(
-        private readonly ApiTimezoneReader $apiTimezoneReader,
-        private readonly LocalTimezoneReader $localTimezoneReader,
+        private readonly GatewayRegistryInterface $gatewayRegistry,
     ) {
         $this->validTimezones = \array_flip(\DateTimeZone::listIdentifiers());
     }
@@ -56,15 +55,16 @@ class TimezoneReader extends AbstractPremappingReader
     {
         $this->fillConnectionPremappingDictionary($migrationContext);
 
-        $choices = $this->getChoices();
+        $choices = $this->getTimeZoneList();
 
-        $sourceTimezone = $this->readSourceTimezone($migrationContext);
+        $sourceTimezone = $this->readSourceTimezone($migrationContext, $context);
 
-        if ($sourceTimezone === null || !isset($this->validTimezones[$sourceTimezone])) {
-            return new PremappingStruct(self::getMappingName(), [], $choices);
+        $description = $sourceTimezone ?? 'No source time zone';
+        $destinationTimezone = '';
+
+        if ($sourceTimezone !== null && isset($this->validTimezones[$sourceTimezone])) {
+            $destinationTimezone = $sourceTimezone;
         }
-
-        $destinationTimezone = $sourceTimezone;
 
         if (isset($this->connectionPremappingDictionary[self::SOURCE_ID])) {
             $configuredDestination = $this->connectionPremappingDictionary[self::SOURCE_ID]->getDestinationUuid();
@@ -79,7 +79,7 @@ class TimezoneReader extends AbstractPremappingReader
             [
                 new PremappingEntityStruct(
                     self::SOURCE_ID,
-                    $sourceTimezone,
+                    $description,
                     $destinationTimezone
                 ),
             ],
@@ -87,16 +87,11 @@ class TimezoneReader extends AbstractPremappingReader
         );
     }
 
-    private function readSourceTimezone(MigrationContextInterface $migrationContext): ?string
+    private function readSourceTimezone(MigrationContextInterface $migrationContext, Context $context): ?string
     {
-        $gateway = $this->getReader($migrationContext);
-        if (!$gateway instanceof ShopwareGatewayInterface) {
-            return null;
-        }
+        $environmentData = $this->gatewayRegistry->getGateway($migrationContext)->readEnvironmentInformation($migrationContext, $context);
 
-        $result = $gateway->read($migrationContext);
-
-        $timezone = $result[0]['timezone'] ?? null;
+        $timezone = $environmentData->getTimezone();
 
         if (!\is_string($timezone) || $timezone === '' || !isset($this->validTimezones[$timezone])) {
             return null;
@@ -105,20 +100,14 @@ class TimezoneReader extends AbstractPremappingReader
         return $timezone;
     }
 
-    private function getChoices(): array
+    /**
+     * @return array<PremappingChoiceStruct>
+     */
+    private function getTimeZoneList(): array
     {
         return array_map(
             static fn (string $timezone): PremappingChoiceStruct => new PremappingChoiceStruct($timezone, $timezone),
             \DateTimeZone::listIdentifiers()
         );
-    }
-
-    private function getReader(MigrationContextInterface $migrationContext): ReaderInterface
-    {
-        if ($this->apiTimezoneReader->supports($migrationContext)) {
-            return $this->apiTimezoneReader;
-        }
-
-        return $this->localTimezoneReader;
     }
 }

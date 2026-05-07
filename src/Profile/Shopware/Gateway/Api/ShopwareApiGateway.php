@@ -161,6 +161,7 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
             $environmentDataArray['defaultShopLanguage'],
             $targetLocaleCode,
             $this->generateFingerprint($environmentDataArray),
+            timezone: $environmentDataArray['timezone'] ?? null,
         );
     }
 

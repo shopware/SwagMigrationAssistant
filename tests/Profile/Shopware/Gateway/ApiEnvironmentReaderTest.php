@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
@@ -248,5 +249,59 @@ class ApiEnvironmentReaderTest extends TestCase
 
         static::assertEquals(['version' => 'test'], $response['environmentInformation']);
         static::assertEquals(new RequestStatusStruct(), $response['requestStatus']);
+    }
+
+    public function testReadCachesEnvironmentInformationPerConnection(): void
+    {
+        $mock = new MockHandler([
+            new Response(200, [], (string) json_encode(['data' => ['timezone' => 'Europe/Berlin']])),
+            new Response(200, [], (string) json_encode(['data' => ['timezone' => 'Europe/London']])),
+            new Response(200, [], (string) json_encode(['data' => ['timezone' => 'UTC']])),
+        ]);
+
+        $handler = HandlerStack::create($mock);
+
+        $client = new HttpSimpleClient([
+            'base_uri' => 'api/',
+            'auth' => ['apiUser', 'apiKey', 'digest'],
+            'handler' => $handler,
+        ]);
+
+        $connectionFactory = $this->createMock(ConnectionFactory::class);
+        $connectionFactory
+            ->expects($this->exactly(3))
+            ->method('createApiClient')
+            ->willReturn($client);
+
+        $environmentReader = new EnvironmentReader($connectionFactory);
+
+        $firstMigrationContext = $this->createMigrationContextWithConnectionId(Uuid::randomHex());
+        $secondMigrationContext = $this->createMigrationContextWithConnectionId(Uuid::randomHex());
+        $thirdMigrationContext = $this->createMigrationContextWithConnectionId(Uuid::randomHex());
+
+        $firstResponse = $environmentReader->read($firstMigrationContext);
+        $cachedFirstResponse = $environmentReader->read($firstMigrationContext);
+
+        $secondResponse = $environmentReader->read($secondMigrationContext);
+
+        $thirdResponse = $environmentReader->read($thirdMigrationContext);
+
+        static::assertSame(['timezone' => 'Europe/Berlin'], $firstResponse['environmentInformation']);
+        static::assertSame(['timezone' => 'Europe/Berlin'], $cachedFirstResponse['environmentInformation']);
+
+        static::assertSame(['timezone' => 'Europe/London'], $secondResponse['environmentInformation']);
+
+        static::assertSame(['timezone' => 'UTC'], $thirdResponse['environmentInformation']);
+    }
+
+    private function createMigrationContextWithConnectionId(string $connectionId): MigrationContext
+    {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId($connectionId);
+
+        return new MigrationContext(
+            $connection,
+            new Shopware55Profile()
+        );
     }
 }

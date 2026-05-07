@@ -12,24 +12,53 @@ use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * @phpstan-type ReadArray array{defaultShopLanguage: string, host: string, additionalData: array<int, mixed>, defaultCurrency: string, config: array<string, mixed>, timezone: string}
+ */
 #[Package('fundamentals@after-sales')]
 class EnvironmentReader extends AbstractReader implements EnvironmentReaderInterface
 {
+    private const SOURCE_ROOT_KEY = 'installationRoot';
+    private const TIMEZONE_KEY = 'timezone';
+    private const DB_KEY = 'db';
+
+    private const ARRAY_OPEN = '[';
+    private const ARRAY_CLOSE = ']';
+    private const NULL = 'null';
+    private const TRIM_QUOTATION = '\'"';
+
+    private const CONFIG_FILE_NAME = 'config.php';
+
     /**
-     * @return array{defaultShopLanguage: string, host: string, additionalData: array<int, mixed>, defaultCurrency: string}
+     * @var array<string, ReadArray>
+     */
+    private array $cachedEnvironmentInformation = [];
+
+    /**
+     * @return ReadArray
      */
     public function read(MigrationContextInterface $migrationContext): array
     {
+        if (isset($this->cachedEnvironmentInformation[$migrationContext->getConnection()->getId()])) {
+            return $this->cachedEnvironmentInformation[$migrationContext->getConnection()->getId()];
+        }
+
         $locale = $this->getDefaultShopLocale($migrationContext);
 
-        return [
+        $environmentInformation = [
             'defaultShopLanguage' => $locale,
             'host' => $this->getHost($migrationContext),
             'additionalData' => $this->getAdditionalData($migrationContext),
             'defaultCurrency' => $this->getDefaultCurrency($migrationContext),
             'config' => $this->getConfig($migrationContext),
+            'timezone' => $this->getTimezone($migrationContext),
         ];
+
+        $this->cachedEnvironmentInformation[$migrationContext->getConnection()->getId()] = $environmentInformation;
+
+        return $environmentInformation;
     }
 
     /**
@@ -119,5 +148,76 @@ class EnvironmentReader extends AbstractReader implements EnvironmentReaderInter
         }
 
         return \array_values($shops);
+    }
+
+    private function getTimezone(MigrationContextInterface $migrationContext): string
+    {
+        $fields = $migrationContext->getConnection()->getCredentialFields();
+        if (!isset($fields[self::SOURCE_ROOT_KEY]) || !\is_string($fields[self::SOURCE_ROOT_KEY]) || $fields[self::SOURCE_ROOT_KEY] === '') {
+            return '';
+        }
+
+        $basePath = $fields[self::SOURCE_ROOT_KEY];
+        $configFile = \rtrim($basePath, '/\\') . '/' . self::CONFIG_FILE_NAME;
+
+        $fileSystem = new Filesystem();
+
+        try {
+            if (!$fileSystem->exists($configFile)) {
+                return '';
+            }
+
+            $fileContent = $fileSystem->readFile($configFile);
+            $timezone = $this->readDbTimezoneFromConfig($fileContent);
+
+            return $timezone ?? '';
+        } catch (\Throwable) {
+            return '';
+        }
+    }
+
+    private function readDbTimezoneFromConfig(string $phpFileContent): ?string
+    {
+        $tokens = token_get_all($phpFileContent);
+        $inDbArray = false;
+        $arrayDepth = 0;
+
+        foreach ($tokens as $index => $token) {
+            $value = \is_array($token) ? \trim($token[1], self::TRIM_QUOTATION) : $token;
+
+            if (!$inDbArray && $value === self::DB_KEY) {
+                $inDbArray = true;
+                continue;
+            }
+
+            if (!$inDbArray) {
+                continue;
+            }
+
+            if ($token === self::ARRAY_OPEN) {
+                ++$arrayDepth;
+            } elseif ($token === self::ARRAY_CLOSE) {
+                --$arrayDepth;
+                if ($arrayDepth === 0) {
+                    return null;
+                }
+            }
+
+            if ($arrayDepth === 1 && $value === self::TIMEZONE_KEY) {
+                for ($j = $index + 1; isset($tokens[$j]); ++$j) {
+                    $next = $tokens[$j];
+
+                    if (\is_array($next) && $next[0] === \T_CONSTANT_ENCAPSED_STRING) {
+                        return \stripcslashes(\trim($next[1], self::TRIM_QUOTATION));
+                    }
+
+                    if (\is_array($next) && \strtolower($next[1]) === self::NULL) {
+                        return null;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }

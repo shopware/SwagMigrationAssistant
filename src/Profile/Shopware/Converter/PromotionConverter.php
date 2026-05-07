@@ -56,6 +56,8 @@ abstract class PromotionConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $this->migrationContext = $migrationContext;
+
         $this->generateChecksum($data);
         $this->context = $context;
 
@@ -92,8 +94,8 @@ abstract class PromotionConverter extends ShopwareConverter
         $this->setCustomerRule($data, $converted, $migrationContext);
 
         $this->convertValue($converted, 'name', $data, 'description');
-        $this->convertValue($converted, 'validFrom', $data, 'valid_from', self::TYPE_DATETIME);
-        $this->convertValue($converted, 'validUntil', $data, 'valid_to', self::TYPE_DATETIME);
+        $this->convertValue($converted, 'validFrom', $data, 'valid_from', self::TYPE_DATETIME, $this->context);
+        $this->convertValue($converted, 'validUntil', $data, 'valid_to', self::TYPE_DATETIME, $this->context);
         $this->convertValue($converted, 'maxRedemptionsGlobal', $data, 'numberofunits', self::TYPE_INTEGER);
         $this->convertValue($converted, 'maxRedemptionsPerCustomer', $data, 'numorder', self::TYPE_INTEGER);
 

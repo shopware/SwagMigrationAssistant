@@ -169,6 +169,7 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderDeliveryStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\TimezoneReader as PremappingTimezoneReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Writer\ProductOptionRelationWriter;
 use SwagMigrationAssistant\Profile\Shopware\Writer\ProductPropertyRelationWriter;
@@ -963,6 +964,10 @@ return static function (ContainerConfigurator $container): void {
         ->tag('shopware.migration.pre_mapping_reader');
 
     $services->set(NewsletterRecipientStatusReader::class)
+        ->tag('shopware.migration.pre_mapping_reader');
+
+    $services->set(PremappingTimezoneReader::class)
+        ->args([service(GatewayRegistry::class)])
         ->tag('shopware.migration.pre_mapping_reader');
 
     $services->set(ProductOptionRelationWriter::class)

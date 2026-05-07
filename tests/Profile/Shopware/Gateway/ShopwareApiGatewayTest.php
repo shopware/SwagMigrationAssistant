@@ -120,6 +120,7 @@ class ShopwareApiGatewayTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $apiReader = new ProductReader($connectionFactory);
         $environmentReader = new EnvironmentDummyReader($connectionFactory);
+        $environmentReader->setDummyData(['timezone' => 'Europe/Berlin']);
         $tableReader = new TableReader($connectionFactory);
         $tableCountReader = new TableCountDummyReader($connectionFactory, new DummyLoggingService());
 
@@ -136,6 +137,7 @@ class ShopwareApiGatewayTest extends TestCase
         static::assertSame('Shopware', $response->getSourceSystemName());
         static::assertSame('___VERSION___', $response->getSourceSystemVersion());
         static::assertSame('foo', $response->getSourceSystemDomain());
+        static::assertSame('Europe/Berlin', $response->getTimezone());
     }
 
     public function testReadEnvironmentInformationWithoutSourceDefaultLanguage(): void
