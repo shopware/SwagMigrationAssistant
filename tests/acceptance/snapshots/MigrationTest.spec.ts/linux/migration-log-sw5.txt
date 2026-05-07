@@ -238,11 +238,25 @@ Environment information (JSON):
     "sourceSystemCurrency": "EUR",
     "sourceSystemLocale": "de-DE",
     "targetSystemLocale": "en-GB",
-    "fingerprint": "[uuid]"
+    "fingerprint": "[uuid]",
+    "timezone": "Europe\/Berlin"
 }
 
 Pre-mapping (JSON):
 [
+    {
+        "extensions": [],
+        "entity": "source_timezone",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "timezone",
+                "description": "Europe\/Berlin",
+                "destinationUuid": "Europe\/Berlin"
+            }
+        ],
+        "choices": []
+    },
     {
         "extensions": [],
         "entity": "order_state",
