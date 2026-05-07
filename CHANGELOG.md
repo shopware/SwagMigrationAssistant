@@ -2,6 +2,7 @@
 
 - Fixed Shopware 6 sales channel migration so additional sales channels, such as Social Shopping, are now migrated correctly when their sales channel types already exist in the target shop before the migration starts
 - Sales channels with types that are not available in the target shop are now skipped instead of causing follow-up issues
+- Fixed Shopware 5 order migration so billing and shipping addresses are kept even when the salutation cannot be mapped during conversion
 
 # 17.0.0
 
