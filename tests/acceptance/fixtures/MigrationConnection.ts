@@ -1,4 +1,5 @@
 import { test as base, expect } from '@shopware-ag/acceptance-test-suite';
+import { join } from 'node:path';
 import type { FixtureTypes } from '@fixtures/AcceptanceTest';
 
 export interface MigrationConnectionStruct {
@@ -11,6 +12,7 @@ export interface MigrationConnectionStruct {
 export const MigrationConnection = base.extend<FixtureTypes>({
     MigrationConnection: async ({ AdminApiContext, DatabaseCredentials }, use) => {
         const connectionName = 'shopware';
+        const installationRoot = join(process.cwd(), 'fixtures', 'shopware5-source');
 
         const createResponse = await AdminApiContext.post('/api/swag-migration-connection', {
             data: {
@@ -43,7 +45,7 @@ export const MigrationConnection = base.extend<FixtureTypes>({
                     dbUser: DatabaseCredentials.user,
                     dbPassword: DatabaseCredentials.password,
                     dbName: DatabaseCredentials.database,
-                    installationRoot: '/tmp',
+                    installationRoot,
                 },
             },
         });
