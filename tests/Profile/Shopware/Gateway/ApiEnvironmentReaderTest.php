@@ -43,10 +43,7 @@ class ApiEnvironmentReaderTest extends TestCase
 
         $environmentReader = new EnvironmentReader($connectionFactory);
 
-        $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity(),
-            new Shopware55Profile(),
-        );
+        $migrationContext = $this->createMigrationContext();
 
         $response = $environmentReader->read($migrationContext);
 
@@ -83,10 +80,7 @@ class ApiEnvironmentReaderTest extends TestCase
 
         $client = new HttpSimpleClient($options);
 
-        $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity(),
-            new Shopware55Profile(),
-        );
+        $migrationContext = $this->createMigrationContext();
 
         $connectionFactory = $this->createMock(ConnectionFactory::class);
         $connectionFactory
@@ -233,10 +227,7 @@ class ApiEnvironmentReaderTest extends TestCase
 
         $client = new HttpSimpleClient($options);
 
-        $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity(),
-            new Shopware55Profile()
-        );
+        $migrationContext = $this->createMigrationContext();
 
         $connectionFactory = $this->createMock(ConnectionFactory::class);
         $connectionFactory
@@ -303,5 +294,10 @@ class ApiEnvironmentReaderTest extends TestCase
             $connection,
             new Shopware55Profile()
         );
+    }
+
+    private function createMigrationContext(): MigrationContext
+    {
+        return $this->createMigrationContextWithConnectionId(Uuid::randomHex());
     }
 }
