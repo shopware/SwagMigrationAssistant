@@ -551,6 +551,71 @@ class OrderConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
+    public function testConvertKeepsBillingAddressWhenSalutationIsUnknown(): void
+    {
+        [$customerData, $orderData] = $this->getFixtureData();
+        $orderData = $orderData[0];
+        $orderData['billingaddress']['salutation'] = 'unknown-salutation';
+        $context = Context::createDefaultContext();
+
+        $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $convertResult = $this->orderConverter->convert(
+            $orderData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertArrayHasKey('billingAddressId', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+        static::assertSame($converted['addresses'][0]['id'], $converted['billingAddressId']);
+        static::assertArrayNotHasKey('salutationId', $converted['addresses'][0]);
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(1, $logs);
+        static::assertSame(ConvertEntityUnknownLog::getCode(), $logs[0]['code']);
+    }
+
+    public function testConvertKeepsShippingAddressWhenSalutationIsUnknown(): void
+    {
+        [$customerData, $orderData] = $this->getFixtureData();
+        $orderData = $orderData[0];
+        $orderData['shippingaddress']['salutation'] = 'unknown-salutation';
+        $context = Context::createDefaultContext();
+
+        $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $convertResult = $this->orderConverter->convert(
+            $orderData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertArrayHasKey('deliveries', $converted);
+        static::assertArrayHasKey('shippingOrderAddress', $converted['deliveries'][0]);
+        static::assertArrayNotHasKey('salutationId', $converted['deliveries'][0]['shippingOrderAddress']);
+        static::assertSame('Max', $converted['deliveries'][0]['shippingOrderAddress']['firstName']);
+        static::assertSame('Mustermann', $converted['deliveries'][0]['shippingOrderAddress']['lastName']);
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(1, $logs);
+        static::assertSame(ConvertEntityUnknownLog::getCode(), $logs[0]['code']);
+    }
+
     /**
      * @return list<list<string>>
      */
@@ -675,6 +740,58 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertCount(0, $this->loggingService->getLoggingArray());
         static::assertSame(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['languageId']);
+    }
+
+    public function testConvertUsesLanguageMappingWhenLanguageDoesNotExistYet(): void
+    {
+        [$customerData, $orderData] = $this->getFixtureData();
+        $context = Context::createDefaultContext();
+        $languageId = Uuid::randomHex();
+
+        $languageLookup = $this->createMock(LanguageLookup::class);
+        $languageLookup->method('get')->with('ar-EG', $context)->willReturn(null);
+
+        $currencyLookup = $this->createMock(CurrencyLookup::class);
+        $currencyLookup->method('get')->willReturn('b7d2554b0ce847cd82f3ac9bd1c0dfca');
+
+        $orderConverter = new Shopware55OrderConverter(
+            $this->mappingService,
+            $this->loggingService,
+            new TaxCalculator(),
+            static::getContainer()->get('sales_channel.repository'),
+            static::getContainer()->get(CountryLookup::class),
+            $currencyLookup,
+            $languageLookup,
+            $this->createMock(CountryStateLookup::class)
+        );
+
+        $this->mappingService->getOrCreateMapping(
+            $this->migrationContext->getConnection()->getId(),
+            DefaultEntities::LANGUAGE,
+            'ar-EG',
+            $context,
+            null,
+            [],
+            $languageId
+        );
+
+        $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $orderData[0]['locale'] = 'ar-EG';
+        $convertResult = $orderConverter->convert(
+            $orderData[0],
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertSame($languageId, $converted['languageId']);
     }
 
     public function testConvertWithDuplicatedEMails(): void
