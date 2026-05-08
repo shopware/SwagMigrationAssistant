@@ -67,6 +67,22 @@ class ShopwareConverterTest extends TestCase
         static::assertSame('2026-05-01 11:00:00.000', $secondConverted['createdAt']);
     }
 
+    public function testConvertValueCachesMissingSourceTimezonePerConnection(): void
+    {
+        $mappingService = $this->createMock(MappingServiceInterface::class);
+        $mappingService->expects($this->once())
+            ->method('getValue')
+            ->willReturn(null);
+
+        $converter = $this->createConverter($mappingService);
+
+        [$firstConverted] = $converter->convertDateTimeValue('2026-05-01 12:00:00', $this->context);
+        [$secondConverted] = $converter->convertDateTimeValue('2026-05-01 13:00:00', $this->context);
+
+        static::assertSame('2026-05-01 12:00:00.000', $firstConverted['createdAt']);
+        static::assertSame('2026-05-01 13:00:00.000', $secondConverted['createdAt']);
+    }
+
     public function testConvertValueDoesNotConvertDateTimeWithoutContext(): void
     {
         $mappingService = $this->createMock(MappingServiceInterface::class);

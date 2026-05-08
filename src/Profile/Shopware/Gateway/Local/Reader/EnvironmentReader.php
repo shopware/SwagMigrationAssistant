@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
 /**
- * @phpstan-type ReadArray array{defaultShopLanguage: string, host: string, additionalData: array<int, mixed>, defaultCurrency: string, config: array<string, mixed>, timezone: string}
+ * @phpstan-type EnvironmentInfo array{defaultShopLanguage: string, host: string, additionalData: array<int, mixed>, defaultCurrency: string, config: array<string, mixed>, timezone: string|null}
  */
 #[Package('fundamentals@after-sales')]
 class EnvironmentReader extends AbstractReader implements EnvironmentReaderInterface
@@ -32,12 +32,12 @@ class EnvironmentReader extends AbstractReader implements EnvironmentReaderInter
     private const CONFIG_FILE_NAME = 'config.php';
 
     /**
-     * @var array<string, ReadArray>
+     * @var array<string, EnvironmentInfo>
      */
     private array $cachedEnvironmentInformation = [];
 
     /**
-     * @return ReadArray
+     * @return EnvironmentInfo
      */
     public function read(MigrationContextInterface $migrationContext): array
     {
@@ -150,11 +150,11 @@ class EnvironmentReader extends AbstractReader implements EnvironmentReaderInter
         return \array_values($shops);
     }
 
-    private function getTimezone(MigrationContextInterface $migrationContext): string
+    private function getTimezone(MigrationContextInterface $migrationContext): ?string
     {
         $fields = $migrationContext->getConnection()->getCredentialFields();
         if (!isset($fields[self::SOURCE_ROOT_KEY]) || !\is_string($fields[self::SOURCE_ROOT_KEY]) || $fields[self::SOURCE_ROOT_KEY] === '') {
-            return '';
+            return null;
         }
 
         $basePath = $fields[self::SOURCE_ROOT_KEY];
@@ -164,15 +164,15 @@ class EnvironmentReader extends AbstractReader implements EnvironmentReaderInter
 
         try {
             if (!$fileSystem->exists($configFile)) {
-                return '';
+                return null;
             }
 
             $fileContent = $fileSystem->readFile($configFile);
             $timezone = $this->readDbTimezoneFromConfig($fileContent);
 
-            return $timezone ?? '';
+            return $timezone === '' ? null : $timezone;
         } catch (\Throwable) {
-            return '';
+            return null;
         }
     }
 

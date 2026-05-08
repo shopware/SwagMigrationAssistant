@@ -30,7 +30,7 @@ abstract class ShopwareConverter extends Converter
     protected MigrationContextInterface $migrationContext;
 
     /**
-     * @var array<string, string>
+     * @var array<string, string|null>
      */
     protected array $timezoneCache = [];
 
@@ -211,19 +211,19 @@ abstract class ShopwareConverter extends Converter
         }
 
         $connectionId = $this->migrationContext->getConnection()->getId();
-        if (!isset($this->timezoneCache[$connectionId])) {
+        if (!\array_key_exists($connectionId, $this->timezoneCache)) {
             $this->timezoneCache[$connectionId] = $this->mappingService->getValue(
                 $connectionId,
                 'source_timezone',
                 'timezone',
                 $context
-            ) ?? '';
+            );
         }
 
         try {
             $timezone = $this->timezoneCache[$connectionId];
 
-            if ($timezone === '') {
+            if ($timezone === null) {
                 return (new \DateTimeImmutable($value))->format(Defaults::STORAGE_DATE_TIME_FORMAT);
             }
 

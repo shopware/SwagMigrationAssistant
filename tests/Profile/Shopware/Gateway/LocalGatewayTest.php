@@ -285,7 +285,7 @@ class LocalGatewayTest extends TestCase
             'host' => 'sw55.local',
             'additionalData' => [],
             'defaultCurrency' => 'EUR',
-            'timezone' => '',
+            'timezone' => null,
         ]);
 
         $localTableReader = new TableReader(new ConnectionFactory());
@@ -343,7 +343,7 @@ class LocalGatewayTest extends TestCase
             'host' => 'sw55.local',
             'additionalData' => [],
             'defaultCurrency' => 'EUR',
-            'timezone' => '',
+            'timezone' => null,
             'config' => [
                 'installationDate' => '2023-01-01 00:00:00',
             ],

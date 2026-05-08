@@ -66,7 +66,7 @@ class EnvironmentReaderTest extends TestCase
     }
 
     #[DataProvider('timezoneFixtureProvider')]
-    public function testReadReadsTimezoneFromInstallationRootConfig(string $fixtureName, string $expectedTimezone): void
+    public function testReadReadsTimezoneFromInstallationRootConfig(string $fixtureName, ?string $expectedTimezone): void
     {
         $credentialFields = $this->connection->getCredentialFields();
         static::assertIsArray($credentialFields);
@@ -100,11 +100,11 @@ class EnvironmentReaderTest extends TestCase
 
         static::assertSame('Europe/Berlin', $firstData['timezone']);
         static::assertSame('Europe/Berlin', $cachedData['timezone']);
-        static::assertSame('', $secondConnectionData['timezone']);
+        static::assertNull($secondConnectionData['timezone']);
     }
 
     /**
-     * @return array<string, array{fixtureName: string, expectedTimezone: string}>
+     * @return array<string, array{fixtureName: string, expectedTimezone: string|null}>
      */
     public static function timezoneFixtureProvider(): array
     {
@@ -115,15 +115,15 @@ class EnvironmentReaderTest extends TestCase
             ],
             'config does not return array' => [
                 'fixtureName' => 'config_does_not_return_array',
-                'expectedTimezone' => '',
+                'expectedTimezone' => null,
             ],
             'empty database timezone' => [
                 'fixtureName' => 'empty_database_timezone',
-                'expectedTimezone' => '',
+                'expectedTimezone' => null,
             ],
             'missing database timezone' => [
                 'fixtureName' => 'missing_database_timezone',
-                'expectedTimezone' => '',
+                'expectedTimezone' => null,
             ],
         ];
     }
