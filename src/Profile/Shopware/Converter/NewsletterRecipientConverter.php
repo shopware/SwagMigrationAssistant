@@ -85,8 +85,8 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         $converted['id'] = $this->mainMapping['entityId'];
 
         $this->convertValue($converted, 'email', $data, 'email');
-        $this->convertValue($converted, 'createdAt', $data, 'added', self::TYPE_DATETIME, $this->context);
-        $this->convertValue($converted, 'confirmedAt', $data, 'double_optin_confirmed', self::TYPE_DATETIME, $this->context);
+        $this->convertValue($converted, 'createdAt', $data, 'added', self::TYPE_DATETIME);
+        $this->convertValue($converted, 'confirmedAt', $data, 'double_optin_confirmed', self::TYPE_DATETIME);
 
         if (isset($data['address'])) {
             $address = $data['address'];

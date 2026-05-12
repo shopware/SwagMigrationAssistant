@@ -9,12 +9,12 @@ namespace SwagMigrationAssistant\Profile\Shopware\Premapping;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TimezoneReader as ApiTimezoneReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
@@ -32,7 +32,7 @@ class TimezoneReader extends AbstractPremappingReader
     private array $validTimezones;
 
     public function __construct(
-        private readonly GatewayRegistryInterface $gatewayRegistry,
+        private readonly ApiTimezoneReader $timezoneReader,
     ) {
         $this->validTimezones = \array_flip(\DateTimeZone::listIdentifiers());
     }
@@ -57,7 +57,7 @@ class TimezoneReader extends AbstractPremappingReader
 
         $choices = $this->getTimeZoneList();
 
-        $sourceTimezone = $this->readSourceTimezone($migrationContext, $context);
+        $sourceTimezone = $this->readSourceTimezone($migrationContext);
 
         $description = $sourceTimezone ?? 'No source time zone';
         $destinationTimezone = '';
@@ -87,12 +87,14 @@ class TimezoneReader extends AbstractPremappingReader
         );
     }
 
-    private function readSourceTimezone(MigrationContextInterface $migrationContext, Context $context): ?string
+    private function readSourceTimezone(MigrationContextInterface $migrationContext): ?string
     {
-        $environmentData = $this->gatewayRegistry->getGateway($migrationContext)->readEnvironmentInformation($migrationContext, $context);
+        if ($migrationContext->getConnection()->getGatewayName() !== ShopwareApiGateway::GATEWAY_NAME) {
+            return null;
+        }
 
-        $timezone = $environmentData->getTimezone();
-
+        $timezoneResult = $this->timezoneReader->read($migrationContext);
+        $timezone = $timezoneResult[0]['timezone'] ?? null;
         if (!\is_string($timezone) || $timezone === '' || !isset($this->validTimezones[$timezone])) {
             return null;
         }

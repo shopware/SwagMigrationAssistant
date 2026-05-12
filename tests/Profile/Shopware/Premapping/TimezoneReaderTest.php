@@ -13,12 +13,11 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
-use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TimezoneReader as ApiTimezoneReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\TimezoneReader;
@@ -36,7 +35,7 @@ class TimezoneReaderTest extends TestCase
 
     public function testSupportsShopwareApiAndLocalGateways(): void
     {
-        $reader = new TimezoneReader($this->createMock(GatewayRegistryInterface::class));
+        $reader = $this->createReader(null, 0);
 
         static::assertTrue($reader->supports($this->createMigrationContext(ShopwareApiGateway::GATEWAY_NAME), []));
         static::assertTrue($reader->supports($this->createMigrationContext(ShopwareLocalGateway::GATEWAY_NAME), []));
@@ -44,8 +43,8 @@ class TimezoneReaderTest extends TestCase
 
     public function testGetPremappingUsesDetectedSourceTimezone(): void
     {
-        $migrationContext = $this->createMigrationContext(ShopwareLocalGateway::GATEWAY_NAME);
-        $reader = $this->createReader($migrationContext, 'Europe/Berlin');
+        $migrationContext = $this->createMigrationContext(ShopwareApiGateway::GATEWAY_NAME);
+        $reader = $this->createReader([['timezone' => 'Europe/Berlin']]);
         $premapping = $reader->getPremapping($this->context, $migrationContext);
 
         static::assertSame(TimezoneReader::getMappingName(), $premapping->getEntity());
@@ -66,7 +65,7 @@ class TimezoneReaderTest extends TestCase
         ]);
 
         $migrationContext = $this->createMigrationContext(ShopwareLocalGateway::GATEWAY_NAME, $connection);
-        $reader = $this->createReader($migrationContext, 'Europe/Berlin');
+        $reader = $this->createReader(null, 0);
         $premapping = $reader->getPremapping($this->context, $migrationContext);
 
         static::assertSame('America/New_York', $premapping->getMapping()[0]->getDestinationUuid());
@@ -75,8 +74,8 @@ class TimezoneReaderTest extends TestCase
     #[DataProvider('missingSourceTimezoneProvider')]
     public function testGetPremappingReturnsSelectableRowWhenSourceTimezoneCannotBeRead(?string $sourceTimezone): void
     {
-        $migrationContext = $this->createMigrationContext(ShopwareLocalGateway::GATEWAY_NAME);
-        $reader = $this->createReader($migrationContext, $sourceTimezone);
+        $migrationContext = $this->createMigrationContext(ShopwareApiGateway::GATEWAY_NAME);
+        $reader = $this->createReader([['timezone' => $sourceTimezone]]);
         $premapping = $reader->getPremapping($this->context, $migrationContext);
 
         static::assertNotEmpty($premapping->getChoices());
@@ -89,10 +88,20 @@ class TimezoneReaderTest extends TestCase
     public function testGetPremappingUsesEnvironmentInformationForApiGateway(): void
     {
         $migrationContext = $this->createMigrationContext(ShopwareApiGateway::GATEWAY_NAME);
-        $reader = $this->createReader($migrationContext, 'UTC');
+        $reader = $this->createReader([['timezone' => 'UTC']]);
         $premapping = $reader->getPremapping($this->context, $migrationContext);
 
         static::assertSame('UTC', $premapping->getMapping()[0]->getDestinationUuid());
+    }
+
+    public function testGetPremappingDoesNotReadSourceTimezoneForLocalGateway(): void
+    {
+        $migrationContext = $this->createMigrationContext(ShopwareLocalGateway::GATEWAY_NAME);
+        $reader = $this->createReader(null, 0);
+        $premapping = $reader->getPremapping($this->context, $migrationContext);
+
+        static::assertSame('No source time zone', $premapping->getMapping()[0]->getDescription());
+        static::assertSame('', $premapping->getMapping()[0]->getDestinationUuid());
     }
 
     /**
@@ -107,31 +116,20 @@ class TimezoneReaderTest extends TestCase
         ];
     }
 
-    private function createReader(MigrationContext $migrationContext, ?string $timezone): TimezoneReader
+    /**
+     * @param array{timezone: string|null}|null $timezoneResult
+     */
+    private function createReader(?array $timezoneResult, int $readCount = 1): TimezoneReader
     {
-        $gateway = $this->createMock(GatewayInterface::class);
-        $gateway->expects($this->once())
-            ->method('readEnvironmentInformation')
-            ->with($migrationContext, $this->context)
-            ->willReturn($this->createEnvironmentInformation($timezone));
+        $timezoneReader = $this->createMock(ApiTimezoneReader::class);
+        $readExpectation = $timezoneReader->expects($this->exactly($readCount))
+            ->method('read');
 
-        $gatewayRegistry = $this->createMock(GatewayRegistryInterface::class);
-        $gatewayRegistry->expects($this->once())
-            ->method('getGateway')
-            ->with($migrationContext)
-            ->willReturn($gateway);
+        if ($timezoneResult !== null) {
+            $readExpectation->willReturn($timezoneResult);
+        }
 
-        return new TimezoneReader($gatewayRegistry);
-    }
-
-    private function createEnvironmentInformation(?string $timezone): EnvironmentInformation
-    {
-        return new EnvironmentInformation(
-            'Shopware',
-            '5.5.0',
-            '',
-            timezone: $timezone
-        );
+        return new TimezoneReader($timezoneReader);
     }
 
     private function createMigrationContext(string $gatewayName, ?SwagMigrationConnectionEntity $connection = null): MigrationContext

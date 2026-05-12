@@ -34,12 +34,12 @@ class TestShopwareConverter extends ShopwareConverter
     /**
      * @return array{0: array<string, mixed>, 1: array<string, mixed>}
      */
-    public function convertDateTimeValue(string $value, ?Context $context = null): array
+    public function convertDateTimeValue(string $value): array
     {
         $converted = [];
         $source = ['createdAt' => $value];
 
-        $this->convertValue($converted, 'createdAt', $source, 'createdAt', self::TYPE_DATETIME, $context);
+        $this->convertValue($converted, 'createdAt', $source, 'createdAt', self::TYPE_DATETIME);
 
         return [$converted, $source];
     }

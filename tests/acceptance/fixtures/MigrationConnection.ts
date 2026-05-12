@@ -1,6 +1,4 @@
 import { test as base, expect } from '@shopware-ag/acceptance-test-suite';
-import { copyFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import type { FixtureTypes } from '@fixtures/AcceptanceTest';
 
 export interface MigrationConnectionStruct {
@@ -14,11 +12,6 @@ export const MigrationConnection = base.extend<FixtureTypes>({
     MigrationConnection: async ({ AdminApiContext, DatabaseCredentials }, use) => {
         const connectionName = 'shopware';
         const installationRoot = '/tmp';
-
-        await copyFile(
-            join(process.cwd(), 'fixtures', 'shopware5-source', 'config.php'),
-            join(installationRoot, 'config.php'),
-        );
 
         const createResponse = await AdminApiContext.post('/api/swag-migration-connection', {
             data: {

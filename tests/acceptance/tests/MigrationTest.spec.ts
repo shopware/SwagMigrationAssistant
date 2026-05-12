@@ -75,11 +75,6 @@ test.describe('Migration Tests @migration @visual', () => {
                 }
             }
 
-            await page
-                .locator('.swag-migration-tab-card__title')
-                .filter({ hasText: 'Shipping method availability' })
-                .click();
-
             await expect(page).toHaveScreenshot('data-selection-assigment-without-errors.png', { mask });
         });
 

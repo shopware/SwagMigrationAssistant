@@ -149,7 +149,6 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
             $environmentData['defaultShopLanguage'],
             $targetLocaleCode,
             $this->generateFingerprint($environmentData),
-            timezone: $environmentData['timezone'] ?? null,
         );
     }
 

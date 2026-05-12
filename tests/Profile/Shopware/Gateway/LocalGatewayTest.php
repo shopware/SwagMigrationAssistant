@@ -221,7 +221,6 @@ class LocalGatewayTest extends TestCase
             'host' => 'sw55.local',
             'additionalData' => [],
             'defaultCurrency' => 'EUR',
-            'timezone' => 'Europe/Berlin',
             'config' => [
                 'esdKey' => 'test-esd-key',
                 'installationDate' => '2023-01-01 00:00:00',
@@ -249,7 +248,6 @@ class LocalGatewayTest extends TestCase
 
         static::assertNotNull($response->getFingerprint());
         static::assertIsString($response->getFingerprint());
-        static::assertSame('Europe/Berlin', $response->getTimezone());
     }
 
     public function testGenerateFingerprintWithoutConfig(): void
@@ -285,7 +283,6 @@ class LocalGatewayTest extends TestCase
             'host' => 'sw55.local',
             'additionalData' => [],
             'defaultCurrency' => 'EUR',
-            'timezone' => null,
         ]);
 
         $localTableReader = new TableReader(new ConnectionFactory());
@@ -343,7 +340,6 @@ class LocalGatewayTest extends TestCase
             'host' => 'sw55.local',
             'additionalData' => [],
             'defaultCurrency' => 'EUR',
-            'timezone' => null,
             'config' => [
                 'installationDate' => '2023-01-01 00:00:00',
             ],

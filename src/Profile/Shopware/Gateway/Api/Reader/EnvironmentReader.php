@@ -28,11 +28,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
 {
     private ?HttpClientInterface $client = null;
 
-    /**
-     * @var array<string, ReadArray>
-     */
-    private array $cachedEnvironmentInformation = [];
-
     public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)
     {
     }
@@ -42,10 +37,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
      */
     public function read(MigrationContextInterface $migrationContext): array
     {
-        if (isset($this->cachedEnvironmentInformation[$migrationContext->getConnection()->getId()])) {
-            return $this->cachedEnvironmentInformation[$migrationContext->getConnection()->getId()];
-        }
-
         $information = [
             'environmentInformation' => [],
             'requestStatus' => new RequestStatusStruct(),
@@ -62,8 +53,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
                 $e
             );
         }
-
-        $this->cachedEnvironmentInformation[$migrationContext->getConnection()->getId()] = $information;
 
         return $information;
     }

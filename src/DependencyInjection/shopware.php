@@ -115,6 +115,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\SeoUrlDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\WishlistDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ApiReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TimezoneReader as ApiTimezoneReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader;
@@ -169,7 +170,7 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderDeliveryStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
-use SwagMigrationAssistant\Profile\Shopware\Premapping\TimezoneReader as PremappingTimezoneReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\TimezoneReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Writer\ProductOptionRelationWriter;
 use SwagMigrationAssistant\Profile\Shopware\Writer\ProductPropertyRelationWriter;
@@ -966,8 +967,11 @@ return static function (ContainerConfigurator $container): void {
     $services->set(NewsletterRecipientStatusReader::class)
         ->tag('shopware.migration.pre_mapping_reader');
 
-    $services->set(PremappingTimezoneReader::class)
-        ->args([service(GatewayRegistry::class)])
+    $services->set(ApiTimezoneReader::class)
+        ->parent(ApiReader::class);
+
+    $services->set(TimezoneReader::class)
+        ->args([service(ApiTimezoneReader::class)])
         ->tag('shopware.migration.pre_mapping_reader');
 
     $services->set(ProductOptionRelationWriter::class)

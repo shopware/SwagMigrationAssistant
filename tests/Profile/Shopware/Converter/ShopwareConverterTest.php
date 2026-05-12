@@ -15,7 +15,10 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
+use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\TimezoneReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 #[Package('after-sales')]
@@ -38,52 +41,69 @@ class ShopwareConverterTest extends TestCase
     public function testConvertValueConvertsDateTimeWithMappedSourceTimezoneToUtcStorageFormat(): void
     {
         $mappingService = $this->createMock(MappingServiceInterface::class);
-        $mappingService->expects($this->once())
-            ->method('getValue')
-            ->with($this->connection->getId(), 'source_timezone', 'timezone', $this->context)
-            ->willReturn('Europe/Berlin');
+        $mappingService->expects($this->never())->method('getValue');
+        $this->setSourceTimezone('Europe/Berlin');
 
         $converter = $this->createConverter($mappingService);
 
-        [$converted, $source] = $converter->convertDateTimeValue('2026-05-01 12:30:00', $this->context);
+        [$converted, $source] = $converter->convertDateTimeValue('2026-05-01 12:30:00');
 
         static::assertSame(['createdAt' => '2026-05-01 10:30:00.000'], $converted);
         static::assertSame([], $source);
     }
 
-    public function testConvertValueCachesSourceTimezonePerConnection(): void
+    public function testConvertValueCachesSourceTimezonePerRun(): void
     {
         $mappingService = $this->createMock(MappingServiceInterface::class);
-        $mappingService->expects($this->once())
-            ->method('getValue')
-            ->willReturn('Europe/Berlin');
+        $mappingService->expects($this->never())->method('getValue');
+        $this->setSourceTimezone('Europe/Berlin');
 
         $converter = $this->createConverter($mappingService);
 
-        [$firstConverted] = $converter->convertDateTimeValue('2026-05-01 12:00:00', $this->context);
-        [$secondConverted] = $converter->convertDateTimeValue('2026-05-01 13:00:00', $this->context);
+        [$firstConverted] = $converter->convertDateTimeValue('2026-05-01 12:00:00');
+        $this->setSourceTimezone('UTC');
+        [$secondConverted] = $converter->convertDateTimeValue('2026-05-01 13:00:00');
 
         static::assertSame('2026-05-01 10:00:00.000', $firstConverted['createdAt']);
         static::assertSame('2026-05-01 11:00:00.000', $secondConverted['createdAt']);
     }
 
-    public function testConvertValueCachesMissingSourceTimezonePerConnection(): void
+    public function testConvertValueUsesUpdatedSourceTimezoneForNewRun(): void
     {
         $mappingService = $this->createMock(MappingServiceInterface::class);
-        $mappingService->expects($this->once())
-            ->method('getValue')
-            ->willReturn(null);
+        $mappingService->expects($this->never())->method('getValue');
+        $this->setSourceTimezone('Europe/Berlin');
+
+        $converter = $this->createConverter($mappingService, null, Uuid::randomHex());
+
+        [$firstConverted] = $converter->convertDateTimeValue('2026-05-01 12:00:00');
+
+        $this->setSourceTimezone('UTC');
+        $converter->setMigrationContext($this->createMigrationContext(Uuid::randomHex()));
+
+        [$secondConverted] = $converter->convertDateTimeValue('2026-05-01 13:00:00');
+
+        static::assertSame('2026-05-01 10:00:00.000', $firstConverted['createdAt']);
+        static::assertSame('2026-05-01 13:00:00.000', $secondConverted['createdAt']);
+    }
+
+    public function testConvertValueCachesMissingSourceTimezonePerRun(): void
+    {
+        $mappingService = $this->createMock(MappingServiceInterface::class);
+        $mappingService->expects($this->never())->method('getValue');
+        $this->setSourceTimezone(null);
 
         $converter = $this->createConverter($mappingService);
 
-        [$firstConverted] = $converter->convertDateTimeValue('2026-05-01 12:00:00', $this->context);
-        [$secondConverted] = $converter->convertDateTimeValue('2026-05-01 13:00:00', $this->context);
+        [$firstConverted] = $converter->convertDateTimeValue('2026-05-01 12:00:00');
+        $this->setSourceTimezone('Europe/Berlin');
+        [$secondConverted] = $converter->convertDateTimeValue('2026-05-01 13:00:00');
 
         static::assertSame('2026-05-01 12:00:00.000', $firstConverted['createdAt']);
         static::assertSame('2026-05-01 13:00:00.000', $secondConverted['createdAt']);
     }
 
-    public function testConvertValueDoesNotConvertDateTimeWithoutContext(): void
+    public function testConvertValueConvertsDateTimeWithoutContext(): void
     {
         $mappingService = $this->createMock(MappingServiceInterface::class);
         $mappingService->expects($this->never())->method('getValue');
@@ -92,20 +112,23 @@ class ShopwareConverterTest extends TestCase
 
         [$converted, $source] = $converter->convertDateTimeValue('2026-05-01 12:30:00');
 
-        static::assertSame([], $converted);
-        static::assertSame(['createdAt' => '2026-05-01 12:30:00'], $source);
+        static::assertSame(['createdAt' => '2026-05-01 12:30:00.000'], $converted);
+        static::assertSame([], $source);
     }
 
     public function testConvertValueDoesNotConvertDateTimeWithInvalidMappedTimezone(): void
     {
         $mappingService = $this->createMock(MappingServiceInterface::class);
-        $mappingService->expects($this->once())
-            ->method('getValue')
-            ->willReturn('Not/A_Timezone');
+        $mappingService->expects($this->never())->method('getValue');
+        $loggingService = $this->createMock(LoggingServiceInterface::class);
+        $loggingService->expects($this->once())
+            ->method('log')
+            ->willReturnSelf();
+        $this->setSourceTimezone('Not/A_Timezone');
 
-        $converter = $this->createConverter($mappingService);
+        $converter = $this->createConverter($mappingService, $loggingService);
 
-        [$converted, $source] = $converter->convertDateTimeValue('2026-05-01 12:30:00', $this->context);
+        [$converted, $source] = $converter->convertDateTimeValue('2026-05-01 12:30:00');
 
         static::assertSame([], $converted);
         static::assertSame(['createdAt' => '2026-05-01 12:30:00'], $source);
@@ -143,10 +166,8 @@ class ShopwareConverterTest extends TestCase
                     'columnType' => 'datetime',
                 ],
             ]);
-        $mappingService->expects($this->once())
-            ->method('getValue')
-            ->with($this->connection->getId(), 'source_timezone', 'timezone', $this->context)
-            ->willReturn('Europe/Berlin');
+        $mappingService->expects($this->never())->method('getValue');
+        $this->setSourceTimezone('Europe/Berlin');
 
         $converter = $this->createConverter($mappingService);
 
@@ -162,17 +183,43 @@ class ShopwareConverterTest extends TestCase
         ], $converted);
     }
 
-    private function createConverter(MappingServiceInterface $mappingService): TestShopwareConverter
-    {
+    private function createConverter(
+        MappingServiceInterface $mappingService,
+        ?LoggingServiceInterface $loggingService = null,
+        string $runUuid = '',
+    ): TestShopwareConverter {
         $converter = new TestShopwareConverter(
             $mappingService,
-            $this->createMock(LoggingServiceInterface::class)
+            $loggingService ?? $this->createMock(LoggingServiceInterface::class)
         );
-        $converter->setMigrationContext(new MigrationContext(
-            $this->connection,
-            new Shopware55Profile()
-        ));
+        $converter->setMigrationContext($this->createMigrationContext($runUuid));
 
         return $converter;
+    }
+
+    private function createMigrationContext(string $runUuid = ''): MigrationContext
+    {
+        return new MigrationContext(
+            $this->connection,
+            new Shopware55Profile(),
+            null,
+            null,
+            $runUuid
+        );
+    }
+
+    private function setSourceTimezone(?string $timezone): void
+    {
+        if ($timezone === null) {
+            $this->connection->setPremapping([]);
+
+            return;
+        }
+
+        $this->connection->setPremapping([
+            new PremappingStruct(TimezoneReader::getMappingName(), [
+                new PremappingEntityStruct('timezone', $timezone, $timezone),
+            ]),
+        ]);
     }
 }

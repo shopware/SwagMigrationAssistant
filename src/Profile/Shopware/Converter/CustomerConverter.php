@@ -153,8 +153,8 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->convertValue($converted, 'firstName', $data, 'firstname');
         $this->convertValue($converted, 'lastName', $data, 'lastname');
         $this->convertValue($converted, 'customerNumber', $data, 'customernumber');
-        $this->convertValue($converted, 'birthday', $data, 'birthday', self::TYPE_DATE, $this->context);
-        $this->convertValue($converted, 'lockedUntil', $data, 'lockeduntil', self::TYPE_DATETIME, $this->context);
+        $this->convertValue($converted, 'birthday', $data, 'birthday', self::TYPE_DATE);
+        $this->convertValue($converted, 'lockedUntil', $data, 'lockeduntil', self::TYPE_DATETIME);
 
         $this->setAccountType($data, $converted);
         $this->setPassword($data, $converted);
