@@ -117,7 +117,7 @@ class TimezoneReaderTest extends TestCase
     }
 
     /**
-     * @param array{timezone: string|null}|null $timezoneResult
+     * @param array<array{timezone: string|null}>|null $timezoneResult
      */
     private function createReader(?array $timezoneResult, int $readCount = 1): TimezoneReader
     {
