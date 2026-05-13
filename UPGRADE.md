@@ -1,5 +1,7 @@
 # NEXT
 
+# 18.0.0
+
 - [BREAKING] [#178](https://github.com/shopware/SwagMigrationAssistant/pull/178) - fix!: unsupported sales channel migration
     - [BREAKING] Added required constructor parameter:
         - `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface`
