@@ -22,9 +22,9 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 #[Package('after-sales')]
 class TimezoneReader extends AbstractPremappingReader
 {
-    private const MAPPING_NAME = 'source_timezone';
+    public const MAPPING_NAME = 'source_timezone';
 
-    private const SOURCE_ID = 'timezone';
+    public const SOURCE_ID = 'timezone';
 
     /**
      * @var array<string, int>
@@ -59,7 +59,6 @@ class TimezoneReader extends AbstractPremappingReader
 
         $sourceTimezone = $this->readSourceTimezone($migrationContext);
 
-        $description = $sourceTimezone ?? 'No source time zone';
         $destinationTimezone = '';
 
         if ($sourceTimezone !== null && isset($this->validTimezones[$sourceTimezone])) {
@@ -79,7 +78,7 @@ class TimezoneReader extends AbstractPremappingReader
             [
                 new PremappingEntityStruct(
                     self::SOURCE_ID,
-                    $description,
+                    'Source system time zone',
                     $destinationTimezone
                 ),
             ],
@@ -94,7 +93,7 @@ class TimezoneReader extends AbstractPremappingReader
         }
 
         $timezoneResult = $this->timezoneReader->read($migrationContext);
-        $timezone = $timezoneResult[0]['timezone'] ?? null;
+        $timezone = $timezoneResult[0][self::SOURCE_ID] ?? null;
         if (!\is_string($timezone) || $timezone === '' || !isset($this->validTimezones[$timezone])) {
             return null;
         }

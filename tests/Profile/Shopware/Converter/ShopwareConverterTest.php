@@ -12,6 +12,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertDateTimeFailedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -123,6 +125,12 @@ class ShopwareConverterTest extends TestCase
         $loggingService = $this->createMock(LoggingServiceInterface::class);
         $loggingService->expects($this->once())
             ->method('log')
+            ->with(static::callback(static function (MigrationLogEntry $logEntry): bool {
+                static::assertSame(ConvertDateTimeFailedLog::getCode(), $logEntry->getCode());
+                static::assertSame('shopware_converter_convert_value', $logEntry->getEntityName());
+
+                return true;
+            }))
             ->willReturnSelf();
         $this->setSourceTimezone('Not/A_Timezone');
 
@@ -183,6 +191,45 @@ class ShopwareConverterTest extends TestCase
         ], $converted);
     }
 
+    public function testGetAttributesLogsEntityNameWhenDateTimeCustomFieldCannotBeConverted(): void
+    {
+        $mappingService = $this->createMock(MappingServiceInterface::class);
+        $mappingService->expects($this->once())
+            ->method('getMapping')
+            ->with($this->connection->getId(), 'product_custom_field', 'release_time', $this->context)
+            ->willReturn([
+                'id' => Uuid::randomHex(),
+                'additionalData' => [
+                    'columnType' => 'datetime',
+                ],
+            ]);
+        $mappingService->expects($this->never())->method('getValue');
+
+        $loggingService = $this->createMock(LoggingServiceInterface::class);
+        $loggingService->expects($this->once())
+            ->method('log')
+            ->with(static::callback(static function (MigrationLogEntry $logEntry): bool {
+                static::assertSame(ConvertDateTimeFailedLog::getCode(), $logEntry->getCode());
+                static::assertSame('product', $logEntry->getEntityName());
+
+                return true;
+            }))
+            ->willReturnSelf();
+
+        $this->setSourceTimezone('Not/A_Timezone');
+
+        $converter = $this->createConverter($mappingService, $loggingService);
+
+        $converted = $converter->convertAttributes(
+            ['release_time' => '2026-05-01 12:30:00'],
+            'product',
+            'shopware',
+            $this->context
+        );
+
+        static::assertNull($converted);
+    }
+
     private function createConverter(
         MappingServiceInterface $mappingService,
         ?LoggingServiceInterface $loggingService = null,
@@ -218,7 +265,7 @@ class ShopwareConverterTest extends TestCase
 
         $this->connection->setPremapping([
             new PremappingStruct(TimezoneReader::getMappingName(), [
-                new PremappingEntityStruct('timezone', $timezone, $timezone),
+                new PremappingEntityStruct(TimezoneReader::SOURCE_ID, $timezone, $timezone),
             ]),
         ]);
     }

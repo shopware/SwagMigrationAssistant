@@ -18,6 +18,7 @@ use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ProductReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TimezoneReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
@@ -100,6 +101,27 @@ class ApiReaderTest extends TestCase
         } catch (MigrationException $e) {
             static::assertArrayHasKey('gateway', $e->getParameters());
             static::assertSame($e->getParameters()['gateway'], 'Shopware Api product');
+
+            return;
+        }
+
+        static::fail('MigrationException not thrown');
+    }
+
+    public function testTimezoneReaderCannotBeResolvedThroughReaderRegistry(): void
+    {
+        $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity(),
+            new Shopware55Profile(),
+        );
+        $reader = new TimezoneReader($this->createMock(ConnectionFactory::class));
+
+        try {
+            $reader->supports($migrationContext);
+        } catch (MigrationException $e) {
+            static::assertSame(SymfonyResponse::HTTP_INTERNAL_SERVER_ERROR, $e->getStatusCode());
+            static::assertSame(MigrationException::READER_REGISTRY_USAGE_NOT_ALLOWED, $e->getErrorCode());
+            static::assertSame(TimezoneReader::class, $e->getParameters()['reader']);
 
             return;
         }

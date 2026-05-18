@@ -100,19 +100,23 @@ return static function (ContainerConfigurator $container): void {
 
     $services->set(Shopware55ProductConverter::class)
         ->parent(ProductConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55ProductOptionRelationConverter::class)
         ->parent(ProductOptionRelationConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55ProductPropertyRelationConverter::class)
         ->parent(ProductPropertyRelationConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55TranslationConverter::class)
         ->parent(TranslationConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55CategoryAttributeConverter::class)
         ->parent(CategoryAttributeConverter::class)
@@ -120,23 +124,28 @@ return static function (ContainerConfigurator $container): void {
 
     $services->set(Shopware55CategoryConverter::class)
         ->parent(CategoryConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55MediaFolderConverter::class)
         ->parent(MediaFolderConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55MediaConverter::class)
         ->parent(MediaConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55CustomerConverter::class)
         ->parent(CustomerConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55OrderConverter::class)
         ->parent(OrderConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55OrderDocumentAttributeConverter::class)
         ->parent(OrderDocumentAttributeConverter::class)
@@ -144,7 +153,8 @@ return static function (ContainerConfigurator $container): void {
 
     $services->set(Shopware55OrderDocumentConverter::class)
         ->parent(OrderDocumentConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55CustomerGroupAttributeConverter::class)
         ->parent(CustomerAttributeConverter::class)
@@ -152,57 +162,71 @@ return static function (ContainerConfigurator $container): void {
 
     $services->set(Shopware55CustomerGroupConverter::class)
         ->parent(CustomerGroupConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55CustomerWishlistConverter::class)
         ->parent(CustomerWishlistConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55PropertyGroupOptionConverter::class)
         ->parent(PropertyGroupOptionConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55NumberRangeConverter::class)
         ->parent(NumberRangeConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55CurrencyConverter::class)
         ->parent(CurrencyConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55LanguageConverter::class)
         ->parent(LanguageConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55SalesChannelConverter::class)
         ->parent(SalesChannelConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55NewsletterRecipientConverter::class)
         ->parent(NewsletterRecipientConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55ShippingMethodConverter::class)
         ->parent(ShippingMethodConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55ProductReviewConverter::class)
         ->parent(ProductReviewConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55SeoUrlConverter::class)
         ->parent(SeoUrlConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55CrossSellingConverter::class)
         ->parent(CrossSellingConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55MainVariantRelationConverter::class)
         ->parent(MainVariantRelationConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 
     $services->set(Shopware55PromotionConverter::class)
         ->parent(PromotionConverter::class)
-        ->tag('shopware.migration.converter');
+        ->tag('shopware.migration.converter')
+        ->tag('kernel.reset', ['method' => 'reset']);
 };

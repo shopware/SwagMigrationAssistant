@@ -107,6 +107,8 @@ class MigrationException extends HttpException
 
     final public const MAIN_VARIANT_RELATION_MISSING_ID_AND_ORDER_NUMBER = 'SWAG_MIGRATION__MAIN_VARIANT_RELATION_MISSING_ID_AND_ORDER_NUMBER';
 
+    final public const READER_REGISTRY_USAGE_NOT_ALLOWED = 'SWAG_MIGRATION__READER_REGISTRY_USAGE_NOT_ALLOWED';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new self(
@@ -565,6 +567,16 @@ class MigrationException extends HttpException
             Response::HTTP_INTERNAL_SERVER_ERROR,
             self::MAIN_VARIANT_RELATION_MISSING_ID_AND_ORDER_NUMBER,
             'MainVariantRelation requires ID and order number.',
+        );
+    }
+
+    public static function readerRegistryUsageNotAllowed(string $class): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::READER_REGISTRY_USAGE_NOT_ALLOWED,
+            'The reader "{{ reader }}" is an internal helper and must not be resolved through the ReaderRegistry.',
+            ['reader' => $class]
         );
     }
 }

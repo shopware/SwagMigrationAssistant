@@ -17,6 +17,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertDateTimeFailedLog;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\TimezoneReader;
 use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -29,6 +30,8 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
     protected const TYPE_FLOAT = 'float';
     protected const TYPE_DATE = 'date';
     protected const TYPE_DATETIME = 'datetime';
+
+    private const CONVERT_VALUE_LOG_ENTITY_NAME = 'shopware_converter_convert_value';
 
     protected MigrationContextInterface $migrationContext;
 
@@ -102,7 +105,11 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
 
                     break;
                 case self::TYPE_DATETIME:
-                    $sourceValue = $this->convertDateTime((string) $sourceData[$sourceKey]);
+                    $sourceValue = $this->convertDateTime(
+                        (string) $sourceData[$sourceKey],
+                        self::CONVERT_VALUE_LOG_ENTITY_NAME
+                    );
+
                     if ($sourceValue === null) {
                         return;
                     }
@@ -175,7 +182,7 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
                     }
 
                     if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'datetime') {
-                        $convertedValue = $this->convertDateTime((string) $value);
+                        $convertedValue = $this->convertDateTime((string) $value, $entityName);
 
                         if ($convertedValue === null) {
                             continue;
@@ -207,7 +214,7 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
         }
     }
 
-    private function convertDateTime(string $value): ?string
+    private function convertDateTime(string $value, string $entityName): ?string
     {
         if ($value === '') {
             return null;
@@ -230,6 +237,7 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
                     ->withSourceData(['dateTime' => $value])
                     ->withExceptionMessage($exception->getMessage())
                     ->withException($exception)
+                    ->withEntityName($entityName)
                     ->build(ConvertDateTimeFailedLog::class)
             );
 
@@ -237,6 +245,19 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
         }
     }
 
+    /**
+     * We do not want to add an optional context to the
+     * "ShopwareConverter::convertValue()" method, as this would break the API
+     *
+     * That is why:
+     * the timezone is read from the connection premapping because the converter has
+     * no Shopware "Context" available.
+     *
+     * "MappingServiceInterface::getMapping()" requires a "Context".
+     * The timezone is a premapping configuration, so reading it from
+     * "$migrationContext->getConnection()->getPremapping()" keeps it available
+     * during conversion without DAL.
+     */
     private function getTimezoneFromPremapping(): ?string
     {
         $runId = $this->migrationContext->getRunUuid();
@@ -247,12 +268,12 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
         $timezone = null;
         $premapping = $this->migrationContext->getConnection()->getPremapping();
         foreach ($premapping ?? [] as $item) {
-            if ($item->getEntity() !== 'source_timezone') {
+            if ($item->getEntity() !== TimezoneReader::MAPPING_NAME) {
                 continue;
             }
 
             foreach ($item->getMapping() as $mapping) {
-                if ($mapping->getSourceId() === 'timezone') {
+                if ($mapping->getSourceId() === TimezoneReader::SOURCE_ID) {
                     $timezone = $mapping->getDestinationUuid() === '' ? null : $mapping->getDestinationUuid();
                 }
             }

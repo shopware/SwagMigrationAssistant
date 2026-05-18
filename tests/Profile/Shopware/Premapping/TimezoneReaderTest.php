@@ -44,14 +44,14 @@ class TimezoneReaderTest extends TestCase
     public function testGetPremappingUsesDetectedSourceTimezone(): void
     {
         $migrationContext = $this->createMigrationContext(ShopwareApiGateway::GATEWAY_NAME);
-        $reader = $this->createReader([['timezone' => 'Europe/Berlin']]);
+        $reader = $this->createReader([[TimezoneReader::SOURCE_ID => 'Europe/Berlin']]);
         $premapping = $reader->getPremapping($this->context, $migrationContext);
 
         static::assertSame(TimezoneReader::getMappingName(), $premapping->getEntity());
         static::assertNotEmpty($premapping->getChoices());
         static::assertCount(1, $premapping->getMapping());
-        static::assertSame('timezone', $premapping->getMapping()[0]->getSourceId());
-        static::assertSame('Europe/Berlin', $premapping->getMapping()[0]->getDescription());
+        static::assertSame(TimezoneReader::SOURCE_ID, $premapping->getMapping()[0]->getSourceId());
+        static::assertSame('Source system time zone', $premapping->getMapping()[0]->getDescription());
         static::assertSame('Europe/Berlin', $premapping->getMapping()[0]->getDestinationUuid());
     }
 
@@ -60,7 +60,7 @@ class TimezoneReaderTest extends TestCase
         $connection = $this->createConnection(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setPremapping([
             new PremappingStruct(TimezoneReader::getMappingName(), [
-                new PremappingEntityStruct('timezone', 'Europe/Berlin', 'America/New_York'),
+                new PremappingEntityStruct(TimezoneReader::SOURCE_ID, 'Europe/Berlin', 'America/New_York'),
             ]),
         ]);
 
@@ -75,20 +75,20 @@ class TimezoneReaderTest extends TestCase
     public function testGetPremappingReturnsSelectableRowWhenSourceTimezoneCannotBeRead(?string $sourceTimezone): void
     {
         $migrationContext = $this->createMigrationContext(ShopwareApiGateway::GATEWAY_NAME);
-        $reader = $this->createReader([['timezone' => $sourceTimezone]]);
+        $reader = $this->createReader([[TimezoneReader::SOURCE_ID => $sourceTimezone]]);
         $premapping = $reader->getPremapping($this->context, $migrationContext);
 
         static::assertNotEmpty($premapping->getChoices());
         static::assertCount(1, $premapping->getMapping());
-        static::assertSame('timezone', $premapping->getMapping()[0]->getSourceId());
-        static::assertSame('No source time zone', $premapping->getMapping()[0]->getDescription());
+        static::assertSame(TimezoneReader::SOURCE_ID, $premapping->getMapping()[0]->getSourceId());
+        static::assertSame('Source system time zone', $premapping->getMapping()[0]->getDescription());
         static::assertSame('', $premapping->getMapping()[0]->getDestinationUuid());
     }
 
     public function testGetPremappingUsesEnvironmentInformationForApiGateway(): void
     {
         $migrationContext = $this->createMigrationContext(ShopwareApiGateway::GATEWAY_NAME);
-        $reader = $this->createReader([['timezone' => 'UTC']]);
+        $reader = $this->createReader([[TimezoneReader::SOURCE_ID => 'UTC']]);
         $premapping = $reader->getPremapping($this->context, $migrationContext);
 
         static::assertSame('UTC', $premapping->getMapping()[0]->getDestinationUuid());
@@ -100,7 +100,7 @@ class TimezoneReaderTest extends TestCase
         $reader = $this->createReader(null, 0);
         $premapping = $reader->getPremapping($this->context, $migrationContext);
 
-        static::assertSame('No source time zone', $premapping->getMapping()[0]->getDescription());
+        static::assertSame('Source system time zone', $premapping->getMapping()[0]->getDescription());
         static::assertSame('', $premapping->getMapping()[0]->getDestinationUuid());
     }
 
