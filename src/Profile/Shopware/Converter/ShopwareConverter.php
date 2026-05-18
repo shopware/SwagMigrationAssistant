@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
 use SwagMigrationAssistant\Migration\Converter\Converter;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertDateTimeFailedLog;
@@ -31,7 +32,7 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
     protected const TYPE_DATE = 'date';
     protected const TYPE_DATETIME = 'datetime';
 
-    private const CONVERT_VALUE_LOG_ENTITY_NAME = 'shopware_converter_convert_value';
+    private const CONVERT_VALUE_LOG_ENTITY_NAME = 'shopware_converter_convert_value_log_entity';
 
     protected MigrationContextInterface $migrationContext;
 
@@ -105,10 +106,13 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
 
                     break;
                 case self::TYPE_DATETIME:
-                    $sourceValue = $this->convertDateTime(
-                        (string) $sourceData[$sourceKey],
-                        self::CONVERT_VALUE_LOG_ENTITY_NAME
-                    );
+                    $dataset = $this->migrationContext->getDataSet();
+                    $entityName = self::CONVERT_VALUE_LOG_ENTITY_NAME;
+                    if ($dataset instanceof DataSet) {
+                        $entityName = $dataset::getEntity();
+                    }
+
+                    $sourceValue = $this->convertDateTime((string) $sourceData[$sourceKey], $entityName);
 
                     if ($sourceValue === null) {
                         return;
