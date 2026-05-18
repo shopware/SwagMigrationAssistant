@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\HttpException;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -570,6 +571,9 @@ class MigrationException extends HttpException
         );
     }
 
+    /**
+     * @param class-string<ReaderInterface> $class
+     */
     public static function readerRegistryUsageNotAllowed(string $class): self
     {
         return new self(

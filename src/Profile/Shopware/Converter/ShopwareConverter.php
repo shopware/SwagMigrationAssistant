@@ -32,8 +32,6 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
     protected const TYPE_DATE = 'date';
     protected const TYPE_DATETIME = 'datetime';
 
-    private const CONVERT_VALUE_LOG_ENTITY_NAME = 'shopware_converter_convert_value_log_entity';
-
     protected MigrationContextInterface $migrationContext;
 
     /**
@@ -107,7 +105,7 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
                     break;
                 case self::TYPE_DATETIME:
                     $dataset = $this->migrationContext->getDataSet();
-                    $entityName = self::CONVERT_VALUE_LOG_ENTITY_NAME;
+                    $entityName = null;
                     if ($dataset instanceof DataSet) {
                         $entityName = $dataset::getEntity();
                     }
@@ -218,7 +216,7 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
         }
     }
 
-    private function convertDateTime(string $value, string $entityName): ?string
+    private function convertDateTime(string $value, ?string $entityName): ?string
     {
         if ($value === '') {
             return null;
@@ -236,14 +234,16 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
                 ->setTimezone(new \DateTimeZone('UTC'))
                 ->format(Defaults::STORAGE_DATE_TIME_FORMAT);
         } catch (\Throwable $exception) {
-            $this->loggingService->log(
-                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->withSourceData(['dateTime' => $value])
-                    ->withExceptionMessage($exception->getMessage())
-                    ->withException($exception)
-                    ->withEntityName($entityName)
-                    ->build(ConvertDateTimeFailedLog::class)
-            );
+            $logBuilder = MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                ->withSourceData(['dateTime' => $value])
+                ->withExceptionMessage($exception->getMessage())
+                ->withException($exception);
+
+            if ($entityName !== null) {
+                $logBuilder->withEntityName($entityName);
+            }
+
+            $this->loggingService->log($logBuilder->build(ConvertDateTimeFailedLog::class));
 
             return null;
         }

@@ -129,7 +129,7 @@ class ShopwareConverterTest extends TestCase
             ->method('log')
             ->with(static::callback(static function (MigrationLogEntry $logEntry): bool {
                 static::assertSame(ConvertDateTimeFailedLog::getCode(), $logEntry->getCode());
-                static::assertSame('shopware_converter_convert_value_log_entity', $logEntry->getEntityName());
+                static::assertNull($logEntry->getEntityName());
 
                 return true;
             }))

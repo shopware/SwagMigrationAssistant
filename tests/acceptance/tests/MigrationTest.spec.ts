@@ -234,7 +234,7 @@ test.describe('Migration Tests @migration @visual', () => {
         });
 
         await test.step('Verify migrated entities', async () => {
-            await EntityCounter.assert('swag_migration_logging', 702);
+            await EntityCounter.assert('swag_migration_logging', 662);
 
             await EntityCounter.assertBaseline(baseline);
         });
