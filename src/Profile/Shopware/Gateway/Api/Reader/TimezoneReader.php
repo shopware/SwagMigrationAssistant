@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
  * The class extends ApiReader only to reuse the existing API client/request
  * handling for connector endpoints instead of duplicating that logic here.
  */
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 class TimezoneReader extends ApiReader
 {
     public function supports(MigrationContextInterface $migrationContext): bool

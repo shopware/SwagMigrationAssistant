@@ -37,7 +37,7 @@ abstract class ShopwareConverter extends Converter implements ResetInterface
     /**
      * @var array<string, string|null>
      */
-    protected array $timezoneCache = [];
+    private array $timezoneCache = [];
 
     public function reset(): void
     {
