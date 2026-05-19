@@ -18,6 +18,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
@@ -42,10 +43,7 @@ class ApiEnvironmentReaderTest extends TestCase
 
         $environmentReader = new EnvironmentReader($connectionFactory);
 
-        $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity(),
-            new Shopware55Profile(),
-        );
+        $migrationContext = $this->createMigrationContext();
 
         $response = $environmentReader->read($migrationContext);
 
@@ -82,10 +80,7 @@ class ApiEnvironmentReaderTest extends TestCase
 
         $client = new HttpSimpleClient($options);
 
-        $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity(),
-            new Shopware55Profile(),
-        );
+        $migrationContext = $this->createMigrationContext();
 
         $connectionFactory = $this->createMock(ConnectionFactory::class);
         $connectionFactory
@@ -232,10 +227,7 @@ class ApiEnvironmentReaderTest extends TestCase
 
         $client = new HttpSimpleClient($options);
 
-        $migrationContext = new MigrationContext(
-            new SwagMigrationConnectionEntity(),
-            new Shopware55Profile()
-        );
+        $migrationContext = $this->createMigrationContext();
 
         $connectionFactory = $this->createMock(ConnectionFactory::class);
         $connectionFactory
@@ -248,5 +240,21 @@ class ApiEnvironmentReaderTest extends TestCase
 
         static::assertEquals(['version' => 'test'], $response['environmentInformation']);
         static::assertEquals(new RequestStatusStruct(), $response['requestStatus']);
+    }
+
+    private function createMigrationContext(): MigrationContext
+    {
+        return $this->createMigrationContextWithConnectionId(Uuid::randomHex());
+    }
+
+    private function createMigrationContextWithConnectionId(string $connectionId): MigrationContext
+    {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId($connectionId);
+
+        return new MigrationContext(
+            $connection,
+            new Shopware55Profile()
+        );
     }
 }

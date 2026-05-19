@@ -245,6 +245,19 @@ Pre-mapping (JSON):
 [
     {
         "extensions": [],
+        "entity": "source_timezone",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "timezone",
+                "description": "Source system time zone",
+                "destinationUuid": "Africa\/Abidjan"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
         "entity": "order_state",
         "mapping": [
             {

@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\HttpException;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -106,6 +107,8 @@ class MigrationException extends HttpException
     public const LOCAL_DATABASE_CONNECTION_ERROR = 'SWAG_MIGRATION__LOCAL_DATABASE_CONNECTION_ERROR';
 
     final public const MAIN_VARIANT_RELATION_MISSING_ID_AND_ORDER_NUMBER = 'SWAG_MIGRATION__MAIN_VARIANT_RELATION_MISSING_ID_AND_ORDER_NUMBER';
+
+    final public const READER_REGISTRY_USAGE_NOT_ALLOWED = 'SWAG_MIGRATION__READER_REGISTRY_USAGE_NOT_ALLOWED';
 
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
@@ -565,6 +568,19 @@ class MigrationException extends HttpException
             Response::HTTP_INTERNAL_SERVER_ERROR,
             self::MAIN_VARIANT_RELATION_MISSING_ID_AND_ORDER_NUMBER,
             'MainVariantRelation requires ID and order number.',
+        );
+    }
+
+    /**
+     * @param class-string<ReaderInterface> $class
+     */
+    public static function readerRegistryUsageNotAllowed(string $class): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::READER_REGISTRY_USAGE_NOT_ALLOWED,
+            'The reader "{{ reader }}" is an internal helper and must not be resolved through the ReaderRegistry.',
+            ['reader' => $class]
         );
     }
 }

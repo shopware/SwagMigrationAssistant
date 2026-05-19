@@ -59,5 +59,19 @@ class EnvironmentReaderTest extends TestCase
         static::assertSame('1', $additionalData['children'][0]['main_id']);
         static::assertSame('en_GB', $additionalData['children'][0]['locale']['locale']);
         static::assertSame('39', $additionalData['children'][0]['category_id']);
+        static::assertArrayNotHasKey('timezone', $data);
+    }
+
+    public function testReadDoesNotReadTimezoneFromInstallationRootConfig(): void
+    {
+        $credentialFields = $this->connection->getCredentialFields();
+        static::assertIsArray($credentialFields);
+
+        $credentialFields['installationRoot'] = __DIR__ . '/_fixtures/environment_reader/valid';
+        $this->connection->setCredentialFields($credentialFields);
+
+        $data = $this->environmentReader->read($this->migrationContext);
+
+        static::assertArrayNotHasKey('timezone', $data);
     }
 }

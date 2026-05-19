@@ -11,6 +11,7 @@ export interface MigrationConnectionStruct {
 export const MigrationConnection = base.extend<FixtureTypes>({
     MigrationConnection: async ({ AdminApiContext, DatabaseCredentials }, use) => {
         const connectionName = 'shopware';
+        const installationRoot = '/tmp';
 
         const createResponse = await AdminApiContext.post('/api/swag-migration-connection', {
             data: {
@@ -43,7 +44,7 @@ export const MigrationConnection = base.extend<FixtureTypes>({
                     dbUser: DatabaseCredentials.user,
                     dbPassword: DatabaseCredentials.password,
                     dbName: DatabaseCredentials.database,
-                    installationRoot: '/tmp',
+                    installationRoot,
                 },
             },
         });

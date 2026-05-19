@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
@@ -75,6 +76,7 @@ class ShopwareApiGatewayTest extends TestCase
     public function testReadEnvironmentInformationFailed(): void
     {
         $connection = new SwagMigrationConnectionEntity();
+        $connection->setId(Uuid::randomHex());
         $connection->setCredentialFields([
             'endpoint' => 'testing',
             'apiUser' => 'testing',
@@ -120,6 +122,7 @@ class ShopwareApiGatewayTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $apiReader = new ProductReader($connectionFactory);
         $environmentReader = new EnvironmentDummyReader($connectionFactory);
+        $environmentReader->setDummyData([]);
         $tableReader = new TableReader($connectionFactory);
         $tableCountReader = new TableCountDummyReader($connectionFactory, new DummyLoggingService());
 

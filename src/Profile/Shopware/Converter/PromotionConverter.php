@@ -56,6 +56,8 @@ abstract class PromotionConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $this->migrationContext = $migrationContext;
+
         $this->generateChecksum($data);
         $this->context = $context;
 

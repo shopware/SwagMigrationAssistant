@@ -148,7 +148,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
             $environmentData['defaultCurrency'],
             $environmentData['defaultShopLanguage'],
             $targetLocaleCode,
-            $this->generateFingerprint($environmentData)
+            $this->generateFingerprint($environmentData),
         );
     }
 

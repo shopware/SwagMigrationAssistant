@@ -13,23 +13,28 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+/**
+ * @phpstan-type EnvironmentInfo array{defaultShopLanguage: string, host: string, additionalData: array<int, mixed>, defaultCurrency: string, config: array<string, mixed>}
+ */
 #[Package('fundamentals@after-sales')]
 class EnvironmentReader extends AbstractReader implements EnvironmentReaderInterface
 {
     /**
-     * @return array{defaultShopLanguage: string, host: string, additionalData: array<int, mixed>, defaultCurrency: string}
+     * @return EnvironmentInfo
      */
     public function read(MigrationContextInterface $migrationContext): array
     {
         $locale = $this->getDefaultShopLocale($migrationContext);
 
-        return [
+        $environmentInformation = [
             'defaultShopLanguage' => $locale,
             'host' => $this->getHost($migrationContext),
             'additionalData' => $this->getAdditionalData($migrationContext),
             'defaultCurrency' => $this->getDefaultCurrency($migrationContext),
             'config' => $this->getConfig($migrationContext),
         ];
+
+        return $environmentInformation;
     }
 
     /**

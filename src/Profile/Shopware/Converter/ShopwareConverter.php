@@ -7,25 +7,42 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
 use SwagMigrationAssistant\Migration\Converter\Converter;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertDateTimeFailedLog;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\TimezoneReader;
+use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('fundamentals@after-sales')]
-abstract class ShopwareConverter extends Converter
+abstract class ShopwareConverter extends Converter implements ResetInterface
 {
     protected const TYPE_STRING = 'string';
     protected const TYPE_BOOLEAN = 'bool';
     protected const TYPE_INVERT_BOOLEAN = 'invert_bool';
     protected const TYPE_INTEGER = 'int';
     protected const TYPE_FLOAT = 'float';
+    protected const TYPE_DATE = 'date';
     protected const TYPE_DATETIME = 'datetime';
 
     protected MigrationContextInterface $migrationContext;
+
+    /**
+     * @var array<string, string|null>
+     */
+    private array $timezoneCache = [];
+
+    public function reset(): void
+    {
+        $this->timezoneCache = [];
+    }
 
     public function getSourceIdentifier(array $data): string
     {
@@ -79,9 +96,23 @@ abstract class ShopwareConverter extends Converter
                     $sourceValue = (float) $sourceData[$sourceKey];
 
                     break;
-                case self::TYPE_DATETIME:
+                case self::TYPE_DATE:
                     $sourceValue = $sourceData[$sourceKey];
                     if (!$this->validDate($sourceValue)) {
+                        return;
+                    }
+
+                    break;
+                case self::TYPE_DATETIME:
+                    $dataset = $this->migrationContext->getDataSet();
+                    $entityName = null;
+                    if ($dataset instanceof DataSet) {
+                        $entityName = $dataset::getEntity();
+                    }
+
+                    $sourceValue = $this->convertDateTime((string) $sourceData[$sourceKey], $entityName);
+
+                    if ($sourceValue === null) {
                         return;
                     }
 
@@ -92,17 +123,6 @@ abstract class ShopwareConverter extends Converter
             $newData[$newKey] = $sourceValue;
         }
         unset($sourceData[$sourceKey]);
-    }
-
-    protected function validDate(string $value): bool
-    {
-        try {
-            new \DateTime($value);
-
-            return true;
-        } catch (\Exception) {
-            return false;
-        }
     }
 
     /**
@@ -162,6 +182,16 @@ abstract class ShopwareConverter extends Converter
                     if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'float') {
                         $value = (float) $value;
                     }
+
+                    if (isset($mapping['additionalData']['columnType']) && $mapping['additionalData']['columnType'] === 'datetime') {
+                        $convertedValue = $this->convertDateTime((string) $value, $entityName);
+
+                        if ($convertedValue === null) {
+                            continue;
+                        }
+
+                        $value = $convertedValue;
+                    }
                 }
             }
 
@@ -173,5 +203,88 @@ abstract class ShopwareConverter extends Converter
         }
 
         return $result;
+    }
+
+    protected function validDate(string $value): bool
+    {
+        try {
+            new \DateTime($value);
+
+            return true;
+        } catch (\Exception) {
+            return false;
+        }
+    }
+
+    private function convertDateTime(string $value, ?string $entityName): ?string
+    {
+        if ($value === '') {
+            return null;
+        }
+
+        try {
+            $timezone = $this->getTimezoneFromPremapping();
+            if ($timezone === null) {
+                return (new \DateTimeImmutable($value))->format(Defaults::STORAGE_DATE_TIME_FORMAT);
+            }
+
+            $date = new \DateTimeImmutable($value, new \DateTimeZone($timezone));
+
+            return $date
+                ->setTimezone(new \DateTimeZone('UTC'))
+                ->format(Defaults::STORAGE_DATE_TIME_FORMAT);
+        } catch (\Throwable $exception) {
+            $logBuilder = MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                ->withSourceData(['dateTime' => $value])
+                ->withExceptionMessage($exception->getMessage())
+                ->withException($exception);
+
+            if ($entityName !== null) {
+                $logBuilder->withEntityName($entityName);
+            }
+
+            $this->loggingService->log($logBuilder->build(ConvertDateTimeFailedLog::class));
+
+            return null;
+        }
+    }
+
+    /**
+     * We do not want to add an optional context to the
+     * "ShopwareConverter::convertValue()" method, as this would break the API
+     *
+     * That is why:
+     * the timezone is read from the connection premapping because the converter has
+     * no Shopware "Context" available.
+     *
+     * "MappingServiceInterface::getMapping()" requires a "Context".
+     * The timezone is a premapping configuration, so reading it from
+     * "$migrationContext->getConnection()->getPremapping()" keeps it available
+     * during conversion without DAL.
+     */
+    private function getTimezoneFromPremapping(): ?string
+    {
+        $runId = $this->migrationContext->getRunUuid();
+        if (\array_key_exists($runId, $this->timezoneCache)) {
+            return $this->timezoneCache[$runId];
+        }
+
+        $timezone = null;
+        $premapping = $this->migrationContext->getConnection()->getPremapping();
+        foreach ($premapping ?? [] as $item) {
+            if ($item->getEntity() !== TimezoneReader::MAPPING_NAME) {
+                continue;
+            }
+
+            foreach ($item->getMapping() as $mapping) {
+                if ($mapping->getSourceId() === TimezoneReader::SOURCE_ID) {
+                    $timezone = $mapping->getDestinationUuid() === '' ? null : $mapping->getDestinationUuid();
+                }
+            }
+        }
+
+        $this->timezoneCache[$runId] = $timezone;
+
+        return $timezone;
     }
 }

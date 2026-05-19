@@ -471,7 +471,7 @@ abstract class ProductConverter extends ShopwareConverter
         $this->convertValue($converted, 'minPurchase', $data['detail'], 'minpurchase', self::TYPE_INTEGER);
         $this->convertValue($converted, 'purchaseUnit', $data['detail'], 'purchaseunit', self::TYPE_FLOAT);
         $this->convertValue($converted, 'referenceUnit', $data['detail'], 'referenceunit', self::TYPE_FLOAT);
-        $this->convertValue($converted, 'releaseDate', $data['detail'], 'releasedate', self::TYPE_DATETIME);
+        $this->convertValue($converted, 'releaseDate', $data['detail'], 'releasedate', self::TYPE_DATE);
         $this->convertValue($converted, 'shippingFree', $data['detail'], 'shippingfree', self::TYPE_BOOLEAN);
 
         $this->setPurchasePrices($data, $converted);
