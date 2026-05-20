@@ -34,6 +34,7 @@ use Shopware\Core\System\Language\LanguageDefinition;
 use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
+use SwagMigrationAssistant\Migration\Service\ProductSalesUpdater;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 use SwagMigrationAssistant\Migration\Writer\CategoryAttributeWriter;
 use SwagMigrationAssistant\Migration\Writer\CategoryWriter;
@@ -162,6 +163,7 @@ return static function (ContainerConfigurator $container): void {
             service(EntityWriter::class),
             service(OrderDefinition::class),
             service(StructNormalizer::class),
+            service(ProductSalesUpdater::class),
         ])
         ->tag('shopware.migration.writer');
 
