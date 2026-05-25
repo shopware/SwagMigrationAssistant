@@ -8,4 +8,5 @@
 return [
     'id' => '6313d15a735a4fd08508dd349ad010f9',
     'productNumber' => 'SW10000',
+    'type' => 'physical',
 ];
