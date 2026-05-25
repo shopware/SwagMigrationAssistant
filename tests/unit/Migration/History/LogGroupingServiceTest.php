@@ -39,8 +39,7 @@ class LogGroupingServiceTest extends TestCase
     {
         $this->connection->method('fetchOne')->willReturn(false);
 
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('No connection found.');
+        static::expectExceptionObject(MigrationException::noConnectionFound());
 
         $this->logGroupingService->getGroupedLogsByCodeAndEntity(
             Uuid::randomHex(),
