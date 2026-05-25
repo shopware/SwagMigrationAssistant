@@ -41,6 +41,8 @@ use SwagMigrationAssistant\DataProvider\Provider\Data\NumberRangeProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\OrderProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\PageSystemConfigProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\PaymentMethodProvider;
+use SwagMigrationAssistant\DataProvider\Provider\Data\ProductCanonicalAssociationProvider;
+use SwagMigrationAssistant\DataProvider\Provider\Data\ProductCmsPageAssociationProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\ProductFeatureSetProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\ProductManufacturerProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\ProductProvider;
@@ -52,6 +54,7 @@ use SwagMigrationAssistant\DataProvider\Provider\Data\PromotionProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\PropertyGroupProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\RuleProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\SalesChannelDomainProvider;
+use SwagMigrationAssistant\DataProvider\Provider\Data\SalesChannelHomeCmsPageAssociationProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\SalesChannelProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\SalutationProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\SeoUrlProvider;
@@ -132,6 +135,14 @@ return static function (ContainerConfigurator $container): void {
         ])
         ->tag('shopware.dataProvider.provider');
 
+    $services->set(ProductCanonicalAssociationProvider::class)
+        ->args([service('product.repository')])
+        ->tag('shopware.dataProvider.provider');
+
+    $services->set(ProductCmsPageAssociationProvider::class)
+        ->args([service('product.repository')])
+        ->tag('shopware.dataProvider.provider');
+
     $services->set(TaxProvider::class)
         ->args([service('tax.repository')])
         ->tag('shopware.dataProvider.provider');
@@ -161,6 +172,10 @@ return static function (ContainerConfigurator $container): void {
         ->tag('shopware.dataProvider.provider');
 
     $services->set(SalesChannelProvider::class)
+        ->args([service('sales_channel.repository')])
+        ->tag('shopware.dataProvider.provider');
+
+    $services->set(SalesChannelHomeCmsPageAssociationProvider::class)
         ->args([service('sales_channel.repository')])
         ->tag('shopware.dataProvider.provider');
 

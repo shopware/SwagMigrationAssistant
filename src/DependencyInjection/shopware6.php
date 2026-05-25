@@ -19,6 +19,7 @@ use Shopware\Core\Content\Media\Aggregate\MediaFolder\MediaFolderDefinition;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Content\Product\Aggregate\ProductFeatureSet\ProductFeatureSetDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingDefinition;
 use Shopware\Core\Content\ProductStream\Aggregate\ProductStreamFilter\ProductStreamFilterDefinition;
 use Shopware\Core\Content\ProductStream\ProductStreamDefinition;
@@ -98,6 +99,8 @@ use SwagMigrationAssistant\Profile\Shopware6\Converter\NewsletterRecipientConver
 use SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\OrderConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\PageSystemConfigConverter;
+use SwagMigrationAssistant\Profile\Shopware6\Converter\ProductCanonicalAssociationConverter;
+use SwagMigrationAssistant\Profile\Shopware6\Converter\ProductCmsPageAssociationConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\ProductConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\ProductFeatureSetConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\ProductManufacturerConverter;
@@ -110,6 +113,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Converter\PropertyGroupConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\RuleConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelDomainConverter;
+use SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelHomeCmsPageAssociationConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlConverter;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter;
@@ -153,6 +157,8 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDa
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\OrderDocumentGeneratedDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PageSystemConfigDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductCanonicalAssociationDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductCmsPageAssociationDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductDownloadDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductFeatureSetDataSet;
@@ -166,6 +172,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PropertyGroup
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\RuleDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalesChannelDomainDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalesChannelHomeCmsPageAssociationDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalutationDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlTemplateDataSet;
@@ -212,6 +219,8 @@ use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\NewsletterRecipi
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\NumberRangeReader;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\OrderReader;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\PageSystemConfigReader;
+use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductCanonicalAssociationReader;
+use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductCmsPageAssociationReader;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductFeatureSetReader;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductManufacturerReader;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductReader;
@@ -223,6 +232,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\PromotionReader;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\PropertyGroupReader;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\RuleReader;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\SalesChannelDomainReader;
+use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\SalesChannelHomeCmsPageAssociationReader;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\SalesChannelReader;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\SeoUrlReader;
@@ -258,6 +268,8 @@ use SwagMigrationAssistant\Profile\Shopware6\Writer\MailHeaderFooterWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\MailTemplateWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\MediaFolderInheritanceWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\PageSystemConfigWriter;
+use SwagMigrationAssistant\Profile\Shopware6\Writer\ProductCanonicalAssociationWriter;
+use SwagMigrationAssistant\Profile\Shopware6\Writer\ProductCmsPageAssociationWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\ProductFeatureSetWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\ProductManufacturerWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\ProductSortingWriter;
@@ -267,6 +279,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Writer\PromotionWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\PropertyGroupWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\RuleWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\SalesChannelDomainWriter;
+use SwagMigrationAssistant\Profile\Shopware6\Writer\SalesChannelHomeCmsPageAssociationWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\SalutationWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\SeoUrlTemplateWriter;
 use SwagMigrationAssistant\Profile\Shopware6\Writer\SnippetSetWriter;
@@ -384,6 +397,14 @@ return static function (ContainerConfigurator $container): void {
         ->parent(ShopwareMediaConverter::class)
         ->tag('shopware.migration.converter');
 
+    $services->set(ProductCanonicalAssociationConverter::class)
+        ->parent(ShopwareConverter::class)
+        ->tag('shopware.migration.converter');
+
+    $services->set(ProductCmsPageAssociationConverter::class)
+        ->parent(ShopwareConverter::class)
+        ->tag('shopware.migration.converter');
+
     $services->set(OrderConverter::class)
         ->parent(ShopwareConverter::class)
         ->args([service(StateMachineStateLookup::class)])
@@ -416,6 +437,10 @@ return static function (ContainerConfigurator $container): void {
         ->tag('shopware.migration.converter');
 
     $services->set(SalesChannelDomainConverter::class)
+        ->parent(ShopwareConverter::class)
+        ->tag('shopware.migration.converter');
+
+    $services->set(SalesChannelHomeCmsPageAssociationConverter::class)
         ->parent(ShopwareConverter::class)
         ->tag('shopware.migration.converter');
 
@@ -622,6 +647,12 @@ return static function (ContainerConfigurator $container): void {
     $services->set(ProductDataSet::class)
         ->tag('shopware.migration.data_set');
 
+    $services->set(ProductCanonicalAssociationDataSet::class)
+        ->tag('shopware.migration.data_set');
+
+    $services->set(ProductCmsPageAssociationDataSet::class)
+        ->tag('shopware.migration.data_set');
+
     $services->set(OrderDataSet::class)
         ->tag('shopware.migration.data_set');
 
@@ -668,6 +699,9 @@ return static function (ContainerConfigurator $container): void {
         ->tag('shopware.migration.data_set');
 
     $services->set(SalesChannelDomainDataSet::class)
+        ->tag('shopware.migration.data_set');
+
+    $services->set(SalesChannelHomeCmsPageAssociationDataSet::class)
         ->tag('shopware.migration.data_set');
 
     $services->set(ShippingMethodDataSet::class)
@@ -794,6 +828,14 @@ return static function (ContainerConfigurator $container): void {
         ->parent(ApiReader::class)
         ->tag('shopware.migration.reader');
 
+    $services->set(ProductCanonicalAssociationReader::class)
+        ->parent(ApiReader::class)
+        ->tag('shopware.migration.reader');
+
+    $services->set(ProductCmsPageAssociationReader::class)
+        ->parent(ApiReader::class)
+        ->tag('shopware.migration.reader');
+
     $services->set(ProductReviewReader::class)
         ->parent(ApiReader::class)
         ->tag('shopware.migration.reader');
@@ -859,6 +901,10 @@ return static function (ContainerConfigurator $container): void {
         ->tag('shopware.migration.reader');
 
     $services->set(SalesChannelDomainReader::class)
+        ->parent(ApiReader::class)
+        ->tag('shopware.migration.reader');
+
+    $services->set(SalesChannelHomeCmsPageAssociationReader::class)
         ->parent(ApiReader::class)
         ->tag('shopware.migration.reader');
 
@@ -990,6 +1036,22 @@ return static function (ContainerConfigurator $container): void {
         ])
         ->tag('shopware.migration.writer');
 
+    $services->set(ProductCanonicalAssociationWriter::class)
+        ->parent(AbstractWriter::class)
+        ->args([
+            service(EntityWriter::class),
+            service(ProductDefinition::class),
+        ])
+        ->tag('shopware.migration.writer');
+
+    $services->set(ProductCmsPageAssociationWriter::class)
+        ->parent(AbstractWriter::class)
+        ->args([
+            service(EntityWriter::class),
+            service(ProductDefinition::class),
+        ])
+        ->tag('shopware.migration.writer');
+
     $services->set(PropertyGroupWriter::class)
         ->parent(AbstractWriter::class)
         ->args([
@@ -1107,6 +1169,14 @@ return static function (ContainerConfigurator $container): void {
         ->args([
             service(EntityWriter::class),
             service(SalesChannelDomainDefinition::class),
+        ])
+        ->tag('shopware.migration.writer');
+
+    $services->set(SalesChannelHomeCmsPageAssociationWriter::class)
+        ->parent(AbstractWriter::class)
+        ->args([
+            service(EntityWriter::class),
+            service(\Shopware\Core\System\SalesChannel\SalesChannelDefinition::class),
         ])
         ->tag('shopware.migration.writer');
 

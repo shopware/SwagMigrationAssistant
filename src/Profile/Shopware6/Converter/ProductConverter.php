@@ -70,6 +70,8 @@ class ProductConverter extends ShopwareMediaConverter
             Defaults::CURRENCY
         );
 
+        unset($converted['canonicalProductId'], $converted['cmsPageId']);
+
         if (isset($converted['price'])) {
             $this->updateAssociationIds(
                 $converted['price'],
