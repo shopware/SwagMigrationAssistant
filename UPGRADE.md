@@ -1,5 +1,8 @@
 # NEXT
 
+- [BREAKING] [#178](https://github.com/shopware/SwagMigrationAssistant/pull/190) - fix!: update product.sales during migration
+    - [BREAKING] Added required constructor parameter `\SwagMigrationAssistant\Migration\Service\ProductSalesUpdater` to `\SwagMigrationAssistant\Migration\Writer\OrderWriter`
+
 # 18.0.0
 
 - [BREAKING] [#178](https://github.com/shopware/SwagMigrationAssistant/pull/178) - fix!: unsupported sales channel migration

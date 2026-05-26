@@ -1,5 +1,7 @@
 # NEXT
 
+- #12748 - Die Migration von Bestellungen wurde korrigiert, sodass `product.sales` nach dem Schreiben migrierter Bestellungen anhand der persistierten Bestellpositionen neu berechnet wird. Stornierte Bestellungen werden dabei nicht berücksichtigt.
+
 # 18.0.0
 
 - #14435 - Die Migration von Shopware 6 Sales Channel wurde korrigiert, sodass zusätzliche Sales Channel wie Social Shopping jetzt korrekt migriert werden, wenn ihre Sales-Channel-Typen vor dem Start der Migration im Zielshop vorhanden sind.
