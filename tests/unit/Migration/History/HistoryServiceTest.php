@@ -46,8 +46,10 @@ class HistoryServiceTest extends TestCase
 {
     public function testShouldThrowIfRunCantBeFound(): void
     {
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('No SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity with UUID run-id found. Make sure the entity with the UUID exists.');
+        static::expectExceptionObject(MigrationException::entityNotExists(
+            SwagMigrationRunEntity::class,
+            'run-id'
+        ));
 
         $this->createHistoryService([], [])->downloadLogsOfRun(
             'run-id',

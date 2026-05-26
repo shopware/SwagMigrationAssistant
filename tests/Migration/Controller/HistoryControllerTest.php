@@ -120,8 +120,7 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request();
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "runUuid" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('runUuid'));
         $this->controller->getGroupedLogsOfRun($request, $this->context);
     }
 
@@ -146,8 +145,7 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request();
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "runUuid" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('runUuid'));
         $this->controller->downloadLogsOfRun($request, $this->context);
     }
 
@@ -171,8 +169,7 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request();
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "runId" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('runId'));
 
         $this->controller->getLogGroups($request, $this->context);
     }
@@ -181,8 +178,7 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request(['runId' => $this->runUuid]);
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "level" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('level'));
 
         $this->controller->getLogGroups($request, $this->context);
     }
@@ -375,8 +371,7 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request([], []);
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "runId" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('runId'));
 
         $this->controller->getLogEntityIdsWithoutFix($request);
     }
@@ -385,8 +380,7 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request([], ['runId' => $this->runUuid]);
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "code" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('code'));
 
         $this->controller->getLogEntityIdsWithoutFix($request);
     }
@@ -398,8 +392,7 @@ class HistoryControllerTest extends TestCase
             'code' => 'TEST_CODE',
         ]);
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "entityName" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('entityName'));
 
         $this->controller->getLogEntityIdsWithoutFix($request);
     }
@@ -412,8 +405,7 @@ class HistoryControllerTest extends TestCase
             'entityName' => 'product',
         ]);
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "fieldName" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('fieldName'));
 
         $this->controller->getLogEntityIdsWithoutFix($request);
     }
@@ -718,8 +710,7 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request([], []);
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "runId" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('runId'));
 
         $this->controller->getUnresolvedLogsBatchInformation($request);
     }
@@ -728,8 +719,7 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request([], ['runId' => $this->runUuid]);
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "code" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('code'));
 
         $this->controller->getUnresolvedLogsBatchInformation($request);
     }
@@ -741,8 +731,7 @@ class HistoryControllerTest extends TestCase
             'code' => 'TEST_CODE',
         ]);
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "entityName" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('entityName'));
 
         $this->controller->getUnresolvedLogsBatchInformation($request);
     }
@@ -755,8 +744,7 @@ class HistoryControllerTest extends TestCase
             'entityName' => 'product',
         ]);
 
-        $this->expectException(RoutingException::class);
-        $this->expectExceptionMessage('Parameter "fieldName" is missing.');
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('fieldName'));
 
         $this->controller->getUnresolvedLogsBatchInformation($request);
     }
