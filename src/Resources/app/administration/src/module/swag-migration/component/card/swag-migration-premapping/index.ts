@@ -15,6 +15,7 @@ const { debounce } = Shopware.Utils;
 export interface SwagMigrationPremappingData {
     isLoading: boolean;
     migrationStore: MigrationStore;
+    savePremappingDebounced: null | (() => void);
 }
 
 /**
@@ -32,7 +33,18 @@ export default Shopware.Component.wrapComponentConfig({
         return {
             isLoading: false,
             migrationStore: Store.get(MIGRATION_STORE_ID),
+            savePremappingDebounced: null,
         };
+    },
+
+    created() {
+        this.savePremappingDebounced = debounce(async () => {
+            try {
+                await this.savePremapping();
+            } finally {
+                this.migrationStore.setIsLoading(false);
+            }
+        }, 500);
     },
 
     computed: {
@@ -73,29 +85,20 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            const filledOut = this.premapping.every((group: MigrationPremapping) =>
-                group.mapping.every(
-                    (mapping) =>
-                        mapping.destinationUuid !== null &&
-                        mapping.destinationUuid !== undefined &&
-                        mapping.destinationUuid !== '',
-                ),
+            await this.migrationApiService.writePremapping(
+                this.premapping.map((group: MigrationPremapping) => ({
+                    ...group,
+                    mapping: group.mapping.filter((mapping) => {
+                        return !!mapping.destinationUuid;
+                    }),
+                })),
             );
-
-            if (!filledOut) {
-                return;
-            }
-
-            await this.migrationApiService.writePremapping(this.premapping);
         },
 
         async onPremappingChanged() {
             this.migrationStore.setIsLoading(true);
 
-            debounce(async () => {
-                await this.savePremapping();
-                this.migrationStore.setIsLoading(false);
-            }, 500)();
+            this.savePremappingDebounced?.();
         },
     },
 });
