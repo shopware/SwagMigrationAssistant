@@ -36,6 +36,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
 use SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase;
 use SwagMigrationAssistant\Migration\MigrationConfiguration;
+use SwagMigrationAssistant\Migration\Service\ProductSalesUpdater;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 use SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware\Converter\CategoryAttributeConverter;
@@ -997,4 +998,9 @@ return static function (ContainerConfigurator $container): void {
             service(PromotionDefinition::class),
         ])
         ->tag('shopware.migration.writer');
+
+    $services->set(ProductSalesUpdater::class)
+        ->args([
+            service(Connection::class),
+        ]);
 };

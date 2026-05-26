@@ -1,5 +1,7 @@
 # NEXT
 
+- #12748 - Fixed order migration so `product.sales` is recalculated from persisted order line items after migrated orders are written. Cancelled orders are excluded from the sales calculation.
+
 # 18.0.0
 
 - Fixed Shopware 6 sales channel migration so additional sales channels, such as Social Shopping, are now migrated correctly when their sales channel types already exist in the target shop before the migration starts
