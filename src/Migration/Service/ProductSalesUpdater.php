@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Migration\Service;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Checkout\Cart\LineItem\LineItem;
+use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
 use Shopware\Core\Checkout\Order\OrderStates;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\RetryableQuery;
@@ -86,37 +87,54 @@ final readonly class ProductSalesUpdater
             'outerProductIds' => $productByteIds,
             'liveVersion' => Uuid::fromHexToBytes(Defaults::LIVE_VERSION),
             'lineItemType' => LineItem::PRODUCT_LINE_ITEM_TYPE,
-            'cancelledState' => OrderStates::STATE_CANCELLED,
+            'orderStates' => [
+                OrderStates::STATE_OPEN,
+                OrderStates::STATE_COMPLETED,
+            ],
+            'transactionStates' => [
+                OrderTransactionStates::STATE_CANCELLED,
+                OrderTransactionStates::STATE_REFUNDED,
+            ],
         ];
 
         $types = [
             'productIds' => ArrayParameterType::BINARY,
             'outerProductIds' => ArrayParameterType::BINARY,
+            'orderStates' => ArrayParameterType::STRING,
+            'transactionStates' => ArrayParameterType::STRING,
         ];
 
         $sql = <<<'SQL'
             UPDATE product
             LEFT JOIN (
-                SELECT order_line_item.product_id, SUM(order_line_item.quantity) AS sales
-                FROM order_line_item
-                INNER JOIN `order`
-                    ON `order`.id = order_line_item.order_id
-                    AND `order`.version_id = order_line_item.order_version_id
-                    AND `order`.version_id = :liveVersion
-                INNER JOIN state_machine_state
-                    ON state_machine_state.id = `order`.state_id
-                WHERE order_line_item.product_id IN (:productIds)
-                    AND order_line_item.version_id = :liveVersion
-                    AND order_line_item.product_version_id = :liveVersion
-                    AND order_line_item.type = :lineItemType
-                    AND state_machine_state.technical_name != :cancelledState
-                GROUP BY order_line_item.product_id
+              SELECT order_line_item.product_id, SUM(order_line_item.quantity) AS sales
+              FROM order_line_item
+              INNER JOIN `order`
+                  ON `order`.id = order_line_item.order_id
+                  AND `order`.version_id = order_line_item.order_version_id
+                  AND `order`.version_id = :liveVersion
+              INNER JOIN state_machine_state order_state
+                  ON order_state.id = `order`.state_id
+              INNER JOIN order_transaction primary_transaction
+                  ON primary_transaction.id = `order`.primary_order_transaction_id
+                  AND primary_transaction.version_id = `order`.primary_order_transaction_version_id
+                  AND primary_transaction.order_id = `order`.id
+                  AND primary_transaction.order_version_id = `order`.version_id
+              INNER JOIN state_machine_state transaction_state
+                  ON transaction_state.id = primary_transaction.state_id
+              WHERE order_line_item.product_id IN (:productIds)
+                  AND order_line_item.version_id = :liveVersion
+                  AND order_line_item.product_version_id = :liveVersion
+                  AND order_line_item.type = :lineItemType
+                  AND order_state.technical_name IN (:orderStates)
+                  AND transaction_state.technical_name NOT IN (:transactionStates)
+              GROUP BY order_line_item.product_id
             ) product_sales
-                ON product_sales.product_id = product.id
+              ON product_sales.product_id = product.id
             SET product.sales = COALESCE(product_sales.sales, 0),
-                product.updated_at = NOW()
+              product.updated_at = NOW()
             WHERE product.id IN (:outerProductIds)
-                AND product.version_id = :liveVersion
+              AND product.version_id = :liveVersion
         SQL;
 
         RetryableQuery::retryable($this->connection, function () use ($sql, $parameters, $types): void {
