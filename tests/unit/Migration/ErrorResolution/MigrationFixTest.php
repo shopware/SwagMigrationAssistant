@@ -283,8 +283,7 @@ class MigrationFixTest extends TestCase
     #[DataProvider('dataWithMissingKeys')]
     public function testCreateFromDatabaseQueryWithErrors(array $data, string $expectedMissingKey): void
     {
-        $this->expectException(MigrationException::class);
-        $this->expectExceptionMessage(\sprintf('Missing key "%s" to construct MigrationFix.', $expectedMissingKey));
+        $this->expectExceptionObject(MigrationException::couldNotConvertFix($expectedMissingKey));
 
         MigrationFix::fromDatabaseQuery($data);
     }

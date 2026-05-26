@@ -36,6 +36,8 @@ class OrderWriter extends AbstractWriter
 
     public function writeData(array $data, Context $context): array
     {
+        // The migration payload still contains serialized transaction amounts.
+        // Convert them back to price structs before the DAL writes the orders.
         foreach ($data as &$item) {
             if (!isset($item['transactions']) || !\is_array($item['transactions'])) {
                 continue;
@@ -48,20 +50,27 @@ class OrderWriter extends AbstractWriter
         }
         unset($item);
 
-        // Re-migration case: product A is only visible before a line item switches to product B.
+        // Read the current products for the target orders before the upsert.
+        // In a re-migration, a line item can switch from product A to product B,
+        // so product A would no longer be reachable after the write.
         $orderIdsBeforeWrite = $this->extractOrderIdsFromPayload($data);
         $productIdsBeforeWrite = $this->productSalesUpdater->getProductIdsForOrders($orderIdsBeforeWrite);
 
-        // Write new orders or update already migrated orders.
+        // Let the regular writer create new orders or update already migrated orders.
         $result = parent::writeData($data, $context);
 
-        // Merge order IDs from payload and write result to also cover inserted orders.
+        // Collect all written order IDs. The payload IDs cover existing orders,
+        // while the DAL write result also confirms newly inserted orders.
         $writtenOrderIds = $this->extractOrderIdsFromWriteResults($result);
         $orderIds = $this->merge($orderIdsBeforeWrite, $writtenOrderIds);
+
+        // Read the products again after the write to catch new or changed line items.
         $productIdsAfterWrite = $this->productSalesUpdater->getProductIdsForOrders($orderIds);
         $affectedProductIds = $this->merge($productIdsBeforeWrite, $productIdsAfterWrite);
 
-        // Recalculate every product that was affected before or after write.
+        // Recalculate the final sales value for every affected product.
+        // The updater derives the value from persisted line items, so repeated
+        // migration runs replace the sales value instead of incrementing it again.
         $this->productSalesUpdater->updateProducts($affectedProductIds);
 
         return $result;

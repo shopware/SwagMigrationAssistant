@@ -782,8 +782,7 @@ class StatusControllerTest extends TestCase
             $this->context
         );
 
-        $this->expectException(MigrationException::class);
-        $this->expectExceptionMessage('No migration run found for run with id: "unknown".');
+        $this->expectExceptionObject(MigrationException::runNotFound());
 
         $this->controller->abortMigration($this->context);
     }
