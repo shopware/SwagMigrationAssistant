@@ -31,6 +31,7 @@ use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateDefinition;
 use Shopware\Core\System\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition;
 use Shopware\Core\System\DeliveryTime\DeliveryTimeDefinition;
 use Shopware\Core\System\SalesChannel\Aggregate\SalesChannelDomain\SalesChannelDomainDefinition;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Core\System\Salutation\SalutationDefinition;
 use Shopware\Core\System\Snippet\Aggregate\SnippetSet\SnippetSetDefinition;
 use Shopware\Core\System\Snippet\SnippetDefinition;
@@ -1176,7 +1177,7 @@ return static function (ContainerConfigurator $container): void {
         ->parent(AbstractWriter::class)
         ->args([
             service(EntityWriter::class),
-            service(\Shopware\Core\System\SalesChannel\SalesChannelDefinition::class),
+            service(SalesChannelDefinition::class),
         ])
         ->tag('shopware.migration.writer');
 

@@ -5,4 +5,12 @@
  * file that was distributed with this source code.
  */
 
-return require __DIR__ . '/../01-HappyCase/mapping.php';
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+
+return [
+    [
+        'entityName' => DefaultEntities::LANGUAGE,
+        'oldIdentifier' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
+        'newIdentifier' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
+    ],
+];
