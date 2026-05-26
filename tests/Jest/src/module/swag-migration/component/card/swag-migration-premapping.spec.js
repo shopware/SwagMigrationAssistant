@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import 'SwagMigrationAssistant/module/swag-migration/store/migration.store';
 import swagMigrationPremapping from 'SwagMigrationAssistant/module/swag-migration/component/card/swag-migration-premapping';
 import { fixturePreMapping } from '@/fixture';
 
@@ -9,6 +10,20 @@ const migrationApiServiceMock = {
     writePremapping: jest.fn(() => Promise.resolve()),
 };
 
+const swagMigrationTabCardStub = {
+    name: 'swag-migration-tab-card',
+    props: ['items'],
+    template: `
+        <div>
+            <slot
+                v-for="item in items"
+                name="items"
+                :item="item"
+            />
+        </div>
+    `,
+};
+
 async function createWrapper() {
     return mount(await Shopware.Component.build('swag-migration-premapping'), {
         global: {
@@ -17,7 +32,7 @@ async function createWrapper() {
                 migrationApiService: migrationApiServiceMock,
             },
             stubs: {
-                'swag-migration-tab-card': true,
+                'swag-migration-tab-card': swagMigrationTabCardStub,
                 'swag-migration-grid-selection': true,
             },
         },
@@ -27,10 +42,8 @@ async function createWrapper() {
 describe('module/swag-migration/component/card/swag-migration-premapping', () => {
     let store = null;
 
-    beforeEach(async () => {
+    beforeEach(() => {
         jest.clearAllMocks();
-
-        await import('SwagMigrationAssistant/module/swag-migration/store/migration.store');
 
         store = Shopware.Store.get('swagMigration');
         store.$reset();
@@ -55,8 +68,12 @@ describe('module/swag-migration/component/card/swag-migration-premapping', () =>
         ];
 
         const wrapper = await createWrapper();
+        jest.useFakeTimers();
+        const gridSelection = wrapper.findComponent({ name: 'swag-migration-grid-selection' });
 
-        await wrapper.vm.savePremapping();
+        gridSelection.vm.$emit('update:value');
+        jest.advanceTimersByTime(500);
+        await flushPromises();
 
         expect(migrationApiServiceMock.writePremapping).toHaveBeenCalledTimes(1);
         expect(migrationApiServiceMock.writePremapping).toHaveBeenCalledWith([
@@ -86,12 +103,12 @@ describe('module/swag-migration/component/card/swag-migration-premapping', () =>
             },
         ];
 
-        store.dataSelectionIds = ['customersOrders'];
         migrationApiServiceMock.generatePremapping.mockResolvedValueOnce(regeneratedPremapping);
 
-        const wrapper = await createWrapper();
+        await createWrapper();
 
-        await wrapper.vm.fetchPremapping();
+        store.setDataSelectionIds(['customersOrders']);
+        await flushPromises();
 
         expect(migrationApiServiceMock.generatePremapping).toHaveBeenCalledTimes(1);
         expect(migrationApiServiceMock.generatePremapping).toHaveBeenCalledWith(['customersOrders']);
@@ -112,9 +129,10 @@ describe('module/swag-migration/component/card/swag-migration-premapping', () =>
         store.premapping = fixturePreMapping;
 
         const wrapper = await createWrapper();
+        const gridSelection = wrapper.findComponent({ name: 'swag-migration-grid-selection' });
 
-        await wrapper.vm.onPremappingChanged();
-        await wrapper.vm.onPremappingChanged();
+        gridSelection.vm.$emit('update:value');
+        gridSelection.vm.$emit('update:value');
 
         expect(store.isLoading).toBe(true);
         expect(migrationApiServiceMock.writePremapping).not.toHaveBeenCalled();

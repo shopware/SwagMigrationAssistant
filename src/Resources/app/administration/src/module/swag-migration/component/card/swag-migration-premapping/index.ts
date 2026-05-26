@@ -15,7 +15,6 @@ const { debounce } = Shopware.Utils;
 export interface SwagMigrationPremappingData {
     isLoading: boolean;
     migrationStore: MigrationStore;
-    savePremappingDebounced: null | (() => void);
 }
 
 /**
@@ -33,18 +32,7 @@ export default Shopware.Component.wrapComponentConfig({
         return {
             isLoading: false,
             migrationStore: Store.get(MIGRATION_STORE_ID),
-            savePremappingDebounced: null,
         };
-    },
-
-    created() {
-        this.savePremappingDebounced = debounce(async () => {
-            try {
-                await this.savePremapping();
-            } finally {
-                this.migrationStore.setIsLoading(false);
-            }
-        }, 500);
     },
 
     computed: {
@@ -98,7 +86,13 @@ export default Shopware.Component.wrapComponentConfig({
         async onPremappingChanged() {
             this.migrationStore.setIsLoading(true);
 
-            this.savePremappingDebounced?.();
+            this.savePremappingDebounced();
         },
+
+        savePremappingDebounced: debounce(function savePremappingDebounced() {
+            void this.savePremapping().finally(() => {
+                this.migrationStore.setIsLoading(false);
+            });
+        }, 500),
     },
 });
