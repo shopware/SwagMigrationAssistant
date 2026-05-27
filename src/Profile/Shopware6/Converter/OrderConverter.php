@@ -192,6 +192,8 @@ class OrderConverter extends ShopwareConverter
     private function updateLineItems(array &$lineItems): void
     {
         foreach ($lineItems as &$converted) {
+            unset($converted['promotionId']);
+
             if (!isset($converted['productId'])) {
                 unset($converted['referencedId'], $converted['payload']['productNumber']);
             }

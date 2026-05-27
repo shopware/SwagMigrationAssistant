@@ -32,6 +32,8 @@ class PromotionConverter extends ShopwareConverter
     {
         $converted = $data;
 
+        unset($converted['promotionId']);
+
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
             DefaultEntities::PROMOTION,
             $data['id'],

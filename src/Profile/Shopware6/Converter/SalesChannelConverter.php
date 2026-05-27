@@ -44,6 +44,7 @@ class SalesChannelConverter extends ShopwareConverter
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
+        unset($converted['hreflangDefaultDomainId'], $converted['homeCmsPageId']);
 
         if (!$this->salesChannelTypeLookup->hasSalesChannelType($converted['typeId'], $this->context)) {
             $this->loggingService->log(
