@@ -143,6 +143,10 @@ final class DefaultEntities
 
     final public const PRODUCT = 'product';
 
+    final public const PRODUCT_CANONICAL_ASSOCIATION = 'product_canonical_association';
+
+    final public const PRODUCT_CMS_PAGE_ASSOCIATION = 'product_cms_page_association';
+
     final public const PRODUCT_CONTAINER = 'product_container';
 
     final public const PRODUCT_CUSTOM_FIELD = 'product_custom_field';
@@ -216,6 +220,8 @@ final class DefaultEntities
     final public const SALUTATION = 'salutation';
 
     final public const SALES_CHANNEL = 'sales_channel';
+
+    final public const SALES_CHANNEL_HOME_CMS_PAGE_ASSOCIATION = 'sales_channel_home_cms_page_association';
 
     final public const SALES_CHANNEL_DOMAIN = 'sales_channel_domain';
 
