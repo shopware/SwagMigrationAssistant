@@ -73,29 +73,26 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            const filledOut = this.premapping.every((group: MigrationPremapping) =>
-                group.mapping.every(
-                    (mapping) =>
-                        mapping.destinationUuid !== null &&
-                        mapping.destinationUuid !== undefined &&
-                        mapping.destinationUuid !== '',
-                ),
+            await this.migrationApiService.writePremapping(
+                this.premapping.map((group: MigrationPremapping) => ({
+                    ...group,
+                    mapping: group.mapping.filter((mapping) => {
+                        return !!mapping.destinationUuid;
+                    }),
+                })),
             );
-
-            if (!filledOut) {
-                return;
-            }
-
-            await this.migrationApiService.writePremapping(this.premapping);
         },
 
         async onPremappingChanged() {
             this.migrationStore.setIsLoading(true);
 
-            debounce(async () => {
-                await this.savePremapping();
-                this.migrationStore.setIsLoading(false);
-            }, 500)();
+            this.savePremappingDebounced();
         },
+
+        savePremappingDebounced: debounce(function savePremappingDebounced() {
+            void this.savePremapping().finally(() => {
+                this.migrationStore.setIsLoading(false);
+            });
+        }, 500),
     },
 });
