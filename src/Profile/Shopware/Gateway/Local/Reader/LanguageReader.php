@@ -86,12 +86,22 @@ class LanguageReader extends AbstractReader implements ReaderInterface
     private function fetchCustomerLocaleIds(MigrationContextInterface $migrationContext): array
     {
         $connection = $this->getConnection($migrationContext);
+    
         $query = $connection->createQueryBuilder();
         $query->from('s_user', 'customer');
-        $query->addSelect('customer.language');
+    
+        $query->leftJoin(
+            'customer',
+            's_core_shops',
+            'customerlanguageshop',
+            'customer.language = customerlanguageshop.id'
+        );
+    
+        $query->addSelect('customerlanguageshop.locale_id');
         $query->distinct();
         $query->where('customer.language IS NOT NULL');
-
+        $query->andWhere('customerlanguageshop.locale_id IS NOT NULL');
+    
         return $query->executeQuery()->fetchFirstColumn();
     }
 
