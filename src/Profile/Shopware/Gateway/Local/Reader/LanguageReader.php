@@ -96,11 +96,19 @@ class LanguageReader extends AbstractReader implements ReaderInterface
             'customerlanguageshop',
             'customer.language = customerlanguageshop.id'
         );
+
+        $query->leftJoin(
+            'customerlanguageshop',
+            's_core_locales',
+            'customerlocales',
+            'customerlanguageshop.locale_id = customerlocales.id'
+        );
     
-        $query->addSelect('customerlanguageshop.locale_id');
+        $query->addSelect('customerlocales.id');
         $query->distinct();
         $query->where('customer.language IS NOT NULL');
         $query->andWhere('customerlanguageshop.locale_id IS NOT NULL');
+        $query->andWhere('customerlocales.id IS NOT NULL');
     
         return $query->executeQuery()->fetchFirstColumn();
     }
