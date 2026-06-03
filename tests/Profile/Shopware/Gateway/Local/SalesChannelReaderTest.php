@@ -83,6 +83,6 @@ class SalesChannelReaderTest extends TestCase
 
         static::assertNotNull($dataSet);
         static::assertSame($dataSet::getEntity(), $totalStruct->getEntityName());
-        static::assertSame(2, $totalStruct->getTotal());
+        static::assertSame(3, $totalStruct->getTotal());
     }
 }
