@@ -74,7 +74,7 @@ class CustomerReaderTest extends TestCase
         static::assertSame('5', $data[2]['default_billing_address_id']);
         static::assertSame('5', $data[2]['default_shipping_address_id']);
         static::assertSame('prepayment', $data[2]['defaultpayment']['name']);
-        static::assertSame('de-DE', $data[2]['customerlanguage']['locale']);
+        static::assertSame('ro-RO', $data[2]['customerlanguage']['locale']);
         static::assertSame('0', $data[2]['shop']['customer_scope']);
         static::assertCount(1, $data[2]['addresses']);
     }

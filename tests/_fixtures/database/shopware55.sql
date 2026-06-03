@@ -4001,7 +4001,7 @@ CREATE TABLE `s_core_shops` (
 
 LOCK TABLES `s_core_shops` WRITE;
 /*!40000 ALTER TABLE `s_core_shops` DISABLE KEYS */;
-INSERT INTO `s_core_shops` VALUES (1,NULL,'Deutsch',NULL,0,'sw55.local','',NULL,'',0,23,23,3,1,1,1,NULL,0,1,1),(2,1,'English','English',0,NULL,NULL,NULL,'',0,NULL,NULL,39,2,1,1,2,0,0,1);
+INSERT INTO `s_core_shops` VALUES (1,NULL,'Deutsch',NULL,0,'sw55.local','',NULL,'',0,23,23,3,1,1,1,NULL,0,1,1),(2,1,'English','English',0,NULL,NULL,NULL,'',0,NULL,NULL,39,2,1,1,2,0,0,1),(3, 1, 'Romanian', 'Romanian', 0, NULL, NULL, NULL, '', 0, NULL, NULL, 39, 192, 1, 1, 3, 0, 0, 1);
 /*!40000 ALTER TABLE `s_core_shops` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -7658,7 +7658,7 @@ CREATE TABLE `s_user` (
 
 LOCK TABLES `s_user` WRITE;
 /*!40000 ALTER TABLE `s_user` DISABLE KEYS */;
-INSERT INTO `s_user` VALUES (1,'a256a310bc1e5db755fd392c524028a8','md5','test@example.com',1,0,'',5,0,NULL,NULL,'2011-11-23','2012-01-04 14:12:05','uiorqd755gaar8dn89ukp178c7',0,'',0,'EK',0,'1',1,'',NULL,'',0,NULL,1,3,NULL,'mr','Max','Mustermann',NULL,'20001',NULL,NULL,'2019-11-13 13:47:27',NULL),(2,'352db51c3ff06159d380d3d9935ec814','md5','mustermann@b2b.de',1,0,'',4,0,NULL,NULL,'2012-08-30','2012-08-30 11:43:17','66e9b10064a19b1fcf6eb9310c0753866c764836',0,'0',0,'H',4,'1',1,'',NULL,'',0,NULL,2,4,NULL,'mr','Händler','Kundengruppe-Netto',NULL,'20003',NULL,NULL,'2019-11-13 13:47:27',NULL),(3,'$2y$10$NVX9a/qzhoo0jS6U3i7YH.jBluI0hsOFqCnw/obStDxxkexPlDuHC','bcrypt','k.luetjann@shopware.com',1,0,'',5,0,NULL,NULL,'2020-02-26','2020-02-26 08:01:53','bioapqo043f3csuoctclulor7t',0,'0',0,'H',0,'1',1,'',NULL,'',0,NULL,5,5,'','mr','Krispin','Luetjann',NULL,'20005','27e8f8d6-a59d-476e-a6f0-9fcbbd03faf1.1','2020-02-26 08:00:31','2020-02-26 07:40:50',NULL);
+INSERT INTO `s_user` VALUES (1,'a256a310bc1e5db755fd392c524028a8','md5','test@example.com',1,0,'',5,0,NULL,NULL,'2011-11-23','2012-01-04 14:12:05','uiorqd755gaar8dn89ukp178c7',0,'',0,'EK',0,'1',1,'',NULL,'',0,NULL,1,3,NULL,'mr','Max','Mustermann',NULL,'20001',NULL,NULL,'2019-11-13 13:47:27',NULL),(2,'352db51c3ff06159d380d3d9935ec814','md5','mustermann@b2b.de',1,0,'',4,0,NULL,NULL,'2012-08-30','2012-08-30 11:43:17','66e9b10064a19b1fcf6eb9310c0753866c764836',0,'0',0,'H',4,'1',1,'',NULL,'',0,NULL,2,4,NULL,'mr','Händler','Kundengruppe-Netto',NULL,'20003',NULL,NULL,'2019-11-13 13:47:27',NULL),(3,'$2y$10$NVX9a/qzhoo0jS6U3i7YH.jBluI0hsOFqCnw/obStDxxkexPlDuHC','bcrypt','k.luetjann@shopware.com',1,0,'',5,0,NULL,NULL,'2020-02-26','2020-02-26 08:01:53','bioapqo043f3csuoctclulor7t',0,'0',0,'H',0,'3',3,'',NULL,'',0,NULL,5,5,'','mr','Krispin','Luetjann',NULL,'20005','27e8f8d6-a59d-476e-a6f0-9fcbbd03faf1.1','2020-02-26 08:00:31','2020-02-26 07:40:50',NULL);
 /*!40000 ALTER TABLE `s_user` ENABLE KEYS */;
 UNLOCK TABLES;
 

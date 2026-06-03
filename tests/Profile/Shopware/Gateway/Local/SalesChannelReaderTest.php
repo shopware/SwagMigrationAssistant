@@ -60,11 +60,15 @@ class SalesChannelReaderTest extends TestCase
         static::assertSame('de-DE', $data[0]['_locale']);
         static::assertSame('EUR', $data[0]['currency']);
 
-        static::assertCount(1, $data[0]['children']);
+        static::assertCount(2, $data[0]['children']);
         static::assertSame('39', $data[0]['children'][0]['category_id']);
         static::assertSame('en-GB', $data[0]['children'][0]['locale']);
         static::assertSame('de-DE', $data[0]['children'][0]['_locale']);
         static::assertSame('EUR', $data[0]['children'][0]['currency']);
+        static::assertSame('39', $data[0]['children'][1]['category_id']);
+        static::assertSame('ro-RO', $data[0]['children'][1]['locale']);
+        static::assertSame('de-DE', $data[0]['children'][1]['_locale']);
+        static::assertSame('EUR', $data[0]['children'][1]['currency']);
     }
 
     public function testReadTotal(): void
