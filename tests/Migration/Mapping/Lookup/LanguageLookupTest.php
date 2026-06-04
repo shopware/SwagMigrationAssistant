@@ -62,11 +62,11 @@ class LanguageLookupTest extends TestCase
     public function testGetDoesNotCacheMissingLanguage(): void
     {
         $context = Context::createDefaultContext();
-    
+
         $connection = static::getContainer()->get(Connection::class);
         $languageRepository = static::getContainer()->get('language.repository');
         $localeRepository = static::getContainer()->get('locale.repository');
-    
+
         $locale = $connection->fetchAssociative('
             SELECT LOWER(HEX(locale.id)) AS id, locale.code
             FROM locale
@@ -74,26 +74,26 @@ class LanguageLookupTest extends TestCase
             WHERE language.id IS NULL
             LIMIT 1
         ');
-    
+
         if ($locale === false) {
             static::markTestSkipped('No locale without language found.');
         }
-    
+
         static::assertArrayHasKey('id', $locale);
         static::assertArrayHasKey('code', $locale);
         static::assertIsString($locale['id']);
         static::assertIsString($locale['code']);
-    
+
         $languageLookup = new LanguageLookup(
             $languageRepository,
             new LocaleLookup($localeRepository)
         );
-    
+
         static::assertNull($languageLookup->get($locale['code'], $context));
-    
+
         $languageId = Uuid::randomHex();
         $languageCreated = false;
-    
+
         try {
             $languageRepository->create([
                 [
@@ -103,9 +103,9 @@ class LanguageLookupTest extends TestCase
                     'translationCodeId' => $locale['id'],
                 ],
             ], $context);
-    
+
             $languageCreated = true;
-    
+
             static::assertSame($languageId, $languageLookup->get($locale['code'], $context));
         } finally {
             if ($languageCreated) {
