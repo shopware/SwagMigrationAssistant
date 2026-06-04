@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Migration\Mapping\Lookup;
 
+use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
@@ -56,6 +57,63 @@ class LanguageLookupTest extends TestCase
         $documentTypeLookup = $this->getMockedLanguageLookup();
 
         static::assertSame($expectedResult, $documentTypeLookup->get($localeCode, Context::createDefaultContext()));
+    }
+
+    public function testGetDoesNotCacheMissingLanguage(): void
+    {
+        $context = Context::createDefaultContext();
+    
+        $connection = static::getContainer()->get(Connection::class);
+        $languageRepository = static::getContainer()->get('language.repository');
+        $localeRepository = static::getContainer()->get('locale.repository');
+    
+        $locale = $connection->fetchAssociative('
+            SELECT LOWER(HEX(locale.id)) AS id, locale.code
+            FROM locale
+            LEFT JOIN language ON language.locale_id = locale.id
+            WHERE language.id IS NULL
+            LIMIT 1
+        ');
+    
+        if ($locale === false) {
+            static::markTestSkipped('No locale without language found.');
+        }
+    
+        static::assertArrayHasKey('id', $locale);
+        static::assertArrayHasKey('code', $locale);
+        static::assertIsString($locale['id']);
+        static::assertIsString($locale['code']);
+    
+        $languageLookup = new LanguageLookup(
+            $languageRepository,
+            new LocaleLookup($localeRepository)
+        );
+    
+        static::assertNull($languageLookup->get($locale['code'], $context));
+    
+        $languageId = Uuid::randomHex();
+        $languageCreated = false;
+    
+        try {
+            $languageRepository->create([
+                [
+                    'id' => $languageId,
+                    'name' => 'Test language ' . $locale['code'],
+                    'localeId' => $locale['id'],
+                    'translationCodeId' => $locale['id'],
+                ],
+            ], $context);
+    
+            $languageCreated = true;
+    
+            static::assertSame($languageId, $languageLookup->get($locale['code'], $context));
+        } finally {
+            if ($languageCreated) {
+                $languageRepository->delete([
+                    ['id' => $languageId],
+                ], $context);
+            }
+        }
     }
 
     #[DataProvider('getLanguageIdData')]
