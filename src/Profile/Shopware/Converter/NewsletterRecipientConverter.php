@@ -117,6 +117,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
             return new ConvertStruct(null, $oldData);
         }
 
+        $converted['status'] = $status;
         $converted['languageId'] = $this->languageLookup->get($this->locale, $context);
         $converted['salesChannelId'] = $this->getSalesChannel($data);
 
