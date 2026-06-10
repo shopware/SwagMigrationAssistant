@@ -14,6 +14,7 @@ use Shopware\Core\Content\Product\Stock\StockStorage;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\RateLimiter\RateLimiter;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Controller\ErrorResolutionController;
@@ -93,6 +94,7 @@ use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
 use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistry;
+use SwagMigrationAssistant\RateLimiter\MigrationApiRateLimiter;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 return static function (ContainerConfigurator $container): void {
@@ -359,6 +361,9 @@ return static function (ContainerConfigurator $container): void {
             service(MigrationFingerprintService::class),
         ]);
 
+    $services->set(MigrationApiRateLimiter::class)
+        ->args([service(RateLimiter::class)]);
+
     $services->set(StatusController::class)
         ->public()
         ->args([
@@ -380,6 +385,7 @@ return static function (ContainerConfigurator $container): void {
             service(HistoryService::class),
             service(LogGroupingService::class),
             '%shopware.api.max_limit%',
+            service(MigrationApiRateLimiter::class),
         ])
         ->call('setContainer', [service('service_container')]);
 
