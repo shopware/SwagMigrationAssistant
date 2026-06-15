@@ -47,7 +47,7 @@ class HistoryController extends AbstractController
     )]
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
     {
-        $this->rateLimiter->ensureLogAccessAccepted($request);
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::LOG_ACCESS, $request);
 
         $runUuid = $request->query->getAlnum('runUuid');
 
@@ -79,7 +79,7 @@ class HistoryController extends AbstractController
     )]
     public function downloadLogsOfRun(Request $request, Context $context): StreamedResponse
     {
-        $this->rateLimiter->ensureDownloadAccepted($request);
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::DOWNLOAD, $request);
 
         $runUuid = $request->request->getAlnum('runUuid');
 
@@ -112,7 +112,7 @@ class HistoryController extends AbstractController
     )]
     public function getLogGroups(Request $request, Context $context): JsonResponse
     {
-        $this->rateLimiter->ensureLogAccessAccepted($request);
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::LOG_ACCESS, $request);
 
         $runId = $request->query->getAlnum('runId');
 
@@ -165,7 +165,7 @@ class HistoryController extends AbstractController
     )]
     public function getUnresolvedLogsBatchInformation(Request $request): JsonResponse
     {
-        $this->rateLimiter->ensureLogAccessAccepted($request);
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::LOG_ACCESS, $request);
 
         $runId = $request->request->getAlnum('runId');
 
@@ -215,7 +215,7 @@ class HistoryController extends AbstractController
     )]
     public function getLogEntityIdsWithoutFix(Request $request): JsonResponse
     {
-        $this->rateLimiter->ensureLogAccessAccepted($request);
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::LOG_ACCESS, $request);
 
         $runId = $request->request->getAlnum('runId');
 

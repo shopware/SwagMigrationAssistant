@@ -24,14 +24,9 @@ class MigrationApiRateLimiter
     ) {
     }
 
-    public function ensureLogAccessAccepted(Request $request): void
+    public function ensureAccepted(string $route, Request $request): void
     {
-        $this->rateLimiter->ensureAccepted(self::LOG_ACCESS, $this->resolveKey($request));
-    }
-
-    public function ensureDownloadAccepted(Request $request): void
-    {
-        $this->rateLimiter->ensureAccepted(self::DOWNLOAD, $this->resolveKey($request));
+        $this->rateLimiter->ensureAccepted($route, $this->resolveKey($request));
     }
 
     private function resolveKey(Request $request): string

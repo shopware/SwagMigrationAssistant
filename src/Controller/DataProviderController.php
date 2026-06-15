@@ -136,7 +136,7 @@ class DataProviderController extends AbstractController
     )]
     public function generateDocument(Request $request, Context $context): JsonResponse
     {
-        $this->rateLimiter->ensureDownloadAccepted($request);
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::DOWNLOAD, $request);
 
         $identifier = (string) $request->query->get('identifier');
 
@@ -165,7 +165,7 @@ class DataProviderController extends AbstractController
     )]
     public function downloadPrivateFile(Request $request, Context $context): StreamedResponse|RedirectResponse
     {
-        $this->rateLimiter->ensureDownloadAccepted($request);
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::DOWNLOAD, $request);
 
         $identifier = (string) $request->query->get('identifier');
 
