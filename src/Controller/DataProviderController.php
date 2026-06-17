@@ -25,6 +25,7 @@ use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderRegistryInterface;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentServiceInterface;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\RateLimiter\MigrationApiRateLimiter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -50,6 +51,7 @@ class DataProviderController extends AbstractController
         private readonly EntityRepository $mediaRepository,
         private readonly MediaService $mediaService,
         private readonly FilesystemOperator $privateFilesystem,
+        private readonly MigrationApiRateLimiter $rateLimiter,
     ) {
     }
 
@@ -134,6 +136,8 @@ class DataProviderController extends AbstractController
     )]
     public function generateDocument(Request $request, Context $context): JsonResponse
     {
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::DOWNLOAD, $request);
+
         $identifier = (string) $request->query->get('identifier');
 
         if ($identifier === '') {
@@ -161,6 +165,8 @@ class DataProviderController extends AbstractController
     )]
     public function downloadPrivateFile(Request $request, Context $context): StreamedResponse|RedirectResponse
     {
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::DOWNLOAD, $request);
+
         $identifier = (string) $request->query->get('identifier');
 
         if ($identifier === '') {

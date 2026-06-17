@@ -15,6 +15,7 @@ use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\DependencyInjection\CompilerPass\MigrationRateLimiterCompilerPass;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\ErrorResolution\Entity\SwagMigrationFixDefinition;
@@ -65,6 +66,8 @@ class SwagMigrationAssistant extends Plugin
         $phpLoader->load('profile.php');
         $phpLoader->load('subscriber.php');
         $phpLoader->load('writer.php');
+
+        $container->addCompilerPass(new MigrationRateLimiterCompilerPass());
     }
 
     public function rebuildContainer(): bool
