@@ -13,9 +13,12 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\RateLimiter\Exception\RateLimitExceededException;
 use Shopware\Core\Framework\Routing\RoutingException;
+use Shopware\Core\Framework\Test\RateLimiter\DisableRateLimiterCompilerPass;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Controller\HistoryController;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\History\HistoryService;
@@ -56,8 +59,20 @@ class HistoryControllerTest extends TestCase
 
     private string $connectionId;
 
+    public static function setUpBeforeClass(): void
+    {
+        DisableRateLimiterCompilerPass::disableNoLimit();
+    }
+
+    public static function tearDownAfterClass(): void
+    {
+        DisableRateLimiterCompilerPass::enableNoLimit();
+    }
+
     protected function setUp(): void
     {
+        static::getContainer()->get('cache.rate_limiter')->clear();
+
         $this->context = Context::createDefaultContext();
         $this->runUuid = Uuid::randomHex();
         $this->historyService = static::getContainer()->get(HistoryService::class);
@@ -116,6 +131,11 @@ class HistoryControllerTest extends TestCase
         ], $this->context);
     }
 
+    protected function tearDown(): void
+    {
+        static::getContainer()->get('cache.rate_limiter')->clear();
+    }
+
     public function testGetGroupedLogsOfRunWithoutUuid(): void
     {
         $request = new Request();
@@ -155,6 +175,32 @@ class HistoryControllerTest extends TestCase
         $response = $this->controller->downloadLogsOfRun($request, $this->context);
 
         static::assertSame('text/plain', $response->headers->get('Content-type'));
+    }
+
+    public function testGetGroupedLogsOfRunIsRateLimited(): void
+    {
+        $request = new Request(['runUuid' => $this->runUuid]);
+        $request->attributes->set(PlatformRequest::ATTRIBUTE_OAUTH_ACCESS_TOKEN_ID, 'rate-limited-token');
+
+        for ($i = 0; $i < 30; ++$i) {
+            $this->controller->getGroupedLogsOfRun($request, $this->context);
+        }
+
+        $this->expectException(RateLimitExceededException::class);
+        $this->controller->getGroupedLogsOfRun($request, $this->context);
+    }
+
+    public function testDownloadLogsOfRunIsRateLimited(): void
+    {
+        $request = new Request([], ['runUuid' => $this->runUuid]);
+        $request->attributes->set(PlatformRequest::ATTRIBUTE_OAUTH_ACCESS_TOKEN_ID, 'rate-limited-download-token');
+
+        for ($i = 0; $i < 10; ++$i) {
+            $this->controller->downloadLogsOfRun($request, $this->context);
+        }
+
+        $this->expectException(RateLimitExceededException::class);
+        $this->controller->downloadLogsOfRun($request, $this->context);
     }
 
     public function testGetLogChunk(): void
