@@ -57,8 +57,6 @@ class LanguageLookup implements ResetInterface
 
         $language = $this->getLanguage($localeUuid, $context);
         if (!$language instanceof LanguageEntity) {
-            $this->cache[$localeCode] = null;
-
             return null;
         }
 

@@ -58,6 +58,55 @@ class LanguageLookupTest extends TestCase
         static::assertSame($expectedResult, $documentTypeLookup->get($localeCode, Context::createDefaultContext()));
     }
 
+    public function testGetDoesNotCacheMissingLanguage(): void
+    {
+        $context = Context::createDefaultContext();
+
+        $languageRepository = static::getContainer()->get('language.repository');
+        $localeRepository = static::getContainer()->get('locale.repository');
+
+        $localeId = Uuid::randomHex();
+        $localeCode = 'en-US-' . Uuid::randomHex();
+        $languageId = Uuid::randomHex();
+
+        try {
+            $localeRepository->create([
+                [
+                    'id' => $localeId,
+                    'code' => $localeCode,
+                    'name' => 'Test Locale',
+                    'territory' => 'Test Territory',
+                ],
+            ], $context);
+
+            $languageLookup = new LanguageLookup(
+                $languageRepository,
+                new LocaleLookup($localeRepository)
+            );
+
+            static::assertNull($languageLookup->get($localeCode, $context));
+
+            $languageRepository->create([
+                [
+                    'id' => $languageId,
+                    'name' => 'Test language',
+                    'localeId' => $localeId,
+                    'translationCodeId' => $localeId,
+                ],
+            ], $context);
+
+            static::assertSame($languageId, $languageLookup->get($localeCode, $context));
+        } finally {
+            $languageRepository->delete([
+                ['id' => $languageId],
+            ], $context);
+
+            $localeRepository->delete([
+                ['id' => $localeId],
+            ], $context);
+        }
+    }
+
     #[DataProvider('getLanguageIdData')]
     public function testGetDefaultLanguageEntity(string $languageId, ?string $expectedResult): void
     {
