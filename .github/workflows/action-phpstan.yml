@@ -18,6 +18,7 @@ jobs:
                   DATABASE_URL: mysql://root@127.0.0.1/shopware
               with:
                   extensionName: ${{ inputs.extension_name }}
+                  shopwareVersion: trunk
                   install: true
                   install-admin: true
                   install-storefront: true
