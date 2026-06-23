@@ -599,6 +599,10 @@ abstract class CustomerConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
     protected function applyCustomerLanguage(
         array $data,
         array &$converted,
