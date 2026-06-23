@@ -91,7 +91,7 @@ class ProductSalesUpdaterTest extends TestCase
 
         static::assertEqualsCanonicalizing(
             [$soldProductId, $cancelledProductId, $refundedProductId, $transactionCancelledProductId],
-            $this->productSalesUpdater->getProductIdsForOrders([$openOrderId, $cancelledOrderId, $refundedOrderId, $transactionCancelledOrderId, 'invalid', $openOrderId])
+            array_values($this->productSalesUpdater->getProductIdsForOrders([$openOrderId, $cancelledOrderId, $refundedOrderId, $transactionCancelledOrderId, 'invalid', $openOrderId]))
         );
 
         $productIds = [$soldProductId, $cancelledProductId, $refundedProductId, $transactionCancelledProductId, 'invalid', $soldProductId];
