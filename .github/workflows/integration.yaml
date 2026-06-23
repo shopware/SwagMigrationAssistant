@@ -57,6 +57,7 @@ jobs:
               uses: shopware/github-actions/setup-extension@main
               with:
                   extensionName: ${{ env.EXTENSION_NAME }}
+                  shopwareVersion: ${{ env.PLATFORM_BRANCH }}
                   install: true
                   install-admin: true
                   install-storefront: true
