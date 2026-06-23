@@ -69,6 +69,7 @@ use SwagMigrationAssistant\DataProvider\Provider\Data\UnitProvider;
 use SwagMigrationAssistant\DataProvider\Provider\Data\UserProvider;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderRegistry;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentService;
+use SwagMigrationAssistant\RateLimiter\MigrationApiRateLimiter;
 
 return static function (ContainerConfigurator $container): void {
     $services = $container->services();
@@ -85,6 +86,7 @@ return static function (ContainerConfigurator $container): void {
             service('media.repository'),
             service(MediaService::class),
             service('shopware.filesystem.private'),
+            service(MigrationApiRateLimiter::class),
         ])
         ->call('setContainer', [service('service_container')]);
 

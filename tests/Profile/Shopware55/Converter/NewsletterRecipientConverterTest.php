@@ -133,5 +133,6 @@ class NewsletterRecipientConverterTest extends TestCase
         static::assertArrayHasKey('email', $converted);
         static::assertArrayHasKey('salutationId', $converted);
         static::assertArrayHasKey('languageId', $converted);
+        static::assertArrayHasKey('status', $converted);
     }
 }
