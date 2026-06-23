@@ -56,6 +56,10 @@ parameters:
         - identifier: parameterByRef.type
           path: src/Profile/Shopware/Converter/ShippingMethodConverter.php
 
+        # This rule's exemption only accepts @see targets in the \Tests\Integration\ namespace,
+        # which plugins (namespace SwagMigrationAssistant\Test\) cannot satisfy.
+        - identifier: shopware.codeCoverageIgnoreOnLogic
+
 rules:
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\CoversAttributeRule
