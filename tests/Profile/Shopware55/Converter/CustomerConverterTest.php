@@ -442,5 +442,4 @@ class CustomerConverterTest extends TestCase
         static::assertNotNull($converted);
         static::assertSame($languageId, $converted['languageId']);
     }
-
 }
