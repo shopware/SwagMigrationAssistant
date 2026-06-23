@@ -229,6 +229,19 @@ abstract class CustomerConverter extends ShopwareConverter
             }
         }
 
+        // If the customer language is not set, we use the main locale of the migration context to set the languageId
+        if (!isset($converted['languageId'])) {
+            $languageUuid = $this->resolveLanguageId(
+                $this->mainLocale,
+                $this->languageLookup,
+                $context,
+            );
+
+            if ($languageUuid !== null) {
+                $converted['languageId'] = $languageUuid;
+            }
+        }
+
         unset(
             $data['addresses'],
             $data['salutation'],

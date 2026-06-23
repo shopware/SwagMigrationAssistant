@@ -51,6 +51,7 @@ class CustomerReaderTest extends TestCase
 
         $this->dbConnection = $connectionFactory->createDatabaseConnection($this->migrationContext);
 
+        // Insert a new shop with a different locale to test the customer reader
         $this->dbConnection->executeStatement(
             'INSERT INTO s_core_shops (
                 id, name, position, hosts, secure, locale_id, customer_scope, `default`, active
@@ -78,6 +79,7 @@ class CustomerReaderTest extends TestCase
 
     protected function tearDown(): void
     {
+        // Reset the language of the customer to the default shop's locale
         $this->dbConnection->executeStatement('UPDATE s_user SET language = :language WHERE id = :id', [
             'language' => 1,
             'id' => 1,

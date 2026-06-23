@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -86,10 +85,11 @@ class LanguageReader extends AbstractReader implements ReaderInterface
     private function fetchCustomerLocaleIds(MigrationContextInterface $migrationContext): array
     {
         $connection = $this->getConnection($migrationContext);
-
         $query = $connection->createQueryBuilder();
         $query->from('s_user', 'customer');
 
+        // customer.language maps to the shopID and not directly to the localeID
+        // so we need to join the shop table to get the localeID and then join the locale table to get the locale code
         $query->leftJoin(
             'customer',
             's_core_shops',
