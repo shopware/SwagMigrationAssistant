@@ -66,7 +66,7 @@ class LanguageLookupTest extends TestCase
         $localeRepository = static::getContainer()->get('locale.repository');
 
         $localeId = Uuid::randomHex();
-        $localeCode = 'zz-ZZ';
+        $localeCode = 'en-US-' . Uuid::randomHex();
         $languageId = Uuid::randomHex();
 
         try {
