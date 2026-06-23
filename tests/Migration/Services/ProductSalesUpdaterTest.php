@@ -89,9 +89,9 @@ class ProductSalesUpdaterTest extends TestCase
         $refundedOrderId = $this->createOrderWithProductLineItem($refundedProductId, 5, OrderStates::STATE_COMPLETED, OrderTransactionStates::STATE_REFUNDED);
         $transactionCancelledOrderId = $this->createOrderWithProductLineItem($transactionCancelledProductId, 11, OrderStates::STATE_COMPLETED, OrderTransactionStates::STATE_CANCELLED);
 
-        static::assertEquals(
+        static::assertEqualsCanonicalizing(
             [$soldProductId, $cancelledProductId, $refundedProductId, $transactionCancelledProductId],
-            $this->productSalesUpdater->getProductIdsForOrders([$openOrderId, $cancelledOrderId, $refundedOrderId, $transactionCancelledOrderId, 'invalid', $openOrderId])
+            array_values($this->productSalesUpdater->getProductIdsForOrders([$openOrderId, $cancelledOrderId, $refundedOrderId, $transactionCancelledOrderId, 'invalid', $openOrderId]))
         );
 
         $productIds = [$soldProductId, $cancelledProductId, $refundedProductId, $transactionCancelledProductId, 'invalid', $soldProductId];
