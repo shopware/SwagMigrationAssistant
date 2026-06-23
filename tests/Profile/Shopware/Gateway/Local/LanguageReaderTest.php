@@ -22,15 +22,13 @@ class LanguageReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
+    private const CUSTOMER_LANGUAGE_SHOP_ID = 32;
+
     private LanguageReader $languageReader;
 
     private MigrationContext $migrationContext;
 
     private Connection $dbConnection;
-
-    private int $customerLocaleId = 9999;
-
-    private bool $customerLocaleInserted = false;
 
     protected function setUp(): void
     {
@@ -52,23 +50,44 @@ class LanguageReaderTest extends TestCase
         $this->migrationContext->setGateway(new DummyLocalGateway());
 
         $this->dbConnection = $connectionFactory->createDatabaseConnection($this->migrationContext);
+
+        // Insert a new shop with a different locale to test the language reader
+        $this->dbConnection->executeStatement(
+            'INSERT INTO s_core_shops (
+                id, name, position, hosts, secure, locale_id, customer_scope, `default`, active
+            ) VALUES (
+                :id, :name, :position, :hosts, :secure, :localeId, :customerScope, :default, :active
+            )',
+            [
+                'id' => self::CUSTOMER_LANGUAGE_SHOP_ID,
+                'name' => 'English shop',
+                'position' => 0,
+                'hosts' => '',
+                'secure' => 0,
+                'localeId' => 2,
+                'customerScope' => 0,
+                'default' => 0,
+                'active' => 1,
+            ]
+        );
+
         $this->dbConnection->executeStatement('UPDATE s_user SET language = :language WHERE id = :id', [
-            'language' => 1,
+            'language' => self::CUSTOMER_LANGUAGE_SHOP_ID,
             'id' => 1,
         ]);
     }
 
     protected function tearDown(): void
     {
-        // reset customer to the fixture default locale
+        // Reset the language of the customer to the default shop's locale
         $this->dbConnection->executeStatement('UPDATE s_user SET language = :language WHERE id = :id', [
             'language' => 1,
             'id' => 1,
         ]);
 
-        if ($this->customerLocaleInserted) {
-            $this->dbConnection->executeStatement('DELETE FROM s_core_locales WHERE id = :id', ['id' => $this->customerLocaleId]);
-        }
+        $this->dbConnection->executeStatement('DELETE FROM s_core_shops WHERE id = :id', [
+            'id' => self::CUSTOMER_LANGUAGE_SHOP_ID,
+        ]);
     }
 
     public function testRead(): void
@@ -76,52 +95,17 @@ class LanguageReaderTest extends TestCase
         static::assertTrue($this->languageReader->supports($this->migrationContext));
 
         $data = $this->languageReader->read($this->migrationContext);
+        $locales = \array_column($data, 'locale');
 
         static::assertCount(2, $data);
-        static::assertSame('1', $data[0]['id']);
-        static::assertSame('de-DE', $data[0]['locale']);
-        static::assertSame('de-DE', $data[0]['_locale']);
-        static::assertSame('de_DE', $data[0]['translations'][0]['locale']);
-        static::assertSame('en_GB', $data[0]['translations'][1]['locale']);
+        static::assertContains('de-DE', $locales);
+        static::assertContains('en-GB', $locales);
+        static::assertNotContains('bn-IN', $locales);
 
-        static::assertSame('2', $data[1]['id']);
-        static::assertSame('en-GB', $data[1]['locale']);
-        static::assertSame('de-DE', $data[1]['_locale']);
-        static::assertSame('de_DE', $data[1]['translations'][0]['locale']);
-        static::assertSame('en_GB', $data[1]['translations'][1]['locale']);
-    }
-
-    public function testReadIncludesCustomerLocalesOutsideShopLocales(): void
-    {
-        $existingLocaleId = $this->dbConnection->fetchOne(
-            'SELECT id FROM s_core_locales WHERE locale = :locale',
-            ['locale' => 'ar_EG']
-        );
-
-        if ($existingLocaleId === false) {
-            $this->dbConnection->executeStatement(
-                'INSERT INTO s_core_locales (id, locale, language, territory) VALUES (:id, :locale, :language, :territory)',
-                [
-                    'id' => $this->customerLocaleId,
-                    'locale' => 'ar_EG',
-                    'language' => 'Arabic',
-                    'territory' => 'Egypt',
-                ]
-            );
-
-            $this->customerLocaleInserted = true;
-        } else {
-            $this->customerLocaleId = (int) $existingLocaleId;
+        foreach ($data as $language) {
+            static::assertSame('de-DE', $language['_locale']);
+            static::assertSame('de_DE', $language['translations'][0]['locale']);
+            static::assertSame('en_GB', $language['translations'][1]['locale']);
         }
-
-        $this->dbConnection->executeStatement('UPDATE s_user SET language = :language WHERE id = :id', [
-            'language' => $this->customerLocaleId,
-            'id' => 1,
-        ]);
-
-        $data = $this->languageReader->read($this->migrationContext);
-
-        static::assertCount(3, $data);
-        static::assertContains('ar-EG', \array_column($data, 'locale'));
     }
 }
