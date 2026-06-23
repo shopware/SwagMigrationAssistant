@@ -15,6 +15,7 @@ use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use SwagMigrationAssistant\Migration\History\LogGroupingService;
+use SwagMigrationAssistant\RateLimiter\MigrationApiRateLimiter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -34,6 +35,7 @@ class HistoryController extends AbstractController
         private readonly HistoryServiceInterface $historyService,
         private readonly LogGroupingService $logGroupingService,
         private readonly int $maxLimit,
+        private readonly MigrationApiRateLimiter $rateLimiter,
     ) {
     }
 
@@ -45,6 +47,8 @@ class HistoryController extends AbstractController
     )]
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
     {
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::LOG_ACCESS, $request);
+
         $runUuid = $request->query->getAlnum('runUuid');
 
         if ($runUuid === '') {
@@ -75,6 +79,8 @@ class HistoryController extends AbstractController
     )]
     public function downloadLogsOfRun(Request $request, Context $context): StreamedResponse
     {
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::DOWNLOAD, $request);
+
         $runUuid = $request->request->getAlnum('runUuid');
 
         if ($runUuid === '') {
@@ -106,6 +112,8 @@ class HistoryController extends AbstractController
     )]
     public function getLogGroups(Request $request, Context $context): JsonResponse
     {
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::LOG_ACCESS, $request);
+
         $runId = $request->query->getAlnum('runId');
 
         if ($runId === '') {
@@ -157,6 +165,8 @@ class HistoryController extends AbstractController
     )]
     public function getUnresolvedLogsBatchInformation(Request $request): JsonResponse
     {
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::LOG_ACCESS, $request);
+
         $runId = $request->request->getAlnum('runId');
 
         if ($runId === '') {
@@ -205,6 +215,8 @@ class HistoryController extends AbstractController
     )]
     public function getLogEntityIdsWithoutFix(Request $request): JsonResponse
     {
+        $this->rateLimiter->ensureAccepted(MigrationApiRateLimiter::LOG_ACCESS, $request);
+
         $runId = $request->request->getAlnum('runId');
 
         if ($runId === '') {

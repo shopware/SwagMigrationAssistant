@@ -43,6 +43,7 @@ class ServiceCorrectArgumentsTest extends TestCase
         $finder = new Finder();
         $finder->in(SwagMigrationAssistant::DEPENDENCY_LOCATION)
             ->files()
+            ->depth('== 0')
             ->name('*.php');
 
         foreach ($finder as $file) {
