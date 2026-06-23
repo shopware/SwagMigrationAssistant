@@ -443,42 +443,4 @@ class CustomerConverterTest extends TestCase
         static::assertSame($languageId, $converted['languageId']);
     }
 
-    public function testConvertFallsBackToMainLocaleWhenCustomerLanguageIsMissing(): void
-    {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $customerData = $customerData[0];
-        unset($customerData['customerlanguage']);
-
-        $fallbackLanguageId = Uuid::randomHex();
-        $context = Context::createDefaultContext();
-
-        $languageLookup = $this->createMock(LanguageLookup::class);
-        $languageLookup->expects($this->once())
-            ->method('get')
-            ->with('de-DE', $context)
-            ->willReturn($fallbackLanguageId);
-
-        $validator = static::getContainer()->get('validator');
-        $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
-
-        $customerConverter = new Shopware55CustomerConverter(
-            $this->mappingService,
-            $this->loggingService,
-            $validator,
-            $salesChannelRepo,
-            static::getContainer()->get(CountryLookup::class),
-            $languageLookup,
-            static::getContainer()->get(CountryStateLookup::class),
-        );
-
-        $convertResult = $customerConverter->convert(
-            $customerData,
-            $context,
-            $this->migrationContext
-        );
-
-        $converted = $convertResult->getConverted();
-        static::assertNotNull($converted);
-        static::assertSame($fallbackLanguageId, $converted['languageId']);
-    }
 }

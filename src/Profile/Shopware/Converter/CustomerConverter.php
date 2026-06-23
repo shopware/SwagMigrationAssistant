@@ -217,7 +217,17 @@ abstract class CustomerConverter extends ShopwareConverter
         }
         unset($data['attributes']);
 
-        $this->applyCustomerLanguage($data, $converted, $context, $migrationContext);
+        if (isset($data['customerlanguage']['locale'])) {
+            $languageUuid = $this->resolveLanguageId(
+                $data['customerlanguage']['locale'],
+                $this->languageLookup,
+                $context,
+            );
+
+            if ($languageUuid !== null) {
+                $converted['languageId'] = $languageUuid;
+            }
+        }
 
         unset(
             $data['addresses'],
@@ -596,60 +606,6 @@ abstract class CustomerConverter extends ShopwareConverter
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $state['translations'][$languageUuid] = $localeTranslation;
-        }
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     * @param array<string, mixed> $converted
-     */
-    protected function applyCustomerLanguage(
-        array $data,
-        array &$converted,
-        Context $context,
-        MigrationContextInterface $migrationContext
-    ): void {
-        $customerLocale = $data['customerlanguage']['locale'] ?? null;
-
-        if ($customerLocale !== null) {
-            // Shopware 5 stores the customer language indirectly via the shop mapping,
-            // so we first try to use the locale resolved by the reader for that customer.
-            $languageUuid = $this->resolveLanguageId(
-                $customerLocale,
-                $this->languageLookup,
-                $context,
-            );
-
-            if ($languageUuid !== null) {
-                $converted['languageId'] = $languageUuid;
-            }
-        }
-
-        if (!isset($converted['languageId'])) {
-            // If the customer-specific locale is different from the migration's main locale,
-            // log a warning that the customer language was reassigned to the main locale.
-            if ($customerLocale !== null && $customerLocale !== $this->mainLocale) {
-                $this->loggingService->log(
-                    MigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->withEntityName(CustomerDefinition::ENTITY_NAME)
-                        ->withSourceData($data)
-                        ->withFieldName('languageId')
-                        ->withFieldSourcePath('customerlanguage.locale')
-                        ->build(ConvertFieldReassignedLog::class)
-                );
-            }
-
-            // If the customer-specific locale cannot be resolved, fall back to the
-            // migration's main locale so we still write a valid required languageId.
-            $languageUuid = $this->resolveLanguageId(
-                $this->mainLocale,
-                $this->languageLookup,
-                $context,
-            );
-
-            if ($languageUuid !== null) {
-                $converted['languageId'] = $languageUuid;
-            }
         }
     }
 
