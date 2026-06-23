@@ -181,10 +181,6 @@ class MigrationException extends HttpException
         );
     }
 
-    /**
-     * @see \SwagMigrationAssistant\Test\Profile\Shopware6\Gateway\Connection\AuthClientTest::testGetThrowsExceptionOnMissingCredentials
-     * @see \SwagMigrationAssistant\Test\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReaderTest::testResponseExceptions
-     */
     public static function invalidConnectionCredentials(?string $url = null): self
     {
         $message = 'The connection credentials are invalid or incomplete.';
@@ -291,10 +287,6 @@ class MigrationException extends HttpException
         );
     }
 
-    /**
-     * @see \SwagMigrationAssistant\Test\Migration\Services\RunServiceTest::testUpdateConnectionCredentialsWhenMigrationIsRunning
-     * @see \SwagMigrationAssistant\Test\Migration\Services\RunServiceTest::testStartMigrationRunWithTruncationInProgress
-     */
     public static function migrationProcessing(?string $process = null): self
     {
         $message = 'Migration is busy processing.';
