@@ -7,6 +7,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Psr\Clock\ClockInterface;
 use Shopware\Core\Checkout\Document\Service\DocumentGenerator;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Store\Services\AbstractExtensionDataProvider;
@@ -87,6 +88,7 @@ return static function (ContainerConfigurator $container): void {
             service(MediaService::class),
             service('shopware.filesystem.private'),
             service(MigrationApiRateLimiter::class),
+            service(ClockInterface::class),
         ])
         ->call('setContainer', [service('service_container')]);
 
