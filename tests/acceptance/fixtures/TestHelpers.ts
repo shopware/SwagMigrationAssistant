@@ -10,7 +10,7 @@ export const VIEWPORT = {
 
 export const loaderSelectors = [
     '.sw-loader-element',
-    '.mt-loader-element',
+    '.mt-loader__element',
     '.mt-skeleton-bar',
     '.sw-skeleton',
 ] as const;

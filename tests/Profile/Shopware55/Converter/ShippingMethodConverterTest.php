@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Clock\ClockInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -67,7 +68,8 @@ class ShippingMethodConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             static::getContainer()->get(CountryLookup::class),
-            static::getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(ClockInterface::class)
         );
 
         $runId = Uuid::randomHex();
@@ -142,7 +144,8 @@ class ShippingMethodConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             static::getContainer()->get(CountryLookup::class),
-            $languageLookup
+            $languageLookup,
+            static::getContainer()->get(ClockInterface::class)
         );
 
         $convertResult = $shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);

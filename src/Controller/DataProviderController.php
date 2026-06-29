@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Controller;
 
 use League\Flysystem\FilesystemOperator;
 use League\Flysystem\UnableToGenerateTemporaryUrl;
+use Psr\Clock\ClockInterface;
 use Psr\Http\Message\StreamInterface;
 use Shopware\Core\Checkout\Document\Service\DocumentGenerator;
 use Shopware\Core\Content\Media\MediaCollection;
@@ -52,6 +53,7 @@ class DataProviderController extends AbstractController
         private readonly MediaService $mediaService,
         private readonly FilesystemOperator $privateFilesystem,
         private readonly MigrationApiRateLimiter $rateLimiter,
+        private readonly ClockInterface $clock,
     ) {
     }
 
@@ -183,7 +185,7 @@ class DataProviderController extends AbstractController
         }
 
         try {
-            $url = $this->privateFilesystem->temporaryUrl($media->getPath(), (new \DateTime())->modify('+120 minutes'));
+            $url = $this->privateFilesystem->temporaryUrl($media->getPath(), $this->clock->now()->add(new \DateInterval('PT120M')));
 
             return new RedirectResponse($url);
         } catch (UnableToGenerateTemporaryUrl) {

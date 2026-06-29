@@ -8,6 +8,7 @@
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
 use Doctrine\DBAL\Connection;
+use Psr\Clock\ClockInterface;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Promotion\PromotionDefinition;
 use Shopware\Core\Content\Media\File\FileSaver;
@@ -454,6 +455,7 @@ return static function (ContainerConfigurator $container): void {
         ->args([
             service(CountryLookup::class),
             service(LanguageLookup::class),
+            service(ClockInterface::class),
         ]);
 
     $services->set(ProductReviewConverter::class)

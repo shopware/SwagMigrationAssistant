@@ -24,6 +24,7 @@ use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
+use Symfony\Component\Clock\NativeClock;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\PhpFileLoader;
@@ -91,7 +92,7 @@ class SwagMigrationAssistant extends Plugin
 
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
-        $now = (new \DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT);
+        $now = (new NativeClock())->now()->format(Defaults::STORAGE_DATE_TIME_FORMAT);
 
         $connection->beginTransaction();
 

@@ -1,6 +1,8 @@
 # NEXT
 
-- [BREAKING] [#178](https://github.com/shopware/SwagMigrationAssistant/pull/190) - fix!: update product.sales during migration
+- [BREAKING] [#202](https://github.com/shopware/SwagMigrationAssistant/pull/202) - fix!: replace native time reads with an injected clock
+    - [BREAKING] Added required constructor parameter `Psr\Clock\ClockInterface $clock` to `\SwagMigrationAssistant\Profile\Shopware\Converter\ShippingMethodConverter`
+- [BREAKING] [#190](https://github.com/shopware/SwagMigrationAssistant/pull/190) - fix!: update product.sales during migration
     - [BREAKING] Added required constructor parameter `\SwagMigrationAssistant\Migration\Service\ProductSalesUpdater` to `\SwagMigrationAssistant\Migration\Writer\OrderWriter`
 
 # 18.0.0

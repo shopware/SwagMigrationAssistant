@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Psr\Clock\ClockInterface;
 use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodPrice\ShippingMethodPriceDefinition;
 use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
 use Shopware\Core\Framework\Context;
@@ -79,6 +80,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         LoggingServiceInterface $loggingService,
         protected readonly CountryLookup $countryLookup,
         protected readonly LanguageLookup $languageLookup,
+        private readonly ClockInterface $clock,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -762,7 +764,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 ],
             ],
             'name' => $converted['name'],
-            'description' => 'Migrated at ' . (new \DateTime())->format('d.m.Y H:i'),
+            'description' => 'Migrated at ' . $this->clock->now()->format('d.m.Y H:i'),
         ];
 
         $mainOrContainerMapping = $this->mappingService->getOrCreateMapping(
