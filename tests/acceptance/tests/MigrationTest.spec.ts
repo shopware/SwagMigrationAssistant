@@ -1,6 +1,6 @@
 /* eslint-disable playwright/no-conditional-in-test */
 /* eslint-disable playwright/no-conditional-expect */
-import { test, expect } from '@fixtures/AcceptanceTest';
+import { test, expect, replaceElements } from '@fixtures/AcceptanceTest';
 import { getMask, waitForLoaders, withLargerViewport } from '@fixtures/TestHelpers';
 
 test.describe('Migration Tests @migration @visual', () => {
@@ -220,15 +220,19 @@ test.describe('Migration Tests @migration @visual', () => {
             await page.getByTitle('History').click();
             await waitForLoaders(page);
 
-            await expect.soft(page).toHaveScreenshot('migration-history-list.png', {
-                mask: getMask(page, ['.sw-data-grid__cell--createdAt']),
-            });
+            const createdAtCellContent = page.locator('.sw-data-grid__cell--createdAt .sw-data-grid__cell-content');
+
+            await replaceElements(page, [createdAtCellContent]);
+
+            await expect.soft(page).toHaveScreenshot('migration-history-list.png', { mask });
 
             await page.locator('.sw-data-grid__body .sw-data-grid__cell--actions').getByRole('button').click();
             await waitForLoaders(page);
 
             await page.locator('.sw-context-menu__content .sw-context-menu-item').first().click();
             await waitForLoaders(page);
+
+            await replaceElements(page, [createdAtCellContent]);
 
             await expect.soft(page).toHaveScreenshot('migration-history-details-modal.png', { mask });
         });
