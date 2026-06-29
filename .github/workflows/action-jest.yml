@@ -11,6 +11,7 @@ jobs:
     jest:
         name: Jest
         runs-on: ubuntu-latest
+        timeout-minutes: 60
         env:
             ARTIFACTS_PATH: ${{ github.workspace }}/development
         steps:
