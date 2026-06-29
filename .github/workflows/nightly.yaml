@@ -2,7 +2,7 @@ name: Nightly
 
 on:
     schedule:
-        - cron: '0 1 * * *'
+        - cron: '0 1 * * 1-5' # weekdays only
     workflow_dispatch:
 
 concurrency:
@@ -40,6 +40,7 @@ jobs:
     notify_slack_on_schedule_failure:
         name: Slack Notify
         runs-on: ubuntu-latest
+        timeout-minutes: 5
         needs:
             - phpstan
             - phpunit

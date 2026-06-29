@@ -14,6 +14,7 @@ jobs:
     phpunit:
         name: PHPUnit
         runs-on: ubuntu-latest
+        timeout-minutes: 60
         steps:
             - name: Setup extension
               uses: shopware/github-actions/setup-extension@main
