@@ -49,7 +49,7 @@ class ProductSortingLookup implements ResetInterface
         $criteria->addFilter(new EqualsFilter('key', $key));
         $criteria->setLimit(1);
 
-        $productSorting = $this->productSortingRepository->search($criteria, $context)->first();
+        $productSorting = $this->productSortingRepository->search($criteria, $context)->getEntities()->first();
 
         $productSortingUuid = null;
         $isLocked = false;

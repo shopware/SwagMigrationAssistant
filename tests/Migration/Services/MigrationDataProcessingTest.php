@@ -374,7 +374,7 @@ class MigrationDataProcessingTest extends TestCase
                 $context
             );
         });
-        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $this->context)->first();
+        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $this->context)->getEntities()->first();
 
         static::assertInstanceOf(SwagMigrationConnectionEntity::class, $connection);
 

@@ -76,7 +76,7 @@ class LanguageLookup implements ResetInterface
         $criteria = new Criteria([$languageUuid]);
         $criteria->addAssociation('locale');
 
-        $language = $this->languageRepository->search($criteria, $context)->first();
+        $language = $this->languageRepository->search($criteria, $context)->getEntities()->first();
 
         if (!$language instanceof LanguageEntity) {
             $this->defaultLanguageCache[$languageUuid] = null;

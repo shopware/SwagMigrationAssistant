@@ -221,7 +221,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
         $result = $this->migrationMappingRepo->search(new Criteria($mappingIds), $context);
 
-        if ($result->count() > 0) {
+        if ($result->getEntities()->count() > 0) {
             $elements = $result->getEntities()->getElements();
             foreach ($elements as $mapping) {
                 $entityName = $mapping->getEntity();

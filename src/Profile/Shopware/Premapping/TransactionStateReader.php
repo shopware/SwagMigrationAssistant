@@ -127,7 +127,7 @@ class TransactionStateReader extends AbstractPremappingReader
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_MACHINE));
 
-        $stateMachine = $this->stateMachineRepo->search($criteria, $context)->first();
+        $stateMachine = $this->stateMachineRepo->search($criteria, $context)->getEntities()->first();
 
         if (!$stateMachine instanceof StateMachineEntity) {
             return [];

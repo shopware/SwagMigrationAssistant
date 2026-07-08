@@ -12,7 +12,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
@@ -143,7 +142,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 $updateWrittenData,
                 $migrationContext,
                 $context,
-                $migrationData
+                $migrationData->getEntities()
             );
         } catch (\Throwable) {
             // Worst case: something unknown goes wrong (most likely some foreign key constraint that fails)
@@ -171,7 +170,6 @@ class MigrationDataWriter implements MigrationDataWriterInterface
     /**
      * @param array<string, mixed> $converted
      * @param array<string, mixed> $updateWrittenData
-     * @param EntitySearchResult<SwagMigrationDataCollection> $migrationData
      */
     private function handleWriteException(
         WriteException $exception,
@@ -180,7 +178,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         array &$updateWrittenData,
         MigrationContextInterface $migrationContext,
         Context $context,
-        EntitySearchResult $migrationData,
+        SwagMigrationDataCollection $migrationData,
     ): void {
         $writeErrors = $this->extractWriteErrorsWithIndex($exception);
         $currentWriter = $this->writerRegistry->getWriter($entityName);

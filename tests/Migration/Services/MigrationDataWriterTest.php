@@ -25,7 +25,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
@@ -352,15 +351,6 @@ class MigrationDataWriterTest extends TestCase
         $entity->setRaw(['name' => 'myProduct']);
         $collection = new SwagMigrationDataCollection([$entity]);
 
-        $searchResult = new EntitySearchResult(
-            SwagMigrationDataEntity::class,
-            1,
-            $collection,
-            null,
-            new Criteria(),
-            $this->context,
-        );
-
         $updateWrittenData = [];
         $this->invokeMethod($this->migrationDataWriter, 'handleWriteException', [
             new WriteException(),
@@ -373,7 +363,7 @@ class MigrationDataWriterTest extends TestCase
             &$updateWrittenData,
             $migrationContext,
             $this->context,
-            $searchResult,
+            $collection,
         ]);
 
         $loggingServiceProperty = (new \ReflectionClass(MigrationDataWriter::class))->getProperty('loggingService');
@@ -744,7 +734,7 @@ class MigrationDataWriterTest extends TestCase
                 $context
             );
         });
-        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $this->context)->first();
+        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $this->context)->getEntities()->first();
 
         static::assertInstanceOf(SwagMigrationConnectionEntity::class, $connection);
 

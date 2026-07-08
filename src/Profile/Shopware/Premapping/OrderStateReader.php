@@ -129,7 +129,7 @@ class OrderStateReader extends AbstractPremappingReader
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('technicalName', OrderStates::STATE_MACHINE));
 
-        $stateMachine = $this->stateMachineRepo->search($criteria, $context)->first();
+        $stateMachine = $this->stateMachineRepo->search($criteria, $context)->getEntities()->first();
 
         if (!$stateMachine instanceof StateMachineEntity) {
             return [];
