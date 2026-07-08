@@ -92,7 +92,7 @@ readonly class MigrationContextFactory implements MigrationContextFactoryInterfa
 
     public function createBySelectedConnection(Context $context): MigrationContextInterface
     {
-        $settings = $this->generalSettingRepository->search(new Criteria(), $context)->first();
+        $settings = $this->generalSettingRepository->search(new Criteria(), $context)->getEntities()->first();
 
         if (!$settings instanceof GeneralSettingEntity) {
             throw MigrationException::entityNotExists(GeneralSettingEntity::class, 'Default');

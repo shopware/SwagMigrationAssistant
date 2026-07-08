@@ -243,7 +243,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
 
             $runRepository->create($runData, $context);
             $criteria = new Criteria([$runId]);
-            $swagMigrationRun = $runRepository->search($criteria, $context)->first();
+            $swagMigrationRun = $runRepository->search($criteria, $context)->getEntities()->first();
         });
 
         static::assertInstanceOf(SwagMigrationRunEntity::class, $swagMigrationRun);
@@ -275,7 +275,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
             );
 
             $criteria = new Criteria([$connectionId]);
-            $connection = $connectionRepository->search($criteria, $context)->first();
+            $connection = $connectionRepository->search($criteria, $context)->getEntities()->first();
         });
 
         static::assertInstanceOf(SwagMigrationConnectionEntity::class, $connection);

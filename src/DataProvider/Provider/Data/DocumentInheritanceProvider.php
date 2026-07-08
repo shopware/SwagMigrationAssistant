@@ -45,7 +45,7 @@ class DocumentInheritanceProvider extends AbstractProvider
 
         $result = [];
         /** @var DocumentEntity $document */
-        foreach ($searchResult->getElements() as $document) {
+        foreach ($searchResult->getEntities()->getElements() as $document) {
             $result[] = [
                 'id' => $document->getId(),
                 'referencedDocumentId' => $document->getReferencedDocumentId(),

@@ -67,7 +67,7 @@ class GlobalDocumentBaseConfigLookup implements ResetInterface
 
         $criteria = new Criteria([$baseConfigId]);
 
-        $baseConfig = $this->documentBaseConfigRepository->search($criteria, $context)->first();
+        $baseConfig = $this->documentBaseConfigRepository->search($criteria, $context)->getEntities()->first();
 
         $config = $baseConfig?->getConfig();
         $this->configCache[$baseConfigId] = $config;

@@ -342,7 +342,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $result = $this->languagePackRepo->search($criteria, Context::createDefaultContext());
 
         if ($result->getTotal() !== 0) {
-            foreach ($result->getElements() as $packLanguage) {
+            foreach ($result->getEntities()->getElements() as $packLanguage) {
                 $packLanguageId = $packLanguage->getLanguageId();
 
                 foreach ($converted['languages'] as &$language) {

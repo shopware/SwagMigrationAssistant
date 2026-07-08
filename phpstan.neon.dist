@@ -52,6 +52,9 @@ parameters:
         - message: '#Call to deprecated method listTableIndexes\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
         - message: '#Call to deprecated method getName\(\) of class Doctrine\\DBAL\\Schema\\AbstractAsset#'
         - message: '#Call to deprecated method listTableForeignKeys\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
+        - message: '#Call to method .* of deprecated class Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult#'
+        - message: '#Instantiation of deprecated class Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult#'
+        - message: '#has typehint with deprecated class Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult#'
 
         # TODO: The MainOrContainer type cannot fully express its state after nested array mutations
         - identifier: parameterByRef.type
@@ -60,6 +63,7 @@ parameters:
         # This rule's exemption only accepts @see targets in the \Tests\Integration\ namespace,
         # which plugins (namespace SwagMigrationAssistant\Test\) cannot satisfy.
         - identifier: shopware.codeCoverageIgnoreOnLogic
+          reportUnmatched: false
 
 rules:
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule

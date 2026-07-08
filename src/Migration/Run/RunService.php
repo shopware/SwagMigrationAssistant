@@ -598,7 +598,7 @@ class RunService implements RunServiceInterface
             return [];
         }
 
-        return $this->salesChannelRepository->search(new Criteria($salesChannelUuids), $context)->getIds();
+        return $this->salesChannelRepository->search(new Criteria($salesChannelUuids), $context)->getEntities()->getIds();
     }
 
     private function getDefaultTheme(Context $context): ?string
@@ -606,7 +606,7 @@ class RunService implements RunServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('technicalName', 'Storefront'));
 
-        $ids = $this->themeRepository->search($criteria, $context)->getIds();
+        $ids = $this->themeRepository->search($criteria, $context)->getEntities()->getIds();
 
         if ($ids === []) {
             return null;
