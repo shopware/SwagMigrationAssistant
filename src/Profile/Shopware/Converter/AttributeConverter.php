@@ -13,6 +13,8 @@ use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
 use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -21,6 +23,8 @@ abstract class AttributeConverter extends Converter
     protected string $connectionId;
 
     protected string $connectionName;
+
+    protected MigrationContextInterface $migrationContext;
 
     /**
      * @param array<string,mixed> $data
@@ -35,8 +39,10 @@ abstract class AttributeConverter extends Converter
      */
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $this->generateChecksum($data);
         $converted = [];
+
+        $this->generateChecksum($data);
+        $this->migrationContext = $migrationContext;
 
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
@@ -181,15 +187,28 @@ abstract class AttributeConverter extends Converter
                 $attributeData[$attributeField] = $translations;
             }
         } else {
-            if ($data['configuration']['label'] !== null && $data['configuration']['label'] !== '') {
-                $attributeData['label'] = [
-                    $locale => $data['configuration']['label'],
-                ];
-            } else {
-                $attributeData['label'] = [
-                    $locale => $data['configuration']['column_name'],
-                ];
+            $label = $data['configuration']['label'] ?? '';
+
+            if ($label === '' && isset($data['configuration']['column_name'])) {
+                $label = $data['configuration']['column_name'];
             }
+
+            if ($label === '') {
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->withEntityName($this->getCustomFieldEntityName())
+                        ->withFieldName('label')
+                        ->withFieldSourcePath('configuration.label')
+                        ->withSourceData($data)
+                        ->build(ConvertSourceDataIncompleteLog::class)
+                );
+
+                $label = $data['name'];
+            }
+
+            $attributeData['label'] = [
+                $locale => $label,
+            ];
 
             if ($data['configuration']['help_text'] !== '') {
                 $attributeData['helpText'] = [

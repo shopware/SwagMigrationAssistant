@@ -99,7 +99,7 @@ abstract class AttributeReader extends AbstractReader implements ReaderInterface
 
         $connection = $this->getConnection($migrationContext);
         $query = $connection->createQueryBuilder()
-            ->select('config.column_name, config.*')
+            ->select('config.column_name AS identifier, config.*')
             ->from('s_attribute_configuration', 'config')
             ->where('config.table_name = :table')
             ->setParameter('table', $table);
