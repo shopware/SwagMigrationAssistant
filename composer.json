@@ -49,16 +49,12 @@
             "php bin/phpstan-config-generator.php",
             "../../../vendor/bin/phpstan analyze"
         ],
-        "install5db": "./bin/install-5-test-data.sh",
+        "db:init-sw5": "./bin/install-shopware5-source-db.sh",
         "setup": [
             "@composer install -o",
-            "@composer install5db",
+            "@composer db:init-sw5",
+            "@composer npm:init",
             "@php ../../../bin/console p:i -a -c SwagMigrationAssistant"
-        ],
-        "admin:install": [
-            "@npm:admin install",
-            "@npm:jest install",
-            "@npm:acceptance install"
         ],
         "lint:admin": [
             "@npm:jest run lint",

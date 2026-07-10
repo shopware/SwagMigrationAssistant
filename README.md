@@ -61,12 +61,6 @@ composer setup
 composer npm:init
 ```
 
-- **Install git pre-commit hook** (optional):
-
-```bash
-./bin/setup.sh
-```
-
 ## Common workflows
 
 ### Linting & formatting
@@ -126,7 +120,7 @@ Visual regression tests compare screenshots against baseline images. When UI cha
 This imports `tests/_fixtures/database/shopware55.sql` into the database configured in your Shopware root `.env` via `DATABASE_URL`.
 
 ```bash
-composer install5db
+composer db:init-sw5
 ```
 
 ## Release notes / upgrades
