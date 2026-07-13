@@ -172,6 +172,6 @@ class CategoryAttributeConverterTest extends TestCase
         static::assertCount(1, $logs);
         static::assertSame('SWAG_MIGRATION_CONVERT_SOURCE_DATA_INCOMPLETE', $logs[0]['code']);
         static::assertSame('configuration.label', $logs[0]['fieldSourcePath']);
-        static::assertSame('emptylabel2', $logs[0]['fieldName']);
+        static::assertSame('label', $logs[0]['fieldName']);
     }
 }
