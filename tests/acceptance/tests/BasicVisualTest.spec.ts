@@ -69,14 +69,14 @@ test.describe('Visual Regression Tests @visual', () => {
 
         await page.getByPlaceholder('Enter name').fill('shopware55local');
 
-        await page.getByText('API').click();
-        await page.getByText('Local database').click();
+        await page.locator('.swag-migration-wizard-page-create-profile__gateway-select').getByText('API').click();
+        await page.locator('.sw-select-result-list__content').getByText('Local database').click();
 
         await page.getByRole('button', { name: 'Establish connection' }).click();
         await waitForLoaders(page);
 
         // lose focus of host input
-        await page.getByText('Migration').click();
+        await page.locator('.sw-modal__title').click();
 
         await expect.soft(page).toHaveScreenshot('connection-wizard-establish-local.png', { mask });
 
