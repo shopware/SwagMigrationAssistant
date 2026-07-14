@@ -26,11 +26,17 @@ class CategoryAttributeConverterTest extends TestCase
 
     private MigrationContext $migrationContext;
 
+    private DummyLoggingService $loggingService;
+
     protected function setUp(): void
     {
         $mappingService = new DummyMappingService();
-        $loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55CategoryAttributeConverter($mappingService, $loggingService);
+
+        $this->loggingService = new DummyLoggingService();
+        $this->converter = new Shopware55CategoryAttributeConverter(
+            $mappingService,
+            $this->loggingService
+        );
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
@@ -134,5 +140,38 @@ class CategoryAttributeConverterTest extends TestCase
         static::assertSame('migration_ConnectionName_category_attr6', $converted['customFields'][0]['name']);
         static::assertSame('text', $converted['customFields'][0]['config']['type']);
         static::assertSame('text', $converted['customFields'][0]['config']['customFieldType']);
+    }
+
+    public function testConvertEmptyLabelFallsBackToColumnName(): void
+    {
+        $categoryData = require __DIR__ . '/../../../_fixtures/attribute_data.php';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->converter->convert($categoryData[12], $context, $this->migrationContext);
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+
+        static::assertSame(['de-DE' => 'emptylabel1'], $converted['customFields'][0]['config']['label']);
+        static::assertSame([], $this->loggingService->getLoggingArray());
+    }
+
+    public function testConvertEmptyLabelWithoutColumnNameFallsBackToName(): void
+    {
+        $categoryData = require __DIR__ . '/../../../_fixtures/attribute_data.php';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->converter->convert($categoryData[13], $context, $this->migrationContext);
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+
+        static::assertSame(['de-DE' => 'emptylabel2'], $converted['customFields'][0]['config']['label']);
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(1, $logs);
+        static::assertSame('SWAG_MIGRATION_CONVERT_SOURCE_DATA_INCOMPLETE', $logs[0]['code']);
+        static::assertSame('configuration.label', $logs[0]['fieldSourcePath']);
+        static::assertSame('label', $logs[0]['fieldName']);
     }
 }

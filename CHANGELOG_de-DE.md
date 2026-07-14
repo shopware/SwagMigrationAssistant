@@ -1,5 +1,6 @@
 # NEXT
 
+- #17832 - Die Attribut-Migration wurde korrigiert, sodass Zusatzfelder mit leerem Label die Migration nicht mehr abbrechen. Der Reader behält nun den `column_name` in der Attributkonfiguration.
 - #12748 - Die Migration von Bestellungen wurde korrigiert, sodass `product.sales` nach dem Schreiben migrierter Bestellungen anhand der persistierten Bestellpositionen neu berechnet wird. Stornierte Bestellungen werden dabei nicht berücksichtigt.
 
 # 18.0.0
