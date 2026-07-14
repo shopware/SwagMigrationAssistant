@@ -40,11 +40,17 @@ echo "MySQL user: ${user}"
 
 mysql_as() {
     local u="$1" p="$2"; shift 2
+    local args=(
+        --ssl-mode=PREFERRED
+        -u"$u"
+        --host "$host"
+        --port "$port"
+    )
 
     if [[ -n "$p" ]]; then
-        mysql -u"$u" -p"$p" --host "$host" --port "$port" "$@"
+        mysql "${args[@]}" -p"$p" "$@"
     else
-        mysql -u"$u" --host "$host" --port "$port" "$@"
+        mysql "${args[@]}" "$@"
     fi
 }
 
