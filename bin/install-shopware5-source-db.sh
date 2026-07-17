@@ -5,6 +5,19 @@ DUMP_FILE='tests/_fixtures/database/shopware55.sql'
 ENV_FILE='../../../.env'
 SOURCE_DB='shopware55'
 
+dbClient="${MIGRATION_DB_CLIENT:-mysql}"
+
+if [[ "${1:-}" == '--mariadb' ]]; then
+    dbClient='mariadb'
+    shift
+fi
+
+if [[ "$dbClient" == 'mariadb' ]]; then
+    sslArgs=(--skip-ssl-verify-server-cert)
+else
+    sslArgs=(--ssl-mode=PREFERRED)
+fi
+
 connectionString=''
 
 if [[ -f "$ENV_FILE" ]]; then
@@ -41,7 +54,7 @@ echo "MySQL user: ${user}"
 mysql_as() {
     local u="$1" p="$2"; shift 2
     local args=(
-        --ssl-mode=PREFERRED
+        "${sslArgs[@]}"
         -u"$u"
         --host "$host"
         --port "$port"
