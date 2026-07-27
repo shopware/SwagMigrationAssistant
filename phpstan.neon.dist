@@ -37,23 +37,18 @@ parameters:
           path: src/DataProvider/Provider/Data/AbstractProvider.php
 
         # TODO: remove this for 6.8 compatibility
-        - message: '#Call to deprecated method addFlags\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\Field\\Field#'
-        - message: '#Call to deprecated method setFlags\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\Field\\Field#'
         - message: '#Access to constant on deprecated class Shopware\\Core\\Checkout\\Payment\\Cart\\PaymentHandler\\DebitPayment#'
           paths:
               - src/Profile/Shopware/Premapping/PaymentMethodReader.php
               - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
         - message: '#Call to deprecated method __construct\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityDefinition#'
-        - message: '#Call to deprecated method columnExists\(\) of class Shopware\\Core\\Framework\\Migration\\MigrationStep#'
-        - message: '#Call to deprecated method columnExists\(\) of class SwagMigrationAssistant\\Core\\Migration\\Migration1762346793RenameColumnOfMappingTable#'
-        - message: '#Call to deprecated method indexExists\(\) of class Shopware\\Core\\Framework\\Migration\\MigrationStep#'
         - message: '#Call to deprecated method listTableColumns\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
         - message: '#Call to deprecated method listTableIndexes\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
         - message: '#Call to deprecated method getName\(\) of class Doctrine\\DBAL\\Schema\\AbstractAsset#'
         - message: '#Call to deprecated method listTableForeignKeys\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
-        - message: '#Call to method .* of deprecated class Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult#'
-        - message: '#Instantiation of deprecated class Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult#'
-        - message: '#has typehint with deprecated class Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult#'
+        - message: '#Call to deprecated method __construct\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult#'
+          paths:
+              - tests/**
 
         # TODO: The MainOrContainer type cannot fully express its state after nested array mutations
         - identifier: parameterByRef.type

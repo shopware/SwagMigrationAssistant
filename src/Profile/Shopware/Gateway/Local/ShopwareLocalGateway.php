@@ -104,7 +104,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
 
         $environmentData = $this->localEnvironmentReader->read($migrationContext);
 
-        $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->get(Defaults::CURRENCY);
+        $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->getEntities()->get(Defaults::CURRENCY);
 
         $targetCurrencyIsoCode = '';
         if ($targetSystemCurrency instanceof CurrencyEntity) {
@@ -117,7 +117,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
 
         $criteria = new Criteria([Defaults::LANGUAGE_SYSTEM]);
         $criteria->addAssociation('locale');
-        $targetSystemLanguage = $this->languageRepository->search($criteria, $context)->get(Defaults::LANGUAGE_SYSTEM);
+        $targetSystemLanguage = $this->languageRepository->search($criteria, $context)->getEntities()->get(Defaults::LANGUAGE_SYSTEM);
 
         $targetLocaleCode = '';
         if ($targetSystemLanguage instanceof LanguageEntity) {

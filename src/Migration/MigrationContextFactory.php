@@ -107,7 +107,7 @@ readonly class MigrationContextFactory implements MigrationContextFactoryInterfa
                 [$settings->getSelectedConnectionId()]
             ),
             $context
-        )->first();
+        )->getEntities()->first();
 
         if (!$connection instanceof SwagMigrationConnectionEntity) {
             throw MigrationException::entityNotExists(
