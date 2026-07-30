@@ -48,7 +48,7 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
 
         if (
             $productContainerMapping === null
-            || !\is_string($productContainerMapping['entityId'] ?? null)
+            || !\is_string($productContainerMapping['entityId'])
             || $productContainerMapping['entityId'] === ''
         ) {
             $this->loggingService->log(

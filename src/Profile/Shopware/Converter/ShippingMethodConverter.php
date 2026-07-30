@@ -255,7 +255,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
     /**
@@ -300,7 +300,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     /**
      * @param array<string, mixed> $data
      *
-     * @return array<string, mixed>
+     * @return Rules
      */
     protected function getCustomerGroupCalculationRule(array $data): array
     {
@@ -328,6 +328,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $this->context
         );
         $priceRuleUuid = $mapping['entityId'];
+        \assert(\is_string($priceRuleUuid));
         $this->mappingIds[] = $mapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -357,7 +358,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $conditionUuid = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
-        $rule = [
+        return [
             'id' => $priceRuleUuid,
             'name' => 'Customer Group: ' . $customerGroupName,
             'priority' => 0,
@@ -392,8 +393,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 ],
             ],
         ];
-
-        return $rule;
     }
 
     /**

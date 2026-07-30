@@ -12,7 +12,16 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
 
 /**
- * @phpstan-type MappingStruct array{id: string, connectionId: string, oldIdentifier: ?string, entityId: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
+ * @phpstan-type MappingStruct array{
+ *     id: string,
+ *     connectionId: string,
+ *     entity: string|null,
+ *     oldIdentifier: string|null,
+ *     entityId: string|null,
+ *     entityValue: string|null,
+ *     checksum: string|null,
+ *     additionalData?: array<mixed>|null,
+ * }
  */
 #[Package('fundamentals@after-sales')]
 interface MappingServiceInterface

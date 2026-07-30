@@ -72,7 +72,7 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
         }
 
         if (
-            !\is_string($productMapping['entityId'] ?? null)
+            !\is_string($productMapping['entityId'])
             || $productMapping['entityId'] === ''
         ) {
             $this->loggingService->log(

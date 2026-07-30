@@ -102,6 +102,6 @@ class SeoUrlConverter extends ShopwareConverter
             );
         }
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
+        return new ConvertStruct($converted, null, $this->mainMapping['id']);
     }
 }

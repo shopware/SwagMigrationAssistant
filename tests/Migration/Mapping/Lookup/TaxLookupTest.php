@@ -117,7 +117,7 @@ class TaxLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{taxRate: float, expectedResult: string|null}>
+     * @return array<int, array{taxRate: float, name: string, expectedResult: string|null}>
      */
     public static function getGetByTaxRateAndNameData(): array
     {

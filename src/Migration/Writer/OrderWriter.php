@@ -117,7 +117,7 @@ class OrderWriter extends AbstractWriter
                 continue;
             }
 
-            $id = $primaryKey['id'] ?? null;
+            $id = $primaryKey['id'];
 
             if (\is_string($id)) {
                 $orderIds[] = $id;

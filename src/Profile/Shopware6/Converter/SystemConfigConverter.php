@@ -75,6 +75,6 @@ class SystemConfigConverter extends ShopwareConverter
             $converted['salesChannelId'] = $mappedSalesChannelId;
         }
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
+        return new ConvertStruct($converted, null, $this->mainMapping['id']);
     }
 }

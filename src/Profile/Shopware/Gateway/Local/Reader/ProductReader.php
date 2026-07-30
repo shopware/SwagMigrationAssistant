@@ -354,7 +354,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
     }
 
     /**
-     * @return array<int, mixed>
+     * @return array<array<mixed>>
      */
     private function getMedia(MigrationContextInterface $migrationContext): array
     {

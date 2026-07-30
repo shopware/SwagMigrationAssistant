@@ -57,6 +57,6 @@ class ProductReviewConverter extends ShopwareConverter
             $converted['customerId'] = $this->getMappingIdFacade(DefaultEntities::CUSTOMER, $data['customerId']);
         }
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
+        return new ConvertStruct($converted, null, $this->mainMapping['id']);
     }
 }

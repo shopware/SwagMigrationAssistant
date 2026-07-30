@@ -73,7 +73,23 @@ readonly class LogGroupingService
     /**
      * @throws Exception
      *
-     * @return array{total: int, items: array<int, array{code: string, entityName: string|null, fieldName: string|null, count: int, fixCount: int}>, levelCounts: array{error: int, warning: int, info: int}}
+     * @return array{
+     *     total: int,
+     *     items: array<int, array{
+     *         code: string,
+     *         entityName: string|null,
+     *         fieldName: string|null,
+     *         profileName: string,
+     *         gatewayName: string,
+     *         count: int,
+     *         fixCount: int
+     *     }>,
+     *     levelCounts: array{
+     *         error: int,
+     *         warning: int,
+     *         info: int
+     *     }
+     *  }
      */
     public function getGroupedLogsByCodeAndEntity(
         string $runUuid,

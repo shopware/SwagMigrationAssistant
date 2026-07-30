@@ -33,6 +33,6 @@ class DocumentInheritanceConverter extends ShopwareConverter
             $converted['id']
         );
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
+        return new ConvertStruct($converted, null, $this->mainMapping['id']);
     }
 }

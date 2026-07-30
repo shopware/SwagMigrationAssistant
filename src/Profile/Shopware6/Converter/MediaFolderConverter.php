@@ -53,7 +53,7 @@ class MediaFolderConverter extends ShopwareConverter
             // edge case for hidden download products media folder
             // this doesn't need to be migrated, just map the files into it
             // otherwise the code below would lead to a self-referential parentId
-            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
+            return new ConvertStruct(null, $data, $this->mainMapping['id']);
         }
 
         if (isset($converted['defaultFolder'])) {
@@ -94,6 +94,6 @@ class MediaFolderConverter extends ShopwareConverter
             }
         }
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
+        return new ConvertStruct($converted, null, $this->mainMapping['id']);
     }
 }
