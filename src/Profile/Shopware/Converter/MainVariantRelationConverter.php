@@ -58,7 +58,7 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
 
         if (
             $mainProductMapping === null
-            || !\is_string($mainProductMapping['entityId'] ?? null)
+            || !\is_string($mainProductMapping['entityId'])
             || $mainProductMapping['entityId'] === ''
         ) {
             $this->loggingService->log(

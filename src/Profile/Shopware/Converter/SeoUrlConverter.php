@@ -160,7 +160,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
             );
 
             // skip this entity because we can't migrate this seo type from SW5
-            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
+            return new ConvertStruct(null, $data, $this->mainMapping['id']);
         }
         unset($data['type'], $data['typeId']);
 

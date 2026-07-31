@@ -46,9 +46,8 @@ parameters:
         - message: '#Call to deprecated method listTableIndexes\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
         - message: '#Call to deprecated method getName\(\) of class Doctrine\\DBAL\\Schema\\AbstractAsset#'
         - message: '#Call to deprecated method listTableForeignKeys\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
-        - message: '#Call to deprecated method __construct\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\Search\\EntitySearchResult#'
           paths:
-              - tests/**
+              - src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
 
         # TODO: The MainOrContainer type cannot fully express its state after nested array mutations
         - identifier: parameterByRef.type

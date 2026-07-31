@@ -76,7 +76,7 @@ class DocumentConverter extends ShopwareMediaConverter
                     ->build(ConvertObjectTypeUnsupportedLog::class)
             );
 
-            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
+            return new ConvertStruct(null, $data, $this->mainMapping['id']);
         }
 
         unset($converted['documentType']);

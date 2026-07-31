@@ -77,6 +77,6 @@ class CustomerWishlistConverter extends ShopwareConverter
 
         $converted['products'] = $products;
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
+        return new ConvertStruct($converted, null, $this->mainMapping['id']);
     }
 }

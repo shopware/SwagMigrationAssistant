@@ -89,7 +89,7 @@ class RuleConverter extends ShopwareConverter
             $converted['conditions'] = $this->sortConditions($converted['conditions']);
         }
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
+        return new ConvertStruct($converted, null, $this->mainMapping['id']);
     }
 
     private function sortConditions(array $conditions): array

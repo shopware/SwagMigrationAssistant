@@ -14,6 +14,9 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+/**
+ * @phpstan-import-type MappingStruct from MappingServiceInterface
+ */
 #[Package('fundamentals@after-sales')]
 abstract class Converter implements ConverterInterface
 {
@@ -22,7 +25,7 @@ abstract class Converter implements ConverterInterface
     protected LoggingServiceInterface $loggingService;
 
     /**
-     * @var ?array{id: string, connectionId: string, oldIdentifier: ?string, entityId: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
+     * @var MappingStruct|null
      */
     protected ?array $mainMapping = null;
 

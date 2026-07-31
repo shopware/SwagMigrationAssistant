@@ -126,6 +126,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
                 WHERE connection_id = :connectionId
                     AND entity = :entity
                     AND old_identifier = :oldIdentifier;';
+        /** @var array{id: string, connectionId: string, entity: string|null, oldIdentifier: string|null, entityId: string|null, entityValue: string|null, checksum: string|null, additionalData: string|null}|false $mapping */
         $mapping = $this->connection->fetchAssociative($sql, ['connectionId' => Uuid::fromHexToBytes($connectionId), 'entity' => $entityName, 'oldIdentifier' => $oldIdentifier]);
         if ($mapping === false) {
             return null;

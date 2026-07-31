@@ -17,6 +17,9 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+/**
+ * @phpstan-import-type MappingStruct from MappingServiceInterface
+ */
 #[Package('fundamentals@after-sales')]
 abstract class ShopwareConverter extends Converter
 {
@@ -106,7 +109,7 @@ abstract class ShopwareConverter extends Converter
     }
 
     /**
-     * @return array{id: string, connectionId: string, oldIdentifier: ?string, entityId: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
+     * @return MappingStruct
      */
     protected function getOrCreateMappingMainCompleteFacade(
         string $entityName,

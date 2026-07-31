@@ -50,7 +50,7 @@ class ProductSortingConverter extends ShopwareConverter
         );
 
         if ($this->productSortingLookup->getIsLocked($data['key'], $this->context)) {
-            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
+            return new ConvertStruct(null, $data, $this->mainMapping['id']);
         }
 
         $this->updateAssociationIds(

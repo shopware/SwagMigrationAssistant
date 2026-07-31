@@ -30,7 +30,7 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabili
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 
 /**
- * @phpstan-type Rules array{id: string, name: string, priority: int, moduleTypes: array<string, array<string>>, conditions: array<mixed>}|array{}
+ * @phpstan-type ShippingMethodRule array{id: string, name: string, priority: int, moduleTypes: array<string, array<string>>, conditions: array<mixed>}|array{}
  * @phpstan-type MainOrContainer array{id: string, ruleId: string, type: string, position: int, children: list<array{id: string, ruleId: string, parentId: string, type: string, position: int, children?: list<array<string, mixed>>}>}
  */
 #[Package('fundamentals@after-sales')]
@@ -255,7 +255,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
     /**
@@ -300,7 +300,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     /**
      * @param array<string, mixed> $data
      *
-     * @return array<string, mixed>
+     * @return ShippingMethodRule
      */
     protected function getCustomerGroupCalculationRule(array $data): array
     {
@@ -328,6 +328,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $this->context
         );
         $priceRuleUuid = $mapping['entityId'];
+        \assert(\is_string($priceRuleUuid));
         $this->mappingIds[] = $mapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -357,7 +358,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $conditionUuid = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
-        $rule = [
+        return [
             'id' => $priceRuleUuid,
             'name' => 'Customer Group: ' . $customerGroupName,
             'priority' => 0,
@@ -392,14 +393,12 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 ],
             ],
         ];
-
-        return $rule;
     }
 
     /**
      * @param array<string, mixed> $data
      *
-     * @return Rules
+     * @return ShippingMethodRule
      */
     protected function getSalesChannelCalculationRule(array $data): array
     {
@@ -458,7 +457,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $conditionUuid = (string) $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
-        $rule = [
+        return [
             'id' => $priceRuleUuid,
             'name' => 'Sales channel: ' . $salesChannelName,
             'priority' => 0,
@@ -493,14 +492,12 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 ],
             ],
         ];
-
-        return $rule;
     }
 
     /**
      * @param array<string, mixed> $data
      *
-     * @return Rules
+     * @return ShippingMethodRule
      */
     protected function getSalesChannelAndCustomerGroupCalculationRule(array $data): array
     {
@@ -633,7 +630,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $data
-     * @param Rules $rule
+     * @param ShippingMethodRule $rule
      *
      * @return list<array<string, mixed>>
      */
