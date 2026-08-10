@@ -179,6 +179,8 @@ class MediaProcessingProcessor extends AbstractProcessor
             );
         }
 
+        $this->markUnfinishedWorkloadAsFailed($mediaFiles, $workload, $context);
+
         $workloadCount = \count(\array_filter(
             $workload,
             static fn (MediaProcessWorkloadStruct $item): bool => \in_array(
@@ -261,6 +263,42 @@ class MediaProcessingProcessor extends AbstractProcessor
         }
 
         return \array_values($mappedWorkload);
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $mediaFiles
+     * @param MediaProcessWorkloadStruct[] $workload
+     */
+    private function markUnfinishedWorkloadAsFailed(array $mediaFiles, array $workload, Context $context): void
+    {
+        $mediaFileIds = [];
+        foreach ($mediaFiles as $mediaFile) {
+            $mediaFileIds[$mediaFile['media_id']] = $mediaFile['id'];
+        }
+
+        $failedMediaFiles = [];
+        foreach ($workload as $item) {
+            if (\in_array(
+                $item->getState(),
+                [MediaProcessWorkloadStruct::FINISH_STATE, MediaProcessWorkloadStruct::ERROR_STATE],
+                true
+            )) {
+                continue;
+            }
+
+            $item->setState(MediaProcessWorkloadStruct::ERROR_STATE);
+            $mediaFileId = $mediaFileIds[$item->getMediaId()] ?? null;
+            if ($mediaFileId !== null) {
+                $failedMediaFiles[$mediaFileId] = [
+                    'id' => $mediaFileId,
+                    'processFailure' => true,
+                ];
+            }
+        }
+
+        if ($failedMediaFiles !== []) {
+            $this->migrationMediaFileRepo->update(\array_values($failedMediaFiles), $context);
+        }
     }
 
     private function isAllMediaProcessed(Context $context, string $runId): bool

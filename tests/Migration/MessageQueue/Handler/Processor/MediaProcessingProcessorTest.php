@@ -303,9 +303,10 @@ class MediaProcessingProcessorTest extends TestCase
         static::assertSame(101, $this->progress->getCurrentEntityProgress());
     }
 
-    public function testDoesNotAdvanceProgressForNonTerminalWorkload(): void
+    public function testMarksNonTerminalWorkloadAsFailed(): void
     {
         $mediaId = Uuid::randomHex();
+        $mediaFileId = Uuid::randomBytes();
         $processorMock = $this->createMock(MediaFileProcessorInterface::class);
         $processorMock->expects($this->once())
             ->method('process')
@@ -322,7 +323,7 @@ class MediaProcessingProcessorTest extends TestCase
 
         $this->mediaFiles = [
             [
-                'id' => Uuid::randomBytes(),
+                'id' => $mediaFileId,
                 'run_id' => Uuid::randomBytes(),
                 'media_id' => Uuid::fromHexToBytes($mediaId),
                 'entity' => 'media',
@@ -334,11 +335,20 @@ class MediaProcessingProcessorTest extends TestCase
         $dataSetRegistry = $this->createMock(DataSetRegistry::class);
         $dataSetRegistry->method('getDataSet')->willReturn(new MediaDataSet());
 
+        $migrationMediaFileRepository = $this->createMock(EntityRepository::class);
+        $migrationMediaFileRepository->expects($this->once())
+            ->method('update')
+            ->with(
+                [['id' => $mediaFileId, 'processFailure' => true]],
+                static::isInstanceOf(Context::class)
+            );
+
         $processor = $this->createMediaProcessor(
             bus: $this->bus,
             dbalConnection: $this->dbalConnection,
             mediaFileProcessorRegistry: $processorRegistry,
-            dataSetRegistry: $dataSetRegistry
+            dataSetRegistry: $dataSetRegistry,
+            migrationMediaFileRepo: $migrationMediaFileRepository
         );
 
         $processor->process(
@@ -348,8 +358,8 @@ class MediaProcessingProcessorTest extends TestCase
             $this->progress
         );
 
-        static::assertSame(0, $this->progress->getProgress());
-        static::assertSame(100, $this->progress->getCurrentEntityProgress());
+        static::assertSame(1, $this->progress->getProgress());
+        static::assertSame(101, $this->progress->getCurrentEntityProgress());
     }
 
     public function testProcessRetriesUntilNoErrors(): void
