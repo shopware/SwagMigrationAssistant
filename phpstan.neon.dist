@@ -21,6 +21,12 @@ parameters:
         narrow_param: false
 
     ignoreErrors:
+        # The builder instantiates different concrete log entries from a validated class-string.
+        # The generic @return T annotation already provides the precise type at call sites.
+        - identifier: typePerfect.narrowReturnObjectType
+          path: src/Migration/Logging/Log/Builder/MigrationLogBuilder.php
+          reportUnmatched: false
+
         - message: '#Service ".*" is private#'
           paths:
               - tests/**/*Test.php
