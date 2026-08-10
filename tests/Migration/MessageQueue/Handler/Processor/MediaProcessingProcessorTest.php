@@ -306,7 +306,7 @@ class MediaProcessingProcessorTest extends TestCase
     public function testMarksNonTerminalWorkloadAsFailed(): void
     {
         $mediaId = Uuid::randomHex();
-        $mediaFileId = Uuid::randomBytes();
+        $mediaFileId = Uuid::randomHex();
         $processorMock = $this->createMock(MediaFileProcessorInterface::class);
         $processorMock->expects($this->once())
             ->method('process')
@@ -323,7 +323,7 @@ class MediaProcessingProcessorTest extends TestCase
 
         $this->mediaFiles = [
             [
-                'id' => $mediaFileId,
+                'id' => Uuid::fromHexToBytes($mediaFileId),
                 'run_id' => Uuid::randomBytes(),
                 'media_id' => Uuid::fromHexToBytes($mediaId),
                 'entity' => 'media',
