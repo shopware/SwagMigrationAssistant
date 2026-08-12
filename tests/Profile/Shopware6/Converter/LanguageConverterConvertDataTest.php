@@ -91,6 +91,10 @@ class LanguageConverterConvertDataTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = $this->createMigrationContext();
         $mappingServiceMock = $this->createMock(MappingServiceInterface::class);
+        $mappingServiceMock->method('getOrCreateMapping')->willReturn([
+            'id' => Uuid::randomHex(),
+            'oldIdentifier' => 1,
+        ]);
 
         $languageLookupMock = $this->createMock(LanguageLookup::class);
         $languageLookupMock->method('getLanguageEntity')->willReturn(null);
@@ -118,6 +122,10 @@ class LanguageConverterConvertDataTest extends TestCase
         $migrationContext = $this->createMigrationContext();
 
         $mappingServiceMock = $this->createMock(MappingServiceInterface::class);
+        $mappingServiceMock->method('getOrCreateMapping')->willReturn([
+            'id' => Uuid::randomHex(),
+            'oldIdentifier' => 1,
+        ]);
 
         $languageLookupMock = $this->createMock(LanguageLookup::class);
         $languageLookupMock->method('getLanguageEntity')->willReturn(new LanguageEntity());
