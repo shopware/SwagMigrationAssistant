@@ -66,9 +66,7 @@ class LanguageConverter extends ShopwareConverter
             );
         }
 
-        $mappingId = isset($this->mainMapping['id']) ? $this->mainMapping['id'] : null;
-
-        return new ConvertStruct($converted, $data, $mappingId);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id'] ?? null);
     }
 
     /**
