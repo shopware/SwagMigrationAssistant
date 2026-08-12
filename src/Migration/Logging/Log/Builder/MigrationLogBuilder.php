@@ -131,6 +131,8 @@ class MigrationLogBuilder
      * @param class-string<T> $logClass
      *
      * @return T
+     *
+     * @phpstan-ignore typePerfect.narrowReturnObjectType
      */
     public function build(string $logClass): AbstractMigrationLogEntry
     {
