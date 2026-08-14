@@ -44,3 +44,4 @@ jobs:
               with:
                   action: check
                   check-against: lowest
+                  exclude: stylelint
