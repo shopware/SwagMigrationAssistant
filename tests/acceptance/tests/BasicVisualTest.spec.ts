@@ -1,5 +1,5 @@
 import { test, expect } from '@fixtures/AcceptanceTest';
-import { getMask, waitForLoaders } from '@fixtures/TestHelpers';
+import { expectSnapshot, waitForLoaders } from '@fixtures/TestHelpers';
 
 test.describe('Visual Regression Tests @visual', () => {
     test.describe.configure({
@@ -8,7 +8,6 @@ test.describe('Visual Regression Tests @visual', () => {
 
     test('Main page (no connection)', async ({ ShopAdmin }) => {
         const page = ShopAdmin.page;
-        const mask = getMask(page);
 
         await page.goto('/admin');
         await waitForLoaders(page);
@@ -16,17 +15,16 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Open Migration Assistant' }).click();
         await waitForLoaders(page);
 
-        await expect.soft(page).toHaveScreenshot('main-page-general-no-connection.png', { mask });
+        await expectSnapshot(page, 'main-page-general-no-connection.png');
 
         await page.getByTitle('Data selection').click();
         await waitForLoaders(page);
 
-        await expect.soft(page).toHaveScreenshot('main-page-data-selection-empty.png', { mask });
+        await expectSnapshot(page, 'main-page-data-selection-empty.png');
     });
 
     test('Main page (with connection)', async ({ ShopAdmin, MigrationConnection: _ }) => {
         const page = ShopAdmin.page;
-        const mask = getMask(page);
 
         await page.goto('/admin');
         await waitForLoaders(page);
@@ -34,17 +32,16 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Open Migration Assistant' }).click();
         await waitForLoaders(page);
 
-        await expect.soft(page).toHaveScreenshot('main-page-general-with-connection.png', { mask });
+        await expectSnapshot(page, 'main-page-general-with-connection.png');
 
         await page.getByTitle('Data selection').click();
         await waitForLoaders(page);
 
-        await expect.soft(page).toHaveScreenshot('main-page-data-selection.png', { mask });
+        await expectSnapshot(page, 'main-page-data-selection.png');
     });
 
     test('Connection wizard (local, happy path)', async ({ ShopAdmin, DatabaseCredentials }) => {
         const page = ShopAdmin.page;
-        const mask = getMask(page);
 
         await page.goto('/admin');
         await waitForLoaders(page);
@@ -55,17 +52,17 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Create initial connection' }).click();
         await waitForLoaders(page);
 
-        await expect.soft(page).toHaveScreenshot('connection-wizard-introduction.png', { mask });
+        await expectSnapshot(page, 'connection-wizard-introduction.png');
 
         await page.getByRole('button', { name: 'Start' }).click();
         await waitForLoaders(page);
 
-        await expect.soft(page).toHaveScreenshot('connection-wizard-profiles.png', { mask });
+        await expectSnapshot(page, 'connection-wizard-profiles.png');
 
         await page.getByRole('button', { name: 'Continue' }).click();
         await waitForLoaders(page);
 
-        await expect.soft(page).toHaveScreenshot('connection-wizard-create.png', { mask });
+        await expectSnapshot(page, 'connection-wizard-create.png');
 
         await page.getByPlaceholder('Enter name').fill('shopware55local');
 
@@ -78,7 +75,7 @@ test.describe('Visual Regression Tests @visual', () => {
         // lose focus of host input
         await page.locator('.sw-modal__title').click();
 
-        await expect.soft(page).toHaveScreenshot('connection-wizard-establish-local.png', { mask });
+        await expectSnapshot(page, 'connection-wizard-establish-local.png');
 
         await page.getByPlaceholder('Enter host').fill(DatabaseCredentials.host);
         await page.getByLabel('Port').fill(DatabaseCredentials.port);
@@ -97,7 +94,7 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Truncate migration' }).click();
         await page.getByRole('button', { name: 'Archive' }).click();
 
-        await expect.soft(page).toHaveScreenshot('connection-wizard-truncation.png', { mask });
+        await expectSnapshot(page, 'connection-wizard-truncation.png', { clip: true });
 
         await waitForLoaders(page, 300_000); // wait for truncation
 
@@ -122,6 +119,6 @@ test.describe('Component Visual Tests @visual @components', () => {
         const dashboardCard = page.locator('.swag-migration-dashboard-card');
 
         await expect(dashboardCard).toBeVisible();
-        await expect.soft(dashboardCard).toHaveScreenshot('dashboard-card.png');
+        await expectSnapshot(page, 'dashboard-card.png');
     });
 });
