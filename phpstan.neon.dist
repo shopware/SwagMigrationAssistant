@@ -48,6 +48,9 @@ parameters:
         - message: '#Call to deprecated method listTableForeignKeys\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
           paths:
               - src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
+        - message: '#Call to deprecated method getLocalColumns\(\) of class Doctrine\\DBAL\\Schema\\ForeignKeyConstraint#'
+          paths:
+              - src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
 
         # TODO: The MainOrContainer type cannot fully express its state after nested array mutations
         - identifier: parameterByRef.type
