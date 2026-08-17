@@ -40,7 +40,7 @@ jobs:
               run: composer config policy.advisories.block false
 
             - name: Run verifier
-              uses: shopware/github-actions/extension-verifier@extension-verifier-exclude
+              uses: shopware/github-actions/extension-verifier@main
               with:
                   action: check
                   check-against: lowest
