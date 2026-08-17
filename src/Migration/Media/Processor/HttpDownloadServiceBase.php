@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration\Media\Processor;
 
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Promise\Utils;
 use Psr\Http\Message\ResponseInterface;
@@ -85,6 +86,14 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->build(RunExceptionLog::class)
             );
+
+            $failureUuids = [];
+            foreach ($workload as $work) {
+                $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
+                $failureUuids[] = $work->getMediaId();
+            }
+
+            $this->setProcessedFlag($migrationContext->getRunUuid(), $context, [], $failureUuids);
 
             return $workload;
         }
@@ -263,17 +272,17 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             $additionalData['uri'] = $mediaFile['uri'];
             $mappedWorkload[$uuid]->setAdditionalData($additionalData);
 
-            $promise = $this->doNormalDownloadRequest($migrationContext, $mappedWorkload[$uuid], $client);
-
-            if ($promise !== null) {
-                $promises[$uuid] = $promise;
-            }
+            $promises[$uuid] = $this->doNormalDownloadRequest(
+                $migrationContext,
+                $mappedWorkload[$uuid],
+                $client
+            );
         }
 
         return $promises;
     }
 
-    private function doNormalDownloadRequest(MigrationContextInterface $migrationContext, MediaProcessWorkloadStruct $workload, HttpClientInterface $client): ?PromiseInterface
+    private function doNormalDownloadRequest(MigrationContextInterface $migrationContext, MediaProcessWorkloadStruct $workload, HttpClientInterface $client): PromiseInterface
     {
         $additionalData = $workload->getAdditionalData();
 
@@ -291,8 +300,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     ->build(RunExceptionLog::class)
             );
 
-            $promise = null;
-            $workload->setErrorCount($workload->getErrorCount() + 1);
+            $promise = Create::rejectionFor($exception);
         }
 
         return $promise;

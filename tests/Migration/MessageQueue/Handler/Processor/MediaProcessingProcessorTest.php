@@ -258,7 +258,7 @@ class MediaProcessingProcessorTest extends TestCase
             new MediaProcessWorkloadStruct(
                 Uuid::randomHex(),
                 Uuid::randomHex(),
-                MediaProcessWorkloadStruct::IN_PROGRESS_STATE,
+                MediaProcessWorkloadStruct::FINISH_STATE,
                 [],
                 0
             ),
@@ -303,26 +303,92 @@ class MediaProcessingProcessorTest extends TestCase
         static::assertSame(101, $this->progress->getCurrentEntityProgress());
     }
 
+    public function testMarksNonTerminalWorkloadAsFailed(): void
+    {
+        $mediaId = Uuid::randomHex();
+        $mediaFileId = Uuid::randomHex();
+        $processorMock = $this->createMock(MediaFileProcessorInterface::class);
+        $processorMock->expects($this->once())
+            ->method('process')
+            ->willReturn([
+                new MediaProcessWorkloadStruct(
+                    $mediaId,
+                    $this->runEntity->getId(),
+                    MediaProcessWorkloadStruct::IN_PROGRESS_STATE,
+                ),
+            ]);
+
+        $processorRegistry = $this->createMock(MediaFileProcessorRegistryInterface::class);
+        $processorRegistry->method('getProcessor')->willReturn($processorMock);
+
+        $this->mediaFiles = [
+            [
+                'id' => Uuid::fromHexToBytes($mediaFileId),
+                'run_id' => Uuid::randomBytes(),
+                'media_id' => Uuid::fromHexToBytes($mediaId),
+                'entity' => 'media',
+                'written' => 1,
+                'file_size' => 10,
+            ],
+        ];
+
+        $dataSetRegistry = $this->createMock(DataSetRegistry::class);
+        $dataSetRegistry->method('getDataSet')->willReturn(new MediaDataSet());
+
+        $migrationMediaFileRepository = $this->createMock(EntityRepository::class);
+        $migrationMediaFileRepository->expects($this->once())
+            ->method('update')
+            ->with(
+                [['id' => $mediaFileId, 'processFailure' => true]],
+                static::isInstanceOf(Context::class)
+            );
+
+        $processor = $this->createMediaProcessor(
+            bus: $this->bus,
+            dbalConnection: $this->dbalConnection,
+            mediaFileProcessorRegistry: $processorRegistry,
+            dataSetRegistry: $dataSetRegistry,
+            migrationMediaFileRepo: $migrationMediaFileRepository
+        );
+
+        $processor->process(
+            $this->migrationContext,
+            Context::createDefaultContext(),
+            $this->runEntity,
+            $this->progress
+        );
+
+        static::assertSame(1, $this->progress->getProgress());
+        static::assertSame(101, $this->progress->getCurrentEntityProgress());
+    }
+
     public function testProcessRetriesUntilNoErrors(): void
     {
         $processorMock = $this->createMock(MediaFileProcessorInterface::class);
+        $mediaId = Uuid::randomHex();
+        $successfulMediaId = Uuid::randomHex();
 
         // First call returns workload with errorCount 1
         // Second call returns workload with errorCount 0
         $firstWorkload = [
             new MediaProcessWorkloadStruct(
-                Uuid::randomHex(),
+                $mediaId,
                 Uuid::randomHex(),
                 MediaProcessWorkloadStruct::IN_PROGRESS_STATE,
                 [],
                 1
             ),
+            new MediaProcessWorkloadStruct(
+                $successfulMediaId,
+                Uuid::randomHex(),
+                MediaProcessWorkloadStruct::FINISH_STATE,
+            ),
         ];
         $secondWorkload = [
             new MediaProcessWorkloadStruct(
+                $mediaId,
                 Uuid::randomHex(),
-                Uuid::randomHex(),
-                MediaProcessWorkloadStruct::IN_PROGRESS_STATE,
+                MediaProcessWorkloadStruct::FINISH_STATE,
                 [],
                 0
             ),
@@ -336,6 +402,14 @@ class MediaProcessingProcessorTest extends TestCase
         $processorRegistry->method('getProcessor')->willReturn($processorMock);
 
         $this->mediaFiles = [
+            [
+                'id' => Uuid::randomBytes(),
+                'run_id' => Uuid::randomBytes(),
+                'media_id' => Uuid::randomBytes(),
+                'entity' => 'media',
+                'written' => 1,
+                'file_size' => 10,
+            ],
             [
                 'id' => Uuid::randomBytes(),
                 'run_id' => Uuid::randomBytes(),
@@ -363,8 +437,8 @@ class MediaProcessingProcessorTest extends TestCase
             $this->progress
         );
 
-        static::assertSame(1, $this->progress->getProgress());
-        static::assertSame(101, $this->progress->getCurrentEntityProgress());
+        static::assertSame(2, $this->progress->getProgress());
+        static::assertSame(102, $this->progress->getCurrentEntityProgress());
     }
 
     public function testTransitionsIfAllMediaIsProcessed(): void
