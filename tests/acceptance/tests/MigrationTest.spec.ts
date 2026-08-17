@@ -294,7 +294,7 @@ test.describe('Migration Tests @migration @visual', () => {
 
             // replace log entry counts
             logString = logString.replaceAll(/----- Log Entry #\d+ -----/g, '----- Log Entry [count] -----');
-            logString = logString.trimEnd();
+            logString = `${logString.trimEnd()}\n`;
 
             expect(logString).toMatchSnapshot('migration-log-sw5.txt');
         });
