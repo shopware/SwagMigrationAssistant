@@ -12,6 +12,9 @@
     "require": {
         "shopware/core": "~6.7"
     },
+    "suggest": {
+        "shopware/storefront": "Required for migrating themes and their sales channel assignments"
+    },
     "extra": {
         "shopware-plugin-class": "SwagMigrationAssistant\\SwagMigrationAssistant",
         "plugin-icon": "src/Resources/config/plugin.png",

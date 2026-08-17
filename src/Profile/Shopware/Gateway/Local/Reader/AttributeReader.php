@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
-use Doctrine\DBAL\Schema\Name\UnqualifiedName;
 use Doctrine\DBAL\Types\AsciiStringType;
 use Doctrine\DBAL\Types\BigIntType;
 use Doctrine\DBAL\Types\BinaryType;
@@ -192,7 +191,8 @@ SQL;
         $fks = [];
 
         foreach ($foreignKeys as $foreignKey) {
-            $fks[] = array_map(static fn (UnqualifiedName $name) => $name->toString(), $foreignKey->getReferencingColumnNames());
+            // getLocalColumns() is deprecated, but getReferencingColumnNames() needs DBAL 4.3+ (Shopware 6.7.0/6.7.1 can lock DBAL 4.2)
+            $fks[] = $foreignKey->getLocalColumns();
         }
 
         if ($fks !== []) {

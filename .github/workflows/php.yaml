@@ -25,3 +25,23 @@ jobs:
         uses: ./.github/workflows/action-phpstan.yml
         with:
             extension_name: ${{ github.event.repository.name }}
+
+    extension_verifier:
+        name: Extension Verifier (lowest)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout SwagMigrationAssistant
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+            - name: Remove PHPStan config
+              run: rm phpstan.neon.dist
+
+            - name: Allow composer to resolve advisory-affected releases
+              run: composer config policy.advisories.block false
+
+            - name: Run verifier
+              uses: shopware/github-actions/extension-verifier@main
+              with:
+                  action: check
+                  check-against: lowest
+                  exclude: stylelint
