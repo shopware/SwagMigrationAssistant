@@ -219,6 +219,32 @@ class HttpDownloadServiceBaseTest extends TestCase
         ], $this->loggingService->getLoggingArray());
     }
 
+    public function testProcessWithSynchronousRequestFailureReturnsRetryableWorkload(): void
+    {
+        $mediaFileId = Uuid::randomHex();
+        $mediaFiles = [
+            [
+                'mediaId' => $mediaFileId,
+                'fileName' => 'test.jpg',
+                'fileContent' => null,
+                'uri' => 'http://test.localhost/test.jpg',
+            ],
+        ];
+        $httpClient = $this->createMock(HttpClientInterface::class);
+        $httpClient->expects($this->once())
+            ->method('getAsync')
+            ->willThrowException(new \RuntimeException('Request could not be created.'));
+
+        $resultWorkload = $this->createBase($mediaFiles, null, $httpClient)->process(
+            $this->migrationContext,
+            $this->context,
+            [new MediaProcessWorkloadStruct($mediaFileId, $this->runId)]
+        );
+
+        static::assertSame(MediaProcessWorkloadStruct::IN_PROGRESS_STATE, $resultWorkload[0]->getState());
+        static::assertSame(1, $resultWorkload[0]->getErrorCount());
+    }
+
     public function testProcessShouldCreateATempFile(): void
     {
         $mediaFiles = [
@@ -293,8 +319,11 @@ class HttpDownloadServiceBaseTest extends TestCase
     /**
      * @param list<array{mediaId: string, fileName: string, fileContent: ?string, uri: string}> $migrationMedia
      */
-    private function createBase(array $migrationMedia, ?QueryBuilder $queryBuilder = null): DummyHttpDownloadService
-    {
+    private function createBase(
+        array $migrationMedia,
+        ?QueryBuilder $queryBuilder = null,
+        ?HttpClientInterface $httpClient = null,
+    ): DummyHttpDownloadService {
         $migrationMediaFiles = [];
         foreach ($migrationMedia as $media) {
             $migrationMediaFiles[] = [
@@ -321,7 +350,7 @@ class HttpDownloadServiceBaseTest extends TestCase
             new SwagMigrationMediaFileDefinition()
         );
         $fileSaver = $this->createMock(FileSaver::class);
-        $httpClient = $this->createHttpClientMock($migrationMedia);
+        $httpClient ??= $this->createHttpClientMock($migrationMedia);
 
         return new DummyHttpDownloadService(
             $dbalConnection,

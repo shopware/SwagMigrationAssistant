@@ -158,7 +158,7 @@ class MediaProcessingProcessor extends AbstractProcessor
         try {
             $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
             $workload = $processor->process($migrationContext, $context, $workload);
-            $this->processFailures($context, $migrationContext, $processor, $workload);
+            $workload = $this->processFailures($context, $migrationContext, $processor, $workload);
         } catch (MigrationException $e) {
             if ($e->getErrorCode() === MigrationException::NO_CONNECTION_FOUND) {
                 $this->loggingService->log(
@@ -179,7 +179,16 @@ class MediaProcessingProcessor extends AbstractProcessor
             );
         }
 
-        $workloadCount = \count($workload);
+        $this->markUnfinishedWorkloadAsFailed($mediaFiles, $workload, $context);
+
+        $workloadCount = \count(\array_filter(
+            $workload,
+            static fn (MediaProcessWorkloadStruct $item): bool => \in_array(
+                $item->getState(),
+                [MediaProcessWorkloadStruct::FINISH_STATE, MediaProcessWorkloadStruct::ERROR_STATE],
+                true
+            )
+        ));
         $this->finalizeProcessStep(
             $context,
             $migrationContext,
@@ -220,18 +229,25 @@ class MediaProcessingProcessor extends AbstractProcessor
 
     /**
      * @param MediaProcessWorkloadStruct[] $workload
+     *
+     * @return MediaProcessWorkloadStruct[]
      */
     private function processFailures(
         Context $context,
         MigrationContextInterface $migrationContext,
         MediaFileProcessorInterface $processor,
         array $workload,
-    ): void {
+    ): array {
+        $mappedWorkload = [];
+        foreach ($workload as $item) {
+            $mappedWorkload[$item->getMediaId()] = $item;
+        }
+
         for ($i = 0; $i < $this->migrationConfig->migrationDefaultExceptionThreshold; ++$i) {
             $errorWorkload = [];
 
-            foreach ($workload as $item) {
-                if ($item->getErrorCount() > 0) {
+            foreach ($mappedWorkload as $item) {
+                if ($item->getErrorCount() > 0 && $item->getState() !== MediaProcessWorkloadStruct::ERROR_STATE) {
                     $errorWorkload[] = $item;
                 }
             }
@@ -240,7 +256,48 @@ class MediaProcessingProcessor extends AbstractProcessor
                 break;
             }
 
-            $workload = $processor->process($migrationContext, $context, $errorWorkload);
+            $retriedWorkload = $processor->process($migrationContext, $context, $errorWorkload);
+            foreach ($retriedWorkload as $item) {
+                $mappedWorkload[$item->getMediaId()] = $item;
+            }
+        }
+
+        return \array_values($mappedWorkload);
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $mediaFiles
+     * @param MediaProcessWorkloadStruct[] $workload
+     */
+    private function markUnfinishedWorkloadAsFailed(array $mediaFiles, array $workload, Context $context): void
+    {
+        $mediaFileIds = [];
+        foreach ($mediaFiles as $mediaFile) {
+            $mediaFileIds[$mediaFile['media_id']] = $mediaFile['id'];
+        }
+
+        $failedMediaFiles = [];
+        foreach ($workload as $item) {
+            if (\in_array(
+                $item->getState(),
+                [MediaProcessWorkloadStruct::FINISH_STATE, MediaProcessWorkloadStruct::ERROR_STATE],
+                true
+            )) {
+                continue;
+            }
+
+            $item->setState(MediaProcessWorkloadStruct::ERROR_STATE);
+            $mediaFileId = $mediaFileIds[$item->getMediaId()] ?? null;
+            if ($mediaFileId !== null) {
+                $failedMediaFiles[$mediaFileId] = [
+                    'id' => $mediaFileId,
+                    'processFailure' => true,
+                ];
+            }
+        }
+
+        if ($failedMediaFiles !== []) {
+            $this->migrationMediaFileRepo->update(\array_values($failedMediaFiles), $context);
         }
     }
 
