@@ -58,12 +58,10 @@ test.describe('Visual Regression Tests @visual', () => {
         await expect.soft(page).toHaveScreenshot('connection-wizard-introduction.png', { mask });
 
         await page.getByRole('button', { name: 'Start' }).click();
-        await waitForLoaders(page);
 
         await expect.soft(page).toHaveScreenshot('connection-wizard-profiles.png', { mask });
 
         await page.getByRole('button', { name: 'Continue' }).click();
-        await waitForLoaders(page);
 
         await expect.soft(page).toHaveScreenshot('connection-wizard-create.png', { mask });
 
@@ -93,7 +91,7 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Done' }).click();
         await waitForLoaders(page);
 
-        await page.getByTestId('mt-icon__solid-ellipsis-h-s').click();
+        await page.locator('.swag-migration-shop-information__actions-context-menu').click();
         await page.getByRole('button', { name: 'Truncate migration' }).click();
         await page.getByRole('button', { name: 'Archive' }).click();
 
