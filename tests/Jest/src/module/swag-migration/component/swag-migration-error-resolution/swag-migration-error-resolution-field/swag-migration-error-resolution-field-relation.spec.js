@@ -1,7 +1,7 @@
 /**
  * @sw-package after-sales
  */
-import { mount } from '@vue/test-utils';
+import { DOMWrapper, mount } from '@vue/test-utils';
 import SwagMigrationErrorResolutionFieldRelation from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-relation';
 import SwagMigrationErrorResolutionService from 'SwagMigrationAssistant/module/swag-migration/service/swag-migration-error-resolution.service';
 
@@ -135,10 +135,12 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
             await wrapper.find('.sw-migration-error-resolution-field__to-one input').trigger('click');
             await flushPromises();
 
-            expect(wrapper.find('.sw-select-result-list__content').exists()).toBe(true);
+            expect(new DOMWrapper(document.body).find('.sw-select-result-list__content').exists()).toBe(true);
 
-            const labels = wrapper.findAll('.swag-migration-error-resolution-field-relation__item-label');
-            const ids = wrapper.findAll('.swag-migration-error-resolution-field-relation__item-id');
+            const labels = new DOMWrapper(document.body).findAll(
+                '.swag-migration-error-resolution-field-relation__item-label',
+            );
+            const ids = new DOMWrapper(document.body).findAll('.swag-migration-error-resolution-field-relation__item-id');
 
             expect(labels[0].text()).toBe('result 1');
             expect(ids[0].text()).toBe('1');
@@ -214,10 +216,12 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
             await wrapper.find('.sw-migration-error-resolution-field__to_many input').trigger('click');
             await flushPromises();
 
-            expect(wrapper.find('.sw-select-result-list__content').exists()).toBe(true);
+            expect(new DOMWrapper(document.body).find('.sw-select-result-list__content').exists()).toBe(true);
 
-            const labels = wrapper.findAll('.swag-migration-error-resolution-field-relation__item-label');
-            const ids = wrapper.findAll('.swag-migration-error-resolution-field-relation__item-id');
+            const labels = new DOMWrapper(document.body).findAll(
+                '.swag-migration-error-resolution-field-relation__item-label',
+            );
+            const ids = new DOMWrapper(document.body).findAll('.swag-migration-error-resolution-field-relation__item-id');
 
             expect(labels[0].text()).toBe('result 1');
             expect(ids[0].text()).toBe('1');

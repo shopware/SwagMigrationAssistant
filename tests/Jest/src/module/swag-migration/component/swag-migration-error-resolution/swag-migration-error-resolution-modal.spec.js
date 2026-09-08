@@ -1,7 +1,7 @@
 /**
  * @sw-package after-sales
  */
-import { mount } from '@vue/test-utils';
+import { DOMWrapper, mount } from '@vue/test-utils';
 import SwagMigrationErrorResolutionModal, {
     ERROR_CODE_COMPONENT_MAPPING,
 } from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-modal';
@@ -442,8 +442,10 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             expect(wrapper.find('.swag-migration-error-resolution-details-modal').exists()).toBe(false);
 
-            expect(wrapper.find('.sw-context-button__menu-popover').exists()).toBe(true);
-            await wrapper.find('.swag-migration-error-resolution-modal__left-modal-action-details').trigger('click');
+            expect(new DOMWrapper(document.body).find('.sw-context-button__menu-popover').exists()).toBe(true);
+            await new DOMWrapper(document.body)
+                .find('.swag-migration-error-resolution-modal__left-modal-action-details')
+                .trigger('click');
 
             expect(wrapper.find('.swag-migration-error-resolution-details-modal').exists()).toBe(true);
             expect(wrapper.vm.selectedDetailsLog).toStrictEqual(wrapper.vm.tableData.at(0));
@@ -478,8 +480,10 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             migrationFixRepositoryMock.search.mockReturnValueOnce(Promise.resolve([]));
 
-            expect(wrapper.find('.sw-context-button__menu-popover').exists()).toBe(true);
-            await wrapper.find('.swag-migration-error-resolution-modal__left-modal-action-reset').trigger('click');
+            expect(new DOMWrapper(document.body).find('.sw-context-button__menu-popover').exists()).toBe(true);
+            await new DOMWrapper(document.body)
+                .find('.swag-migration-error-resolution-modal__left-modal-action-reset')
+                .trigger('click');
 
             await flushPromises();
 
@@ -888,7 +892,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await relationField.find('.sw-entity-single-select__selection').trigger('click');
             await flushPromises();
 
-            await relationField.find('.sw-select-result').trigger('click');
+            await new DOMWrapper(document.body).find('.sw-select-result').trigger('click');
             await flushPromises();
 
             expect(wrapper.vm.fieldValue).toBe('tax-id-1');

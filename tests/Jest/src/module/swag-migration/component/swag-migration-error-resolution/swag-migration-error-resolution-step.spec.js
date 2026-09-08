@@ -1,7 +1,7 @@
 /**
  * @sw-package after-sales
  */
-import { mount } from '@vue/test-utils';
+import { DOMWrapper, mount } from '@vue/test-utils';
 import SwagMigrationErrorResolutionStep, {
     MIGRATION_LOG_LEVEL,
 } from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-step';
@@ -377,8 +377,10 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                 await wrapper.find('.sw-data-grid__row--0 .sw-data-grid__cell--actions button').trigger('click');
                 await flushPromises();
 
-                expect(wrapper.find('.sw-context-button__menu-popover').exists()).toBe(true);
-                await wrapper.find('.swag-migration-error-resolution-step__card-table-edit').trigger('click');
+                expect(new DOMWrapper(document.body).find('.sw-context-button__menu-popover').exists()).toBe(true);
+                await new DOMWrapper(document.body)
+                    .find('.swag-migration-error-resolution-step__card-table-edit')
+                    .trigger('click');
                 await flushPromises();
 
                 const modal = wrapper.find('swag-migration-error-resolution-modal-stub');
@@ -411,8 +413,10 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                 await wrapper.find('.sw-data-grid__row--0 .sw-data-grid__cell--actions button').trigger('click');
                 await flushPromises();
 
-                expect(wrapper.find('.sw-context-button__menu-popover').exists()).toBe(true);
-                await wrapper.find('.swag-migration-error-resolution-step__card-table-edit').trigger('click');
+                expect(new DOMWrapper(document.body).find('.sw-context-button__menu-popover').exists()).toBe(true);
+                await new DOMWrapper(document.body)
+                    .find('.swag-migration-error-resolution-step__card-table-edit')
+                    .trigger('click');
                 await flushPromises();
 
                 expect(migrationApiServiceMock.getLogGroups).toHaveBeenCalledTimes(1);
