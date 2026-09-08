@@ -61,6 +61,15 @@ parameters:
         - identifier: shopware.codeCoverageIgnoreOnLogic
           reportUnmatched: false
 
+        - message: '#tag:v6.9.0 reason#'
+          identifiers:
+            - parameter.deprecatedClass
+            - property.deprecatedClass
+            - instanceof.deprecatedClass
+            - method.deprecatedClass
+            - classConstant.deprecatedClass
+            - method.deprecated
+
 rules:
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\CoversAttributeRule
