@@ -1,7 +1,9 @@
 # NEXT
 
+- #18902 - Fehler bei der Medienmigration behoben, durch den fehlgeschlagene Downloads nach Ablauf der Wiederholungsversuche nicht als endgültig fehlgeschlagen markiert wurden. Dadurch konnte die Verarbeitung nicht korrekt abgeschlossen werden.
 - #17832 - Die Attribut-Migration wurde korrigiert, sodass Zusatzfelder mit leerem Label die Migration nicht mehr abbrechen. Der Reader behält nun den `column_name` in der Attributkonfiguration.
 - #12748 - Die Migration von Bestellungen wurde korrigiert, sodass `product.sales` nach dem Schreiben migrierter Bestellungen anhand der persistierten Bestellpositionen neu berechnet wird. Stornierte Bestellungen werden dabei nicht berücksichtigt.
+- Die Attribut-Migration wurde für Installationen korrigiert, die Doctrine DBAL 4.2 auflösen. Dort brach das Lesen der Attribute über das lokale Shopware-Gateway die Migration ab.
 
 # 18.0.0
 

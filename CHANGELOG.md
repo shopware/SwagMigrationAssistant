@@ -1,7 +1,9 @@
 # NEXT
 
+- #18902 - Fixed a bug in media migration whereby failed downloads were not marked as definitively failed once the retry attempts had been exhausted. As a result, processing could not be completed correctly.
 - #17832 - Fixed attribute migration so custom fields with an empty label no longer abort the run. The reader now keeps the `column_name` in the attribute configuration.
 - #12748 - Fixed order migration so `product.sales` is recalculated from persisted order line items after migrated orders are written. Cancelled orders are excluded from the sales calculation.
+- Fixed attribute migration on installations that resolve Doctrine DBAL 4.2, where reading attributes through the Shopware local gateway aborted the run.
 
 # 18.0.0
 
