@@ -473,7 +473,11 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await wrapper.find('.sw-data-grid__row--1 .sw-data-grid__cell--actions button').trigger('click');
             await flushPromises();
 
-            expect(wrapper.find('.swag-migration-error-resolution-modal__left-modal-action-reset').exists()).toBe(false);
+            expect(
+                new DOMWrapper(document.body)
+                    .find('.swag-migration-error-resolution-modal__left-modal-action-reset')
+                    .exists(),
+            ).toBe(false);
 
             await wrapper.find('.sw-data-grid__row--0 .sw-data-grid__cell--actions button').trigger('click');
             await flushPromises();
