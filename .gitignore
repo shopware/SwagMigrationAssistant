@@ -34,4 +34,4 @@ src/Resources/app/administration/.tmp
 
 # plugin
 /migration_assistant.cache
-/coverage.xml
+/clover.xml
