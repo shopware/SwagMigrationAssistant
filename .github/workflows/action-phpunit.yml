@@ -9,6 +9,13 @@ on:
             platform_branch:
                 required: true
                 type: string
+            coverage:
+                required: false
+                type: boolean
+                default: false
+        secrets:
+            CODECOV_TOKEN:
+                required: false
 
 jobs:
     phpunit:
@@ -36,4 +43,14 @@ jobs:
               run: mysql -uroot < _fixtures/database/shopware55.sql
 
             - name: Run PHPUnit
-              run: composer -d custom/plugins/${{ inputs.extension_name }} run phpunit
+              run: composer -d custom/plugins/${{ inputs.extension_name }} run phpunit -- ${{ inputs.coverage && '--coverage-clover clover.xml' || '' }}
+
+            - name: Upload coverage to Codecov
+              if: inputs.coverage
+              uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+              env:
+                  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+              with:
+                  root_dir: ${{ github.workspace }}/custom/plugins/${{ inputs.extension_name }}
+                  working-directory: ${{ github.workspace }}/custom/plugins/${{ inputs.extension_name }}
+                  files: ./clover.xml

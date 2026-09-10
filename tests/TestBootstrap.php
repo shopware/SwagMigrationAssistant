@@ -14,7 +14,8 @@ if (is_readable(__DIR__ . '/../vendor/shopware/platform/src/Core/TestBootstrappe
 } elseif (is_readable(__DIR__ . '/../../../../src/Core/TestBootstrapper.php')) {
     require __DIR__ . '/../../../../src/Core/TestBootstrapper.php';
 } else {
-    exit('Could not find TestBootstrapper.php');
+    fwrite(\STDERR, 'Could not find TestBootstrapper.php' . \PHP_EOL);
+    exit(1);
 }
 
 return (new TestBootstrapper())
