@@ -2,7 +2,4 @@
 compatibility_date: '2026-08-14'
 
 validation:
-    ignore:
-        # The verifier's PHPStan cannot see functions defined in vendor PSR-4 files, these resolve at runtime.
-        - message: 'Function service not found'
-        - message: 'Function tagged_iterator not found'
+    phpstan_config: phpstan-verifier.neon

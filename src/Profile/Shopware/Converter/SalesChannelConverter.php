@@ -311,16 +311,19 @@ abstract class SalesChannelConverter extends ShopwareConverter
      */
     protected function filterExistingLanguageSalesChannelRelation(string $salesChannelUuid, array &$languageIds): void
     {
+        $criteria = new Criteria([$salesChannelUuid]);
+        $criteria->addAssociation('languages');
+
+        $salesChannel = $this->salesChannelRepo->search($criteria, Context::createDefaultContext())->getEntities()->first();
+        $existingLanguageIds = $salesChannel?->getLanguages()?->getIds() ?? [];
+
         $insertLanguages = [];
         foreach ($languageIds as $languageId) {
-            $criteria = (new Criteria())
-                ->setLimit(1)
-                ->addFilter(new EqualsFilter('id', $salesChannelUuid))
-                ->addFilter(new EqualsFilter('languages.id', $languageId['id']));
-
-            if ($this->salesChannelRepo->searchIds($criteria, Context::createDefaultContext())->getTotal() === 0) {
-                $insertLanguages[] = $languageId;
+            if (\in_array($languageId['id'], $existingLanguageIds, true)) {
+                continue;
             }
+
+            $insertLanguages[] = $languageId;
         }
 
         $languageIds = $insertLanguages;
