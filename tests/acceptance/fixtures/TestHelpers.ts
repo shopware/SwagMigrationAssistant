@@ -5,7 +5,6 @@ export const LOADING_TIMEOUT = 30_000; // 30s
 
 export const VIEWPORT = {
     DEFAULT: { width: 1440, height: 1080 },
-    LARGE: { width: 1440, height: 1440 },
 };
 
 export const loaderSelectors = [
@@ -26,11 +25,50 @@ export const dynamicElementSelectors = [
     ...loaderSelectors,
 ] as const;
 
+export const defaultIgnoredSelectors = [
+    '.sw-page__search-bar',
+    '.sw-page__top-bar-actions',
+] as const;
+
 export function getMask(page: Page, additional: string[] = []): Locator[] {
     return [
+        ...defaultIgnoredSelectors,
         ...dynamicElementSelectors,
         ...additional,
     ].map((selector) => page.locator(selector));
+}
+
+export async function expectSnapshot(
+    page: Page,
+    name: string,
+    options: { mask?: Locator[]; target?: Locator; clip?: boolean } = {},
+): Promise<void> {
+    let target = options.target;
+
+    if (!target) {
+        const modalDialog = page.locator('.sw-modal__dialog').last();
+        const modalIsOpen = (await modalDialog.count()) > 0 && (await modalDialog.isVisible());
+
+        target = modalIsOpen ? modalDialog : page.locator('.sw-page');
+    }
+
+    const mask = options.mask ?? getMask(page);
+
+    // A target that never settles fails element stability check.
+    // Skips per element wait while still framing only the target.
+    if (options.clip) {
+        await target.waitFor({ state: 'visible' });
+        const clip = await target.boundingBox();
+
+        await expect.soft(page).toHaveScreenshot(
+            name,
+            clip ? { mask, clip } : { mask }
+        );
+
+        return;
+    }
+
+    await expect.soft(target).toHaveScreenshot(name, { mask });
 }
 
 export async function waitForLoaders(page: Page, timeout = LOADING_TIMEOUT): Promise<void> {
@@ -45,21 +83,4 @@ export async function waitForLoaders(page: Page, timeout = LOADING_TIMEOUT): Pro
         });
 
     await expect(loader).toHaveCount(0, { timeout });
-}
-
-export async function withLargerViewport(
-    page: Page,
-    viewport: { width: number; height: number } = VIEWPORT.DEFAULT,
-): Promise<() => Promise<void>> {
-    const height = Math.max(viewport.height, VIEWPORT.LARGE.height);
-    const width = Math.max(viewport.width, VIEWPORT.LARGE.width);
-
-    const original = page.viewportSize();
-    await page.setViewportSize({ width, height });
-
-    return async () => {
-        if (original) {
-            await page.setViewportSize(original);
-        }
-    };
 }
