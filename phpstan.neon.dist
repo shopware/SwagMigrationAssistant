@@ -61,7 +61,8 @@ parameters:
         - identifier: shopware.codeCoverageIgnoreOnLogic
           reportUnmatched: false
 
-        - message: '#tag:v6.9.0 reason#'
+        # TODO: remove this for 6.9 compatibility
+        - message: '#tag:v6.9.0#'
           identifiers:
             - parameter.deprecatedClass
             - property.deprecatedClass
