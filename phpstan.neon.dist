@@ -1,6 +1,7 @@
 includes:
     - phpstan-baseline.neon
     - %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/PHPStan/common.neon
+    - ../../../vendor/shopwarelabs/phpstan-shopware/rules.neon
 
 parameters:
     tmpDir: var/cache/phpstan
@@ -21,6 +22,10 @@ parameters:
         narrow_param: false
 
     ignoreErrors:
+        - identifier: shopware.disallow.default.context.creation
+          paths:
+              - tests/*
+
         - message: '#Service ".*" is private#'
           paths:
               - tests/**/*Test.php

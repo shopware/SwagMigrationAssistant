@@ -1,0 +1,19 @@
+# PHPStan config for the shopware-cli extension verifier.
+#
+# phpstan.neon.dist cannot run here: it includes Shopware's common.neon via %ShopwareRoot% and points
+# phpstan-symfony at a dumped DevDebugContainer.xml, both of which need a booted Shopware installation.
+# The verifier has neither, so validation.phpstan_config in .shopware-extension.yml points at this file.
+includes:
+    - %env.PHP_DIR%/configs/phpstan.neon
+    - phpstan-baseline.neon
+
+parameters:
+    # Matches phpstan.neon.dist. Without it the verifier treats our PHPDoc as certain and reports narrowing
+    # that the project's own PHPStan run never produces.
+    treatPhpDocTypesAsCertain: false
+
+    ignoreErrors:
+        # Mirrors phpstan.neon.dist. This one lives in ignoreErrors rather than the baseline, so the
+        # baseline include above does not carry it over.
+        - identifier: parameterByRef.type
+          path: src/Profile/Shopware/Converter/ShippingMethodConverter.php

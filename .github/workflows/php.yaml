@@ -33,15 +33,14 @@ jobs:
             - name: Checkout SwagMigrationAssistant
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-            - name: Remove PHPStan config
-              run: rm phpstan.neon.dist
-
             - name: Allow composer to resolve advisory-affected releases
               run: composer config policy.advisories.block false
 
-            - name: Run verifier
-              uses: shopware/github-actions/extension-verifier@main
+            - name: Install Shopware CLI
+              uses: shopware/shopware-cli-action@b67b48ccb52beb8533ea276152e1f89f29bbd080 # v3.0.0
               with:
-                  action: check
-                  check-against: lowest
-                  exclude: stylelint
+                  # TODO: bump to the first release containing validation.phpstan_config
+                  version: 0.18.4
+
+            - name: Run verifier
+              run: shopware-cli extension validate --full --check-against lowest --exclude=stylelint .
