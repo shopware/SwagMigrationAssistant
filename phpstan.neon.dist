@@ -51,6 +51,10 @@ parameters:
         - message: '#Call to deprecated method getLocalColumns\(\) of class Doctrine\\DBAL\\Schema\\ForeignKeyConstraint#'
           paths:
               - src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
+        - identifier: shopware.stripTags
+          paths:
+              - src/Profile/Shopware/Converter/ShopwareConverter.php
+              - src/Profile/Shopware/Converter/TranslationConverter.php
 
         # TODO: The MainOrContainer type cannot fully express its state after nested array mutations
         - identifier: parameterByRef.type
@@ -71,8 +75,18 @@ parameters:
             - classConstant.deprecatedClass
             - method.deprecated
 
+services:
+    -
+        class: Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedServiceDecoratorPattern
+    -
+        class: Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
+        arguments:
+            deprecationPatterns:
+                - @Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedServiceDecoratorPattern
+        tags:
+            - phpstan.rules.rule
+
 rules:
-    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\CoversAttributeRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\MockingSimpleObjectsNotAllowedRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\DecorationPatternRule
