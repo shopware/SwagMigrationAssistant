@@ -167,7 +167,7 @@ const EXTRACT_ENTITY_FIELD_TESTS = [
         expected: {
             scalar: expect.objectContaining({
                 id: expect.objectContaining({ type: 'uuid' }),
-                alt: expect.objectContaining({ type: 'text' }),
+                alt: expect.objectContaining({ type: 'string' }),
                 uploadedAt: expect.objectContaining({ type: 'date' }),
                 fileSize: expect.objectContaining({ type: 'int' }),
                 url: expect.objectContaining({ type: 'string' }),
