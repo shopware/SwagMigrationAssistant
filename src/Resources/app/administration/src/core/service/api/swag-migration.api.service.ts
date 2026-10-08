@@ -144,6 +144,21 @@ export default class MigrationApiService extends ApiService {
         return this.handleResponse(response) as MigrationEnvironmentInformation;
     }
 
+    async getConnectionCredentials(
+        connectionId: string,
+        additionalHeaders: AdditionalHeaders = {},
+    ): Promise<MigrationCredentials> {
+        const response = await this.apiService.httpClient.get<MigrationCredentials>(
+            this.getActionPath('get-connection-credentials'),
+            {
+                params: { connectionId },
+                headers: this.getHeaders(additionalHeaders),
+            },
+        );
+
+        return this.handleResponse(response) as MigrationCredentials;
+    }
+
     async updateConnectionCredentials(
         connectionId: string,
         credentialFields: MigrationCredentials,
