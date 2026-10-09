@@ -75,6 +75,7 @@ const migrationApiServiceMock = {
     getProfiles: jest.fn(() => Promise.resolve([])),
     getGateways: jest.fn(() => Promise.resolve([])),
     getEnvironmentInformation: jest.fn(() => Promise.resolve(environementInformationSuccessMock)),
+    getConnectionCredentials: jest.fn(() => Promise.resolve({ apiKey, apiUser, endpoint })),
     createNewConnection: jest.fn(() => Promise.resolve(environementInformationSuccessMock)),
 };
 

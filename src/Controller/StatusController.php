@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Controller;
 
+use Shopware\Core\Framework\Api\ApiException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -180,6 +181,29 @@ class StatusController extends AbstractController
     }
 
     #[Route(
+        path: '/api/_action/migration/get-connection-credentials',
+        name: 'api.admin.migration.get-connection-credentials',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']],
+        methods: [Request::METHOD_GET]
+    )]
+    public function getConnectionCredentials(Request $request, Context $context): JsonResponse
+    {
+        $connectionId = $request->query->getAlnum('connectionId');
+
+        if ($connectionId === '') {
+            throw RoutingException::missingRequestParameter('connectionId');
+        }
+
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
+
+        if ($connection === null) {
+            throw MigrationException::noConnectionFound();
+        }
+
+        return new JsonResponse($connection->getCredentialFields() ?? [], Response::HTTP_OK, ['Cache-Control' => 'no-store']);
+    }
+
+    #[Route(
         path: '/api/_action/migration/update-connection-credentials',
         name: 'api.admin.migration.update-connection-credentials',
         defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']],
@@ -303,6 +327,10 @@ class StatusController extends AbstractController
         $credentialFields = $request->request->all('credentialFields');
 
         if ($credentialFields !== []) {
+            if (!$context->isAllowed('swag_migration.editor')) {
+                throw ApiException::missingPrivileges(['swag_migration.editor']);
+            }
+
             $connection->setCredentialFields($credentialFields);
         }
 

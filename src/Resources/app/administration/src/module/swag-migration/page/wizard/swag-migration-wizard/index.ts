@@ -536,24 +536,26 @@ export default Shopware.Component.wrapComponentConfig({
             await this.fetchConnection(items.first().selectedConnectionId);
         },
 
-        fetchConnection(connectionId: string) {
-            return new Promise((resolve) => {
-                const criteria = new Criteria(1, 1);
-                criteria.addFilter(Criteria.equals('id', connectionId));
+        async fetchConnection(connectionId: string) {
+            const criteria = new Criteria(1, 1);
+            criteria.addFilter(Criteria.equals('id', connectionId));
 
-                this.migrationConnectionRepository.search(criteria, this.context).then((connectionResponse) => {
-                    if (connectionResponse.length === 0 || connectionResponse.first().id === null) {
-                        this.isLoading = false;
-                        this.onNoConnectionSelected();
-                        resolve(null);
-                        return;
-                    }
+            try {
+                const connectionResponse = await this.migrationConnectionRepository.search(criteria, this.context);
 
-                    this.connection = connectionResponse.first();
-                    this.isLoading = false;
-                    resolve(null);
-                });
-            });
+                if (connectionResponse.length === 0 || connectionResponse.first().id === null) {
+                    this.onNoConnectionSelected();
+                    return;
+                }
+
+                const connection = connectionResponse.first();
+                connection.credentialFields = await this.migrationApiService.getConnectionCredentials(connection.id);
+                this.connection = connection;
+            } catch (error) {
+                this.onResponseError(error.response.data.errors[0].code);
+            } finally {
+                this.isLoading = false;
+            }
         },
 
         onNoConnectionSelected() {
@@ -625,14 +627,17 @@ export default Shopware.Component.wrapComponentConfig({
                         setting.selectedConnectionId = connection.id;
                         this.migrationGeneralSettingRepository
                             .save(setting, this.context)
-                            .then(() => {
+                            .then(async () => {
+                                connection.credentialFields = await this.migrationApiService.getConnectionCredentials(
+                                    connection.id,
+                                );
                                 this.connection = connection;
                                 this.isLoading = false;
                                 resolve(null);
                             })
-                            .catch(() => {
+                            .catch((error) => {
                                 this.isLoading = false;
-                                reject();
+                                reject(error);
                             });
                     })
                     .catch(() => {
