@@ -1,7 +1,6 @@
 /* eslint-disable playwright/no-conditional-in-test */
-/* eslint-disable playwright/no-conditional-expect */
 import { test, expect, replaceElements } from '@fixtures/AcceptanceTest';
-import { getMask, waitForLoaders, withLargerViewport } from '@fixtures/TestHelpers';
+import { expectSnapshot, waitForLoaders } from '@fixtures/TestHelpers';
 
 test.describe('Migration Tests @migration @visual', () => {
     test.describe.configure({
@@ -11,7 +10,6 @@ test.describe('Migration Tests @migration @visual', () => {
 
     test('Perform migration from Shopware 5 to Shopware 6', async ({ ShopAdmin, EntityCounter, MigrationConnection: _ }) => {
         const page = ShopAdmin.page;
-        const mask = getMask(page);
 
         const baseline = await EntityCounter.buildBaseline({
             product: 428,
@@ -52,9 +50,7 @@ test.describe('Migration Tests @migration @visual', () => {
             await page.locator('.swag-migration-tab-card').scrollIntoViewIfNeeded();
             await waitForLoaders(page);
 
-            const restoreViewport = await withLargerViewport(page);
-            await expect.soft(page).toHaveScreenshot('data-selection-assigment-with-errors.png', { mask });
-            await restoreViewport();
+            await expectSnapshot(page, 'data-selection-assigment-with-errors.png');
 
             const tabs = page.locator('.swag-migration-tab-card__title');
 
@@ -75,7 +71,7 @@ test.describe('Migration Tests @migration @visual', () => {
                 }
             }
 
-            await expect.soft(page).toHaveScreenshot('data-selection-assigment-without-errors.png', { mask });
+            await expectSnapshot(page, 'data-selection-assigment-without-errors.png');
         });
 
         await test.step('Start migration', async () => {
@@ -85,7 +81,7 @@ test.describe('Migration Tests @migration @visual', () => {
             await page.getByRole('button', { name: 'Continue anyway' }).click();
             await waitForLoaders(page);
 
-            await expect.soft(page).toHaveScreenshot('migration-process-started.png', { mask });
+            await expectSnapshot(page, 'migration-process-started.png');
 
             const step = page.locator('.sw-step-display > .sw-step-item').first();
             await expect(step).toHaveClass(/sw-step-item--success/, { timeout: 300_000 });
@@ -95,9 +91,7 @@ test.describe('Migration Tests @migration @visual', () => {
         });
 
         await test.step('Error resolution', async () => {
-            let restoreViewport = await withLargerViewport(page);
-            await expect.soft(page).toHaveScreenshot('error-resolution-log-groups-unfixed.png', { mask });
-            await restoreViewport();
+            await expectSnapshot(page, 'error-resolution-log-groups-unfixed.png');
 
             await waitForLoaders(page);
             const logs = page.locator('.sw-data-grid__body .sw-data-grid__cell--actions');
@@ -171,14 +165,14 @@ test.describe('Migration Tests @migration @visual', () => {
                 await processLogEntry(i);
 
                 if (i === 0) {
-                    await expect.soft(page).toHaveScreenshot('error-resolution-log-detail-unfixed.png', { mask });
+                    await expectSnapshot(page, 'error-resolution-log-detail-unfixed.png');
                 }
 
                 await page.getByRole('button', { name: 'Apply changes' }).click();
                 await waitForLoaders(page);
 
                 if (i === 0) {
-                    await expect.soft(page).toHaveScreenshot('error-resolution-log-detail-fixed.png', { mask });
+                    await expectSnapshot(page, 'error-resolution-log-detail-fixed.png');
                 }
 
                 await page.locator('.sw-modal__close').click();
@@ -187,9 +181,7 @@ test.describe('Migration Tests @migration @visual', () => {
 
             await waitForLoaders(page);
 
-            restoreViewport = await withLargerViewport(page);
-            await expect.soft(page).toHaveScreenshot('error-resolution-log-groups-fixed.png', { mask });
-            await restoreViewport();
+            await expectSnapshot(page, 'error-resolution-log-groups-fixed.png');
 
             await expect(page.locator('.swag-migration-error-resolution-step__card-table-count-icon')).toHaveCount(logCount);
 
@@ -210,7 +202,7 @@ test.describe('Migration Tests @migration @visual', () => {
             await waitForLoaders(page);
             await expect(page.getByText('The Migration is done')).toBeVisible({ timeout: 300_000 });
 
-            await expect.soft(page).toHaveScreenshot('migration-process-summary.png', { mask });
+            await expectSnapshot(page, 'migration-process-summary.png');
 
             await page.getByRole('button', { name: 'Back to overview' }).click();
             await waitForLoaders(page);
@@ -224,7 +216,7 @@ test.describe('Migration Tests @migration @visual', () => {
 
             await replaceElements(page, [createdAtCellContent]);
 
-            await expect.soft(page).toHaveScreenshot('migration-history-list.png', { mask });
+            await expectSnapshot(page, 'migration-history-list.png');
 
             await page.locator('.sw-data-grid__body .sw-data-grid__cell--actions').getByRole('button').click();
             await waitForLoaders(page);
@@ -234,7 +226,7 @@ test.describe('Migration Tests @migration @visual', () => {
 
             await replaceElements(page, [createdAtCellContent]);
 
-            await expect.soft(page).toHaveScreenshot('migration-history-details-modal.png', { mask });
+            await expectSnapshot(page, 'migration-history-details-modal.png');
         });
 
         await test.step('Verify migrated entities', async () => {
