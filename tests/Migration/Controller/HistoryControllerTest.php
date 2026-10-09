@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\RateLimiter\Exception\RateLimitExceededException;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\Framework\Test\RateLimiter\DisableRateLimiterCompilerPass;
+use Shopware\Core\Framework\Test\TestCaseBase\AdminApiTestBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\PlatformRequest;
@@ -31,10 +32,12 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Package('fundamentals@after-sales')]
 class HistoryControllerTest extends TestCase
 {
+    use AdminApiTestBehaviour;
     use IntegrationTestBehaviour;
 
     private const DEFAULT_MAX_LIMIT = 500;
@@ -169,12 +172,45 @@ class HistoryControllerTest extends TestCase
         $this->controller->downloadLogsOfRun($request, $this->context);
     }
 
+    public function testDownloadLogsOfRunRequiresAuthentication(): void
+    {
+        $browser = $this->createClient(authorized: false);
+        $browser->request(
+            Request::METHOD_POST,
+            '/api/_action/migration/download-logs-of-run',
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: json_encode(['runUuid' => $this->runUuid], \JSON_THROW_ON_ERROR)
+        );
+
+        static::assertSame(Response::HTTP_UNAUTHORIZED, $browser->getResponse()->getStatusCode());
+    }
+
     public function testDownloadLogsOfRun(): void
     {
         $request = new Request([], ['runUuid' => $this->runUuid]);
         $response = $this->controller->downloadLogsOfRun($request, $this->context);
 
         static::assertSame('text/plain', $response->headers->get('Content-type'));
+    }
+
+    public function testDownloadLogsOfRunRequiresViewerPrivilege(): void
+    {
+        $browser = $this->createClient(permissions: []);
+        $browser->jsonRequest(Request::METHOD_POST, '/api/_action/migration/download-logs-of-run', ['runUuid' => $this->runUuid]);
+
+        static::assertSame(Response::HTTP_FORBIDDEN, $browser->getResponse()->getStatusCode());
+    }
+
+    public function testDownloadLogsOfRunWithViewerPrivilege(): void
+    {
+        $browser = $this->createClient(permissions: ['swag_migration.viewer']);
+        $browser->jsonRequest(Request::METHOD_POST, '/api/_action/migration/download-logs-of-run', ['runUuid' => $this->runUuid]);
+
+        $response = $browser->getResponse();
+        static::assertSame(Response::HTTP_OK, $response->getStatusCode());
+        static::assertSame('text/plain; charset=UTF-8', $response->headers->get('Content-Type'));
+        static::assertSame('attachment; filename=migrationRunLog-' . $this->runUuid . '.txt', $response->headers->get('Content-Disposition'));
+        static::assertStringContainsString('migration_error_1', $browser->getInternalResponse()->getContent());
     }
 
     public function testGetGroupedLogsOfRunIsRateLimited(): void

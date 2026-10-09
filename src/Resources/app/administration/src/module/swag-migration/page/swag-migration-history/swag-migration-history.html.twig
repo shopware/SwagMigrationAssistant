@@ -88,18 +88,6 @@
             {% block swag_migration_history_router_view %}
                 <router-view />
             {% endblock %}
-
-            {% block swag_migration_history_log_download_form %}
-                <form ref="downloadLogsOfRunForm"
-                      class="swag-migration-history-detail-errors__download-form"
-                      :action="logDownloadEndpoint"
-                      method="POST">
-                    <input type="hidden"
-                           name="runUuid"
-                           :value="runIdForLogDownload">
-                </form>
-            {% endblock %}
-
         </template>
     </mt-card>
 {% endblock %}

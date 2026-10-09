@@ -307,6 +307,7 @@ describe('src/core/service/api/swag-migration.api.service', () => {
 
         expect(clientMock.history.post[0].url).toBe('_action/migration/download-logs-of-run');
         expect(clientMock.history.post[0].responseType).toBe(data.responseType);
+        expect(clientMock.history.post[0].headers.Authorization).toBe('Bearer test-token');
         expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
     });
 
