@@ -65,6 +65,7 @@
                         as="a"
                         to="#"
                         type="external"
+                        :disabled="isLogDownloading"
                         @click.prevent="submitDownload"
                     >
                         {{ $tc('swag-migration.history.detailPage.logDownload') }}

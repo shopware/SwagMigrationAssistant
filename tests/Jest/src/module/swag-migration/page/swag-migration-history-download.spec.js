@@ -65,8 +65,14 @@ describe.each([
                         props: ['dataSource'],
                         template: '<div><slot name="actions" :item="dataSource[0]" /></div>',
                     },
-                    'sw-context-menu-item': { template: '<button><slot /></button>' },
-                    'mt-link': { template: '<a href="#"><slot /></a>' },
+                    'sw-context-menu-item': {
+                        props: ['disabled'],
+                        template: '<button :disabled="disabled"><slot /></button>',
+                    },
+                    'mt-link': {
+                        props: ['disabled'],
+                        template: '<a href="#" :aria-disabled="disabled ? \'true\' : undefined"><slot /></a>',
+                    },
                     'router-view': true,
                 },
             },
@@ -110,5 +116,31 @@ describe.each([
                 message: 'swag-migration.index.error-resolution.errors.downloadLogsFailed',
             }),
         ]);
+    });
+
+    it('disables the download trigger while the download is in progress', async () => {
+        let resolveDownload;
+        downloadLogsOfRun.mockReturnValue(
+            new Promise((resolve) => {
+                resolveDownload = resolve;
+            }),
+        );
+        await createWrapper();
+
+        const downloadTrigger = wrapper.findAll('button, a').find((control) => control.text() === downloadLabel);
+        const isDisabled = () =>
+            downloadTrigger.attributes('disabled') !== undefined || downloadTrigger.attributes('aria-disabled') === 'true';
+
+        expect(isDisabled()).toBe(false);
+
+        await downloadTrigger.trigger('click');
+        await flushPromises();
+
+        expect(isDisabled()).toBe(true);
+
+        resolveDownload(new Blob(['migration log'], { type: 'text/plain' }));
+        await flushPromises();
+
+        expect(isDisabled()).toBe(false);
     });
 });

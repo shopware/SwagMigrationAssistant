@@ -67,7 +67,9 @@
                                 {{ $tc('swag-migration.history.contextMenu.details') }}
                             </sw-context-menu-item>
 
-                            <sw-context-menu-item @click="onContextDownloadLogFile(item.id)">
+                            <sw-context-menu-item
+                                :disabled="isLogDownloading"
+                                @click="onContextDownloadLogFile(item.id)">
                                 {{ $tc('swag-migration.history.contextMenu.downloadLogs') }}
                             </sw-context-menu-item>
                         </template>

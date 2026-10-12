@@ -1,5 +1,7 @@
 # NEXT
 
+- [BREAKING] [#232](https://github.com/shopware/SwagMigrationAssistant/pull/232) - fix!: require authentication for log downloads
+    - [BREAKING] Removed the `downloadUrl` field from the response of `SwagMigrationAssistant\Controller\HistoryController::getGroupedLogsOfRun()`
 - [BREAKING] [#202](https://github.com/shopware/SwagMigrationAssistant/pull/202) - fix!: replace native time reads with an injected clock
     - [BREAKING] Added required constructor parameter `Psr\Clock\ClockInterface $clock` to `\SwagMigrationAssistant\Profile\Shopware\Converter\ShippingMethodConverter`
 - [BREAKING] [#190](https://github.com/shopware/SwagMigrationAssistant/pull/190) - fix!: update product.sales during migration

@@ -10,6 +10,7 @@ const { Mixin } = Shopware;
  */
 export interface SwagMigrationHistoryDetailErrorsData {
     isLoading: boolean;
+    isLogDownloading: boolean;
     allMigrationErrors: MigrationError[] | null;
     migrationErrors: MigrationError[];
     sortBy: string;
@@ -44,6 +45,7 @@ export default Shopware.Component.wrapComponentConfig({
     data(): SwagMigrationHistoryDetailErrorsData {
         return {
             isLoading: true,
+            isLogDownloading: false,
             allMigrationErrors: null as MigrationError[] | null,
             migrationErrors: [] as MigrationError[],
             sortBy: 'level',
@@ -155,6 +157,8 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async submitDownload(): Promise<void> {
+            this.isLogDownloading = true;
+
             try {
                 const blob = await this.migrationApiService.downloadLogsOfRun(this.migrationRun.id);
                 const url = window.URL.createObjectURL(blob);
@@ -170,6 +174,8 @@ export default Shopware.Component.wrapComponentConfig({
                 this.createNotificationError({
                     message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
                 });
+            } finally {
+                this.isLogDownloading = false;
             }
         },
     },

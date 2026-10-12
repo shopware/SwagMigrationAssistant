@@ -22,7 +22,6 @@ type GetLogGroupsFilter = {
 
 type GetGroupedLogsOfRunResponse = {
     total: number;
-    downloadUrl: string;
     items: MigrationError[];
 };
 
@@ -363,6 +362,7 @@ export default class MigrationApiService extends ApiService {
             {
                 headers: this.getHeaders(additionalHeaders),
                 responseType: 'blob',
+                timeout: 0,
             },
         );
 
