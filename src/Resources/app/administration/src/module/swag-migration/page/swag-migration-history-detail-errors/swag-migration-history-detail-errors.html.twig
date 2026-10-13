@@ -68,12 +68,6 @@
                         :disabled="isLogDownloading"
                         @click="onDownloadLogs(migrationRun.id)"
                     >
-                        <mt-icon
-                            v-if="isLogDownloading"
-                            class="swag-migration-history-detail-errors__loader"
-                            name="regular-spinner-star"
-                            size="16px"
-                        />
                         {{ $tc('swag-migration.history.detailPage.logDownload') }}
                     </mt-link>
                 </p>
@@ -85,7 +79,7 @@
                 v-if="isLoading"
                 class="swag-migration-history-detail-errors__loading-placeholder"
             />
-            <mt-loader v-if="isLoading" />
+            <mt-loader v-if="isLoading || isLogDownloading" />
         {% endblock %}
     </div>
 {% endblock %}

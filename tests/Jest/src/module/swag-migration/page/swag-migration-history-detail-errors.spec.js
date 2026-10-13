@@ -96,7 +96,7 @@ describe('module/swag-migration/page/swag-migration-history-detail-errors', () =
         ]);
     });
 
-    it('disables the download link while the download is in progress', async () => {
+    it('disables the download link and shows the loader while the download is in progress', async () => {
         let resolveDownload;
         downloadLogsOfRun.mockReturnValue(
             new Promise((resolve) => {
@@ -106,15 +106,18 @@ describe('module/swag-migration/page/swag-migration-history-detail-errors', () =
         await createWrapper();
 
         expect(findDownloadLink().attributes('aria-disabled')).toBe('false');
+        expect(wrapper.find('.mt-loader').exists()).toBe(false);
 
         await findDownloadLink().trigger('click');
         await flushPromises();
 
         expect(findDownloadLink().attributes('aria-disabled')).toBe('true');
+        expect(wrapper.find('.mt-loader').exists()).toBe(true);
 
         resolveDownload(new Blob(['migration log'], { type: 'text/plain' }));
         await flushPromises();
 
         expect(findDownloadLink().attributes('aria-disabled')).toBe('false');
+        expect(wrapper.find('.mt-loader').exists()).toBe(false);
     });
 });
