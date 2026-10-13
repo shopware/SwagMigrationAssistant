@@ -2,6 +2,7 @@
  * @sw-package after-sales
  */
 import { DOMWrapper, mount } from '@vue/test-utils';
+import 'SwagMigrationAssistant/module/swag-migration/mixin/swag-migration-log-download.mixin';
 import SwagMigrationErrorResolutionStep, {
     MIGRATION_LOG_LEVEL,
 } from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-step';
@@ -629,7 +630,6 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
 
             await downloadButton.trigger('click');
 
-            expect(wrapper.vm.downloadLoading).toBe(true);
             expect(downloadButton.attributes('disabled')).toBeDefined();
             expect(continueButton.attributes('disabled')).toBeDefined();
 
@@ -638,13 +638,12 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
 
             expect(migrationApiServiceMock.downloadLogsOfRun).toHaveBeenCalledWith('run-id-1');
 
-            expect(wrapper.vm.downloadLoading).toBe(false);
             expect(downloadButton.attributes('disabled')).toBeUndefined();
             expect(continueButton.attributes('disabled')).toBeUndefined();
 
             const linkElement = appendChildSpy.mock.calls.find((call) => call[0] instanceof HTMLAnchorElement)[0];
             expect(linkElement.href).toBe('blob:mock-url');
-            expect(linkElement.download).toBe('migration-logs-run-id-1.txt');
+            expect(linkElement.download).toBe('migrationRunLog-run-id-1.txt');
             expect(clickSpy).toHaveBeenCalled();
             expect(removeChildSpy).toHaveBeenCalledWith(linkElement);
 
@@ -663,7 +662,10 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
             const wrapper = await createWrapper();
             await flushPromises();
 
-            await wrapper.find('.swag-migration-error-resolution-step__header-buttons-download').trigger('click');
+            const downloadButton = wrapper.find('.swag-migration-error-resolution-step__header-buttons-download');
+            expect(downloadButton.attributes('disabled')).toBeDefined();
+
+            await downloadButton.trigger('click');
             await flushPromises();
 
             expect(migrationApiServiceMock.downloadLogsOfRun).not.toHaveBeenCalled();

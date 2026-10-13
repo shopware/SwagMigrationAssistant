@@ -10,7 +10,6 @@ const { Mixin } = Shopware;
  */
 export interface SwagMigrationHistoryDetailErrorsData {
     isLoading: boolean;
-    isLogDownloading: boolean;
     allMigrationErrors: MigrationError[] | null;
     migrationErrors: MigrationError[];
     sortBy: string;
@@ -32,7 +31,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     mixins: [
         Mixin.getByName('listing'),
-        Mixin.getByName('notification'),
+        Mixin.getByName('swag-migration-log-download'),
     ],
 
     props: {
@@ -45,7 +44,6 @@ export default Shopware.Component.wrapComponentConfig({
     data(): SwagMigrationHistoryDetailErrorsData {
         return {
             isLoading: true,
-            isLogDownloading: false,
             allMigrationErrors: null as MigrationError[] | null,
             migrationErrors: [] as MigrationError[],
             sortBy: 'level',
@@ -154,29 +152,6 @@ export default Shopware.Component.wrapComponentConfig({
             }
 
             return 'swag-migration.index.error-resolution.codes.unknown';
-        },
-
-        async submitDownload(): Promise<void> {
-            this.isLogDownloading = true;
-
-            try {
-                const blob = await this.migrationApiService.downloadLogsOfRun(this.migrationRun.id);
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-
-                link.href = url;
-                link.download = `migrationRunLog-${this.migrationRun.id}.txt`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            } catch {
-                this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
-                });
-            } finally {
-                this.isLogDownloading = false;
-            }
         },
     },
 });

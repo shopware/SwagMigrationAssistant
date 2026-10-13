@@ -174,12 +174,7 @@ class HistoryControllerTest extends TestCase
     public function testDownloadLogsOfRunRequiresAuthentication(): void
     {
         $browser = $this->createClient(authorized: false);
-        $browser->request(
-            Request::METHOD_POST,
-            '/api/_action/migration/download-logs-of-run',
-            server: ['CONTENT_TYPE' => 'application/json'],
-            content: json_encode(['runUuid' => $this->runUuid], \JSON_THROW_ON_ERROR)
-        );
+        $browser->jsonRequest(Request::METHOD_POST, '/api/_action/migration/download-logs-of-run', ['runUuid' => $this->runUuid]);
 
         static::assertSame(Response::HTTP_UNAUTHORIZED, $browser->getResponse()->getStatusCode());
     }

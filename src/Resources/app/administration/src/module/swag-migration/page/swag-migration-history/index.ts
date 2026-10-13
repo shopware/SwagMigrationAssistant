@@ -1,7 +1,6 @@
 import template from './swag-migration-history.html.twig';
 import './swag-migration-history.scss';
 import type { TEntityCollection, TRepository } from '../../../../type/types';
-import { MIGRATION_API_SERVICE } from '../../../../core/service/api/swag-migration.api.service';
 
 const { Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
@@ -22,7 +21,6 @@ export interface SwagMigrationHistoryData {
     sortBy: string;
     context: unknown;
     isLoading: boolean;
-    isLogDownloading: boolean;
     migrationRuns: TEntityCollection<'swag_migration_run'>;
     sortDirection: string;
     oldParams: Record<
@@ -50,19 +48,17 @@ export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
-        MIGRATION_API_SERVICE,
         'repositoryFactory',
     ],
 
     mixins: [
         Mixin.getByName('listing'),
-        Mixin.getByName('notification'),
+        Mixin.getByName('swag-migration-log-download'),
     ],
 
     data(): SwagMigrationHistoryData {
         return {
             isLoading: false,
-            isLogDownloading: false,
             migrationRuns: [] as TEntityCollection<'swag_migration_run'>,
             migrationDateOptions: {
                 hour: '2-digit',
@@ -193,29 +189,6 @@ export default Shopware.Component.wrapComponentConfig({
             }
 
             return params;
-        },
-
-        async onContextDownloadLogFile(runId: string): Promise<void> {
-            this.isLogDownloading = true;
-
-            try {
-                const blob = await this.migrationApiService.downloadLogsOfRun(runId);
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-
-                link.href = url;
-                link.download = `migrationRunLog-${runId}.txt`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            } catch {
-                this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
-                });
-            } finally {
-                this.isLogDownloading = false;
-            }
         },
     },
 });

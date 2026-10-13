@@ -20,4 +20,13 @@
         font-size: var(--font-size-xs);
         color: var(--color-text-secondary-default);
     }
+
+    .swag-migration-history-detail-errors__loader {
+        animation: swag-migration-log-download-rotation 1s linear infinite;
+    }
+}
+
+@keyframes swag-migration-log-download-rotation {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }

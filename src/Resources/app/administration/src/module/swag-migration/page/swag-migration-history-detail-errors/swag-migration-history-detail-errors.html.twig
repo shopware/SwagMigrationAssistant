@@ -66,8 +66,14 @@
                         to="#"
                         type="external"
                         :disabled="isLogDownloading"
-                        @click.prevent="submitDownload"
+                        @click="onDownloadLogs(migrationRun.id)"
                     >
+                        <mt-icon
+                            v-if="isLogDownloading"
+                            class="swag-migration-history-detail-errors__loader"
+                            name="regular-spinner-star"
+                            size="16px"
+                        />
                         {{ $tc('swag-migration.history.detailPage.logDownload') }}
                     </mt-link>
                 </p>

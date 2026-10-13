@@ -356,17 +356,29 @@ export default class MigrationApiService extends ApiService {
     }
 
     async downloadLogsOfRun(runUuid: string, additionalHeaders: AdditionalHeaders = {}): Promise<Blob> {
-        const response = await this.apiService.httpClient.post<Blob>(
-            this.getActionPath('download-logs-of-run'),
-            { runUuid },
-            {
-                headers: this.getHeaders(additionalHeaders),
-                responseType: 'blob',
-                timeout: 0,
-            },
-        );
+        const controller = new AbortController();
+        let idleTimer = setTimeout(() => controller.abort(), 300_000);
 
-        return response.data;
+        try {
+            const response = await this.apiService.httpClient.post<Blob>(
+                this.getActionPath('download-logs-of-run'),
+                { runUuid },
+                {
+                    headers: this.getHeaders(additionalHeaders),
+                    responseType: 'blob',
+                    timeout: 0,
+                    signal: controller.signal,
+                    onDownloadProgress: () => {
+                        clearTimeout(idleTimer);
+                        idleTimer = setTimeout(() => controller.abort(), 300_000);
+                    },
+                },
+            );
+
+            return response.data;
+        } finally {
+            clearTimeout(idleTimer);
+        }
     }
 
     async getLogGroups(
