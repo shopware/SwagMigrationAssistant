@@ -49,7 +49,7 @@ export default Shopware.Mixin.register(
                     window.URL.revokeObjectURL(url);
                 } catch {
                     this.createNotificationError({
-                        message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
+                        message: this.$t('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
                     });
                 } finally {
                     this.isLogDownloading = false;
