@@ -520,7 +520,7 @@ export default class SwagMigrationErrorResolutionService {
     generateTableColumns(entityName: string | null | undefined, selectedFieldName: string): TableColumn[] {
         const fixedColumns: TableColumn[] = [
             {
-                label: Shopware.Snippet.tc('swag-migration.index.error-resolution.modals.error.table.columns.status'),
+                label: Shopware.Snippet.t('swag-migration.index.error-resolution.modals.error.table.columns.status'),
                 property: 'status',
                 sortable: true,
                 position: 1,
