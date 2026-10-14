@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [ApiRouteScope::ID]])]
 #[Package('fundamentals@after-sales')]
@@ -63,11 +62,6 @@ class HistoryController extends AbstractController
         return new JsonResponse([
             'total' => \count($cleanResult),
             'items' => $cleanResult,
-            'downloadUrl' => $this->generateUrl(
-                'api.admin.migration.download-logs-of-run',
-                [],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            ),
         ]);
     }
 
@@ -75,7 +69,7 @@ class HistoryController extends AbstractController
         path: '/api/_action/migration/download-logs-of-run',
         name: 'api.admin.migration.download-logs-of-run',
         methods: [Request::METHOD_POST],
-        defaults: ['auth_required' => false, PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']]
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']]
     )]
     public function downloadLogsOfRun(Request $request, Context $context): StreamedResponse
     {

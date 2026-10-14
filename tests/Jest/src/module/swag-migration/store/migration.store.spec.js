@@ -496,7 +496,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
             },
             Snippet: {
                 te: () => true,
-                tc: (key) => key,
+                t: (key) => key,
             },
             Context: {
                 api: {
