@@ -138,11 +138,11 @@ const migrationStore = Shopware.Store.register({
 
         migrationDisabledMessage(): string | null {
             if (!Shopware.Service('acl').can('swag_migration.creator')) {
-                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noPermission');
+                return Shopware.Snippet.t('swag-migration.general.disabledMessages.noPermission');
             }
 
             if (!this.dataSelectionTableData.length) {
-                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noData');
+                return Shopware.Snippet.t('swag-migration.general.disabledMessages.noData');
             }
 
             const tableDataIds = this.dataSelectionTableData.map((data: MigrationDataSelection) => {
@@ -154,27 +154,27 @@ const migrationStore = Shopware.Store.register({
             });
 
             if (this.isResettingChecksum) {
-                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.resettingChecksum');
+                return Shopware.Snippet.t('swag-migration.general.disabledMessages.resettingChecksum');
             }
 
             if (this.isTruncatingMigration) {
-                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.truncatingMigration');
+                return Shopware.Snippet.t('swag-migration.general.disabledMessages.truncatingMigration');
             }
 
             if (!this.dataSelectionIds.some((id: string) => tableDataIds.includes(id))) {
-                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noSelectedData');
+                return Shopware.Snippet.t('swag-migration.general.disabledMessages.noSelectedData');
             }
 
             if (this.environmentInformation?.migrationDisabled !== false) {
-                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.disabled');
+                return Shopware.Snippet.t('swag-migration.general.disabledMessages.disabled');
             }
 
             if (this.isLoading) {
-                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.loading');
+                return Shopware.Snippet.t('swag-migration.general.disabledMessages.loading');
             }
 
             if (!this.isPremappingValid) {
-                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.unfilledPremapping');
+                return Shopware.Snippet.t('swag-migration.general.disabledMessages.unfilledPremapping');
             }
 
             return null;
@@ -406,8 +406,8 @@ const migrationStore = Shopware.Store.register({
         async createErrorNotification(errorMessageKey: string) {
             Shopware.Store.get('notification').createNotification({
                 variant: 'error',
-                title: Shopware.Snippet.tc('global.default.error'),
-                message: Shopware.Snippet.tc(errorMessageKey),
+                title: Shopware.Snippet.t('global.default.error'),
+                message: Shopware.Snippet.t(errorMessageKey),
             });
         },
     },

@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MigrationConfiguration;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
@@ -34,6 +35,7 @@ final class MigrationProcessHandler
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly MigrationProcessorRegistry $processorRegistry,
         private readonly MigrationConfiguration $migrationConfig,
+        private readonly LoggingServiceInterface $loggingService,
     ) {
     }
 
@@ -60,6 +62,7 @@ final class MigrationProcessHandler
 
         $processor = $this->processorRegistry->getProcessor($run->getStep());
         $processor?->process($migrationContext, $context, $run, $progress);
+        $this->loggingService->flush();
     }
 
     private function getCurrentRun(MigrationProcessMessage $message, Context $context): SwagMigrationRunEntity

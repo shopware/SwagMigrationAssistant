@@ -47,7 +47,6 @@ export interface SwagMigrationErrorResolutionStepData {
     tableSortDirection: 'ASC' | 'DESC';
     tableData: Array<ErrorResolutionTableData>;
     loading: boolean;
-    downloadLoading: boolean;
     openContinueModal: boolean;
     openErrorResolutionModal: boolean;
     continueLoading: boolean;
@@ -78,6 +77,7 @@ export default Shopware.Component.wrapComponentConfig({
     ],
 
     mixins: [
+        Shopware.Mixin.getByName('swag-migration-log-download'),
         Shopware.Mixin.getByName('notification'),
     ],
 
@@ -91,7 +91,6 @@ export default Shopware.Component.wrapComponentConfig({
             tableSortDirection: 'DESC',
             tableData: [],
             loading: false,
-            downloadLoading: false,
             continueLoading: false,
             openContinueModal: false,
             openErrorResolutionModal: false,
@@ -378,33 +377,6 @@ export default Shopware.Component.wrapComponentConfig({
             } finally {
                 this.continueLoading = false;
                 this.openContinueModal = false;
-            }
-        },
-
-        async onDownloadLogs() {
-            if (!this.runId) {
-                return;
-            }
-
-            this.downloadLoading = true;
-
-            try {
-                const blob = await this.migrationApiService.downloadLogsOfRun(this.runId);
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-
-                link.href = url;
-                link.download = `migration-logs-${this.runId}.txt`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
-            } catch {
-                this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
-                });
-            } finally {
-                this.downloadLoading = false;
             }
         },
 

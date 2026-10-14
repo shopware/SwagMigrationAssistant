@@ -429,6 +429,7 @@ return static function (ContainerConfigurator $container): void {
             service(MigrationContextFactory::class),
             service(MigrationProcessorRegistry::class),
             service(MigrationConfiguration::class),
+            service(LoggingService::class),
         ])
         ->tag('messenger.message_handler');
 

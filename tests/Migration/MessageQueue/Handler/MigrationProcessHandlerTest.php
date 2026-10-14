@@ -8,15 +8,22 @@
 namespace SwagMigrationAssistant\Test\Migration\MessageQueue\Handler;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\Event\NestedEventCollection;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaFileMissingLog;
+use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessHandler;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessorRegistry;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MigrationProcessorInterface;
@@ -43,6 +50,7 @@ class MigrationProcessHandlerTest extends TestCase
             $this->createMock(MigrationContextFactoryInterface::class),
             $this->createMock(MigrationProcessorRegistry::class),
             new MigrationConfiguration(),
+            $this->createMock(LoggingServiceInterface::class),
         );
     }
 
@@ -79,6 +87,7 @@ class MigrationProcessHandlerTest extends TestCase
             $this->createMock(MigrationContextFactoryInterface::class),
             $this->createMock(MigrationProcessorRegistry::class),
             new MigrationConfiguration(),
+            $this->createMock(LoggingServiceInterface::class),
         );
 
         $message = new MigrationProcessMessage(Context::createDefaultContext(), Uuid::randomHex());
@@ -113,6 +122,7 @@ class MigrationProcessHandlerTest extends TestCase
             $this->createMock(MigrationContextFactoryInterface::class),
             $this->createMock(MigrationProcessorRegistry::class),
             new MigrationConfiguration(),
+            $this->createMock(LoggingServiceInterface::class),
         );
 
         $message = new MigrationProcessMessage(Context::createDefaultContext(), Uuid::randomHex());
@@ -160,10 +170,73 @@ class MigrationProcessHandlerTest extends TestCase
             $migrationContextFactory,
             $processorRegistry,
             new MigrationConfiguration(),
+            $this->createMock(LoggingServiceInterface::class),
         );
 
         $message = new MigrationProcessMessage(Context::createDefaultContext(), Uuid::randomHex());
 
         $this->migrationProcessHandler->__invoke($message);
+    }
+
+    public function testInvokeFlushesLogsOfTheProcessedStep(): void
+    {
+        $writtenLogs = 0;
+        $loggingRepo = $this->createMock(EntityRepository::class);
+        $loggingRepo->method('create')->willReturnCallback(
+            static function (array $logs) use (&$writtenLogs): EntityWrittenContainerEvent {
+                $writtenLogs += \count($logs);
+
+                return new EntityWrittenContainerEvent(Context::createDefaultContext(), new NestedEventCollection(), []);
+            }
+        );
+        $loggingService = new LoggingService($loggingRepo, new NullLogger(), new MigrationConfiguration());
+
+        $run = new SwagMigrationRunEntity();
+        $run->setId(Uuid::randomHex());
+        $run->setProgress(new MigrationProgress(0, 100, new ProgressDataSetCollection(), 'media', 0));
+        $run->setStep(MigrationStep::MEDIA_PROCESSING);
+
+        $repository = $this->createMock(EntityRepository::class);
+        $repository->method('search')->willReturn(
+            new EntitySearchResult(
+                SwagMigrationRunDefinition::ENTITY_NAME,
+                1,
+                new EntityCollection([$run]),
+                null,
+                new Criteria(),
+                Context::createDefaultContext()
+            )
+        );
+
+        $processor = $this->createMock(MigrationProcessorInterface::class);
+        $processor->method('process')->willReturnCallback(
+            static function () use ($loggingService, $run): void {
+                $loggingService->log(
+                    (new MigrationLogBuilder($run->getId(), Shopware55Profile::PROFILE_NAME, 'local'))
+                        ->build(MediaFileMissingLog::class)
+                );
+            }
+        );
+
+        $processorRegistry = $this->createMock(MigrationProcessorRegistry::class);
+        $processorRegistry->method('getProcessor')->willReturn($processor);
+
+        $migrationContextFactory = $this->createMock(MigrationContextFactoryInterface::class);
+        $migrationContextFactory->method('create')->willReturn(new MigrationContext(
+            new SwagMigrationConnectionEntity(),
+            new Shopware55Profile()
+        ));
+
+        $handler = new MigrationProcessHandler(
+            $repository,
+            $migrationContextFactory,
+            $processorRegistry,
+            new MigrationConfiguration(),
+            $loggingService,
+        );
+
+        $handler->__invoke(new MigrationProcessMessage(Context::createDefaultContext(), Uuid::randomHex()));
+
+        static::assertSame(1, $writtenLogs);
     }
 }

@@ -16,7 +16,6 @@ export interface SwagMigrationHistoryDetailErrorsData {
     sortDirection: string;
     disableRouteParams: boolean;
     limit: number;
-    downloadUrl: string;
 }
 
 /**
@@ -32,6 +31,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     mixins: [
         Mixin.getByName('listing'),
+        Mixin.getByName('swag-migration-log-download'),
     ],
 
     props: {
@@ -50,7 +50,6 @@ export default Shopware.Component.wrapComponentConfig({
             sortDirection: 'DESC',
             disableRouteParams: true,
             limit: 10,
-            downloadUrl: '',
         };
     },
 
@@ -123,7 +122,6 @@ export default Shopware.Component.wrapComponentConfig({
                     item.title = this.$tc(this.getErrorTitleSnippet(item), { entity: item.entity }, 0);
                 });
 
-                this.downloadUrl = response.downloadUrl;
                 return this.allMigrationErrors;
             });
         },
@@ -154,10 +152,6 @@ export default Shopware.Component.wrapComponentConfig({
             }
 
             return 'swag-migration.index.error-resolution.codes.unknown';
-        },
-
-        submitDownload() {
-            this.$refs.downloadForm.submit();
         },
     },
 });

@@ -307,7 +307,66 @@ describe('src/core/service/api/swag-migration.api.service', () => {
 
         expect(clientMock.history.post[0].url).toBe('_action/migration/download-logs-of-run');
         expect(clientMock.history.post[0].responseType).toBe(data.responseType);
+        expect(clientMock.history.post[0].timeout).toBe(0);
+        expect(clientMock.history.post[0].headers.Authorization).toBe('Bearer test-token');
         expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
+    });
+
+    it('should abort the log download when no progress is received for 300 seconds', async () => {
+        jest.useFakeTimers();
+
+        const client = axios.create();
+        const clientMock = new MockAdapter(client);
+        const loginService = { getToken: () => 'test-token' };
+        const migrationApiService = new MigrationApiService(client, loginService);
+
+        clientMock.onAny().reply(() => new Promise(() => {}));
+
+        const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+
+        try {
+            const pendingDownload = migrationApiService.downloadLogsOfRun('123456789');
+            pendingDownload.catch(() => {});
+
+            jest.advanceTimersByTime(300_000);
+
+            expect(abortSpy).toHaveBeenCalledTimes(1);
+        } finally {
+            abortSpy.mockRestore();
+            jest.useRealTimers();
+        }
+    });
+
+    it('should not abort the log download while progress is received', async () => {
+        jest.useFakeTimers();
+
+        const client = axios.create();
+        const clientMock = new MockAdapter(client);
+        const loginService = { getToken: () => 'test-token' };
+        const migrationApiService = new MigrationApiService(client, loginService);
+
+        clientMock.onAny().reply(() => new Promise(() => {}));
+
+        const abortSpy = jest.spyOn(AbortController.prototype, 'abort');
+
+        try {
+            const pendingDownload = migrationApiService.downloadLogsOfRun('123456789');
+            pendingDownload.catch(() => {});
+
+            await jest.advanceTimersByTimeAsync(0);
+
+            const { onDownloadProgress } = clientMock.history.post[0];
+
+            onDownloadProgress({ loaded: 1 });
+            jest.advanceTimersByTime(200_000);
+            onDownloadProgress({ loaded: 2 });
+            jest.advanceTimersByTime(200_000);
+
+            expect(abortSpy).not.toHaveBeenCalled();
+        } finally {
+            abortSpy.mockRestore();
+            jest.useRealTimers();
+        }
     });
 
     it('should get log groups', async () => {

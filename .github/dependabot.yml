@@ -14,3 +14,13 @@ updates:
           github-actions:
               patterns:
                   - '*'
+    - package-ecosystem: 'composer'
+      directory: '/vendor-bin/danger-php'
+      schedule:
+          interval: 'weekly'
+      cooldown:
+          default-days: 7
+      reviewers:
+          - 'shopware/product-cc-after-sales'
+      commit-message:
+          prefix: 'chore'
