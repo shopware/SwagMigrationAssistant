@@ -121,6 +121,11 @@ const repositoryFactoryMock = {
 const routes = [
     { path: '/', component: { template: '<div></div>' } },
     {
+        path: '/profile/installation',
+        name: 'swag.migration.wizard.profileInstallation',
+        component: { template: '<div class="swag-migration-wizard-page-profile-installation"></div>' },
+    },
+    {
         path: '/connection/create',
         name: 'swag.migration.wizard.connectionCreate',
         component: () => Shopware.Component.build('swag-migration-wizard-page-connection-create'),
@@ -248,6 +253,45 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             ).toBeUndefined();
         });
 
+        it('should keep the error page visible when stored credentials fail to load', async () => {
+            connectionRepositoryMock.search.mockResolvedValueOnce({
+                length: 1,
+                first: () => ({
+                    id: connectionId,
+                    name: connectionName,
+                    profileName: profileShopware55,
+                    gatewayName: gatewayApi,
+                }),
+            });
+            let rejectCredentials;
+            migrationApiServiceMock.getConnectionCredentials.mockImplementationOnce(
+                () =>
+                    new Promise((resolve, reject) => {
+                        rejectCredentials = reject;
+                    }),
+            );
+
+            const { wrapper, router } = await createWrapper('swag.migration.wizard.credentials');
+            await flushPromises();
+
+            rejectCredentials(createNewConnectionErrorResponseMock);
+            await flushPromises();
+
+            expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentialsError');
+            expect(wrapper.find('.swag-migration-wizard-page-credentials-error').isVisible()).toBe(true);
+            expect(wrapper.find('.swag-migration-wizard-page-profile-installation').exists()).toBe(false);
+            expect(
+                wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').attributes('disabled'),
+            ).toBeUndefined();
+
+            await wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').trigger('click');
+            await flushPromises();
+
+            expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentials');
+            expect(wrapper.find('input[name="sw-field--apiKey"]').element.value).toBe('');
+            expect(wrapper.find('input[name="sw-field--apiUser"]').element.value).toBe('');
+        });
+
         it('should keep the wizard loading until stored credentials arrive', async () => {
             connectionRepositoryMock.search.mockResolvedValueOnce({
                 length: 1,
@@ -277,7 +321,7 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             resolveCredentials({ apiKey, apiUser, endpoint });
             await flushPromises();
 
-            expect(wrapper.find('.swag-migration-wizard__placeholder').isVisible()).toBe(false);
+            expect(wrapper.find('.swag-migration-wizard__placeholder').attributes('style')).toContain('display: none;');
             expect(wrapper.find('input[name="sw-field--apiKey"]').element.value).toBe(apiKey);
             expect(
                 wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').attributes('disabled'),

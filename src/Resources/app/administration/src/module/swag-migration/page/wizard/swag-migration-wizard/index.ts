@@ -548,9 +548,8 @@ export default Shopware.Component.wrapComponentConfig({
                     return;
                 }
 
-                const connection = connectionResponse.first();
-                connection.credentialFields = await this.migrationApiService.getConnectionCredentials(connection.id);
-                this.connection = connection;
+                this.connection = connectionResponse.first();
+                this.connection.credentialFields = await this.migrationApiService.getConnectionCredentials(this.connection.id);
             } catch (error) {
                 this.onResponseError(error.response.data.errors[0].code);
             } finally {
