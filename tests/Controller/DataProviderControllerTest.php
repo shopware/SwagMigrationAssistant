@@ -71,6 +71,6 @@ class DataProviderControllerTest extends TestCase
             static::assertNotContains($configEntry['configurationKey'], SystemConfigProvider::$CONFIG_KEY_BLOCK_LIST);
         }
 
-        static::assertNotEmpty(array_filter($response, static fn ($entry) => $entry['configurationKey'] === 'core.some.allowedConfigKey'));
+        static::assertNotCount(0, array_filter($response, static fn ($entry) => $entry['configurationKey'] === 'core.some.allowedConfigKey'));
     }
 }

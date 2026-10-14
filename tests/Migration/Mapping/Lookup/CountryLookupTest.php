@@ -59,11 +59,11 @@ class CountryLookupTest extends TestCase
 
         $cacheProperty = new \ReflectionProperty(CountryLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
-        static::assertNotEmpty($cacheProperty->getValue($countryLookup));
+        static::assertNotSame([], $cacheProperty->getValue($countryLookup));
 
         $countryLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($countryLookup));
+        static::assertSame([], $cacheProperty->getValue($countryLookup));
     }
 
     /**

@@ -215,6 +215,6 @@ class SalesChannelConverter extends ShopwareConverter
             return $name;
         }
 
-        return $name .= ' (Migration)';
+        return $name . ' (Migration)';
     }
 }

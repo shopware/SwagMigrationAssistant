@@ -146,16 +146,16 @@ class LanguageLookupTest extends TestCase
 
         $cacheProperty = new \ReflectionProperty(LanguageLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
-        static::assertNotEmpty($cacheProperty->getValue($languageLookup));
+        static::assertNotSame([], $cacheProperty->getValue($languageLookup));
 
         $defaultLanguageCacheProperty = new \ReflectionProperty(LanguageLookup::class, 'defaultLanguageCache');
         $defaultLanguageCacheProperty->setAccessible(true);
-        static::assertNotEmpty($defaultLanguageCacheProperty->getValue($languageLookup));
+        static::assertNotSame([], $defaultLanguageCacheProperty->getValue($languageLookup));
 
         $languageLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($languageLookup));
-        static::assertEmpty($defaultLanguageCacheProperty->getValue($languageLookup));
+        static::assertSame([], $cacheProperty->getValue($languageLookup));
+        static::assertSame([], $defaultLanguageCacheProperty->getValue($languageLookup));
     }
 
     /**

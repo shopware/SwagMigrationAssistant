@@ -48,13 +48,13 @@ class GlobalDocumentBaseConfigLookupTest extends TestCase
         $configCacheProperty = new \ReflectionProperty(GlobalDocumentBaseConfigLookup::class, 'configCache');
         $configCacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($globalDocumentBaseConfigLookup));
-        static::assertNotEmpty($configCacheProperty->getValue($globalDocumentBaseConfigLookup));
+        static::assertNotSame([], $cacheProperty->getValue($globalDocumentBaseConfigLookup));
+        static::assertNotSame([], $configCacheProperty->getValue($globalDocumentBaseConfigLookup));
 
         $globalDocumentBaseConfigLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($globalDocumentBaseConfigLookup));
-        static::assertEmpty($configCacheProperty->getValue($globalDocumentBaseConfigLookup));
+        static::assertSame([], $cacheProperty->getValue($globalDocumentBaseConfigLookup));
+        static::assertSame([], $configCacheProperty->getValue($globalDocumentBaseConfigLookup));
     }
 
     public function testGetBaseConfig(): void

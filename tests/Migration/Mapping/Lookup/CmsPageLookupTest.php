@@ -71,11 +71,11 @@ class CmsPageLookupTest extends TestCase
 
         $cacheProperty = new \ReflectionProperty(CmsPageLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
-        static::assertNotEmpty($cacheProperty->getValue($cmsPageLookup));
+        static::assertNotSame([], $cacheProperty->getValue($cmsPageLookup));
 
         $cmsPageLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($cmsPageLookup));
+        static::assertSame([], $cacheProperty->getValue($cmsPageLookup));
     }
 
     /**

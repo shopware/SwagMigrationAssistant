@@ -158,6 +158,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
                 foreach ($product['esdFiles'] as &$esdFile) {
                     $esdFile['path'] = $esdPath;
                 }
+                unset($esdFile);
             }
 
             if (isset($product['id']) && $product['id'] !== '') {
@@ -166,7 +167,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
         }
         unset(
             $product, $categories, $seoMainCategories,
-            $prices, $media, $options, $esdFile
+            $prices, $media, $options
         );
 
         $this->productMapping->replace([]);

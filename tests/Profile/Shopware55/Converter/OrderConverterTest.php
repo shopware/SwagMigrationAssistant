@@ -197,8 +197,8 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('orderCustomer', $converted);
         static::assertArrayHasKey('deliveries', $converted);
         static::assertArrayHasKey('transactions', $converted);
-        static::assertNotEmpty($converted['deliveries']);
-        static::assertNotEmpty($converted['transactions']);
+        static::assertNotSame([], $converted['deliveries']);
+        static::assertNotSame([], $converted['transactions']);
         static::assertArrayHasKey('primaryOrderDeliveryId', $converted);
         static::assertArrayHasKey('primaryOrderTransactionId', $converted);
         static::assertSame($converted['deliveries'][0]['id'], $converted['primaryOrderDeliveryId']);

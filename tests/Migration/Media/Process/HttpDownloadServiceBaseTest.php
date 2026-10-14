@@ -369,7 +369,7 @@ class HttpDownloadServiceBaseTest extends TestCase
     {
         $fileSize = \filesize($filePath);
         static::assertIsInt($fileSize);
-        static::assertNotEmpty($fileSize);
+        static::assertNotSame(0, $fileSize);
 
         $fileHandle = \fopen($filePath, 'rb');
         static::assertIsResource($fileHandle);

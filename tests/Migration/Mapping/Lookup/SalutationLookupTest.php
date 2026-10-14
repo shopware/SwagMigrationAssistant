@@ -43,11 +43,11 @@ class SalutationLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(SalutationLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($salutationLookup));
+        static::assertNotSame([], $cacheProperty->getValue($salutationLookup));
 
         $salutationLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($salutationLookup));
+        static::assertSame([], $cacheProperty->getValue($salutationLookup));
     }
 
     /**

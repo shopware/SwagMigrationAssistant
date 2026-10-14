@@ -43,11 +43,11 @@ class StateMachineStateLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(StateMachineStateLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($stateMachineStateLookup));
+        static::assertNotSame([], $cacheProperty->getValue($stateMachineStateLookup));
 
         $stateMachineStateLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($stateMachineStateLookup));
+        static::assertSame([], $cacheProperty->getValue($stateMachineStateLookup));
     }
 
     /**

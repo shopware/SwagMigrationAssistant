@@ -116,6 +116,6 @@ class DeliveryTimeReaderTest extends TestCase
 
         $choices = $result->getChoices();
         static::assertSame('2-5 days', $choices[1]->getDescription());
-        static::assertEmpty($result->getMapping()[0]->getDestinationUuid());
+        static::assertSame('', $result->getMapping()[0]->getDestinationUuid());
     }
 }

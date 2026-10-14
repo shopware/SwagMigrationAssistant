@@ -38,19 +38,27 @@
     },
     "scripts": {
         "lint": [
-            "@ecs-fix",
+            "@cs-fix",
             "@phpstan",
             "@phpunit",
             "@lint:admin",
             "@format:admin"
         ],
-        "ecs": "../../../vendor/bin/php-cs-fixer fix --dry-run",
-        "ecs-fix": "../../../vendor/bin/php-cs-fixer fix",
+        "ecs": [
+            "echo \"\\e[31mDeprecated! Use 'cs' instead\n\\e[0m\"",
+            "../../../vendor/bin/php-cs-fixer fix --dry-run --diff"
+        ],
+        "cs": "../../../vendor/bin/php-cs-fixer fix --dry-run --diff",
+        "ecs-fix": [
+            "echo \"\\e[31mDeprecated! Use 'cs-fix' instead\n\\e[0m\"",
+            "../../../vendor/bin/php-cs-fixer fix -v"
+        ],
+        "cs-fix": "../../../vendor/bin/php-cs-fixer fix -v",
         "phpunit": "../../../vendor/bin/phpunit",
         "phpstan": [
             "php ../../../src/Core/DevOps/StaticAnalyze/phpstan-bootstrap.php",
             "php bin/phpstan-config-generator.php",
-            "../../../vendor/bin/phpstan analyze"
+            "../../../vendor/bin/phpstan analyze -vv"
         ],
         "db:init-sw5": "./bin/install-shopware5-source-db.sh",
         "setup": [

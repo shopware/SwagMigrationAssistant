@@ -115,7 +115,7 @@ class TransactionStateReaderTest extends TestCase
         static::assertSame('no_description', $result->getMapping()[2]->getDescription());
         static::assertSame($this->stateClosed->getId(), $result->getMapping()[0]->getDestinationUuid());
         static::assertSame($this->stateOpen->getId(), $result->getMapping()[1]->getDestinationUuid());
-        static::assertEmpty($result->getMapping()[2]->getDestinationUuid());
-        static::assertEmpty($result->getMapping()[3]->getDestinationUuid());
+        static::assertSame('', $result->getMapping()[2]->getDestinationUuid());
+        static::assertSame('', $result->getMapping()[3]->getDestinationUuid());
     }
 }

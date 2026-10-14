@@ -117,7 +117,6 @@ class StatusControllerTest extends TestCase
         $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
         $themeRepo = static::getContainer()->get('theme.repository');
         $this->runRepo = static::getContainer()->get('swag_migration_run.repository');
-        $migrationContextFactory = static::getContainer()->get(MigrationContextFactory::class);
         $loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context): void {

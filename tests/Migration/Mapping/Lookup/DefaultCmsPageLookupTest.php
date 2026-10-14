@@ -85,11 +85,11 @@ class DefaultCmsPageLookupTest extends TestCase
 
         $reflectionProperty->setValue($defaultCmsPageLookup, $this->getDefaultCmsPageId());
 
-        static::assertNotEmpty($reflectionProperty->getValue($defaultCmsPageLookup));
+        static::assertSame($this->getDefaultCmsPageId(), $reflectionProperty->getValue($defaultCmsPageLookup));
 
         $defaultCmsPageLookup->reset();
 
-        static::assertEmpty($reflectionProperty->getValue($defaultCmsPageLookup));
+        static::assertNull($reflectionProperty->getValue($defaultCmsPageLookup));
     }
 
     private function getDefaultCmsPageId(): string

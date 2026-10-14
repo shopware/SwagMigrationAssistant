@@ -362,7 +362,6 @@ class MigrationDataWriterTest extends TestCase
             'product',
             &$updateWrittenData,
             $migrationContext,
-            $this->context,
             $collection,
         ]);
 

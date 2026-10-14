@@ -127,6 +127,6 @@ class UserReaderTest extends TestCase
         static::assertSame($this->basicUserMock->getId(), $result->getMapping()[1]->getDestinationUuid());
         static::assertSame($this->emptyUserNameUserMock->getId(), $result->getMapping()[2]->getDestinationUuid());
 
-        static::assertEmpty($result->getMapping()[3]->getDestinationUuid());
+        static::assertSame('', $result->getMapping()[3]->getDestinationUuid());
     }
 }

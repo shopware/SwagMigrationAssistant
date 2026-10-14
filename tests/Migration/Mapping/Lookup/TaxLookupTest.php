@@ -77,11 +77,11 @@ class TaxLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(TaxLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($taxLookup));
+        static::assertNotSame([], $cacheProperty->getValue($taxLookup));
 
         $taxLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($taxLookup));
+        static::assertSame([], $cacheProperty->getValue($taxLookup));
     }
 
     /**
