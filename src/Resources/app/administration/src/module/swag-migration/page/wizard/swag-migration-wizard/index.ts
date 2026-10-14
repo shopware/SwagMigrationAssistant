@@ -465,8 +465,9 @@ export default Shopware.Component.wrapComponentConfig({
                     .then(() => {
                         return this.doConnectionCheck();
                     })
-                    .catch(() => {
+                    .catch((error) => {
                         this.isLoading = false;
+                        this.onResponseError(error?.response?.data?.errors?.[0]?.code ?? 'UNKNOWN_ERROR');
                     });
                 return;
             }
@@ -549,9 +550,11 @@ export default Shopware.Component.wrapComponentConfig({
                 }
 
                 this.connection = connectionResponse.first();
-                this.connection.credentialFields = await this.migrationApiService.getConnectionCredentials(this.connection.id);
+                this.connection.credentialFields = await this.migrationApiService.getConnectionCredentials(
+                    this.connection.id,
+                );
             } catch (error) {
-                this.onResponseError(error.response.data.errors[0].code);
+                this.onResponseError(error?.response?.data?.errors?.[0]?.code ?? 'UNKNOWN_ERROR');
             } finally {
                 this.isLoading = false;
             }
@@ -630,8 +633,10 @@ export default Shopware.Component.wrapComponentConfig({
                                 connection.credentialFields = await this.migrationApiService.getConnectionCredentials(
                                     connection.id,
                                 );
+
                                 this.connection = connection;
                                 this.isLoading = false;
+
                                 resolve(null);
                             })
                             .catch((error) => {
