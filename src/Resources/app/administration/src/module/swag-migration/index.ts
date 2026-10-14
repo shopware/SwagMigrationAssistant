@@ -1,6 +1,7 @@
 import './acl';
 import './component';
 import './extension';
+import './mixin/swag-migration-log-download.mixin';
 import './mixin/swag-wizard.mixin';
 import './page';
 import './profile';
