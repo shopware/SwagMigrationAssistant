@@ -49,6 +49,50 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         });
     });
 
+    it('should get connection credentials with authentication and additional headers', async () => {
+        const { migrationApiService, clientMock } = createMigrationApiService();
+        const connectionId = '1234567890';
+        const credentialFields = {
+            endpoint: 'https://shopware.local',
+            apiUser: 'migration-user',
+            apiKey: 'migration-key',
+        };
+        clientMock.resetHandlers();
+        clientMock.onGet('_action/migration/get-connection-credentials').reply(200, credentialFields);
+
+        const response = await migrationApiService.getConnectionCredentials(connectionId, {
+            'test-header': 'test-value',
+        });
+
+        expect(response).toEqual(credentialFields);
+        expect(clientMock.history.get[0].url).toBe('_action/migration/get-connection-credentials');
+        expect(clientMock.history.get[0].params).toEqual({ connectionId });
+        expect(clientMock.history.get[0].headers.Authorization).toBe('Bearer test-token');
+        expect(clientMock.history.get[0].headers['test-header']).toBe('test-value');
+    });
+
+    it('should reject connection credential requests without editor permission', async () => {
+        const { migrationApiService, clientMock } = createMigrationApiService();
+        const errorResponse = {
+            errors: [{ code: 'FRAMEWORK__MISSING_PRIVILEGE_ERROR', status: '403' }],
+        };
+        clientMock.resetHandlers();
+        clientMock.onGet('_action/migration/get-connection-credentials').reply(403, errorResponse);
+
+        await expect(migrationApiService.getConnectionCredentials('1234567890')).rejects.toMatchObject({
+            response: { status: 403, data: errorResponse },
+        });
+    });
+
+    it('should check stored credentials without supplying replacement credentials', async () => {
+        const { migrationApiService, clientMock } = createMigrationApiService();
+        const connectionId = '1234567890';
+
+        await migrationApiService.checkConnection(connectionId);
+
+        expect(clientMock.history.post[0].data).toBe(JSON.stringify({ connectionId }));
+    });
+
     it('should update connection credentials', async () => {
         const { migrationApiService, clientMock } = createMigrationApiService();
 

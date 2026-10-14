@@ -12,12 +12,15 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
+use Shopware\Core\Framework\Api\ApiException;
+use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
+use Shopware\Core\Framework\Test\TestCaseBase\AdminApiTestBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
@@ -75,9 +78,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
 class StatusControllerTest extends TestCase
 {
+    use AdminApiTestBehaviour;
     use IntegrationTestBehaviour;
     use LocalCredentialTrait;
     use MigrationServicesTrait;
@@ -331,6 +338,82 @@ class StatusControllerTest extends TestCase
         }
     }
 
+    public function testGetConnectionCredentialsRequiresAuthentication(): void
+    {
+        $browser = $this->createClient(authorized: false);
+        $browser->request(Request::METHOD_GET, '/api/_action/migration/get-connection-credentials', ['connectionId' => $this->connectionId]);
+
+        static::assertSame(Response::HTTP_UNAUTHORIZED, $browser->getResponse()->getStatusCode());
+    }
+
+    public function testGetConnectionCredentialsRequiresEditorPrivilege(): void
+    {
+        $browser = $this->createClient(permissions: ['swag_migration.viewer', 'swag_migration_connection:read']);
+        $browser->request(Request::METHOD_GET, '/api/_action/migration/get-connection-credentials', ['connectionId' => $this->connectionId]);
+
+        static::assertSame(Response::HTTP_FORBIDDEN, $browser->getResponse()->getStatusCode());
+        $response = $this->jsonResponseToArray($browser->getResponse());
+        static::assertSame(ApiException::missingPrivileges(['swag_migration.editor'])->getMessage(), $response['errors'][0]['detail']);
+    }
+
+    public function testGetConnectionCredentialsWithEditorPrivilege(): void
+    {
+        $browser = $this->createClient(permissions: ['swag_migration.editor']);
+        $browser->request(Request::METHOD_GET, '/api/_action/migration/get-connection-credentials', ['connectionId' => $this->connectionId]);
+
+        $response = $browser->getResponse();
+        static::assertSame(Response::HTTP_OK, $response->getStatusCode());
+        static::assertSame($this->connection->getCredentialFields(), $this->jsonResponseToArray($response));
+        static::assertTrue($response->headers->hasCacheControlDirective('no-store'));
+    }
+
+    public function testGetConnectionCredentialsWithoutConnectionId(): void
+    {
+        $this->expectExceptionObject(RoutingException::missingRequestParameter('connectionId'));
+
+        $this->controller->getConnectionCredentials(new Request(), $this->context);
+    }
+
+    public function testGetConnectionCredentialsWithInvalidConnectionId(): void
+    {
+        $this->expectExceptionObject(MigrationException::noConnectionFound());
+
+        $this->controller->getConnectionCredentials(new Request(['connectionId' => Uuid::randomHex()]), $this->context);
+    }
+
+    public function testGetConnectionCredentialsWithoutCredentials(): void
+    {
+        $response = $this->controller->getConnectionCredentials(new Request(['connectionId' => $this->invalidConnectionId]), $this->context);
+
+        static::assertSame(Response::HTTP_OK, $response->getStatusCode());
+        static::assertSame([], $this->jsonResponseToArray($response));
+    }
+
+    public function testConnectionCredentialsAreNotExposedByAdminApi(): void
+    {
+        $browser = $this->createClient(permissions: ['swag_migration.viewer', 'swag_migration_connection:read']);
+        $browser->setServerParameter('HTTP_ACCEPT', 'application/json');
+        $browser->request(Request::METHOD_GET, '/api/swag-migration-connection/' . $this->connectionId);
+
+        static::assertSame(Response::HTTP_OK, $browser->getResponse()->getStatusCode());
+        $response = $this->jsonResponseToArray($browser->getResponse());
+        static::assertSame($this->connectionId, $response['data']['id']);
+        static::assertArrayNotHasKey('credentialFields', $response['data']);
+    }
+
+    public function testConnectionCredentialsAreNotExposedByAdminApiSearch(): void
+    {
+        $browser = $this->createClient(permissions: ['swag_migration.viewer', 'swag_migration_connection:read']);
+        $browser->setServerParameter('HTTP_ACCEPT', 'application/json');
+        $browser->jsonRequest(Request::METHOD_POST, '/api/search/swag-migration-connection', ['ids' => [$this->connectionId]]);
+
+        static::assertSame(Response::HTTP_OK, $browser->getResponse()->getStatusCode());
+        $response = $this->jsonResponseToArray($browser->getResponse());
+        static::assertCount(1, $response['data']);
+        static::assertSame($this->connectionId, $response['data'][0]['id']);
+        static::assertArrayNotHasKey('credentialFields', $response['data'][0]);
+    }
+
     public function testUpdateConnectionCredentialsWithInvalidConnectionId(): void
     {
         $params = [
@@ -496,6 +579,68 @@ class StatusControllerTest extends TestCase
             static::assertArrayHasKey('parameterName', $e->getParameters());
             static::assertSame($e->getParameters()['parameterName'], 'connectionId');
         }
+    }
+
+    public function testCheckConnectionWithReplacementCredentialsRequiresEditorPrivilege(): void
+    {
+        $browser = $this->createClient(permissions: ['swag_migration.viewer']);
+        $browser->jsonRequest(Request::METHOD_POST, '/api/_action/migration/check-connection', [
+            'connectionId' => $this->connectionId,
+            'credentialFields' => ['dbName' => 'replacement'],
+        ]);
+
+        static::assertSame(Response::HTTP_FORBIDDEN, $browser->getResponse()->getStatusCode());
+        $response = $this->jsonResponseToArray($browser->getResponse());
+        static::assertSame(ApiException::missingPrivileges(['swag_migration.editor'])->getErrorCode(), $response['errors'][0]['code']);
+        static::assertSame(ApiException::missingPrivileges(['swag_migration.editor'])->getMessage(), $response['errors'][0]['detail']);
+
+        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $this->context)->getEntities()->first();
+        static::assertNotNull($connection);
+        static::assertSame($this->connection->getCredentialFields(), $connection->getCredentialFields());
+    }
+
+    public function testCheckConnectionWithStoredCredentialsWithViewerPrivilege(): void
+    {
+        $dataFetcher = $this->createMock(MigrationDataFetcherInterface::class);
+        $dataFetcher->expects($this->once())
+            ->method('getEnvironmentInformation')
+            ->willReturnCallback(function (MigrationContextInterface $migrationContext): EnvironmentInformation {
+                static::assertSame($this->connection->getCredentialFields(), $migrationContext->getConnection()->getCredentialFields());
+
+                return new EnvironmentInformation(sourceSystemName: 'Shopware', sourceSystemVersion: '5.7', sourceSystemDomain: 'sw5.local');
+            });
+
+        $source = new AdminApiSource(null);
+        $source->setPermissions(['swag_migration.viewer']);
+        $controller = $this->createStatusController($dataFetcher);
+        $response = $controller->checkConnection(new Request([], ['connectionId' => $this->connectionId]), new Context($source));
+
+        static::assertSame(Response::HTTP_OK, $response->getStatusCode());
+        static::assertSame('Shopware', $this->jsonResponseToArray($response)['sourceSystemName']);
+    }
+
+    public function testCheckConnectionWithReplacementCredentialsWithEditorPrivilege(): void
+    {
+        $credentialFields = ['dbName' => 'replacement'];
+        $dataFetcher = $this->createMock(MigrationDataFetcherInterface::class);
+        $dataFetcher->expects($this->once())
+            ->method('getEnvironmentInformation')
+            ->willReturnCallback(static function (MigrationContextInterface $migrationContext) use ($credentialFields): EnvironmentInformation {
+                static::assertSame($credentialFields, $migrationContext->getConnection()->getCredentialFields());
+
+                return new EnvironmentInformation(sourceSystemName: 'Shopware', sourceSystemVersion: '5.7', sourceSystemDomain: 'sw5.local');
+            });
+
+        $source = new AdminApiSource(null);
+        $source->setPermissions(['swag_migration.viewer', 'swag_migration.editor']);
+        $controller = $this->createStatusController($dataFetcher);
+        $response = $controller->checkConnection(new Request([], [
+            'connectionId' => $this->connectionId,
+            'credentialFields' => $credentialFields,
+        ]), new Context($source));
+
+        static::assertSame(Response::HTTP_OK, $response->getStatusCode());
+        static::assertSame('Shopware', $this->jsonResponseToArray($response)['sourceSystemName']);
     }
 
     public function testCheckConnectionWithInvalidConnectionId(): void

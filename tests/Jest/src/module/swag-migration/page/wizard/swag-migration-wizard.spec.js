@@ -142,85 +142,147 @@ const routes = [
     },
 ];
 
-// when update() in the mixin is triggered, router.push() may not finished in the test
-// update() triggers matchCurrentRoute() to update this.currentRoute based on the current router route
-// if router.push is not finished, this.currentRoute will not be updated
-// so, if router route name does not match with this->currentRoute
-// trigger matchCurrentRoute() execution to update this.currentRoute
-async function syncCurrentRoute(wrapper, routerCurrentRouteName) {
-    if (wrapper.vm.currentRoute.name !== routerCurrentRouteName) {
-        wrapper.vm.matchCurrentRoute(false);
-        await flushPromises();
-    }
-}
+const mountedWrappers = [];
 
-async function createWrapper() {
+async function createWrapper(initialRoute = 'swag.migration.wizard.connectionCreate') {
     // delete global $router and $routes mocks
     delete config.global.mocks.$router;
     delete config.global.mocks.$route;
 
     const router = createRouter({
-        routes: routes,
+        routes: [
+            {
+                path: '/wizard',
+                component: await Shopware.Component.build('swag-migration-wizard'),
+                children: routes,
+            },
+        ],
         history: createWebHashHistory(),
     });
 
-    await router.push({ name: 'swag.migration.wizard.connectionCreate' });
+    await router.push({ name: initialRoute });
     await router.isReady();
     await flushPromises();
 
-    const wrapper = await mount(await Shopware.Component.build('swag-migration-wizard'), {
-        global: {
-            stubs: {
-                'sw-modal': {
-                    template: `<div class="sw-modal">
+    const wrapper = await mount(
+        { template: '<router-view />' },
+        {
+            global: {
+                stubs: {
+                    'sw-modal': {
+                        template: `<div class="sw-modal">
                         <div class="sw-modal__body"><slot /></div>
                         <div class="sw-modal__footer"><slot name="modal-footer" /></div>
                     </div>`,
+                    },
+                    'swag-migration-profile-shopware55-api-credential-form': await Shopware.Component.build(
+                        'swag-migration-profile-shopware55-api-credential-form',
+                    ),
+                    'sw-single-select': await wrapTestComponent('sw-single-select'),
+                    'sw-select-result-list': await wrapTestComponent('sw-select-result-list'),
+                    'sw-select-result': await wrapTestComponent('sw-select-result'),
+                    'sw-select-base': await wrapTestComponent('sw-select-base'),
+                    'sw-block-field': await wrapTestComponent('sw-block-field'),
+                    'sw-base-field': await wrapTestComponent('sw-base-field'),
+                    'mt-banner': true,
+                    'mt-icon': true,
+                    'router-link': true,
+                    'sw-loader': true,
+                    'sw-highlight-text': true,
+                    'sw-inheritance-switch': true,
+                    'sw-ai-copilot-badge': true,
+                    'sw-help-text': true,
+                    'sw-field-error': true,
+                    'mt-url-field': MtUrlField,
+                    'i18n-t': {
+                        template: '<div class="i18n-stub"><slot></slot></div>',
+                    },
                 },
-                'swag-migration-profile-shopware55-api-credential-form': await Shopware.Component.build(
-                    'swag-migration-profile-shopware55-api-credential-form',
-                ),
-                'sw-single-select': await wrapTestComponent('sw-single-select'),
-                'sw-select-result-list': await wrapTestComponent('sw-select-result-list'),
-                'sw-select-result': await wrapTestComponent('sw-select-result'),
-                'sw-select-base': await wrapTestComponent('sw-select-base'),
-                'sw-block-field': await wrapTestComponent('sw-block-field'),
-                'sw-base-field': await wrapTestComponent('sw-base-field'),
-                'mt-banner': true,
-                'mt-icon': true,
-                'router-link': true,
-                'sw-loader': true,
-                'sw-highlight-text': true,
-                'sw-inheritance-switch': true,
-                'sw-ai-copilot-badge': true,
-                'sw-help-text': true,
-                'sw-field-error': true,
-                'mt-url-field': MtUrlField,
-                'i18n-t': {
-                    template: '<div class="i18n-stub"><slot></slot></div>',
-                },
-            },
-            plugins: [router],
-            provide: {
-                migrationApiService: migrationApiServiceMock,
-                repositoryFactory: repositoryFactoryMock,
-                shortcutService: {
-                    startEventListener: () => {},
-                    stopEventListener: () => {},
+                plugins: [router],
+                provide: {
+                    migrationApiService: migrationApiServiceMock,
+                    repositoryFactory: repositoryFactoryMock,
+                    shortcutService: {
+                        startEventListener: () => {},
+                        stopEventListener: () => {},
+                    },
                 },
             },
         },
-    });
+    );
 
-    expect(wrapper.vm.$router).toBe(router);
-    expect(wrapper.vm.currentRoute.name).toBe('swag.migration.wizard.connectionCreate');
+    mountedWrappers.push(wrapper);
+    expect(router.currentRoute.value.name).toBe(initialRoute);
 
     return { wrapper, router };
 }
 
 describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
     afterEach(() => {
+        mountedWrappers.splice(0).forEach((wrapper) => wrapper.unmount());
+        Shopware.Store.get('swagMigration').$reset();
         jest.clearAllMocks();
+    });
+
+    describe('load stored credentials', () => {
+        it('should populate the credential form from the editor endpoint', async () => {
+            connectionRepositoryMock.search.mockResolvedValueOnce({
+                length: 1,
+                first: () => ({
+                    id: connectionId,
+                    name: connectionName,
+                    profileName: profileShopware55,
+                    gatewayName: gatewayApi,
+                }),
+            });
+
+            const { wrapper } = await createWrapper('swag.migration.wizard.credentials');
+            await flushPromises();
+
+            expect(migrationApiServiceMock.getConnectionCredentials).toHaveBeenCalledWith(connectionId);
+            expect(wrapper.find('input[name="sw-field--apiKey"]').element.value).toBe(apiKey);
+            expect(wrapper.find('input[name="sw-field--apiUser"]').element.value).toBe(apiUser);
+            expect(wrapper.findComponent(MtUrlField).props('modelValue')).toBe(endpoint);
+            expect(
+                wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').attributes('disabled'),
+            ).toBeUndefined();
+        });
+
+        it('should keep the wizard loading until stored credentials arrive', async () => {
+            connectionRepositoryMock.search.mockResolvedValueOnce({
+                length: 1,
+                first: () => ({
+                    id: connectionId,
+                    name: connectionName,
+                    profileName: profileShopware55,
+                    gatewayName: gatewayApi,
+                }),
+            });
+            let resolveCredentials;
+            migrationApiServiceMock.getConnectionCredentials.mockImplementationOnce(
+                () =>
+                    new Promise((resolve) => {
+                        resolveCredentials = resolve;
+                    }),
+            );
+
+            const { wrapper } = await createWrapper('swag.migration.wizard.credentials');
+            await flushPromises();
+
+            expect(wrapper.find('.swag-migration-wizard__placeholder').isVisible()).toBe(true);
+            expect(
+                wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').attributes('disabled'),
+            ).toBeDefined();
+
+            resolveCredentials({ apiKey, apiUser, endpoint });
+            await flushPromises();
+
+            expect(wrapper.find('.swag-migration-wizard__placeholder').isVisible()).toBe(false);
+            expect(wrapper.find('input[name="sw-field--apiKey"]').element.value).toBe(apiKey);
+            expect(
+                wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').attributes('disabled'),
+            ).toBeUndefined();
+        });
     });
 
     describe('create connection page', () => {
@@ -415,8 +477,6 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
             expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentials');
 
-            await syncCurrentRoute(wrapper, router.currentRoute.value.name);
-
             // credentials page
             await wrapper.find('input[name="sw-field--apiKey"]').setValue(apiKey);
             await wrapper.find('input[name="sw-field--apiUser"]').setValue(apiUser);
@@ -442,9 +502,9 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
                 },
             );
 
-            expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentialsSuccess');
+            expect(migrationApiServiceMock.getConnectionCredentials).toHaveBeenCalledWith(connectionId);
 
-            await syncCurrentRoute(wrapper, router.currentRoute.value.name);
+            expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentialsSuccess');
 
             // success page
             const successWrapper = wrapper.find('.swag-migration-wizard-page-credentials-success');
@@ -462,8 +522,17 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             expect(successPrimaryButton.attributes('disabled')).toBeUndefined();
         });
 
-        it('should navigate to error page when create connection fails', async () => {
-            migrationApiServiceMock.createNewConnection.mockRejectedValueOnce(createNewConnectionErrorResponseMock);
+        it.each([
+            [
+                'creating the connection',
+                migrationApiServiceMock.createNewConnection,
+            ],
+            [
+                'loading saved credentials',
+                migrationApiServiceMock.getConnectionCredentials,
+            ],
+        ])('should navigate to error page when %s fails', async (_stage, failingRequest) => {
+            failingRequest.mockRejectedValueOnce(createNewConnectionErrorResponseMock);
             const { wrapper, router } = await createWrapper();
             await router.push({ name: 'swag.migration.wizard.connectionCreate' });
             await flushPromises();
@@ -483,8 +552,6 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
             expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentials');
 
-            await syncCurrentRoute(wrapper, router.currentRoute.value.name);
-
             // credentials page
             await wrapper.find('input[name="sw-field--apiKey"]').setValue(apiKey);
             await wrapper.find('input[name="sw-field--apiUser"]').setValue(apiUser);
@@ -497,8 +564,6 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             await flushPromises();
 
             expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentialsError');
-
-            await syncCurrentRoute(wrapper, router.currentRoute.value.name);
 
             // error page
             const errorWrapper = wrapper.find('.swag-migration-wizard-page-credentials-error');
