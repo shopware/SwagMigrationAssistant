@@ -7,19 +7,19 @@
             {% block swag_migration_index_tab_main %}
                 <sw-tabs-item
                     :route="{ name: 'swag.migration.index.main' }"
-                    :title="$tc('swag-migration.general.tabMain')"
+                    :title="$t('swag-migration.general.tabMain')"
                 >
-                    {{ $tc('swag-migration.general.tabMain') }}
+                    {{ $t('swag-migration.general.tabMain') }}
                 </sw-tabs-item>
             {% endblock %}
 
             {% block swag_migration_index_tab_data_selector %}
                 <sw-tabs-item
                     :route="{ name: 'swag.migration.index.dataSelector' }"
-                    :title="$tc('swag-migration.general.tabDataSelector')"
+                    :title="$t('swag-migration.general.tabDataSelector')"
                     :disabled="!acl.can('swag_migration.editor')"
                 >
-                    {{ $tc('swag-migration.general.tabDataSelector') }}
+                    {{ $t('swag-migration.general.tabDataSelector') }}
                 </sw-tabs-item>
             {% endblock %}
 
@@ -27,9 +27,9 @@
                 <sw-tabs-item
                     v-if="hasHistory"
                     :route="{ name: 'swag.migration.index.history' }"
-                    :title="$tc('swag-migration.general.tabHistory')"
+                    :title="$t('swag-migration.general.tabHistory')"
                 >
-                    {{ $tc('swag-migration.general.tabHistory') }}
+                    {{ $t('swag-migration.general.tabHistory') }}
                 </sw-tabs-item>
             {% endblock %}
         </sw-tabs>

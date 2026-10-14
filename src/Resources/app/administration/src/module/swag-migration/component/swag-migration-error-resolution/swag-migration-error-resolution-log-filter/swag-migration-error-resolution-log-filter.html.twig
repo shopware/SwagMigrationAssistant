@@ -2,7 +2,7 @@
     <div class="swag-migration-error-resolution-log-filter">
         <mt-popover
             class="swag-migration-error-resolution-log-filter__popover"
-            :title="$tc('swag-migration.index.error-resolution.step.card.filter.title', { count: filterCount })"
+            :title="$t('swag-migration.index.error-resolution.step.card.filter.title', { count: filterCount })"
             :child-views="[{ name: 'base' }]"
             width="large"
             @update:isOpened="onPopoverOpenChange"
@@ -23,7 +23,7 @@
                             />
                         </template>
 
-                        <span>{{ $tc('swag-migration.index.error-resolution.step.card.filter.title', { count: filterCount }) }}</span>
+                        <span>{{ $t('swag-migration.index.error-resolution.step.card.filter.title', { count: filterCount }) }}</span>
                     </mt-button>
                 {% endblock %}
             </template>
@@ -86,7 +86,7 @@
                             variant="critical"
                             @click="onReset"
                         >
-                            {{ $tc('swag-migration.index.error-resolution.step.card.filter.reset') }}
+                            {{ $t('swag-migration.index.error-resolution.step.card.filter.reset') }}
                         </mt-link>
                     {% endblock %}
                 </div>

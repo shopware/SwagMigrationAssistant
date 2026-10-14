@@ -29,7 +29,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         modalTitle(): string {
-            return this.$tc('swag-migration.index.error-resolution.modals.details.title', { entityName: this.entityName });
+            return this.$t('swag-migration.index.error-resolution.modals.details.title', { entityName: this.entityName });
         },
     },
 

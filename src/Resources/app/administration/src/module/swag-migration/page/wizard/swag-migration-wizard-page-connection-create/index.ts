@@ -96,8 +96,8 @@ export default Shopware.Component.wrapComponentConfig({
 
             const snippet = `swag-migration.wizard.pages.connectionCreate.hint.${this.selection.gateway}`;
 
-            if (this.$tc(snippet) !== `swag-migration.wizard.pages.connectionCreate.hint.${this.selection.gateway}`) {
-                return this.$tc(snippet);
+            if (this.$t(snippet) !== `swag-migration.wizard.pages.connectionCreate.hint.${this.selection.gateway}`) {
+                return this.$t(snippet);
             }
 
             return '';
@@ -139,7 +139,7 @@ export default Shopware.Component.wrapComponentConfig({
             const searchTerm = searchParams.searchTerm;
 
             return searchParams.options.filter((option: MigrationGateway) => {
-                const label = this.$tc(option.snippet);
+                const label = this.$t(option.snippet);
                 return label.toLowerCase().includes(searchTerm.toLowerCase());
             });
         },

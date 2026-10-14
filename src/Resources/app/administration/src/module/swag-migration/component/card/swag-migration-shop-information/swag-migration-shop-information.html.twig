@@ -10,7 +10,7 @@
 
     <mt-card
         class="swag-migration-shop-information"
-        :title="$tc('swag-migration.index.shopInfoCard.cardTitle')"
+        :title="$t('swag-migration.index.shopInfoCard.cardTitle')"
         position-identifier="swag-migration-shop-information"
         :is-loading="isUpdating"
     >
@@ -23,7 +23,7 @@
                     type="external"
                     target="_blank"
                 >
-                    {{ $tc('swag-migration.index.shopInfoCard.link') }}
+                    {{ $t('swag-migration.index.shopInfoCard.link') }}
                 </mt-link>
             </div>
         </template>
@@ -105,7 +105,7 @@
                                                             :disabled="!acl.can('swag_migration.creator')"
                                                             @click="onClickCreateInitialConnection"
                                                         >
-                                                            {{ $tc('swag-migration.index.shopInfoCard.buttonCreateInitialConnection') }}
+                                                            {{ $t('swag-migration.index.shopInfoCard.buttonCreateInitialConnection') }}
                                                         </mt-button>
                                                     </template>
 
@@ -117,7 +117,7 @@
                                                             :disabled="!acl.can('swag_migration.editor')"
                                                             @click="onClickEditConnectionCredentials"
                                                         >
-                                                            {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
+                                                            {{ $t('swag-migration.index.shopInfoCard.buttonEditSettings') }}
                                                         </mt-button>
                                                     </template>
                                                 {% endblock %}
@@ -140,7 +140,7 @@
                                                                 @click="onClickRefreshConnection"
                                                                 :disabled="!acl.can('swag_migration.viewer')"
                                                             >
-                                                                {{ $tc('swag-migration.index.shopInfoCard.refreshButton') }}
+                                                                {{ $t('swag-migration.index.shopInfoCard.refreshButton') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
 
@@ -149,7 +149,7 @@
                                                                 @click="onClickCreateConnection"
                                                                 :disabled="!acl.can('swag_migration.creator')"
                                                             >
-                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonCreateConnection') }}
+                                                                {{ $t('swag-migration.index.shopInfoCard.buttonCreateConnection') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
 
@@ -158,7 +158,7 @@
                                                                 @click="onClickSelectConnection"
                                                                 :disabled="!acl.can('swag_migration.editor')"
                                                             >
-                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonSelectConnection') }}
+                                                                {{ $t('swag-migration.index.shopInfoCard.buttonSelectConnection') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
 
@@ -167,7 +167,7 @@
                                                                 @click="onClickProfileInstallation"
                                                                 :disabled="!acl.can('swag_migration.creator')"
                                                             >
-                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonProfileInstallation') }}
+                                                                {{ $t('swag-migration.index.shopInfoCard.buttonProfileInstallation') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
 
@@ -181,7 +181,7 @@
                                                                 @click="showRemoveCredentialsConfirmModal = true"
                                                                 :disabled="!acl.can('swag_migration.deleter')"
                                                             >
-                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonRemoveCredentials') }}
+                                                                {{ $t('swag-migration.index.shopInfoCard.buttonRemoveCredentials') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
 
@@ -191,7 +191,7 @@
                                                                 @click="showResetChecksumsConfirmModal = true"
                                                                 :disabled="!acl.can('swag_migration.deleter')"
                                                             >
-                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonResetChecksums') }}
+                                                                {{ $t('swag-migration.index.shopInfoCard.buttonResetChecksums') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
 
@@ -201,7 +201,7 @@
                                                                 @click="openResetMigrationModal"
                                                                 :disabled="!acl.can('swag_migration.deleter')"
                                                             >
-                                                                {{ $tc('swag-migration.index.shopInfoCard.buttonResetMigration') }}
+                                                                {{ $t('swag-migration.index.shopInfoCard.buttonResetMigration') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
                                                     </sw-context-button>
@@ -227,7 +227,7 @@
                                                 />
 
                                                 <span class="swag-migration-shop-information__connection-status-text">
-                                                    {{ $tc(connectionBadgeLabel) }}
+                                                    {{ $t(connectionBadgeLabel) }}
                                                 </span>
                                             </sw-label>
                                         </div>
@@ -253,15 +253,15 @@
                                     {% block swag_migration_shop_information_metadata_column_left %}
                                         {% block swag_migration_shop_information_metadata_profile %}
                                             <sw-description-list>
-                                                <dt>{{ $tc('swag-migration.index.shopInfoCard.profile') }}</dt>
+                                                <dt>{{ $t('swag-migration.index.shopInfoCard.profile') }}</dt>
                                                 <dd>{{ profile }}</dd>
                                             </sw-description-list>
                                         {% endblock %}
 
                                         {% block swag_migration_shop_information_metadata_gateway %}
                                             <sw-description-list>
-                                                <dt>{{ $tc('swag-migration.index.shopInfoCard.gateway') }}</dt>
-                                                <dd>{{ $tc(gateway) }}</dd>
+                                                <dt>{{ $t('swag-migration.index.shopInfoCard.gateway') }}</dt>
+                                                <dd>{{ $t(gateway) }}</dd>
                                             </sw-description-list>
                                         {% endblock %}
                                     {% endblock %}
@@ -272,7 +272,7 @@
                                         {% block swag_migration_shop_information_metadata_lastConnectionCheck %}
                                             <sw-description-list>
                                                 <dt>
-                                                    {{ $tc('swag-migration.index.shopInfoCard.connectionCheck') }}
+                                                    {{ $t('swag-migration.index.shopInfoCard.connectionCheck') }}
                                                 </dt>
 
                                                 <dd v-if="lastConnectionCheck">
@@ -280,21 +280,21 @@
                                                 </dd>
 
                                                 <dd v-else>
-                                                    {{ $tc('swag-migration.index.shopInfoCard.noConnectionCheckDoneYet') }}
+                                                    {{ $t('swag-migration.index.shopInfoCard.noConnectionCheckDoneYet') }}
                                                 </dd>
                                             </sw-description-list>
                                         {% endblock %}
 
                                         {% block swag_migration_shop_information_metadata_lastMigration %}
                                             <sw-description-list>
-                                                <dt>{{ $tc('swag-migration.index.shopInfoCard.lastMigration') }}</dt>
+                                                <dt>{{ $t('swag-migration.index.shopInfoCard.lastMigration') }}</dt>
 
                                                 <dd v-if="lastMigrationDate !== '-'">
                                                     {{ formattedLastMigrationDateTime }}
                                                 </dd>
 
                                                 <dd v-else>
-                                                    {{ $tc('swag-migration.index.shopInfoCard.noMigrationDoneYet') }}
+                                                    {{ $t('swag-migration.index.shopInfoCard.noMigrationDoneYet') }}
                                                 </dd>
                                             </sw-description-list>
                                         {% endblock %}
@@ -309,20 +309,20 @@
                     <sw-modal
                         v-if="showRemoveCredentialsConfirmModal"
                         class="swag-migration-shop-information__confirm-modal"
-                        :title="$tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.title')"
+                        :title="$t('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.title')"
                         :is-loading="confirmModalIsLoading"
                         variant="small"
                         @modal-close="showRemoveCredentialsConfirmModal = false"
                     >
                         {% block swag_migration_shop_information_remove_credentials_confirm_modal_content_hint %}
                             <p class="swag-migration-shop-information__confirm-modal-content-hint">
-                                {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.contentHint') }}
+                                {{ $t('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.contentHint') }}
                             </p>
                         {% endblock %}
 
                         {% block swag_migration_shop_information_remove_credentials_confirm_modal_content %}
                             <p class="swag-migration-shop-information__confirm-modal-content">
-                                {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.content') }}
+                                {{ $t('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.content') }}
                             </p>
                         {% endblock %}
 
@@ -335,7 +335,7 @@
                                         :disabled="confirmModalIsLoading"
                                         @click="showRemoveCredentialsConfirmModal = false"
                                     >
-                                        {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.abortButtonText') }}
+                                        {{ $t('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.abortButtonText') }}
                                     </mt-button>
                                 {% endblock %}
 
@@ -346,7 +346,7 @@
                                         :disabled="confirmModalIsLoading || !acl.can('swag_migration.deleter')"
                                         @click="onClickRemoveConnectionCredentials"
                                     >
-                                        {{ $tc('global.default.delete') }}
+                                        {{ $t('global.default.delete') }}
                                     </mt-button>
                                 {% endblock %}
                             </template>
@@ -358,21 +358,21 @@
                     <sw-modal
                         v-if="showResetChecksumsConfirmModal"
                         class="swag-migration-shop-information__confirm-modal"
-                        :title="$tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.title')"
+                        :title="$t('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.title')"
                         :is-loading="confirmModalIsLoading"
                         variant="small"
                         @modal-close="showResetChecksumsConfirmModal = false"
                     >
                         {% block swag_migration_shop_information_reset_checksums_confirm_modal_content_hint %}
                             <p class="swag-migration-shop-information__confirm-modal-content-hint">
-                                {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.contentHint') }}
+                                {{ $t('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.contentHint') }}
                             </p>
                         {% endblock %}
 
                         {% block swag_migration_shop_information_reset_checksums_confirm_modal_content %}
                             <p
                                 class="swag-migration-shop-information__confirm-modal-content"
-                                v-html="$tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.content')"
+                                v-html="$t('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.content')"
                             >
                             </p>
                         {% endblock %}
@@ -386,7 +386,7 @@
                                         :disabled="confirmModalIsLoading"
                                         @click="showResetChecksumsConfirmModal = false"
                                     >
-                                        {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.abortButtonText') }}
+                                        {{ $t('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.abortButtonText') }}
                                     </mt-button>
                                 {% endblock %}
 
@@ -397,7 +397,7 @@
                                         :disabled="confirmModalIsLoading || !acl.can('swag_migration.deleter')"
                                         @click="onClickResetChecksums"
                                     >
-                                        {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.confirmButtonText') }}
+                                        {{ $t('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.confirmButtonText') }}
                                     </mt-button>
                                 {% endblock %}
                             </template>
@@ -409,7 +409,7 @@
                     <sw-modal
                         v-if="showResetMigrationConfirmModal"
                         class="swag-migration-shop-information__confirm-modal"
-                        :title="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.title')"
+                        :title="$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.title')"
                         :is-loading="confirmModalIsLoading"
                         variant="small"
                         @modal-close="onCloseResetModal"
@@ -417,7 +417,7 @@
                         {% block swag_migration_shop_information_reset_migration_confirm_modal_header %}
                             <p
                                 class="swag-migration-shop-information__confirm-modal-header"
-                                v-html="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.header')"
+                                v-html="$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.header')"
                             >
                             </p>
                         {% endblock %}
@@ -425,7 +425,7 @@
                         {% block swag_migration_shop_information_reset_migration_confirm_modal_content %}
                             <p
                                 class="swag-migration-shop-information__confirm-modal-content"
-                                v-html="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.content')"
+                                v-html="$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.content')"
                             >
                             </p>
                         {% endblock %}
@@ -439,7 +439,7 @@
                                         :disabled="confirmModalIsLoading"
                                         @click="onCloseResetModal"
                                     >
-                                        {{ $tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.abortButtonText') }}
+                                        {{ $t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.abortButtonText') }}
                                     </mt-button>
                                 {% endblock %}
 
@@ -450,7 +450,7 @@
                                         :disabled="confirmModalIsLoading || !acl.can('swag_migration.deleter')"
                                         @click="onClickResetMigration"
                                     >
-                                        {{ $tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.confirmButtonText') }}
+                                        {{ $t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.confirmButtonText') }}
                                     </mt-button>
                                 {% endblock %}
                             </template>

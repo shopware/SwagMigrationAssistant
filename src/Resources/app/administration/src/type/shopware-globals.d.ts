@@ -145,7 +145,6 @@ declare global {
         };
         Snippet: {
             t(key: string): string;
-            tc(key: string): string;
             te(key: string): boolean;
         };
         Store: {

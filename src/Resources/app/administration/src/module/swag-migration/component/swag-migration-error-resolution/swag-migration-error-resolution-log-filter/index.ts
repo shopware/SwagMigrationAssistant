@@ -92,11 +92,11 @@ export default Shopware.Component.wrapComponentConfig({
             return [
                 {
                     value: 'resolved',
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.filter.status.options.resolved'),
+                    label: this.$t('swag-migration.index.error-resolution.step.card.filter.status.options.resolved'),
                 },
                 {
                     value: 'unresolved',
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.filter.status.options.unresolved'),
+                    label: this.$t('swag-migration.index.error-resolution.step.card.filter.status.options.unresolved'),
                 },
             ];
         },

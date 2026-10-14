@@ -11,14 +11,14 @@
                             class="swag-migration-loading-screen__notice"
                             variant="info"
                         >
-                            <span>{{ $tc('swag-migration.index.loadingScreenCard.notice') }}</span>
+                            <span>{{ $t('swag-migration.index.loadingScreenCard.notice') }}</span>
                             <mt-link
                                 as="a"
-                                :to="$tc('swag-migration.index.loadingScreenCard.documentationLink')"
+                                :to="$t('swag-migration.index.loadingScreenCard.documentationLink')"
                                 type="external"
                                 target="_blank"
                             >
-                                {{ $tc('swag-migration.index.loadingScreenCard.documentationLinkText') }}
+                                {{ $t('swag-migration.index.loadingScreenCard.documentationLinkText') }}
                             </mt-link>
                         </mt-banner>
 
@@ -41,7 +41,7 @@
                         {% block swag_migration_index_loading_screen_progress_bar %}
                             <swag-migration-progress-bar
                                 :left-point-description="progressBarLeftPointDescription"
-                                :right-point-description="$tc('swag-migration.index.loadingScreenCard.status.finish')"
+                                :right-point-description="$t('swag-migration.index.loadingScreenCard.status.finish')"
                                 :value="progress"
                                 :max-value="total"
                             />

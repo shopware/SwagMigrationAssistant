@@ -27,15 +27,15 @@ export default Shopware.Component.wrapComponentConfig({
 
     computed: {
         progressBarLeftPointDescription() {
-            return this.$tc(`swag-migration.index.loadingScreenCard.status.${this.step}.short`);
+            return this.$t(`swag-migration.index.loadingScreenCard.status.${this.step}.short`);
         },
 
         caption() {
-            return this.$tc(`swag-migration.index.loadingScreenCard.status.${this.step}.caption`);
+            return this.$t(`swag-migration.index.loadingScreenCard.status.${this.step}.caption`);
         },
 
         statusLong() {
-            return this.$tc(`swag-migration.index.loadingScreenCard.status.${this.step}.long`);
+            return this.$t(`swag-migration.index.loadingScreenCard.status.${this.step}.long`);
         },
     },
 });

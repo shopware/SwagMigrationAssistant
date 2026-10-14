@@ -129,7 +129,7 @@ export default Shopware.Component.wrapComponentConfig({
         continueMigrationButtonTooltip() {
             if (this.totalUnresolvedErrors > 0) {
                 return {
-                    message: this.$tc('swag-migration.index.error-resolution.step.header.continueTooltip'),
+                    message: this.$t('swag-migration.index.error-resolution.step.header.continueTooltip'),
                     disabled: false,
                 };
             }
@@ -142,13 +142,13 @@ export default Shopware.Component.wrapComponentConfig({
 
         continueMigrationWarningText() {
             if (this.totalUnresolvedErrors > 0) {
-                return this.$tc('swag-migration.index.error-resolution.step.continue-modal.text-fixable', {
+                return this.$t('swag-migration.index.error-resolution.step.continue-modal.text-fixable', {
                     count: this.totalUnresolvedErrors,
                 });
             }
 
             if (this.totalUnfixableErrors > 0) {
-                return this.$tc('swag-migration.index.error-resolution.step.continue-modal.text-unfixable', {
+                return this.$t('swag-migration.index.error-resolution.step.continue-modal.text-unfixable', {
                     count: this.totalUnfixableErrors,
                 });
             }
@@ -159,21 +159,21 @@ export default Shopware.Component.wrapComponentConfig({
         tabItems() {
             return [
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.tabs.errors', {
+                    label: this.$t('swag-migration.index.error-resolution.step.card.tabs.errors', {
                         count: this.levelCounts.error,
                     }),
                     name: MIGRATION_LOG_LEVEL.ERROR,
                     disabled: this.levelCounts.error === 0 || this.loading,
                 },
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.tabs.warnings', {
+                    label: this.$t('swag-migration.index.error-resolution.step.card.tabs.warnings', {
                         count: this.levelCounts.warning,
                     }),
                     name: MIGRATION_LOG_LEVEL.WARNING,
                     disabled: this.levelCounts.warning === 0 || this.loading,
                 },
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.tabs.infos', {
+                    label: this.$t('swag-migration.index.error-resolution.step.card.tabs.infos', {
                         count: this.levelCounts.info,
                     }),
                     name: MIGRATION_LOG_LEVEL.INFO,
@@ -185,43 +185,43 @@ export default Shopware.Component.wrapComponentConfig({
         tableColumns() {
             return [
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.count'),
+                    label: this.$t('swag-migration.index.error-resolution.step.card.table.columns.count'),
                     property: 'count',
                     sortable: true,
                     position: 1,
                 },
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.name'),
+                    label: this.$t('swag-migration.index.error-resolution.step.card.table.columns.name'),
                     property: 'name',
                     sortable: true,
                     position: 2,
                 },
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.entity'),
+                    label: this.$t('swag-migration.index.error-resolution.step.card.table.columns.entity'),
                     property: 'entityName',
                     sortable: true,
                     position: 3,
                 },
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.field'),
+                    label: this.$t('swag-migration.index.error-resolution.step.card.table.columns.field'),
                     property: 'fieldName',
                     sortable: true,
                     position: 4,
                 },
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.code'),
+                    label: this.$t('swag-migration.index.error-resolution.step.card.table.columns.code'),
                     property: 'code',
                     sortable: true,
                     visible: false,
                 },
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.profileName'),
+                    label: this.$t('swag-migration.index.error-resolution.step.card.table.columns.profileName'),
                     property: 'profileName',
                     sortable: true,
                     visible: false,
                 },
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.gatewayName'),
+                    label: this.$t('swag-migration.index.error-resolution.step.card.table.columns.gatewayName'),
                     property: 'gatewayName',
                     sortable: true,
                     visible: false,
@@ -267,7 +267,7 @@ export default Shopware.Component.wrapComponentConfig({
                 this.totalUnfixableErrors = result.total;
             } catch {
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchUnfixableErrorsFailed'),
+                    message: this.$t('swag-migration.index.error-resolution.errors.fetchUnfixableErrorsFailed'),
                 });
             }
         },
@@ -311,7 +311,7 @@ export default Shopware.Component.wrapComponentConfig({
                 }));
             } catch {
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
+                    message: this.$t('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
                 });
             } finally {
                 this.loading = false;
@@ -329,7 +329,7 @@ export default Shopware.Component.wrapComponentConfig({
                 this.runId = result.first()?.id || null;
             } catch {
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchRunFailed'),
+                    message: this.$t('swag-migration.index.error-resolution.errors.fetchRunFailed'),
                 });
             }
         },
@@ -360,7 +360,7 @@ export default Shopware.Component.wrapComponentConfig({
             } catch {
                 this.continueLoading = false;
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.continueMigrationFailed'),
+                    message: this.$t('swag-migration.index.error-resolution.errors.continueMigrationFailed'),
                 });
             }
         },
@@ -372,7 +372,7 @@ export default Shopware.Component.wrapComponentConfig({
                 await this.migrationApiService.continueAfterErrorResolution();
             } catch {
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.continueMigrationFailed'),
+                    message: this.$t('swag-migration.index.error-resolution.errors.continueMigrationFailed'),
                 });
             } finally {
                 this.continueLoading = false;

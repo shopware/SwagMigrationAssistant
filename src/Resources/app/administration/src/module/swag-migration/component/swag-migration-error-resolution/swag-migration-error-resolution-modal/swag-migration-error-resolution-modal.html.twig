@@ -51,7 +51,7 @@
                                 :disabled="loading || selectAllMode"
                                 @click="onSelectAllLogs"
                             >
-                                {{ $tc('swag-migration.index.error-resolution.modals.error.left.select-all', { count: tableTotal - selectedLog.fixCount }) }}
+                                {{ $t('swag-migration.index.error-resolution.modals.error.left.select-all', { count: tableTotal - selectedLog.fixCount }) }}
                             </mt-link>
                         </template>
 
@@ -61,7 +61,7 @@
                                 :disabled="loading"
                                 @click="onOpenDetailsModal(item)"
                             >
-                                {{ $tc('swag-migration.index.error-resolution.modals.error.left.details') }}
+                                {{ $t('swag-migration.index.error-resolution.modals.error.left.details') }}
                             </sw-context-menu-item>
 
                             <sw-context-menu-item
@@ -71,7 +71,7 @@
                                 variant="danger"
                                 @click="onResetResolution(item)"
                             >
-                                {{ $tc('swag-migration.index.error-resolution.modals.error.left.reset') }}
+                                {{ $t('swag-migration.index.error-resolution.modals.error.left.reset') }}
                             </sw-context-menu-item>
                         </template>
 
@@ -92,7 +92,7 @@
                 <div class="swag-migration-error-resolution-modal__right">
                     <div class="swag-migration-error-resolution-modal__right-header">
                         <h2 class="swag-migration-error-resolution-modal__right-header-title">
-                            {{ $tc('swag-migration.index.error-resolution.modals.error.right.title', { count: selectedCount }) }}
+                            {{ $t('swag-migration.index.error-resolution.modals.error.right.title', { count: selectedCount }) }}
                         </h2>
                     </div>
 
@@ -111,7 +111,7 @@
                                 :disabled="isResolutionDisabled"
                                 @click="onSubmitResolution"
                             >
-                                {{ $tc('swag-migration.index.error-resolution.modals.error.right.apply') }}
+                                {{ $t('swag-migration.index.error-resolution.modals.error.right.apply') }}
                             </mt-button>
                         </div>
 
@@ -126,10 +126,10 @@
 
                         <div v-else class="swag-migration-error-resolution-modal__right-content-unresolvable">
                             <mt-banner
-                                :title="$tc('swag-migration.index.error-resolution.modals.error.right.unresolvableBanner.title')"
+                                :title="$t('swag-migration.index.error-resolution.modals.error.right.unresolvableBanner.title')"
                                 variant="attention"
                             >
-                                {{ $tc('swag-migration.index.error-resolution.modals.error.right.unresolvableBanner.content') }}
+                                {{ $t('swag-migration.index.error-resolution.modals.error.right.unresolvableBanner.content') }}
                             </mt-banner>
                         </div>
                     </div>

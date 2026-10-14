@@ -125,11 +125,11 @@ export default Shopware.Component.wrapComponentConfig({
 
         updateBannerTitle() {
             if (this.isResettingChecksum) {
-                return this.$tc('swag-migration.index.shopInfoCard.updateBanner.isResettingChecksums.title');
+                return this.$t('swag-migration.index.shopInfoCard.updateBanner.isResettingChecksums.title');
             }
 
             if (this.isTruncatingMigration) {
-                return this.$tc('swag-migration.index.shopInfoCard.updateBanner.isTruncatingMigration.title');
+                return this.$t('swag-migration.index.shopInfoCard.updateBanner.isTruncatingMigration.title');
             }
 
             return '';
@@ -137,11 +137,11 @@ export default Shopware.Component.wrapComponentConfig({
 
         updateBannerMessage() {
             if (this.isResettingChecksum) {
-                return this.$tc('swag-migration.index.shopInfoCard.updateBanner.isResettingChecksums.message');
+                return this.$t('swag-migration.index.shopInfoCard.updateBanner.isResettingChecksums.message');
             }
 
             if (this.isTruncatingMigration) {
-                return this.$tc('swag-migration.index.shopInfoCard.updateBanner.isTruncatingMigration.message');
+                return this.$t('swag-migration.index.shopInfoCard.updateBanner.isTruncatingMigration.message');
             }
 
             return '';
@@ -150,7 +150,7 @@ export default Shopware.Component.wrapComponentConfig({
         connectionName() {
             return this.connection !== null
                 ? this.connection.name
-                : this.$tc('swag-migration.index.shopInfoCard.noConnection');
+                : this.$t('swag-migration.index.shopInfoCard.noConnection');
         },
 
         connectionBadgeLabel() {
@@ -398,8 +398,8 @@ export default Shopware.Component.wrapComponentConfig({
             } catch {
                 this.unregisterPolling(type);
                 this.createNotificationError({
-                    title: this.$tc('global.default.error'),
-                    message: this.$tc('swag-migration.api-error.getState'),
+                    title: this.$t('global.default.error'),
+                    message: this.$t('swag-migration.api-error.getState'),
                 });
             }
         },
