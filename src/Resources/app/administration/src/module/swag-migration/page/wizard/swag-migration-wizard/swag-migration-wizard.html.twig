@@ -4,7 +4,7 @@
             v-if="showModal"
             class="swag-migration-wizard__modal"
             :size="modalSize"
-            :title="$tc(modalTitleSnippet)"
+            :title="$t(modalTitleSnippet)"
             :is-loading="isLoading || storesInitializing"
             @modal-close="onCloseModal"
         >
@@ -48,7 +48,7 @@
                                                variant="secondary"
                                                size="small"
                                                @click="onButtonSecondaryClick">
-                                        {{ $tc(buttonSecondarySnippet) }}
+                                        {{ $t(buttonSecondarySnippet) }}
                                     </mt-button>
                                 {% endblock %}
 
@@ -57,7 +57,7 @@
                                                variant="primary"
                                                :disabled="buttonPrimaryDisabled"
                                                @click="onButtonPrimaryClick">
-                                        {{ $tc(buttonPrimarySnippet) }}
+                                        {{ $t(buttonPrimarySnippet) }}
                                     </mt-button>
                                 {% endblock %}
                             </div>

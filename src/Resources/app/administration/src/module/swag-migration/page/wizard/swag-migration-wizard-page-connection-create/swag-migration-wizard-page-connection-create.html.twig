@@ -17,18 +17,18 @@
                         <mt-text-field
                             v-model:model-value="selection.connectionName"
                             v-autofocus
-                            :label="$tc('swag-migration.wizard.pages.connectionCreate.connectionLabel')"
-                            :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.connectionPlaceholder')"
+                            :label="$t('swag-migration.wizard.pages.connectionCreate.connectionLabel')"
+                            :placeholder="$t('swag-migration.wizard.pages.connectionCreate.connectionPlaceholder')"
                             validation="required"
-                            :help-text="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
+                            :help-text="$t('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
                             :error="connectionNameError"
                             @update:model-value="onChangeConnectionName"
                         />
 
                         <sw-single-select
                             v-model:value="selection.profile"
-                            :label="$tc('swag-migration.wizard.pages.connectionCreate.profileLabel')"
-                            :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.profilePlaceholder')"
+                            :label="$t('swag-migration.wizard.pages.connectionCreate.profileLabel')"
+                            :placeholder="$t('swag-migration.wizard.pages.connectionCreate.profilePlaceholder')"
                             :popover-classes="['swag-migration-wizard-page-create-profile']"
                             :popover-config="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
                             :options="profiles"
@@ -48,7 +48,7 @@
                                         class="swag-migration-wizard-create-connection__install-profile-link-wrapper"
                                     >
                                         <div>
-                                            {{ $tc('swag-migration.wizard.pages.connectionCreate.profileInstall') }}
+                                            {{ $t('swag-migration.wizard.pages.connectionCreate.profileInstall') }}
                                         </div>
                                         <div>
                                             <mt-icon
@@ -69,9 +69,9 @@
                         <sw-single-select
                             v-model:value="selection.gateway"
                             class="swag-migration-wizard-page-create-profile__gateway-select"
-                            :label="$tc('swag-migration.wizard.pages.connectionCreate.gatewayLabel')"
-                            :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.gatewayPlaceholder')"
-                            :help-text="$tc('swag-migration.wizard.pages.connectionCreate.gatewayTooltip')"
+                            :label="$t('swag-migration.wizard.pages.connectionCreate.gatewayLabel')"
+                            :placeholder="$t('swag-migration.wizard.pages.connectionCreate.gatewayPlaceholder')"
+                            :help-text="$t('swag-migration.wizard.pages.connectionCreate.gatewayTooltip')"
                             :popover-classes="['swag-migration-wizard-page-create-profile']"
                             :popover-config="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
                             :options="gateways"
@@ -82,11 +82,11 @@
                         >
                             {% block swag_migration_wizard_page_create_profile_form_gateway_field_options %}
                                 <template #selection-label-property="{ item: singleSelection, labelProperty, valueProperty, searchTerm, getKey }">
-                                    {{ $tc(singleSelection.snippet) }}
+                                    {{ $t(singleSelection.snippet) }}
                                 </template>
 
                                 <template #result-label-property="{ item, index, labelProperty, valueProperty, searchTerm, highlightSearchTerm, getKey }">
-                                    {{ $tc(item.snippet) }}
+                                    {{ $t(item.snippet) }}
                                 </template>
                             {% endblock %}
                         </sw-single-select>

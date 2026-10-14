@@ -113,8 +113,8 @@ export default Shopware.Component.wrapComponentConfig({
         ),
 
         errorResolutionMetaTitle() {
-            const stepName = this.$tc('swag-migration.index.error-resolution.step.header.title');
-            const adminName = this.$tc('global.sw-admin-menu.textShopwareAdmin');
+            const stepName = this.$t('swag-migration.index.error-resolution.step.header.title');
+            const adminName = this.$t('global.sw-admin-menu.textShopwareAdmin');
 
             return `${stepName} | ${adminName}`;
         },
@@ -173,8 +173,8 @@ export default Shopware.Component.wrapComponentConfig({
                 }
             } catch {
                 this.createNotificationError({
-                    title: this.$tc('global.default.error'),
-                    message: this.$tc('swag-migration.api-error.getState'),
+                    title: this.$t('global.default.error'),
+                    message: this.$t('swag-migration.api-error.getState'),
                 });
             }
 
@@ -187,8 +187,8 @@ export default Shopware.Component.wrapComponentConfig({
                     this.visualizeMigrationState(state);
                 } catch {
                     this.createNotificationError({
-                        title: this.$tc('global.default.error'),
-                        message: this.$tc('swag-migration.api-error.getState'),
+                        title: this.$t('global.default.error'),
+                        message: this.$t('swag-migration.api-error.getState'),
                     });
                 }
             }
@@ -267,8 +267,8 @@ export default Shopware.Component.wrapComponentConfig({
                 await this.migrationApiService.startMigration(this.dataSelectionIds);
             } catch {
                 this.createNotificationError({
-                    title: this.$tc('global.default.error'),
-                    message: this.$tc('swag-migration.api-error.startMigration'),
+                    title: this.$t('global.default.error'),
+                    message: this.$t('swag-migration.api-error.startMigration'),
                 });
 
                 await this.$router.push({
@@ -298,8 +298,8 @@ export default Shopware.Component.wrapComponentConfig({
                 this.visualizeMigrationState(state);
             } catch {
                 this.createNotificationError({
-                    title: this.$tc('global.default.error'),
-                    message: this.$tc('swag-migration.api-error.getState'),
+                    title: this.$t('global.default.error'),
+                    message: this.$t('swag-migration.api-error.getState'),
                 });
             }
 
@@ -319,8 +319,8 @@ export default Shopware.Component.wrapComponentConfig({
                 });
             } catch {
                 this.createNotificationError({
-                    title: this.$tc('global.default.error'),
-                    message: this.$tc('swag-migration.api-error.approveFinishedMigration'),
+                    title: this.$t('global.default.error'),
+                    message: this.$t('swag-migration.api-error.approveFinishedMigration'),
                 });
 
                 await this.$router.push({
@@ -353,8 +353,8 @@ export default Shopware.Component.wrapComponentConfig({
                 this.visualizeMigrationState(state);
             } catch {
                 this.createNotificationError({
-                    title: this.$tc('global.default.error'),
-                    message: this.$tc('swag-migration.api-error.abortMigration'),
+                    title: this.$t('global.default.error'),
+                    message: this.$t('swag-migration.api-error.abortMigration'),
                 });
             } finally {
                 this.migrationStore.setIsLoading(false);

@@ -396,7 +396,7 @@ export default Shopware.Component.wrapComponentConfig({
                 this.errorMessageHintSnippet = '';
             }
 
-            if (this.errorMessageSnippet === this.$tc(`swag-migration.wizard.pages.credentials.error.${errorCode}`)) {
+            if (this.errorMessageSnippet === this.$t(`swag-migration.wizard.pages.credentials.error.${errorCode}`)) {
                 this.errorMessageSnippet = 'swag-migration.wizard.pages.credentials.error.undefinedErrorMsg';
 
                 if (this.$te('swag-migration.wizard.pages.credentials.error.undefinedErrorMsg__HINT')) {

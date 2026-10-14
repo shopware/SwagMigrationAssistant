@@ -4,13 +4,13 @@
             class="swag-migration-result-screen__log-summary"
             position-identifier="swag-migration-result-screen__log-summary"
             :is-loading="!latestRun"
-            :title="$tc('swag-migration.index.loadingScreenCard.result.title')"
+            :title="$t('swag-migration.index.loadingScreenCard.result.title')"
         >
             <mt-banner
                 class="swag-migration-result-screen__log-summary-banner"
                 variant="info"
             >
-                {{ $tc('swag-migration.index.loadingScreenCard.result.historyHint') }}
+                {{ $t('swag-migration.index.loadingScreenCard.result.historyHint') }}
             </mt-banner>
 
             <swag-migration-history-detail-errors

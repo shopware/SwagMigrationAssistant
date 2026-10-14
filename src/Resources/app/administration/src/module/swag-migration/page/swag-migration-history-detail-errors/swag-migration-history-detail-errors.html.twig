@@ -53,13 +53,13 @@
                     v-if="migrationErrors.length === 0"
                     class="swag-migration-history-detail-errors__no-error"
                 >
-                    {{ $tc('swag-migration.history.detailPage.noErrorsOccurred') }}
+                    {{ $t('swag-migration.history.detailPage.noErrorsOccurred') }}
                 </p>
             {% endblock %}
 
             {% block swag_migration_history_detail_errors_description %}
                 <p class="swag-migration-history-detail-errors__description">
-                    <span>{{ $tc('swag-migration.history.detailPage.logDescription') }}</span>
+                    <span>{{ $t('swag-migration.history.detailPage.logDescription') }}</span>
 
                     <mt-link
                         as="a"
@@ -68,7 +68,7 @@
                         :disabled="isLogDownloading"
                         @click="onDownloadLogs(migrationRun.id)"
                     >
-                        {{ $tc('swag-migration.history.detailPage.logDownload') }}
+                        {{ $t('swag-migration.history.detailPage.logDownload') }}
                     </mt-link>
                 </p>
             {% endblock %}

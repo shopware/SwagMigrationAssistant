@@ -142,7 +142,7 @@ export default Shopware.Component.wrapComponentConfig({
         modalTitle() {
             const translatedCode = this.swagMigrationErrorResolutionService.translateErrorCode(this.selectedLog.code);
 
-            return this.$tc('swag-migration.index.error-resolution.modals.error.title', {
+            return this.$t('swag-migration.index.error-resolution.modals.error.title', {
                 code: translatedCode,
                 entityName: this.selectedLog.entityName,
                 fieldName: this.selectedLog.fieldName,
@@ -227,7 +227,7 @@ export default Shopware.Component.wrapComponentConfig({
                 this.$emit('fixes-created');
             } catch {
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.submitResolutionFailed'),
+                    message: this.$t('swag-migration.index.error-resolution.errors.submitResolutionFailed'),
                 });
             } finally {
                 this.submitLoading = false;
@@ -243,7 +243,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             if (validationError) {
                 this.createNotificationError({
-                    message: this.$tc(`swag-migration.index.error-resolution.errors.${validationError}`),
+                    message: this.$t(`swag-migration.index.error-resolution.errors.${validationError}`),
                 });
 
                 return false;
@@ -253,7 +253,7 @@ export default Shopware.Component.wrapComponentConfig({
                 .validateResolution(this.selectedLog.entityName, this.selectedLog.fieldName, this.fieldValue)
                 .catch(() => {
                     this.createNotificationError({
-                        message: this.$tc('swag-migration.index.error-resolution.errors.validationFailed'),
+                        message: this.$t('swag-migration.index.error-resolution.errors.validationFailed'),
                     });
                     return null;
                 });
@@ -282,7 +282,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             if (entityIds.length === 0) {
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.noEntityIdsFound'),
+                    message: this.$t('swag-migration.index.error-resolution.errors.noEntityIdsFound'),
                 });
 
                 return;
@@ -408,7 +408,7 @@ export default Shopware.Component.wrapComponentConfig({
                 );
             } catch {
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
+                    message: this.$t('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
                 });
             } finally {
                 this.loading = false;
@@ -495,7 +495,7 @@ export default Shopware.Component.wrapComponentConfig({
                 return [...(await this.migrationFixRepository.search(criteria))];
             } catch {
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchExistingFixesFailed'),
+                    message: this.$t('swag-migration.index.error-resolution.errors.fetchExistingFixesFailed'),
                 });
 
                 return [];
@@ -532,7 +532,7 @@ export default Shopware.Component.wrapComponentConfig({
                 this.$emit('fixes-reset');
             } catch {
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.resetResolutionFailed'),
+                    message: this.$t('swag-migration.index.error-resolution.errors.resetResolutionFailed'),
                 });
             } finally {
                 this.loading = false;
@@ -567,8 +567,8 @@ export default Shopware.Component.wrapComponentConfig({
 
         statusBadgeText(isResolved: boolean): string {
             return isResolved
-                ? this.$tc('swag-migration.index.error-resolution.modals.error.left.status.resolved')
-                : this.$tc('swag-migration.index.error-resolution.modals.error.left.status.unresolved');
+                ? this.$t('swag-migration.index.error-resolution.modals.error.left.status.resolved')
+                : this.$t('swag-migration.index.error-resolution.modals.error.left.status.unresolved');
         },
 
         onSelectionChanged(selection: Record<string, ResolutionModalRow>) {
