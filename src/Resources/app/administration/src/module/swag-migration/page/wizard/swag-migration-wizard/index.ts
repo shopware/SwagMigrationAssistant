@@ -320,7 +320,7 @@ export default Shopware.Component.wrapComponentConfig({
                     }
                 }
             } catch (error) {
-                this.onResponseError(error.response.data.errors[0].code);
+                this.onResponseError(error?.response?.data?.errors?.[0]?.code ?? 'UNKNOWN_ERROR');
             } finally {
                 this.isLoading = false;
             }

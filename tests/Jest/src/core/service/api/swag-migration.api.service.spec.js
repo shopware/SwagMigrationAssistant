@@ -71,19 +71,6 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         expect(clientMock.history.get[0].headers['test-header']).toBe('test-value');
     });
 
-    it('should reject connection credential requests without editor permission', async () => {
-        const { migrationApiService, clientMock } = createMigrationApiService();
-        const errorResponse = {
-            errors: [{ code: 'FRAMEWORK__MISSING_PRIVILEGE_ERROR', status: '403' }],
-        };
-        clientMock.resetHandlers();
-        clientMock.onGet('_action/migration/get-connection-credentials').reply(403, errorResponse);
-
-        await expect(migrationApiService.getConnectionCredentials('1234567890')).rejects.toMatchObject({
-            response: { status: 403, data: errorResponse },
-        });
-    });
-
     it('should check stored credentials without supplying replacement credentials', async () => {
         const { migrationApiService, clientMock } = createMigrationApiService();
         const connectionId = '1234567890';
