@@ -80,7 +80,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             let string = '';
             Object.keys(item.entityTotals).forEach((key) => {
-                string += `${this.$tc(item.entityNames[key])}: ${item.entityTotals[key]}</br>`;
+                string += `${this.$t(item.entityNames[key])}: ${item.entityTotals[key]}</br>`;
             });
 
             return string;

@@ -96,7 +96,7 @@ export default Shopware.Component.wrapComponentConfig({
                 this.exampleValue = response?.example ?? null;
             } catch {
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchExampleFailed'),
+                    message: this.$t('swag-migration.index.error-resolution.errors.fetchExampleFailed'),
                 });
             }
         },

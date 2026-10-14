@@ -14,7 +14,7 @@
                 class="swag-migration-error-resolution-step__continue-modal"
                 variant="small"
                 @modal-close="() => openContinueModal = false"
-                :title="$tc('swag-migration.index.error-resolution.step.continue-modal.title')"
+                :title="$t('swag-migration.index.error-resolution.step.continue-modal.title')"
             >
                 <p class="swag-migration-error-resolution-step__continue-modal-text">
                     {{ continueMigrationWarningText }}
@@ -27,7 +27,7 @@
                         variant="secondary"
                         @click="() => openContinueModal = false"
                     >
-                        {{ $tc('global.default.cancel') }}
+                        {{ $t('global.default.cancel') }}
                     </mt-button>
 
                     <mt-button
@@ -39,7 +39,7 @@
                         :is-loading="continueLoading"
                         @click="commitContinueMigration"
                     >
-                        {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
+                        {{ $t('swag-migration.index.error-resolution.step.header.continue') }}
                     </mt-button>
                 </template>
             </sw-modal>
@@ -50,11 +50,11 @@
                 {% block swag_migration_error_resolution_step_header_content %}
                     <div class="swag-migration-error-resolution-step__header-content">
                         <h2 class="swag-migration-error-resolution-step__header-content-title">
-                            {{ $tc('swag-migration.index.error-resolution.step.header.title') }}
+                            {{ $t('swag-migration.index.error-resolution.step.header.title') }}
                         </h2>
 
                         <p class="swag-migration-error-resolution-step__header-content-description">
-                            {{ $tc('swag-migration.index.error-resolution.step.header.description') }}
+                            {{ $t('swag-migration.index.error-resolution.step.header.description') }}
                         </p>
 
                         <mt-link
@@ -64,7 +64,7 @@
                             type="external"
                             as="a"
                         >
-                            {{ $tc('swag-migration.index.error-resolution.step.header.documentation') }}
+                            {{ $t('swag-migration.index.error-resolution.step.header.documentation') }}
                         </mt-link>
                     </div>
                 {% endblock %}
@@ -85,7 +85,7 @@
                                 />
                             </template>
 
-                            <span>{{ $tc('swag-migration.index.error-resolution.step.header.download') }}</span>
+                            <span>{{ $t('swag-migration.index.error-resolution.step.header.download') }}</span>
                         </mt-button>
 
                         <mt-button
@@ -95,7 +95,7 @@
                             :is-loading="continueLoading"
                             @click="onContinueMigration"
                         >
-                            {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
+                            {{ $t('swag-migration.index.error-resolution.step.header.continue') }}
                         </mt-button>
                     </div>
                 {% endblock %}
@@ -107,10 +107,10 @@
                     class="swag-migration-error-resolution-step__header-banner"
                 >
                     <mt-banner
-                        :title="$tc('swag-migration.index.error-resolution.step.header.banner.title')"
+                        :title="$t('swag-migration.index.error-resolution.step.header.banner.title')"
                         variant="critical"
                     >
-                        {{ $tc('swag-migration.index.error-resolution.step.header.banner.content', { count: totalUnfixableErrors }) }}
+                        {{ $t('swag-migration.index.error-resolution.step.header.banner.content', { count: totalUnfixableErrors }) }}
                     </mt-banner>
                 </div>
             {% endblock %}
@@ -120,7 +120,7 @@
             <mt-card
                 class="swag-migration-error-resolution-step__card"
                 position-identifier="swag-migration-error-resolution-step__card"
-                :title="$tc('swag-migration.index.error-resolution.step.card.title')"
+                :title="$t('swag-migration.index.error-resolution.step.card.title')"
             >
                 <template #headerRight>
                     <swag-migration-error-resolution-log-filter
@@ -187,7 +187,7 @@
                                     :disabld="loading"
                                     @click="() => onOpenEditLog(item)"
                                 >
-                                    {{ $tc('global.default.edit') }}
+                                    {{ $t('global.default.edit') }}
                                 </sw-context-menu-item>
                             </template>
 
@@ -207,8 +207,8 @@
                             class="swag-migration-error-resolution-step__card-table-empty-state"
                         >
                             <mt-empty-state
-                                :headline="$tc('swag-migration.index.error-resolution.step.card.table.empty-state.headline')"
-                                :description="$tc('swag-migration.index.error-resolution.step.card.table.empty-state.description')"
+                                :headline="$t('swag-migration.index.error-resolution.step.card.table.empty-state.headline')"
+                                :description="$t('swag-migration.index.error-resolution.step.card.table.empty-state.description')"
                                 icon="solid-question-circle"
                             />
                         </div>

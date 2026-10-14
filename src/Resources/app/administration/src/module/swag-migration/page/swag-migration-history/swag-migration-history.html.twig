@@ -64,13 +64,13 @@
                     {% block swag_migration_history_grid_actions %}
                         <template #actions="{ item }">
                             <sw-context-menu-item :router-link="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">
-                                {{ $tc('swag-migration.history.contextMenu.details') }}
+                                {{ $t('swag-migration.history.contextMenu.details') }}
                             </sw-context-menu-item>
 
                             <sw-context-menu-item
                                 :disabled="isLogDownloading"
                                 @click="onDownloadLogs(item.id)">
-                                {{ $tc('swag-migration.history.contextMenu.downloadLogs') }}
+                                {{ $t('swag-migration.history.contextMenu.downloadLogs') }}
                             </sw-context-menu-item>
                         </template>
                     {% endblock %}

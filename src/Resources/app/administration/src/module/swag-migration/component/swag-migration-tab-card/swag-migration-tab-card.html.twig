@@ -12,7 +12,7 @@
                     class="swag-migration-tab-card__alert"
                     variant="critical"
                 >
-                    {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
+                    {{ $t('swag-migration.index.premappingCard.unfilledAlert') }}
                 </mt-banner>
 
                 {% block swag_migration_tab_card_item_tab %}
@@ -32,7 +32,7 @@
 
                             {% block swag_migration_tab_card_item_tab_content %}
                                 <span class="swag-migration-tab-card__title">
-                                    {{ $tc(`swag-migration.index.premappingCard.group.${item.entity}`) }}
+                                    {{ $t(`swag-migration.index.premappingCard.group.${item.entity}`) }}
                                 </span>
                             {% endblock %}
 

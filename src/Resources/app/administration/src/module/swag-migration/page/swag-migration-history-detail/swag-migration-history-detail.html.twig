@@ -3,7 +3,7 @@
         <sw-modal
             v-if="showModal"
             class="swag-migration-history-detail__modal"
-            :title="$tc('swag-migration.history.detailPage.title')"
+            :title="$t('swag-migration.history.detailPage.title')"
             variant="large"
             :is-loading="isLoading"
             @modal-close="onCloseModal"
@@ -99,7 +99,7 @@
                                                 rounded
                                             />
                                             <span class="swag-migration-history-detail__status-text">
-                                                    {{ $tc(statusBadgeLabel) }}
+                                                    {{ $t(statusBadgeLabel) }}
                                                 </span>
                                         </sw-label>
                                     </div>
@@ -125,7 +125,7 @@
                                             ref="dataTabItem"
                                             name="data"
                                         >
-                                            {{ $tc('swag-migration.history.detailPage.data') }}
+                                            {{ $t('swag-migration.history.detailPage.data') }}
                                         </sw-tabs-item>
                                     {% endblock %}
 
@@ -134,7 +134,7 @@
                                             ref="errorsTabItem"
                                             name="errors"
                                         >
-                                            {{ $tc('swag-migration.history.detailPage.errors') }}
+                                            {{ $t('swag-migration.history.detailPage.errors') }}
                                         </sw-tabs-item>
                                     {% endblock %}
                                 </sw-tabs>
@@ -165,7 +165,7 @@
                         variant="secondary"
                         @click="onCloseModal"
                     >
-                        {{ $tc('swag-migration.history.detailPage.close') }}
+                        {{ $t('swag-migration.history.detailPage.close') }}
                     </mt-button>
                 </template>
             {% endblock %}

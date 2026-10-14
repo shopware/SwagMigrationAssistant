@@ -3,7 +3,7 @@
         <sw-modal
             v-if="warningModalOpen"
             class="swag-migration-warning-modal"
-            :title="$tc('swag-migration.index.warningModal.title')"
+            :title="$t('swag-migration.index.warningModal.title')"
             :is-loading="isLoading"
             variant="small"
             @modal-close="onWarningModalClose"
@@ -21,7 +21,7 @@
                     :disabled="isLoading"
                     @click="onWarningModalClose"
                 >
-                    {{ $tc('swag-migration.index.warningModal.cancelButton') }}
+                    {{ $t('swag-migration.index.warningModal.cancelButton') }}
                 </mt-button>
 
                 <mt-button
@@ -31,7 +31,7 @@
                     :is-loading="isLoading"
                     @click="onConfirmWarning"
                 >
-                    {{ $tc('swag-migration.index.warningModal.confirmButton') }}
+                    {{ $t('swag-migration.index.warningModal.confirmButton') }}
                 </mt-button>
             </template>
         </sw-modal>
@@ -42,7 +42,7 @@
             <template #smart-bar-header>
                 <h2>
                     <span>
-                        {{ $tc('sw-settings.index.title') }}
+                        {{ $t('sw-settings.index.title') }}
                     </span>
 
                     <mt-icon
@@ -51,7 +51,7 @@
                     />
 
                     <span>
-                        {{ $tc('swag-migration.general.mainMenuItemGeneral') }}
+                        {{ $t('swag-migration.general.mainMenuItemGeneral') }}
                     </span>
                 </h2>
             </template>
@@ -69,7 +69,7 @@
                     :is-loading="isLoading && isContinueAllowed"
                     @click="onMigrate"
                 >
-                    {{ $tc('swag-migration.index.migrateButton') }}
+                    {{ $t('swag-migration.index.migrateButton') }}
                 </mt-button>
             </template>
         {% endblock %}

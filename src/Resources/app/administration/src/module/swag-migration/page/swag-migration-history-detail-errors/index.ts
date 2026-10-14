@@ -65,7 +65,7 @@ export default Shopware.Component.wrapComponentConfig({
                 {
                     property: 'title',
                     dataIndex: 'title',
-                    label: this.$tc('swag-migration.history.detailPage.errorCode'),
+                    label: this.$t('swag-migration.history.detailPage.errorCode'),
                     primary: true,
                     allowResize: true,
                     sortable: true,
@@ -73,7 +73,7 @@ export default Shopware.Component.wrapComponentConfig({
                 {
                     property: 'level',
                     dataIndex: 'level',
-                    label: this.$tc('swag-migration.history.detailPage.errorLevel'),
+                    label: this.$t('swag-migration.history.detailPage.errorLevel'),
                     primary: true,
                     allowResize: true,
                     sortable: true,
@@ -81,7 +81,7 @@ export default Shopware.Component.wrapComponentConfig({
                 {
                     property: 'count',
                     dataIndex: 'count',
-                    label: this.$tc('swag-migration.history.detailPage.errorCount'),
+                    label: this.$t('swag-migration.history.detailPage.errorCount'),
                     primary: true,
                     allowResize: true,
                     sortable: true,
@@ -119,7 +119,7 @@ export default Shopware.Component.wrapComponentConfig({
                 this.allMigrationErrors = response.items;
 
                 this.allMigrationErrors.forEach((item) => {
-                    item.title = this.$tc(this.getErrorTitleSnippet(item), { entity: item.entity }, 0);
+                    item.title = this.$t(this.getErrorTitleSnippet(item), { entity: item.entity }, 0);
                 });
 
                 return this.allMigrationErrors;

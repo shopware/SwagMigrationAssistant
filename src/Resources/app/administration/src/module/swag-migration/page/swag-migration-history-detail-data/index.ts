@@ -64,14 +64,14 @@ export default Shopware.Component.wrapComponentConfig({
             return [
                 {
                     property: 'name',
-                    label: this.$tc('swag-migration.history.detailPage.dataName'),
+                    label: this.$t('swag-migration.history.detailPage.dataName'),
                     primary: true,
                     allowResize: true,
                     sortable: false,
                 },
                 {
                     property: 'count',
-                    label: this.$tc('swag-migration.history.detailPage.dataCount'),
+                    label: this.$t('swag-migration.history.detailPage.dataCount'),
                     allowResize: true,
                     sortable: false,
                 },
@@ -87,7 +87,7 @@ export default Shopware.Component.wrapComponentConfig({
                 let name: string = entitySelection.entityName;
 
                 if (this.$te(`swag-migration.index.selectDataCard.entities.${name}`)) {
-                    name = this.$tc(`swag-migration.index.selectDataCard.entities.${name}`);
+                    name = this.$t(`swag-migration.index.selectDataCard.entities.${name}`);
                 }
 
                 return {

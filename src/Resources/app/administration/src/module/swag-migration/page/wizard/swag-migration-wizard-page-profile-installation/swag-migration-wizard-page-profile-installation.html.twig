@@ -4,7 +4,7 @@
             <div class="swag-migration-wizard__content">
                 {% block swag_migration_wizard_page_profile_installation_information %}
                     <div class="swag-migration-wizard__content-information">
-                        {{ $tc('swag-migration.wizard.pages.profileInstallation.content') }}
+                        {{ $t('swag-migration.wizard.pages.profileInstallation.content') }}
                     </div>
                 {% endblock %}
 
@@ -12,7 +12,7 @@
                     <div class="swag-migration-wizard-profile-installation__plugins">
                         {% block swag_migration_wizard_page_profile_installation_availabilty_headline %}
                             <div class="swag-migration-wizard-profile-installation__availability-headline">
-                                {{ $tc('swag-migration.wizard.pages.profileInstallation.availabilityHeadline') }}
+                                {{ $t('swag-migration.wizard.pages.profileInstallation.availabilityHeadline') }}
                             </div>
                         {% endblock %}
 
@@ -34,19 +34,19 @@
                                             <div class="swag-migration-wizard-profile-installation__plugin_information_column">
                                                 {% block swag_migration_wizard_page_profile_installation_shopware_headline %}
                                                     <div class="swag-migration-wizard-profile-installation__profile_headline">
-                                                         {{ $tc('swag-migration.wizard.pages.profileInstallation.shopwareProfileHeadline') }}
+                                                         {{ $t('swag-migration.wizard.pages.profileInstallation.shopwareProfileHeadline') }}
                                                     </div>
                                                 {% endblock %}
 
                                                 {% block swag_migration_wizard_page_profile_installation_shopware_manufacturer %}
                                                     <div class="swag-migration-wizard-profile-installation__profile_manufacturer">
-                                                        {{ $tc('swag-migration.wizard.pages.profileInstallation.profileManufacturer') }}
+                                                        {{ $t('swag-migration.wizard.pages.profileInstallation.profileManufacturer') }}
                                                     </div>
                                                 {% endblock %}
 
                                                 {% block swag_migration_wizard_page_profile_installation_shopware_available_version_headline %}
                                                     <div class="swag-migration-wizard-profile-installation__available_version_headline">
-                                                        {{ $tc('swag-migration.wizard.pages.profileInstallation.availableVersionHeadline') }}
+                                                        {{ $t('swag-migration.wizard.pages.profileInstallation.availableVersionHeadline') }}
                                                     </div>
                                                 {% endblock %}
 
@@ -69,7 +69,7 @@
                                                             />
                                                         </span>
                                                         <span class="swag-migration-wizard-profile-installation__installed_title">
-                                                            {{ $tc('swag-migration.wizard.pages.profileInstallation.installedHint') }}
+                                                            {{ $t('swag-migration.wizard.pages.profileInstallation.installedHint') }}
                                                         </span>
                                                     </div>
                                                 {% endblock %}
@@ -94,19 +94,19 @@
                                             <div class="swag-migration-wizard-profile-installation__plugin_information_column">
                                                 {% block swag_migration_wizard_page_profile_installation_magento_headline %}
                                                     <div class="swag-migration-wizard-profile-installation__profile_headline">
-                                                        {{ $tc('swag-migration.wizard.pages.profileInstallation.magentoProfileHeadline') }}
+                                                        {{ $t('swag-migration.wizard.pages.profileInstallation.magentoProfileHeadline') }}
                                                     </div>
                                                 {% endblock %}
 
                                                 {% block swag_migration_wizard_page_profile_installation_magento_manufacturer %}
                                                     <div class="swag-migration-wizard-profile-installation__profile_manufacturer">
-                                                        {{ $tc('swag-migration.wizard.pages.profileInstallation.profileManufacturer') }}
+                                                        {{ $t('swag-migration.wizard.pages.profileInstallation.profileManufacturer') }}
                                                     </div>
                                                 {% endblock %}
 
                                                 {% block swag_migration_wizard_page_profile_installation_magento_available_version_headline %}
                                                     <div class="swag-migration-wizard-profile-installation__available_version_headline">
-                                                        {{ $tc('swag-migration.wizard.pages.profileInstallation.availableVersionHeadline') }}
+                                                        {{ $t('swag-migration.wizard.pages.profileInstallation.availableVersionHeadline') }}
                                                     </div>
                                                 {% endblock %}
 
@@ -134,7 +134,7 @@
                                                                     :disabled="pluginIsLoading"
                                                                     :process-success="pluginIsSaveSuccessful"
                                                                     @click="onInstall">
-                                                                {{ $tc('swag-migration.wizard.pages.profileInstallation.installationButton') }}
+                                                                {{ $t('swag-migration.wizard.pages.profileInstallation.installationButton') }}
                                                             </sw-button-process>
                                                         {% endblock %}
                                                     </div>
@@ -153,7 +153,7 @@
                                                                 />
                                                             </span>
                                                             <span class="swag-migration-wizard-profile-installation__installed_title">
-                                                                {{ $tc('swag-migration.wizard.pages.profileInstallation.installedHint') }}
+                                                                {{ $t('swag-migration.wizard.pages.profileInstallation.installedHint') }}
                                                             </span>
                                                         {% endblock %}
                                                     </div>

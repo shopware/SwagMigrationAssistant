@@ -8,7 +8,7 @@
                     class="swag-migration-data-selector__warning"
                     variant="attention"
                 >
-                    {{ $tc(warning.snippetKey, warning.snippetArguments, warning.pluralizationCount) }}
+                    {{ $t(warning.snippetKey, warning.snippetArguments, warning.pluralizationCount) }}
                 </mt-banner>
             </div>
         {% endblock %}
@@ -19,7 +19,7 @@
 
         <mt-card
             v-if="dataSelectionTableData.length > 0"
-            :title="$tc('swag-migration.index.selectDataCard.cardTitle')"
+            :title="$t('swag-migration.index.selectDataCard.cardTitle')"
             position-identifier="swag-migration-data-selector"
         >
             {% block swag_migration_data_selector_grid %}
@@ -37,21 +37,21 @@
                             {% block swag_migration_data_selector_grid_column_data %}
                                 <sw-grid-column
                                     flex="1fr"
-                                    :label="$tc('swag-migration.index.selectDataCard.headers.name')"
+                                    :label="$t('swag-migration.index.selectDataCard.headers.name')"
                                 >
-                                    {{ $tc(item.snippet) }}
+                                    {{ $t(item.snippet) }}
                                 </sw-grid-column>
 
                                 <sw-grid-column
                                     flex="1fr"
-                                    :label="$tc('swag-migration.index.selectDataCard.headers.dataType')"
+                                    :label="$t('swag-migration.index.selectDataCard.headers.dataType')"
                                 >
-                                    {{ $tc('swag-migration.index.selectDataCard.dataTypes.' + item.dataType) }}
+                                    {{ $t('swag-migration.index.selectDataCard.dataTypes.' + item.dataType) }}
                                 </sw-grid-column>
 
                                 <sw-grid-column
                                     flex="1fr"
-                                    :label="$tc('swag-migration.index.selectDataCard.headers.total')"
+                                    :label="$t('swag-migration.index.selectDataCard.headers.total')"
                                     align="right"
                                 >
                                     <span>{{ item.total }}</span>
@@ -82,8 +82,8 @@
             {% block swag_migration_data_selector_no_data %}
                 <div class="swag-migration-index-data-selector__no-data">
                     <mt-empty-state
-                        :headline="$tc('swag-migration.index.selectDataCard.noData')"
-                        :description="$tc('swag-migration.index.selectDataCard.noDataSubline')"
+                        :headline="$t('swag-migration.index.selectDataCard.noData')"
+                        :description="$t('swag-migration.index.selectDataCard.noDataSubline')"
                         icon="solid-question-circle"
                     />
                 </div>

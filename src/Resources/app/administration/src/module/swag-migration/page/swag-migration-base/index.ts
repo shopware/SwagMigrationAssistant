@@ -52,11 +52,11 @@ export default Shopware.Component.wrapComponentConfig({
 
         warningModalMessage() {
             if (this.hasCurrencyMismatch) {
-                return this.$tc('swag-migration.index.warningModal.message.currency');
+                return this.$t('swag-migration.index.warningModal.message.currency');
             }
 
             if (this.hasLanguageMismatch) {
-                return this.$tc('swag-migration.index.warningModal.message.language');
+                return this.$t('swag-migration.index.warningModal.message.language');
             }
 
             return '';
@@ -79,7 +79,7 @@ export default Shopware.Component.wrapComponentConfig({
         buttonTooltip() {
             if (this.isResettingChecksum) {
                 return {
-                    message: this.$tc('swag-migration.index.shopInfoCard.updateBanner.isResettingChecksums.message'),
+                    message: this.$t('swag-migration.index.shopInfoCard.updateBanner.isResettingChecksums.message'),
                     disabled: false,
                 };
             }
