@@ -43,11 +43,11 @@ class ProductSortingLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(ProductSortingLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($productSortingLookup));
+        static::assertNotSame([], $cacheProperty->getValue($productSortingLookup));
 
         $productSortingLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($productSortingLookup));
+        static::assertSame([], $cacheProperty->getValue($productSortingLookup));
     }
 
     /**

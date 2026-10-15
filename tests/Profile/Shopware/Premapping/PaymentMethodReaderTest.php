@@ -108,8 +108,8 @@ class PaymentMethodReaderTest extends TestCase
         static::assertSame('Cash', $choices[1]->getDescription());
         static::assertSame($this->cashMock->getId(), $result->getMapping()[0]->getDestinationUuid());
         static::assertSame($this->debitMock->getId(), $result->getMapping()[1]->getDestinationUuid());
-        static::assertEmpty($result->getMapping()[2]->getDestinationUuid());
-        static::assertEmpty($result->getMapping()[3]->getDestinationUuid());
+        static::assertSame('', $result->getMapping()[2]->getDestinationUuid());
+        static::assertSame('', $result->getMapping()[3]->getDestinationUuid());
     }
 
     public function testPremappingChoicesWithEmptyDescription(): void

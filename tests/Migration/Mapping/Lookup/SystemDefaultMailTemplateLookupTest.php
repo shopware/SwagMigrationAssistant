@@ -44,11 +44,11 @@ class SystemDefaultMailTemplateLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(SystemDefaultMailTemplateLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($systemDefaultMailTemplateLookup));
+        static::assertNotSame([], $cacheProperty->getValue($systemDefaultMailTemplateLookup));
 
         $systemDefaultMailTemplateLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($systemDefaultMailTemplateLookup));
+        static::assertSame([], $cacheProperty->getValue($systemDefaultMailTemplateLookup));
     }
 
     /**

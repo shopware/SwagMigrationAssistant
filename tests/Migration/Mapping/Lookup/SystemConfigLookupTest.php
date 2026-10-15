@@ -44,11 +44,11 @@ class SystemConfigLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(SystemConfigLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($systemConfigLookup));
+        static::assertNotSame([], $cacheProperty->getValue($systemConfigLookup));
 
         $systemConfigLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($systemConfigLookup));
+        static::assertSame([], $cacheProperty->getValue($systemConfigLookup));
     }
 
     /**

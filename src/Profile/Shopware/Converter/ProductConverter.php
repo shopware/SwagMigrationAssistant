@@ -919,8 +919,16 @@ abstract class ProductConverter extends ShopwareConverter
             }
 
             try {
+                /**
+                 * PHPStan does not consider Symfony setting, which is converting notice and warnings to an ErrorException
+                 * Might be fixed with https://github.com/phpstan/phpstan-symfony/issues/514
+                 *
+                 * @see https://symfony.com/doc/7.4/reference/configuration/framework.html#php-errors
+                 * @see https://github.com/shopware/shopware/blob/v6.7.15.1/src/Core/Framework/Resources/config/packages/framework.yaml#L39-L40
+                 */
                 /** @phpstan-ignore shopware.unserializeUsage */
                 $path = \unserialize($esdFile['path'], ['allowed_classes' => false]);
+                /** @phpstan-ignore catch.neverThrown */
             } catch (\Throwable $e) {
                 $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)

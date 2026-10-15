@@ -103,7 +103,7 @@ class Dummy6MappingService extends MappingService
         if ($newUuid !== null) {
             $id = $newUuid;
 
-            if ($this->isUuidDuplicate($connectionId, $entityName, $oldIdentifier, $newUuid, $context)) {
+            if ($this->isUuidDuplicate($connectionId, $entityName, $oldIdentifier, $newUuid)) {
                 return;
             }
         }
@@ -120,7 +120,7 @@ class Dummy6MappingService extends MappingService
         );
     }
 
-    private function isUuidDuplicate(string $connectionId, string $entityName, string $id, string $uuid, Context $context): bool
+    private function isUuidDuplicate(string $connectionId, string $entityName, string $id, string $uuid): bool
     {
         foreach ($this->writeArray as $item) {
             if (

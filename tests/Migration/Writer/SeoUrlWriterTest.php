@@ -113,7 +113,7 @@ class SeoUrlWriterTest extends TestCase
             ->method('updateSeoUrls');
 
         $result = $this->seoUrlWriter->writeData($seoUrlData, $context);
-        static::assertEmpty($result);
+        static::assertCount(0, $result);
     }
 
     /**

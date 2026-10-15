@@ -149,7 +149,7 @@ class DataSelectionRegistryTest extends TestCase
 
         foreach ($dataSelections as $dataSelection) {
             if (\count($dataSelection->getEntityNamesRequiredForCount()) > 0) {
-                static::assertNotEmpty($dataSelection->getCountedTotal($totals));
+                static::assertNotSame(0, $dataSelection->getCountedTotal($totals));
             }
         }
     }

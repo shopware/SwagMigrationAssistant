@@ -43,11 +43,11 @@ class LocaleLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(LocaleLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($localeLookup));
+        static::assertNotSame([], $cacheProperty->getValue($localeLookup));
 
         $localeLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($localeLookup));
+        static::assertSame([], $cacheProperty->getValue($localeLookup));
     }
 
     /**

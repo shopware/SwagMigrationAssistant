@@ -126,6 +126,6 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
         $choices = $result->getChoices();
         static::assertSame($this->ruleEntity->getName(), $choices[0]->getDescription());
         static::assertSame($this->anotherRuleEntity->getName(), $choices[1]->getDescription());
-        static::assertEmpty($result->getMapping()[0]->getDestinationUuid());
+        static::assertSame('', $result->getMapping()[0]->getDestinationUuid());
     }
 }

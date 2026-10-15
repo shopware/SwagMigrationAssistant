@@ -104,6 +104,6 @@ class SalutationReaderTest extends TestCase
         static::assertSame('ms', $choices[1]->getDescription());
         static::assertSame($this->salutationOne->getId(), $result->getMapping()[0]->getDestinationUuid());
         static::assertSame($this->salutationTwo->getId(), $result->getMapping()[1]->getDestinationUuid());
-        static::assertEmpty($result->getMapping()[2]->getDestinationUuid());
+        static::assertSame('', $result->getMapping()[2]->getDestinationUuid());
     }
 }

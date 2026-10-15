@@ -106,7 +106,7 @@ class OrderDocumentConverterTest extends TestCase
         );
         $converted = $convertResult->getConverted();
 
-        static::assertEmpty($convertResult->getUnmapped());
+        static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('orderId', $converted);
