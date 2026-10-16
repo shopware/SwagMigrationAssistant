@@ -108,7 +108,7 @@ type MigrationConnection = {
     id: string;
     profile?: MigrationProfile;
     gateway?: MigrationGateway;
-    credentialsFields?: MigrationCredentials;
+    credentialFields?: MigrationCredentials;
 };
 
 type MigrationError = {

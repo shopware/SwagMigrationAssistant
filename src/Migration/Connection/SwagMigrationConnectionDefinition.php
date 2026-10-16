@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration\Connection;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\ApiAware;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\WriteProtected;
@@ -50,7 +51,7 @@ class SwagMigrationConnectionDefinition extends EntityDefinition
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             (new StringField('name', 'name'))->addFlags(new Required()),
-            (new JsonField('credential_fields', 'credentialFields'))->addFlags(new WriteProtected(MigrationContext::SOURCE_CONTEXT)),
+            (new JsonField('credential_fields', 'credentialFields'))->removeFlag(ApiAware::class)->addFlags(new WriteProtected(MigrationContext::SOURCE_CONTEXT)),
             new PremappingField('premapping', 'premapping'),
             (new StringField('profile_name', 'profileName'))->addFlags(new Required()),
             (new StringField('gateway_name', 'gatewayName'))->addFlags(new Required()),

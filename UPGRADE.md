@@ -1,5 +1,8 @@
 # NEXT
 
+- The Admin API no longer exposes `swag_migration_connection.credentialFields`. Use `GET /api/_action/migration/get-connection-credentials?connectionId=<id>` with `swag_migration.editor` permission to retrieve credentials.
+- Supplying replacement `credentialFields` to `POST /api/_action/migration/check-connection` now requires `swag_migration.editor`. Checking stored credentials still requires only `swag_migration.viewer`.
+
 - [BREAKING] [#232](https://github.com/shopware/SwagMigrationAssistant/pull/232) - fix!: require authentication for log downloads
     - [BREAKING] Removed the `downloadUrl` field from the response of `SwagMigrationAssistant\Controller\HistoryController::getGroupedLogsOfRun()`
     - [BREAKING] Removed the Twig block `swag_migration_history_log_download_form` from the `swag-migration-history` component template
