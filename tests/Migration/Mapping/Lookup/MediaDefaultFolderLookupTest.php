@@ -42,11 +42,11 @@ class MediaDefaultFolderLookupTest extends TestCase
 
         $cacheProperty = new \ReflectionProperty(MediaDefaultFolderLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
-        static::assertNotEmpty($cacheProperty->getValue($mediaFolderLookup));
+        static::assertNotSame([], $cacheProperty->getValue($mediaFolderLookup));
 
         $mediaFolderLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($mediaFolderLookup));
+        static::assertSame([], $cacheProperty->getValue($mediaFolderLookup));
     }
 
     /**

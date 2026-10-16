@@ -47,11 +47,11 @@ class DeliveryTimeLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(DeliveryTimeLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($deliveryTimeLookup));
+        static::assertNotSame([], $cacheProperty->getValue($deliveryTimeLookup));
 
         $deliveryTimeLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($deliveryTimeLookup));
+        static::assertSame([], $cacheProperty->getValue($deliveryTimeLookup));
     }
 
     /**

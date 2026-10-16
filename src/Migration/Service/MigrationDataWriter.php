@@ -85,18 +85,18 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $mappingIds = [];
         $updateWrittenData = [];
 
-        foreach ($migrationData->getEntities() as $data) {
-            $value = $data->getConverted();
+        foreach ($migrationData->getEntities() as $migrationDataEntity) {
+            $value = $migrationDataEntity->getConverted();
 
             if ($value !== null) {
-                $converted[$data->getId()] = $value;
+                $converted[$migrationDataEntity->getId()] = $value;
 
-                if ($data->getMappingUuid() !== null) {
-                    $mappingIds[$data->getId()] = $data->getMappingUuid();
+                if ($migrationDataEntity->getMappingUuid() !== null) {
+                    $mappingIds[$migrationDataEntity->getId()] = $migrationDataEntity->getMappingUuid();
                 }
 
-                $updateWrittenData[$data->getId()] = [
-                    'id' => $data->getId(),
+                $updateWrittenData[$migrationDataEntity->getId()] = [
+                    'id' => $migrationDataEntity->getId(),
                     'written' => true,
                     'writeFailure' => false,
                 ];
@@ -141,7 +141,6 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 $dataSet::getEntity(),
                 $updateWrittenData,
                 $migrationContext,
-                $context,
                 $migrationData->getEntities()
             );
         } catch (\Throwable) {
@@ -177,7 +176,6 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         string $entityName,
         array &$updateWrittenData,
         MigrationContextInterface $migrationContext,
-        Context $context,
         SwagMigrationDataCollection $migrationData,
     ): void {
         $writeErrors = $this->extractWriteErrorsWithIndex($exception);

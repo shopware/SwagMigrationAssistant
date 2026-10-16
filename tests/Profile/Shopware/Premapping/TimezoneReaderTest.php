@@ -48,7 +48,7 @@ class TimezoneReaderTest extends TestCase
         $premapping = $reader->getPremapping($this->context, $migrationContext);
 
         static::assertSame(TimezoneReader::getMappingName(), $premapping->getEntity());
-        static::assertNotEmpty($premapping->getChoices());
+        static::assertNotCount(0, $premapping->getChoices());
         static::assertCount(1, $premapping->getMapping());
         static::assertSame(TimezoneReader::SOURCE_ID, $premapping->getMapping()[0]->getSourceId());
         static::assertSame('Source system time zone', $premapping->getMapping()[0]->getDescription());
@@ -78,7 +78,7 @@ class TimezoneReaderTest extends TestCase
         $reader = $this->createReader([[TimezoneReader::SOURCE_ID => $sourceTimezone]]);
         $premapping = $reader->getPremapping($this->context, $migrationContext);
 
-        static::assertNotEmpty($premapping->getChoices());
+        static::assertNotCount(0, $premapping->getChoices());
         static::assertCount(1, $premapping->getMapping());
         static::assertSame(TimezoneReader::SOURCE_ID, $premapping->getMapping()[0]->getSourceId());
         static::assertSame('Source system time zone', $premapping->getMapping()[0]->getDescription());

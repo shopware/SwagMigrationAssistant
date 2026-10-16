@@ -43,11 +43,11 @@ class NumberRangeTypeLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(NumberRangeTypeLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($globalDocumentBaseConfigLookup));
+        static::assertNotSame([], $cacheProperty->getValue($globalDocumentBaseConfigLookup));
 
         $globalDocumentBaseConfigLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($globalDocumentBaseConfigLookup));
+        static::assertSame([], $cacheProperty->getValue($globalDocumentBaseConfigLookup));
     }
 
     /**

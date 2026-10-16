@@ -44,7 +44,6 @@ abstract class LocalConnectionTestCase extends TestCase
     public function before(): void
     {
         $dbUrlParts = \parse_url($_SERVER['DATABASE_URL'] ?? '') ?: [];
-        $dbUrlParts['path'] ??= 'root';
 
         $this->runId = Uuid::randomHex();
         $this->migrationConnectionEntity = new SwagMigrationConnectionEntity();

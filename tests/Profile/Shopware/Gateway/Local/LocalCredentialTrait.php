@@ -24,7 +24,6 @@ trait LocalCredentialTrait
     public function connectionSetup(): void
     {
         $dbUrlParts = \parse_url($_SERVER['DATABASE_URL'] ?? '') ?: [];
-        $dbUrlParts['path'] ??= 'root';
 
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();

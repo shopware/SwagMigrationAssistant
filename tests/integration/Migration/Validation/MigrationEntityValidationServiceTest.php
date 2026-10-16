@@ -895,7 +895,7 @@ class MigrationEntityValidationServiceTest extends TestCase
         );
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
-        static::assertNotEmpty($result->getLogs());
+        static::assertNotCount(0, $result->getLogs());
 
         $fieldPaths = \array_map(static fn ($log) => $log->getFieldName(), $result->getLogs());
         static::assertContains('manufacturer.media.mimeType', $fieldPaths);

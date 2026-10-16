@@ -43,11 +43,11 @@ class DocumentTypeLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(DocumentTypeLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($documentTypeLookup));
+        static::assertNotSame([], $cacheProperty->getValue($documentTypeLookup));
 
         $documentTypeLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($documentTypeLookup));
+        static::assertSame([], $cacheProperty->getValue($documentTypeLookup));
     }
 
     /**

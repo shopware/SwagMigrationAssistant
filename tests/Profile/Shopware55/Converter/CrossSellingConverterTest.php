@@ -195,9 +195,10 @@ class CrossSellingConverterTest extends TestCase
         $result = $crossSellingConverter->convert($crossSellingData[1], $context, $this->migrationContext);
 
         $converted = $result->getConverted();
-        static::assertNotEmpty($converted);
+        static::assertNotNull($converted);
+        static::assertNotSame([], $converted);
         static::assertArrayHasKey('assignedProducts', $converted);
-        static::assertNotEmpty($converted['assignedProducts']);
+        static::assertNotSame([], $converted['assignedProducts']);
     }
 
     private function createMapping(): void

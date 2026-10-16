@@ -43,11 +43,11 @@ class MediaThumbnailSizeLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(MediaThumbnailSizeLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
-        static::assertNotEmpty($cacheProperty->getValue($mediaThumbnailSizeLookup));
+        static::assertNotSame([], $cacheProperty->getValue($mediaThumbnailSizeLookup));
 
         $mediaThumbnailSizeLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($mediaThumbnailSizeLookup));
+        static::assertSame([], $cacheProperty->getValue($mediaThumbnailSizeLookup));
     }
 
     /**

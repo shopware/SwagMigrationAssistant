@@ -57,7 +57,7 @@ class DataSetRegistryTest extends TestCase
         );
         $dataSets = $this->dataSetRegistry->getDataSets($migrationContext);
 
-        static::assertNotEmpty($dataSets);
+        static::assertNotCount(0, $dataSets);
 
         foreach ($dataSets as $dataSet) {
             static::assertTrue($dataSet->supports($migrationContext));
@@ -76,7 +76,7 @@ class DataSetRegistryTest extends TestCase
             250
         );
         $dataSets = $this->dataSetRegistry->getDataSets($migrationContext);
-        static::assertEmpty($dataSets);
+        static::assertCount(0, $dataSets);
 
         static::expectExceptionObject(MigrationException::dataSetNotFound('foo'));
         $this->dataSetRegistry->getDataSet($migrationContext, 'foo');

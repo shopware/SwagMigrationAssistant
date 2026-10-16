@@ -42,11 +42,11 @@ class CurrencyLookupTest extends TestCase
 
         $cacheProperty = new \ReflectionProperty(CurrencyLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
-        static::assertNotEmpty($cacheProperty->getValue($currencyLookup));
+        static::assertNotSame([], $cacheProperty->getValue($currencyLookup));
 
         $currencyLookup->reset();
 
-        static::assertEmpty($cacheProperty->getValue($currencyLookup));
+        static::assertSame([], $cacheProperty->getValue($currencyLookup));
     }
 
     /**
