@@ -19,6 +19,11 @@ use Symfony\Contracts\Service\ResetInterface;
 class SalesChannelTypeLookup implements ResetInterface
 {
     /**
+     * @deprecated tag:v20.0.0 - Will be removed, use `Defaults::SALES_CHANNEL_TYPE_AGENTIC_COMMERCE` once the minimum Shopware version is 6.7.10.0
+     */
+    private const SALES_CHANNEL_TYPE_AGENTIC_COMMERCE = '5e29f9890c4d4d519a1c7f9d5c24b7c1';
+
+    /**
      * @var array<string, bool>
      */
     private array $existsCache = [];
@@ -69,7 +74,8 @@ class SalesChannelTypeLookup implements ResetInterface
             Defaults::SALES_CHANNEL_TYPE_API,
             Defaults::SALES_CHANNEL_TYPE_STOREFRONT,
             Defaults::SALES_CHANNEL_TYPE_PRODUCT_COMPARISON,
-            Defaults::SALES_CHANNEL_TYPE_AGENTIC_COMMERCE,
+            /** @phpstan-ignore classConstant.deprecated (Removed together with the constant) */
+            self::SALES_CHANNEL_TYPE_AGENTIC_COMMERCE,
         ];
     }
 }

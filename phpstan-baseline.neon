@@ -157,12 +157,6 @@ parameters:
 			path: src/Migration/Mapping/MappingServiceInterface.php
 
 		-
-			message: '#^Class SwagMigrationAssistant\\Migration\\Mapping\\SwagMigrationMappingCollection extends generic class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityCollection but does not specify its types\: TElement$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingCollection.php
-
-		-
 			message: '#^Change "defineFields\(\)" method visibility to "protected" to respect parent method visibility\.$#'
 			identifier: symplify.parentMethodVisibilityOverride
 			count: 1
@@ -233,12 +227,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaProcessWorkloadStruct.php
-
-		-
-			message: '#^Class SwagMigrationAssistant\\Migration\\Media\\SwagMigrationMediaFileCollection extends generic class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityCollection but does not specify its types\: TElement$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Migration/Media/SwagMigrationMediaFileCollection.php
 
 		-
 			message: '#^Change "defineFields\(\)" method visibility to "protected" to respect parent method visibility\.$#'
@@ -331,12 +319,6 @@ parameters:
 			path: src/Migration/Service/MigrationDataConverterInterface.php
 
 		-
-			message: '#^Class SwagMigrationAssistant\\Migration\\Setting\\GeneralSettingCollection extends generic class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityCollection but does not specify its types\: TElement$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Migration/Setting/GeneralSettingCollection.php
-
-		-
 			message: '#^swag_migration_general_setting\.selectedConnection association has a configured autoload\=\=\=true, this is forbidden for platform integrations$#'
 			identifier: shopware.associationAutoload
 			count: 1
@@ -413,18 +395,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Converter/MediaFolderConverter.php
-
-		-
-			message: '#^Call to an undefined method Shopware\\Core\\Framework\\DataAbstractionLayer\\Entity\:\:getLanguageId\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\SalesChannelConverter\:\:__construct\(\) has parameter \$languagePackRepo with generic class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository but does not specify its types\: TEntityCollection$#'
-			identifier: missingType.generics
-			count: 1
-			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
 
 		-
 			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Api\\Reader\\TableCountReader\:\:logExceptions\(\) has parameter \$exceptionArray with no value type specified in iterable type array\.$#'
@@ -991,12 +961,6 @@ parameters:
 			path: tests/DeprecatedTagTest.php
 
 		-
-			message: '#^Call to deprecated method getMockForAbstractClass\(\) of class PHPUnit\\Framework\\TestCase\.$#'
-			identifier: method.deprecated
-			count: 1
-			path: tests/Migration/Writer/AbstractWriterTest.php
-
-		-
 			message: '#^Property SwagMigrationAssistant\\Test\\Migration\\Writer\\AbstractWriterTest\:\:\$dataToWrite type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1007,24 +971,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Migration/Writer/AbstractWriterTest.php
-
-		-
-			message: '#^Class SwagMigrationAssistant\\Test\\Mock\\DummyCollection implements generic interface IteratorAggregate but does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: tests/Mock/DummyCollection.php
-
-		-
-			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\DummyCollection\:\:__construct\(\) has parameter \$data with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: tests/Mock/DummyCollection.php
-
-		-
-			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\DummyCollection\:\:getIterator\(\) return type with generic class ArrayIterator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: tests/Mock/DummyCollection.php
 
 		-
 			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Gateway\\Dummy\\Api\\Reader\\ApiDummyReader\:\:read\(\) return type has no value type specified in iterable type array\.$#'
@@ -1139,12 +1085,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Writer/DummyWriter.php
-
-		-
-			message: '#^Parameter \#3 \$body of class GuzzleHttp\\Psr7\\Response constructor expects Psr\\Http\\Message\\StreamInterface\|resource\|string\|null, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Profile/Shopware/Gateway/ApiReaderTest.php
 
 		-
 			message: '#^Method SwagMigrationAssistant\\Test\\Profile\\Shopware6\\Converter\\ProductSortingConverterTest\:\:loadMapping\(\) has parameter \$mappingArray with no value type specified in iterable type array\.$#'

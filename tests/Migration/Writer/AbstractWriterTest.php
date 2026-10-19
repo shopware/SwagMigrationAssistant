@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
+use SwagMigrationAssistant\Test\Mock\Migration\Writer\DummyAbstractWriter;
 
 #[Package('fundamentals@after-sales')]
 class AbstractWriterTest extends TestCase
@@ -42,10 +43,10 @@ class AbstractWriterTest extends TestCase
     {
         $this->entityWriter = $this->createMock(EntityWriterInterface::class);
         $this->entityDefinition = $this->createMock(EntityDefinition::class);
-        $this->abstractWriter = $this->getMockForAbstractClass(AbstractWriter::class, [
+        $this->abstractWriter = new DummyAbstractWriter(
             $this->entityWriter,
             $this->entityDefinition,
-        ]);
+        );
         $this->dataToWrite = [];
         $this->context = Context::createDefaultContext();
         $this->writeResult = [];

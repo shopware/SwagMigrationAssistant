@@ -34,7 +34,7 @@ class ApiReaderTest extends TestCase
 
         $body = \json_encode([
             'data' => $dataArray,
-        ]);
+        ], \JSON_THROW_ON_ERROR);
 
         $mock = new MockHandler([
             new Response(SymfonyResponse::HTTP_OK, [], $body),

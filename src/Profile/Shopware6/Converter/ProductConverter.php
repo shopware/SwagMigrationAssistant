@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -19,6 +18,16 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 #[Package('fundamentals@after-sales')]
 class ProductConverter extends ShopwareMediaConverter
 {
+    /**
+     * @deprecated tag:v20.0.0 - Will be removed, use `ProductDefinition::TYPE_PHYSICAL` once the minimum Shopware version is 6.7.7.0
+     */
+    private const TYPE_PHYSICAL = 'physical';
+
+    /**
+     * @deprecated tag:v20.0.0 - Will be removed, use `ProductDefinition::TYPE_DIGITAL` once the minimum Shopware version is 6.7.7.0
+     */
+    private const TYPE_DIGITAL = 'digital';
+
     private ?string $sourceDefaultCurrencyUuid;
 
     public function supports(MigrationContextInterface $migrationContext): bool
@@ -272,14 +281,14 @@ class ProductConverter extends ShopwareMediaConverter
             return;
         }
 
-        if (isset($converted['states']) && \is_array($converted['states'])) {
-            $converted['type'] = \in_array('is-download', $converted['states'], true)
-                ? ProductDefinition::TYPE_DIGITAL
-                : ProductDefinition::TYPE_PHYSICAL;
+        if (isset($converted['states']) && \is_array($converted['states']) && \in_array('is-download', $converted['states'], true)) {
+            /** @phpstan-ignore classConstant.deprecated (Removed together with the constant) */
+            $converted['type'] = self::TYPE_DIGITAL;
 
             return;
         }
 
-        $converted['type'] = ProductDefinition::TYPE_PHYSICAL;
+        /** @phpstan-ignore classConstant.deprecated (Removed together with the constant) */
+        $converted['type'] = self::TYPE_PHYSICAL;
     }
 }
