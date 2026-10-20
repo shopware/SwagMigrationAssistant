@@ -1,24 +1,24 @@
+# Base configuration.
+# Used as is by the extension verifier, which has no platform checkout.
+# No %Shopware*% placeholders, no includes from the platform.
+# Unmatched ignores are off, because the verifier runs fewer rules than phpstan.dev.neon.
 includes:
     - phpstan-baseline.neon
-    - %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/PHPStan/common.neon
 
 parameters:
+    level: 8
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false
     tmpDir: var/cache/phpstan
     paths:
         - src
         - tests
     excludePaths:
         - src/Resources
-        - tests/Jest
-        - tests/acceptance
+        - tests/Jest (?)
+        - tests/acceptance (?)
     symfony:
         constantHassers: false
-        # the placeholder "%ShopwareHashedCacheDir%" will be replaced on execution by bin/phpstan-config-generator.php script
-        containerXmlPath: '../../..%ShopwareHashedCacheDir%/%ShopwareKernelClass%DevDebugContainer.xml'
-        consoleApplicationLoader: %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/console-application.php
-    type_perfect:
-        narrow_return: true
-        narrow_param: false
 
     ignoreErrors:
         - message: '#Service ".*" is private#'
@@ -74,22 +74,3 @@ parameters:
             - method.deprecatedClass
             - classConstant.deprecatedClass
             - method.deprecated
-
-services:
-    -
-        class: Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedServiceDecoratorPattern
-    -
-        class: Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
-        arguments:
-            deprecationPatterns:
-                - @Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedServiceDecoratorPattern
-        tags:
-            - phpstan.rules.rule
-
-rules:
-    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\CoversAttributeRule
-    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\MockingSimpleObjectsNotAllowedRule
-    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\DecorationPatternRule
-    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\PackageAnnotationRule
-    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\DomainExceptionRule
-    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Migration\NoAfterStatementRule

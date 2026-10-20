@@ -1,0 +1,40 @@
+# Development configuration.
+# Rendered into the gitignored phpstan.neon by bin/phpstan-config-generator.php.
+# Everything the extension verifier cannot load belongs here, not in phpstan.neon.dist.
+# common.neon turns reportUnmatchedIgnoredErrors back on, so it must stay after the dist.
+# The platform lists phpstan-shopware in extension-installer.ignore, hence the explicit include.
+includes:
+    - phpstan.neon.dist
+    - %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/PHPStan/common.neon
+    - ../../../vendor/shopwarelabs/phpstan-shopware/rules.neon
+
+parameters:
+    symfony:
+        containerXmlPath: '../../..%ShopwareHashedCacheDir%/%ShopwareKernelClass%DevDebugContainer.xml'
+        consoleApplicationLoader: %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/console-application.php
+    type_perfect:
+        narrow_return: true
+        narrow_param: false
+
+    ignoreErrors:
+        - identifier: shopware.disallow.default.context.creation
+          path: tests/*
+
+services:
+    -
+        class: Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedServiceDecoratorPattern
+    -
+        class: Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
+        arguments:
+            deprecationPatterns:
+                - @Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedServiceDecoratorPattern
+        tags:
+            - phpstan.rules.rule
+
+rules:
+    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\CoversAttributeRule
+    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\MockingSimpleObjectsNotAllowedRule
+    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\DecorationPatternRule
+    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\PackageAnnotationRule
+    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\DomainExceptionRule
+    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Migration\NoAfterStatementRule
