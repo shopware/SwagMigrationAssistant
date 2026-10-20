@@ -56,6 +56,7 @@ export default defineConfig({
             maxDiffPixels: 100,
             threshold: 0.2,
             animations: 'disabled',
+            stylePath: './fixtures/screenshot.css',
         },
     },
 

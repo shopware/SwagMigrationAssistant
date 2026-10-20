@@ -1,0 +1,19 @@
+/* The admin scrolls inside .sw-card-view__content, so element screenshots would clip at the visible height. */
+/* body is needed too, otherwise Chromium leaves everything below the viewport blank once the page was scrolled. */
+body,
+.sw-desktop,
+.sw-desktop__content,
+.sw-page,
+.sw-page__content,
+.sw-page__main-content,
+.sw-page__main-content-inner,
+.sw-card-view,
+.sw-card-view__content {
+    overflow: visible !important;
+    height: auto !important;
+    position: static !important;
+}
+
+.sf-toolbar {
+    display: none !important;
+}

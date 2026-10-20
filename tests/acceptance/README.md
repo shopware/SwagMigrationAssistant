@@ -90,17 +90,20 @@ npx playwright test --update-snapshots
 
 ### Viewport
 
-Default viewport is `1440x1080`. For screenshots requiring more height, use the `withLargerViewport` helper:
-
-```typescript
-import { withLargerViewport } from '@fixtures/TestHelpers';
-
-const restoreViewport = await withLargerViewport(page);
-await expect(page).toHaveScreenshot('my-screenshot.png');
-await restoreViewport();
-```
+Default viewport is `1440x1080`.
 
 ## Snapshots
+
+Screenshots only cover UI rendered by this plugin, so changes to the admin menu, top bar or other core chrome do not break them. Take them on the scope returned by `getScreenshotScope`: the open plugin modal if there is one, otherwise the plugin page content including its tabs.
+
+```typescript
+import { getScreenshotScope, screenshotScopeSelectors } from '@fixtures/TestHelpers';
+
+await expect(await getScreenshotScope(page)).toHaveScreenshot('my-screenshot.png', { mask });
+await expect(page.locator(screenshotScopeSelectors.smartBar)).toHaveScreenshot('my-smart-bar.png', { mask });
+```
+
+`fixtures/screenshot.css` is applied to every screenshot. It lifts the scroll clipping of the admin layout, so tall pages are captured in full without a larger viewport.
 
 Snapshots are stored per platform (`darwin`/`linux`). CI runs on Linux, so ensure Linux snapshots exist.
 

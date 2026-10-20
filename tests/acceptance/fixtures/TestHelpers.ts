@@ -5,7 +5,6 @@ export const LOADING_TIMEOUT = 30_000; // 30s
 
 export const VIEWPORT = {
     DEFAULT: { width: 1440, height: 1080 },
-    LARGE: { width: 1440, height: 1440 },
 };
 
 export const loaderSelectors = [
@@ -15,10 +14,13 @@ export const loaderSelectors = [
     '.sw-skeleton',
 ] as const;
 
+export const screenshotScopeSelectors = {
+    modal: '.sw-modal[class*="swag-migration"] .sw-modal__dialog',
+    page: '.swag-migration-index .sw-card-view__content',
+    smartBar: '.swag-migration-index .sw-page__smart-bar',
+} as const;
+
 export const dynamicElementSelectors = [
-    '.sw-version__info',
-    '.sw-avatar',
-    '.sw-admin-menu__user-name',
     '.swag-migration-progress-bar__caption',
     '.mt-progress-bar__track',
     '[class*="timestamp"]',
@@ -33,6 +35,16 @@ export function getMask(page: Page, additional: string[] = []): Locator[] {
     ].map((selector) => page.locator(selector));
 }
 
+export async function getScreenshotScope(page: Page): Promise<Locator> {
+    const modal = page.locator(screenshotScopeSelectors.modal).last();
+
+    if (await modal.isVisible()) {
+        return modal;
+    }
+
+    return page.locator(screenshotScopeSelectors.page);
+}
+
 export async function waitForLoaders(page: Page, timeout = LOADING_TIMEOUT): Promise<void> {
     const loader = page.locator(loaderSelectors.join(', '));
 
@@ -45,21 +57,4 @@ export async function waitForLoaders(page: Page, timeout = LOADING_TIMEOUT): Pro
         });
 
     await expect(loader).toHaveCount(0, { timeout });
-}
-
-export async function withLargerViewport(
-    page: Page,
-    viewport: { width: number; height: number } = VIEWPORT.DEFAULT,
-): Promise<() => Promise<void>> {
-    const height = Math.max(viewport.height, VIEWPORT.LARGE.height);
-    const width = Math.max(viewport.width, VIEWPORT.LARGE.width);
-
-    const original = page.viewportSize();
-    await page.setViewportSize({ width, height });
-
-    return async () => {
-        if (original) {
-            await page.setViewportSize(original);
-        }
-    };
 }
