@@ -17,7 +17,8 @@
   "include": [
     "./**/*.js",
     "./**/*.ts",
-    ".eslintrc.cjs"
+    ".eslintrc.cjs",
+    "../../.github/bin/**/*.ts"
   ],
   "exclude": [
     "node_modules",

@@ -9,8 +9,8 @@
         "test:update": "UPDATE_SNAPSHOTS=1 npx playwright test",
         "lint": "npx eslint \"playwright.config.ts\" \"fixtures/**/*.ts\" \"tests/**/*.ts\"",
         "lint:fix": "npx eslint --fix \"playwright.config.ts\" \"fixtures/**/*.ts\" \"tests/**/*.ts\"",
-        "format": "npx prettier --check \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache",
-        "format:fix": "npx prettier --write \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache"
+        "format": "npx prettier --check \"./**/*.{spec.ts,ts}\" \"../../.github/bin/**/*.ts\" --config ../../.prettierrc.json --cache",
+        "format:fix": "npx prettier --write \"./**/*.{spec.ts,ts}\" \"../../.github/bin/**/*.ts\" --config ../../.prettierrc.json --cache"
     },
     "devDependencies": {
         "@eslint/js": "9.39.3",

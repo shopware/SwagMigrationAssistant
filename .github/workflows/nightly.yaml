@@ -37,6 +37,26 @@ jobs:
             platform_branch: trunk
             update_snapshots: false
 
+    npm_drift:
+        name: Npm Drift
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Setup Node.js
+              uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+              with:
+                  node-version: 24
+
+            - name: Compare npm versions with core trunk
+              run: node .github/bin/check-core-npm-drift.ts
+
     notify_slack_on_schedule_failure:
         name: Slack Notify
         runs-on: ubuntu-latest
@@ -46,6 +66,7 @@ jobs:
             - phpunit
             - jest
             - acceptance
+            - npm_drift
         if: >-
             ${{
                 always() &&
@@ -54,7 +75,8 @@ jobs:
                     needs.phpstan.result == 'failure' ||
                     needs.phpunit.result == 'failure' ||
                     needs.jest.result == 'failure' ||
-                    needs.acceptance.result == 'failure'
+                    needs.acceptance.result == 'failure' ||
+                    needs.npm_drift.result == 'failure'
                 )
             }}
         steps:
@@ -69,6 +91,7 @@ jobs:
                   PHPUNIT_RESULT: ${{ needs.phpunit.result }}
                   JEST_RESULT: ${{ needs.jest.result }}
                   ACCEPTANCE_RESULT: ${{ needs.acceptance.result }}
+                  NPM_DRIFT_RESULT: ${{ needs.npm_drift.result }}
               run: |
                   set -euo pipefail
 
@@ -78,6 +101,7 @@ jobs:
                   [ "$PHPUNIT_RESULT" = "failure" ] && failed_jobs+=("PHPUnit")
                   [ "$JEST_RESULT" = "failure" ] && failed_jobs+=("Jest")
                   [ "$ACCEPTANCE_RESULT" = "failure" ] && failed_jobs+=("Playwright")
+                  [ "$NPM_DRIFT_RESULT" = "failure" ] && failed_jobs+=("Npm Drift")
 
                   failed_jobs_list=$(printf -- '- %s\n' "${failed_jobs[@]}")
                   failed_jobs_list=${failed_jobs_list%$'\n'}
