@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 84 84" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<defs>
+<linearGradient id="c" x1="26.283%" y2="100%">
+<stop stop-color="#56D4FC" offset="0"/>
+<stop stop-color="#1182FF" offset="1"/>
+</linearGradient>
+<rect id="a" x="30.014" y=".5" width="14.431" height="14.439" rx="7.216"/>
+<mask id="b" x="0" y="0" width="14.431" height="14.439" fill="#fff">
+<use xlink:href="#a"/>
+</mask>
+</defs>
+<g fill="none" fill-rule="evenodd">
+<rect width="84" height="84" rx="8" fill="url(#c)" fill-rule="nonzero"/>
+<text fill="#FFF" font-family="BrandonText-Black, Brandon Text" font-size="20" font-weight="700" letter-spacing=".143">
+<tspan x="64.259" y="76">5</tspan>
+</text>
+<g transform="translate(20 19)" fill-rule="nonzero">
+<g transform="translate(.5 1)">
+<use mask="url(#b)" stroke="#FFF" stroke-dasharray="2 1" stroke-width="4" xlink:href="#a"/>
+<path d="m7.2157 23.4c3.9851 0 7.2157 3.2306 7.2157 7.2157v0.0076518c0 3.9851-3.2306 7.2157-7.2157 7.2157-3.9851 0-7.2157-3.2306-7.2157-7.2157l-8.8818e-16 -0.0076518c-4.8804e-16 -3.9851 3.2306-7.2157 7.2157-7.2157z" fill="#FFF"/>
+</g>
+<g transform="translate(2.5)" stroke="#FFF" stroke-dasharray="4 7" stroke-linecap="round" stroke-width="3">
+<path d="m0.83916 21.818c-0.16326-7.711 2.5551-13.508 8.1552-17.393 10.106-7.0095 19.627-1.6281 19.627-1.6281"/>
+<path transform="rotate(180 26.568 29.808)" d="m13.535 39.278c0.27904-6.8014 2.9918-11.987 8.1381-15.556 5.0249-3.4852 11.001-4.2783 17.928-2.3794"/>
+</g>
+</g>
+</g>
+</svg>

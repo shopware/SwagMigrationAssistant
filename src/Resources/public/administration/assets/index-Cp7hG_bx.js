@@ -1,0 +1,2 @@
+const a='{% block swag_migration_tab_card_item %} <div class="swag-migration-tab-card-item"> <div v-if="active"> <slot> {% block swag_migration_tab_card_item_slot %}{% endblock %} </slot> </div> </div> {% endblock %}',e=Shopware.Component.wrapComponentConfig({template:a,data(){return{active:!1}},methods:{setActive(t){this.active=t}}});export{e as default};
+//# sourceMappingURL=index-Cp7hG_bx.js.map

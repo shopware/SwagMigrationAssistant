@@ -1,0 +1,2 @@
+const t=`{% block swag_migration_settings_icon %} <img class="swag-migration-settings_icon__img" :src="assetFilter('/swagmigrationassistant/administration/static/img/migration-assistant-plugin.svg')" alt="" > {% endblock %}`,s=Shopware.Component.wrapComponentConfig({template:t,computed:{assetFilter(){return Shopware.Filter.getByName("asset")}}});export{s as default};
+//# sourceMappingURL=index-qaXF09jY.js.map
