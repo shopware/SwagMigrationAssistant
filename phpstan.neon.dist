@@ -2,6 +2,7 @@
 # Used as is by the extension verifier, which has no platform checkout.
 # No %Shopware*% placeholders, no includes from the platform.
 # Unmatched ignores are off, because the verifier runs fewer rules than phpstan.dev.neon.
+# All ignoreErrors belong here, also for rules that only run in phpstan.dev.neon.
 includes:
     - phpstan-baseline.neon
 
@@ -24,6 +25,9 @@ parameters:
         - message: '#Service ".*" is private#'
           paths:
               - tests/**/*Test.php
+
+        - identifier: shopware.disallow.default.context.creation
+          path: tests/*
 
         - identifier: shopware.unexpectedTestCovers
           paths:
