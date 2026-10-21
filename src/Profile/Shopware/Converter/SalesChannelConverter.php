@@ -316,9 +316,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
     {
         $insertLanguages = [];
         foreach ($languageIds as $languageId) {
-            $criteria = (new Criteria())
+            $criteria = (new Criteria([$salesChannelUuid]))
                 ->setLimit(1)
-                ->addFilter(new EqualsFilter('id', $salesChannelUuid))
                 ->addFilter(new EqualsFilter('languages.id', $languageId['id']));
 
             if ($this->salesChannelRepo->searchIds($criteria, Context::createDefaultContext())->getTotal() === 0) {

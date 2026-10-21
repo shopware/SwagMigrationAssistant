@@ -81,6 +81,9 @@ composer admin:lint # eslint
 composer admin:format # prettier
 ```
 
+`composer phpstan` renders `phpstan.dev.neon` into the gitignored `phpstan.neon`.
+`phpstan.neon.dist` is the platform independent base that `shopware-cli extension validate` uses.
+
 ### Tests
 
 - **PHPUnit**:

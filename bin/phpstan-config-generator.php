@@ -1,5 +1,4 @@
 <?php declare(strict_types=1);
-
 /*
  * (c) shopware AG <info@shopware.com>
  * For the full copyright and license information, please view the LICENSE
@@ -16,6 +15,7 @@ $projectRoot = dirname(__DIR__, 4);
 $pluginRootPath = dirname(__DIR__);
 
 $classLoader = require $projectRoot . '/vendor/autoload.php';
+
 if (file_exists($projectRoot . '/.env')) {
     (new Dotenv())->usePutEnv()->bootEnv($projectRoot . '/.env');
 }
@@ -41,9 +41,10 @@ KernelFactory::$kernelClass = StaticAnalyzeKernel::class;
 $kernel = KernelFactory::create('dev', true, $classLoader, $pluginLoader);
 $kernel->boot();
 
-$phpStanConfigDist = file_get_contents($pluginRootPath . '/phpstan.neon.dist');
-if ($phpStanConfigDist === false) {
-    throw new RuntimeException('phpstan.neon.dist file not found');
+$phpStanConfigDev = file_get_contents($pluginRootPath . '/phpstan.dev.neon');
+
+if ($phpStanConfigDev === false) {
+    throw new RuntimeException('phpstan.dev.neon file not found');
 }
 
 // because the cache dir is hashed by Shopware, we need to set the PHPStan config dynamically
@@ -58,7 +59,7 @@ $phpStanConfig = str_replace(
         $projectRoot . (is_dir($projectRoot . '/platform') ? '/platform' : ''),
         str_replace('\\', '_', $kernel::class),
     ],
-    $phpStanConfigDist
+    $phpStanConfigDev
 );
 
 file_put_contents(__DIR__ . '/../phpstan.neon', $phpStanConfig);
