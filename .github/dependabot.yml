@@ -24,3 +24,17 @@ updates:
           - 'shopware/product-cc-after-sales'
       commit-message:
           prefix: 'chore'
+    - package-ecosystem: 'npm'
+      directory: '/tests/acceptance'
+      schedule:
+          interval: 'monthly'
+      cooldown:
+          default-days: 7
+      reviewers:
+          - 'shopware/product-cc-after-sales'
+      commit-message:
+          prefix: 'chore'
+      groups:
+          acceptance:
+              patterns:
+                  - '*'

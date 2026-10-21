@@ -16,6 +16,8 @@ Install dependencies:
 npm install
 ```
 
+Dependabot updates the packages in this folder once a month in one grouped PR.
+
 Install Playwright browsers (first time only):
 
 ```bash
