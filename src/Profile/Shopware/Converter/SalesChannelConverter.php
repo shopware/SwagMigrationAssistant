@@ -12,6 +12,8 @@ use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
@@ -48,6 +50,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
      * @param EntityRepository<ShippingMethodCollection> $shippingMethodRepo
      * @param EntityRepository<CountryCollection> $countryRepository
      * @param EntityRepository<SalesChannelCollection> $salesChannelRepo
+     * @param EntityRepository<EntityCollection<Entity>>|null $languagePackRepo
      */
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -343,7 +346,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         if ($result->getTotal() !== 0) {
             foreach ($result->getEntities()->getElements() as $packLanguage) {
-                $packLanguageId = $packLanguage->getLanguageId();
+                $packLanguageId = $packLanguage->get('languageId');
 
                 foreach ($converted['languages'] as &$language) {
                     if ($language['id'] === $packLanguageId) {

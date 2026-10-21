@@ -18,10 +18,10 @@
   },
   "devDependencies": {
     "@eslint/js": "9.39.3",
-    "@shopware-ag/meteor-admin-sdk": "6.4.0",
+    "@shopware-ag/meteor-admin-sdk": "6.15.0",
     "@typescript-eslint/eslint-plugin": "8.56.1",
     "@typescript-eslint/parser": "8.56.1",
-    "axios": "0.30.3",
+    "axios": "0.31.1",
     "eslint": "9.39.3",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-file-progress": "1.5.0",
@@ -29,7 +29,7 @@
     "eslint-plugin-html": "7.1.0",
     "eslint-plugin-import-x": "4.16.1",
     "eslint-plugin-inclusive-language": "2.2.1",
-    "eslint-plugin-vue": "9.32.0",
+    "eslint-plugin-vue": "10.10.0",
     "eslint-plugin-vuejs-accessibility": "2.4.1",
     "globals": "15.15.0",
     "prettier": "3.6.2",
@@ -40,7 +40,7 @@
     "stylelint-junit-formatter": "0.2.2",
     "typescript": "5.7.3",
     "vue": "3.5.22",
-    "vue-eslint-parser": "9.4.3"
+    "vue-eslint-parser": "10.4.1"
   },
   "overrides": {
     "picomatch": "4.0.4"

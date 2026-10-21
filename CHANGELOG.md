@@ -1,3 +1,8 @@
+# NEXT
+
+- Fixed sales channel migration on Shopware versions below 6.7.10.0, where an undefined constant for the agentic commerce sales channel type aborted the run.
+- Fixed Shopware 6 product migration on Shopware versions below 6.7.7.0, where undefined product type constants prevented products from being converted.
+
 # 19.0.0
 
 - #18902 - Fixed a bug in media migration whereby failed downloads were not marked as definitively failed once the retry attempts had been exhausted. As a result, processing could not be completed correctly.

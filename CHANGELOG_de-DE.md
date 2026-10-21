@@ -1,3 +1,8 @@
+# NEXT
+
+- Die Sales-Channel-Migration wurde für Shopware-Versionen unter 6.7.10.0 korrigiert. Dort brach eine undefinierte Konstante für den Sales-Channel-Typ Agentic Commerce die Migration ab.
+- Die Shopware 6 Produktmigration wurde für Shopware-Versionen unter 6.7.7.0 korrigiert. Dort verhinderten undefinierte Konstanten für den Produkttyp die Konvertierung der Produkte.
+
 # 19.0.0
 
 - #18902 - Fehler bei der Medienmigration behoben, durch den fehlgeschlagene Downloads nach Ablauf der Wiederholungsversuche nicht als endgültig fehlgeschlagen markiert wurden. Dadurch konnte die Verarbeitung nicht korrekt abgeschlossen werden.
