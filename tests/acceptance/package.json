@@ -26,13 +26,8 @@
         "typescript": "5.7.3"
     },
     "dependencies": {
-        "@currents/playwright": "1.21.1",
-        "@playwright/test": "1.58.1",
-        "@shopware-ag/acceptance-test-suite": "12.8.3",
-        "@shopware/api-client": "1.4.0",
+        "@playwright/test": "1.64.1",
+        "@shopware-ag/acceptance-test-suite": "12.24.1",
         "dotenv": "16.6.1"
-    },
-    "overrides": {
-        "@playwright/test": "1.58.1"
     }
 }
