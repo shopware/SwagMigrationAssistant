@@ -104,6 +104,7 @@
         "npm:admin": "cd src/Resources/app/administration && npm",
         "npm:jest": "cd tests/Jest && npm",
         "npm:acceptance": "cd tests/acceptance && npm",
+        "npm:drift": "node .github/bin/check-core-npm-drift.ts",
         "npm:init": [
             "@npm:admin install",
             "@npm:jest install",
