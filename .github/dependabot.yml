@@ -3,7 +3,9 @@ updates:
     - package-ecosystem: 'github-actions'
       directory: '/'
       schedule:
-          interval: 'weekly'
+          interval: 'monthly'
+          time: '06:00'
+          timezone: 'Europe/Berlin'
       cooldown:
           default-days: 7
       reviewers:
@@ -14,22 +16,36 @@ updates:
           github-actions:
               patterns:
                   - '*'
+
     - package-ecosystem: 'composer'
       directory: '/vendor-bin/danger-php'
       schedule:
-          interval: 'weekly'
+          interval: 'monthly'
+          time: '06:00'
+          timezone: 'Europe/Berlin'
       cooldown:
           default-days: 7
+          semver-major-days: 30
       reviewers:
           - 'shopware/product-cc-after-sales'
       commit-message:
           prefix: 'chore'
+      groups:
+          danger:
+              patterns:
+                  - '*'
+
     - package-ecosystem: 'npm'
       directory: '/tests/acceptance'
       schedule:
           interval: 'monthly'
+          time: '06:00'
+          timezone: 'Europe/Berlin'
       cooldown:
           default-days: 7
+          semver-major-days: 30
+      allow:
+          - dependency-type: 'production'
       reviewers:
           - 'shopware/product-cc-after-sales'
       commit-message:

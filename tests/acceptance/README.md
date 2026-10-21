@@ -16,7 +16,9 @@ Install dependencies:
 npm install
 ```
 
-Dependabot updates the packages in this folder once a month in one grouped PR.
+Dependabot updates the `dependencies` in this folder once a month in one grouped PR.
+The `devDependencies` are the same lint tools as in the administration and must match core's versions.
+The nightly `Npm Drift` job reports when they drift, run `composer npm:drift` to check locally.
 
 Install Playwright browsers (first time only):
 
