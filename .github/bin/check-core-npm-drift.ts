@@ -7,11 +7,16 @@ const CORE_PACKAGE_JSON_URL =
 const PLUGIN_PACKAGE_DIRS = [
     'src/Resources/app/administration',
     'tests/Jest',
+    'tests/acceptance',
 ];
 
 interface PackageJson {
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
+}
+
+interface PluginPackageJson {
+    devDependencies: Record<string, string>;
 }
 
 interface Drift {
@@ -85,8 +90,8 @@ async function main(): Promise<void> {
     let compared = 0;
 
     for (const dir of PLUGIN_PACKAGE_DIRS) {
-        const pluginPackageJson = JSON.parse(await readFile(join(root, dir, 'package.json'), 'utf8')) as PackageJson;
-        const pluginVersions = versionsOf(pluginPackageJson);
+        const pluginPackageJson = JSON.parse(await readFile(join(root, dir, 'package.json'), 'utf8')) as PluginPackageJson;
+        const pluginVersions = pluginPackageJson.devDependencies;
 
         for (const name of Object.keys(pluginVersions)) {
             const plugin = pluginVersions[name];

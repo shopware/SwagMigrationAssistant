@@ -12,6 +12,8 @@ on:
         paths:
             - src/Resources/app/administration/**
             - tests/Jest/**
+            - tests/acceptance/**
+            - .github/bin/**
             - .github/workflows/**
             - '**/*.md'
 
@@ -48,6 +50,7 @@ jobs:
                   npm run lint --prefix tests/Jest
                   npm run lint --prefix src/Resources/app/administration
                   npm run lint --prefix tests/acceptance
+                  npm run lint:types --prefix tests/acceptance
                   npm run lint:scss --prefix src/Resources/app/administration
                   npm run format --prefix tests/Jest
                   npm run format --prefix src/Resources/app/administration
