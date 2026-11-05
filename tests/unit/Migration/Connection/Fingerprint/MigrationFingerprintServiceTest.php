@@ -115,8 +115,8 @@ class MigrationFingerprintServiceTest extends TestCase
      */
     private function createService(array $idSearchResults = []): MigrationFingerprintService
     {
-        /** @var StaticEntityRepository<SwagMigrationConnectionCollection> $connectionRepo */
-        $connectionRepo = new StaticEntityRepository(
+        $connectionRepo = StaticEntityRepository::of(
+            SwagMigrationConnectionCollection::class,
             $idSearchResults,
             new SwagMigrationConnectionDefinition()
         );

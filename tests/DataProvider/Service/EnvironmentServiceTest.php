@@ -77,8 +77,8 @@ class EnvironmentServiceTest extends TestCase
         $currencyEntity->setId(Defaults::CURRENCY);
         $currencyEntity->setIsoCode($defaultCurrency);
 
-        /** @var StaticEntityRepository<CurrencyCollection> $currencyRepo */
-        $currencyRepo = new StaticEntityRepository(
+        $currencyRepo = StaticEntityRepository::of(
+            CurrencyCollection::class,
             [
                 new EntitySearchResult(
                     CurrencyDefinition::ENTITY_NAME,
@@ -99,8 +99,8 @@ class EnvironmentServiceTest extends TestCase
         $localeEntity->setCode($defaultLocale);
         $languageEntity->setLocale($localeEntity);
 
-        /** @var StaticEntityRepository<LanguageCollection> $languageRepo */
-        $languageRepo = new StaticEntityRepository(
+        $languageRepo = StaticEntityRepository::of(
+            LanguageCollection::class,
             [
                 new EntitySearchResult(
                     LanguageDefinition::ENTITY_NAME,

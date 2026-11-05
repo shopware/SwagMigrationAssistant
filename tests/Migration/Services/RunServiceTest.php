@@ -302,7 +302,6 @@ class RunServiceTest extends TestCase
             ->expects($this->never())
             ->method('transitionToRunStep');
 
-        /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepo */
         $runRepo = new StaticEntityRepository([
             new SwagMigrationRunCollection([
                 (static function (): SwagMigrationRunEntity {
@@ -351,7 +350,6 @@ class RunServiceTest extends TestCase
                 'levelCounts' => ['error' => 0, 'warning' => 0, 'info' => 0],
             ]);
 
-        /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepo */
         $runRepo = new StaticEntityRepository([
             new SwagMigrationRunCollection([
                 (static function (): SwagMigrationRunEntity {
@@ -396,7 +394,6 @@ class RunServiceTest extends TestCase
                 'levelCounts' => ['error' => 5, 'warning' => 0, 'info' => 0],
             ]);
 
-        /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepo */
         $runRepo = new StaticEntityRepository([
             new SwagMigrationRunCollection([
                 (static function (): SwagMigrationRunEntity {
@@ -504,10 +501,8 @@ class RunServiceTest extends TestCase
     ): RunService {
         $connectionRepository = $connectionRepo ?? $this->connectionRepo;
 
-        /** @var StaticEntityRepository<SalesChannelCollection> $salesChannelRepository */
-        $salesChannelRepository = new StaticEntityRepository([]);
-        /** @var StaticEntityRepository<ThemeCollection> $themeRepository */
-        $themeRepository = new StaticEntityRepository([]);
+        $salesChannelRepository = StaticEntityRepository::of(SalesChannelCollection::class);
+        $themeRepository = StaticEntityRepository::of(ThemeCollection::class);
 
         return new RunService(
             $runRepo ?? $this->runRepo,

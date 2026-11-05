@@ -277,8 +277,8 @@ class HttpDownloadServiceBaseTest extends TestCase
         $dbalConnection = $this->createMock(Connection::class);
         $dbalConnection->method('createQueryBuilder')->willReturn($queryBuilderMock);
 
-        /** @var StaticEntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo */
-        $mediaFileRepo = new StaticEntityRepository(
+        $mediaFileRepo = StaticEntityRepository::of(
+            SwagMigrationMediaFileCollection::class,
             [],
             new SwagMigrationMediaFileDefinition(),
         );
@@ -344,8 +344,8 @@ class HttpDownloadServiceBaseTest extends TestCase
         $queryBuilder->method('fetchAllAssociative')->willReturn($migrationMediaFiles);
         $dbalConnection->method('createQueryBuilder')->willReturn($queryBuilder);
 
-        /** @var StaticEntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo */
-        $mediaFileRepo = new StaticEntityRepository(
+        $mediaFileRepo = StaticEntityRepository::of(
+            SwagMigrationMediaFileCollection::class,
             [],
             new SwagMigrationMediaFileDefinition()
         );

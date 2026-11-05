@@ -33,7 +33,6 @@ class UserProviderTest extends TestCase
         $adminUser->setActive(true);
         $adminUser->setTimeZone('UTC');
 
-        /** @var StaticEntityRepository<UserCollection> $adminUserRepo */
         $adminUserRepo = new StaticEntityRepository([
             new EntitySearchResult(
                 UserDefinition::ENTITY_NAME,
