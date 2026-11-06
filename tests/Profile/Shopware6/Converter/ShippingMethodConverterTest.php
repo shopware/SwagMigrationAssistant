@@ -34,8 +34,7 @@ class ShippingMethodConverterTest extends ShopwareConverterTest
     ): ConverterInterface {
         $primaryKey = Uuid::randomHex();
 
-        /** @var StaticEntityRepository<ShippingMethodCollection> $shippingMethodRepository */
-        $shippingMethodRepository = new StaticEntityRepository([
+        $shippingMethodRepository = StaticEntityRepository::of(ShippingMethodCollection::class, [
             new IdSearchResult(
                 1, // trigger already existing technical name check
                 [$primaryKey => [

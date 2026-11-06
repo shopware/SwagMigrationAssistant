@@ -290,8 +290,8 @@ class Shopware6ApiGatewayTest extends TestCase
         $currencyEntity = new CurrencyEntity();
         $currencyEntity->setId(Defaults::CURRENCY);
         $currencyEntity->setIsoCode($selfDefaultCurrency);
-        /** @var StaticEntityRepository<CurrencyCollection> $currencyRepo */
-        $currencyRepo = new StaticEntityRepository(
+        $currencyRepo = StaticEntityRepository::of(
+            CurrencyCollection::class,
             [
                 new EntitySearchResult(
                     CurrencyDefinition::ENTITY_NAME,
@@ -310,8 +310,8 @@ class Shopware6ApiGatewayTest extends TestCase
         $localeEntity->setId(Uuid::randomHex());
         $localeEntity->setCode($selfDefaultLocale);
         $languageEntity->setLocale($localeEntity);
-        /** @var StaticEntityRepository<LanguageCollection> $languageRepo */
-        $languageRepo = new StaticEntityRepository(
+        $languageRepo = StaticEntityRepository::of(
+            LanguageCollection::class,
             [
                 new EntitySearchResult(
                     LanguageDefinition::ENTITY_NAME,

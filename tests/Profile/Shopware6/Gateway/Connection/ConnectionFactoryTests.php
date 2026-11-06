@@ -34,8 +34,7 @@ class ConnectionFactoryTests extends TestCase
             new Shopware6MajorProfile('6.5.6.1'),
         );
 
-        /** @var StaticEntityRepository<SwagMigrationConnectionCollection> $connectionRepository */
-        $connectionRepository = new StaticEntityRepository([]);
+        $connectionRepository = StaticEntityRepository::of(SwagMigrationConnectionCollection::class);
         $connection = new ConnectionFactory($connectionRepository, new MigrationConfiguration());
         $result = $connection->createApiClient($migrationContext);
 

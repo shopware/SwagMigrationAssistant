@@ -63,8 +63,8 @@ class MessageQueueSubscriberTest extends TestCase
         $run->setStep($step);
         $run->setProgress($migrationProgress);
 
-        /** @var StaticEntityRepository<SwagMigrationRunCollection> $repository */
-        $repository = new StaticEntityRepository(
+        $repository = StaticEntityRepository::of(
+            SwagMigrationRunCollection::class,
             [new EntitySearchResult(SwagMigrationRunDefinition::ENTITY_NAME, 1, new EntityCollection([$run]), null, new Criteria(), $this->context)],
             new SwagMigrationRunDefinition(),
         );
@@ -182,8 +182,8 @@ class MessageQueueSubscriberTest extends TestCase
         $run->setStep(MigrationStep::FETCHING);
         $run->setProgress($migrationProgress);
 
-        /** @var StaticEntityRepository<SwagMigrationRunCollection> $repository */
-        $repository = new StaticEntityRepository(
+        $repository = StaticEntityRepository::of(
+            SwagMigrationRunCollection::class,
             [
                 new EntitySearchResult(
                     SwagMigrationRunDefinition::ENTITY_NAME,
@@ -244,8 +244,8 @@ class MessageQueueSubscriberTest extends TestCase
             $run->setProgress($migrationProgress);
         }
 
-        /** @var StaticEntityRepository<SwagMigrationRunCollection> $repository */
-        $repository = new StaticEntityRepository(
+        $repository = StaticEntityRepository::of(
+            SwagMigrationRunCollection::class,
             [
                 new EntitySearchResult(
                     SwagMigrationRunDefinition::ENTITY_NAME,

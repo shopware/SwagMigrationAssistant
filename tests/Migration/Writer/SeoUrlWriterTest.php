@@ -73,11 +73,7 @@ class SeoUrlWriterTest extends TestCase
             ],
         ];
 
-        $salesChannelSearchResult = $this->getSalesChannelSearchResult($context);
-
-        $this->salesChannelRepository->expects($this->once())
-            ->method('search')
-            ->willReturn($salesChannelSearchResult);
+        $this->expectSalesChannelSearch($context);
 
         $this->seoUrlPersister->expects($this->once())
             ->method('updateSeoUrls');
@@ -103,11 +99,7 @@ class SeoUrlWriterTest extends TestCase
             ],
         ];
 
-        $salesChannelSearchResult = $this->getSalesChannelSearchResult($context);
-
-        $this->salesChannelRepository->expects($this->once())
-            ->method('search')
-            ->willReturn($salesChannelSearchResult);
+        $this->expectSalesChannelSearch($context);
 
         $this->seoUrlPersister->expects($this->never())
             ->method('updateSeoUrls');
@@ -116,22 +108,21 @@ class SeoUrlWriterTest extends TestCase
         static::assertCount(0, $result);
     }
 
-    /**
-     * @return EntitySearchResult<SalesChannelCollection>
-     */
-    private function getSalesChannelSearchResult(Context $context): EntitySearchResult
+    private function expectSalesChannelSearch(Context $context): void
     {
         $salesChannel = new SalesChannelEntity();
         $salesChannel->setId(self::SALES_CHANNEL_ID);
         $salesChannelCollection = new SalesChannelCollection([$salesChannel]);
 
-        return new EntitySearchResult(
-            SalesChannelDefinition::ENTITY_NAME,
-            1,
-            $salesChannelCollection,
-            null,
-            new Criteria(),
-            $context
-        );
+        $this->salesChannelRepository->expects($this->once())
+            ->method('search')
+            ->willReturn(new EntitySearchResult(
+                SalesChannelDefinition::ENTITY_NAME,
+                1,
+                $salesChannelCollection,
+                null,
+                new Criteria(),
+                $context
+            ));
     }
 }
