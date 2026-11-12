@@ -11,8 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotEqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
@@ -54,9 +53,7 @@ readonly class MigrationConnectionFactory
         // check that the connection name is unique
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('name', $connectionEntity->getName()));
-        $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [
-            new EqualsFilter('id', $connectionEntity->getId()),
-        ]));
+        $criteria->addFilter(new NotEqualsFilter('id', $connectionEntity->getId()));
         $existingConnection = $this->migrationConnectionRepo->search($criteria, $context)->getEntities()->first();
         if ($existingConnection !== null) {
             throw MigrationException::connectionNameNotUnique();

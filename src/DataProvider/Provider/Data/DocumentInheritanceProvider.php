@@ -12,8 +12,7 @@ use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotEqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -39,7 +38,7 @@ class DocumentInheritanceProvider extends AbstractProvider
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
         $criteria->addSorting(new FieldSorting('id'));
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [new EqualsFilter('referencedDocumentId', null)]));
+        $criteria->addFilter(new NotEqualsFilter('referencedDocumentId', null));
 
         $searchResult = $this->documentRepo->search($criteria, $context);
 
@@ -58,7 +57,7 @@ class DocumentInheritanceProvider extends AbstractProvider
     public function getProvidedTotal(Context $context): int
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [new EqualsFilter('referencedDocumentId', null)]));
+        $criteria->addFilter(new NotEqualsFilter('referencedDocumentId', null));
 
         return $this->readTotalFromRepo($this->documentRepo, $context, $criteria);
     }

@@ -11,8 +11,7 @@ use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotEqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -37,9 +36,7 @@ class CategoryAssociationProvider extends AbstractProvider
         $criteria = new Criteria();
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [
-            new EqualsFilter('afterCategoryId', null),
-        ]));
+        $criteria->addFilter(new NotEqualsFilter('afterCategoryId', null));
         $criteria->addSorting(
             new FieldSorting('level'),
             new FieldSorting('autoIncrement')
@@ -61,9 +58,7 @@ class CategoryAssociationProvider extends AbstractProvider
     public function getProvidedTotal(Context $context): int
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [
-            new EqualsFilter('afterCategoryId', null),
-        ]));
+        $criteria->addFilter(new NotEqualsFilter('afterCategoryId', null));
 
         return $this->readTotalFromRepo($this->categoryRepo, $context, $criteria);
     }

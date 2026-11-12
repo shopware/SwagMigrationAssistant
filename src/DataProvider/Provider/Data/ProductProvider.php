@@ -11,8 +11,7 @@ use Shopware\Core\Content\Product\ProductCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotEqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -130,9 +129,7 @@ class ProductProvider extends AbstractProvider
         }
 
         $criteria->addFilter(
-            new NotFilter(NotFilter::CONNECTION_AND, [
-                new EqualsFilter('type', self::BUNDLE_PRODUCT_TYPE),
-            ])
+            new NotEqualsFilter('type', self::BUNDLE_PRODUCT_TYPE)
         );
     }
 

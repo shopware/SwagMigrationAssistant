@@ -11,8 +11,7 @@ use Shopware\Core\Content\ProductStream\Aggregate\ProductStreamFilter\ProductStr
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotEqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -38,9 +37,7 @@ class ProductStreamFilterInheritanceProvider extends AbstractProvider
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
         $criteria->addSorting(new FieldSorting('id'));
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [
-            new EqualsFilter('parentId', null),
-        ]));
+        $criteria->addFilter(new NotEqualsFilter('parentId', null));
         $result = $this->productStreamFilterRepo->search($criteria, $context);
 
         $cleanResult = $this->cleanupSearchResult($result, [
@@ -60,9 +57,7 @@ class ProductStreamFilterInheritanceProvider extends AbstractProvider
     public function getProvidedTotal(Context $context): int
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [
-            new EqualsFilter('parentId', null),
-        ]));
+        $criteria->addFilter(new NotEqualsFilter('parentId', null));
 
         return $this->readTotalFromRepo($this->productStreamFilterRepo, $context, $criteria);
     }

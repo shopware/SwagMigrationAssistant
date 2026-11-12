@@ -11,8 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotEqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 
@@ -39,9 +38,7 @@ readonly class MigrationFingerprintService implements MigrationFingerprintServic
         $criteria->addFilter(new EqualsFilter('sourceSystemFingerprint', $fingerprint));
 
         if (isset($excludeConnectionId)) {
-            $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [
-                new EqualsFilter('id', $excludeConnectionId),
-            ]));
+            $criteria->addFilter(new NotEqualsFilter('id', $excludeConnectionId));
         }
 
         return $this->connectionRepo->searchIds($criteria, $context)->getTotal() > 0;

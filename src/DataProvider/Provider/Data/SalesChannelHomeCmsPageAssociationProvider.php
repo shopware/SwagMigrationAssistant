@@ -10,8 +10,7 @@ namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotEqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
@@ -37,9 +36,7 @@ class SalesChannelHomeCmsPageAssociationProvider extends AbstractProvider
         $criteria = new Criteria();
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [
-            new EqualsFilter('homeCmsPageId', null),
-        ]));
+        $criteria->addFilter(new NotEqualsFilter('homeCmsPageId', null));
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->salesChannelRepo->search($criteria, $context)->getEntities();
 
@@ -58,9 +55,7 @@ class SalesChannelHomeCmsPageAssociationProvider extends AbstractProvider
     public function getProvidedTotal(Context $context): int
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [
-            new EqualsFilter('homeCmsPageId', null),
-        ]));
+        $criteria->addFilter(new NotEqualsFilter('homeCmsPageId', null));
 
         return $this->readTotalFromRepo($this->salesChannelRepo, $context, $criteria);
     }
