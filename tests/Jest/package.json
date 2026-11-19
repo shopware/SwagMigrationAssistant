@@ -11,16 +11,17 @@
     "format:fix": "npx prettier --write \"src/**/*.{js,ts}\" --config ../../.prettierrc.json --cache"
   },
   "devDependencies": {
+    "@babel/preset-env": "7.29.5",
+    "@babel/preset-typescript": "7.28.5",
     "@eslint/js": "9.39.3",
     "@shopware-ag/jest-preset-sw6-admin": "6.0.4",
     "@typescript-eslint/eslint-plugin": "8.56.1",
     "@typescript-eslint/parser": "8.56.1",
     "@vue/test-utils": "2.4.6",
-    "axios": "0.31.1",
+    "axios": "1.20.0",
     "axios-mock-adapter": "2.1.0",
     "babel-jest": "30.2.0",
-    "@babel/preset-env": "7.29.5",
-    "@babel/preset-typescript": "7.28.5",
+    "entities": "4.5.0",
     "eslint": "9.39.3",
     "eslint-config-prettier": "9.1.0",
     "eslint-plugin-file-progress": "1.5.0",
@@ -31,8 +32,7 @@
     "jest-junit": "17.0.0",
     "prettier": "3.6.2",
     "prettier-plugin-multiline-arrays": "3.0.6",
-    "typescript": "5.7.3",
-    "entities": "4.5.0"
+    "typescript": "5.7.3"
   },
   "overrides": {
     "@babel/core": "7.29.7"
