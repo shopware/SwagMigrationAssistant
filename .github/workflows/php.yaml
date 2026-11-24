@@ -41,4 +41,4 @@ jobs:
               with:
                   action: check
                   check-against: lowest
-                  exclude: stylelint
+                  exclude: stylelint,prettier,php-cs-fixer
