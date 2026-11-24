@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Test\DataProvider\Service;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
-use Shopware\Core\Framework\App\ShopId\ShopIdProvider;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -122,8 +121,8 @@ class EnvironmentServiceTest extends TestCase
 
         $systemConfigService = $this->createMock(SystemConfigService::class);
         $systemConfigService->method('get')->willReturnMap([
-            [ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY_V2, null, $shopIdV2 ? ['id' => $shopIdV2] : null],
-            [ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY, null, $shopIdV1 ? ['id' => $shopIdV1] : null],
+            ['core.app.shopIdV2', null, $shopIdV2 ? ['id' => $shopIdV2] : null],
+            ['core.app.shopId', null, $shopIdV1 ? ['id' => $shopIdV1] : null],
         ]);
 
         $this->environmentService = new EnvironmentService(
