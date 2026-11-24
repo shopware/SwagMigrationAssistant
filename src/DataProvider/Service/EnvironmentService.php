@@ -31,6 +31,8 @@ class EnvironmentService implements EnvironmentServiceInterface
      */
     private const SHOP_ID_CONFIG_KEY_V2 = 'core.app.shopIdV2';
 
+    private const SHOP_ID_CONFIG_KEY_V1 = 'core.app.shopId';
+
     /**
      * @internal
      *
@@ -91,7 +93,7 @@ class EnvironmentService implements EnvironmentServiceInterface
     private function getShopIdV2(): ?string
     {
         $response = $this->systemConfigService->get(self::SHOP_ID_CONFIG_KEY_V2)
-            ?? $this->systemConfigService->get(ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY);
+            ?? $this->systemConfigService->get(self::SHOP_ID_CONFIG_KEY_V1);
 
         if (\is_array($response) && isset($response['id'])) {
             return $response['id'];
